@@ -12,25 +12,13 @@ const useStore = create((set) => ({
     resetSpeed: () => set({ speedBoost: false }),
 
     // Toad Bank State
-    balance: 100, // Solde réduit pour donner un intérêt au Mini-Jeu
-    socialStatus: "PAUVRE COMME UN BBA",
+    balance: 500000000,
+    socialStatus: "PLUS DE THUNASSE QU'UN DIPLÔME DU BBA",
     lastGlitchPurchase: null, // ex: "ACHAT BLUE SHELL PRO : -99 999 999"
     spendCoins: (amount, item) => set((state) => ({
         balance: state.balance - amount,
         lastGlitchPurchase: `ACHAT ${item} : -${amount} `
     })),
-    addCoins: (amount) => set((state) => {
-        const newBalance = state.balance + amount;
-        let newStatus = "PAUVRE COMME UN BBA";
-        if (newBalance > 500) newStatus = "CLASSE MOYENNE SUPÉRIEURE";
-        if (newBalance > 5000) newStatus = "RICHE HÉRITIER";
-
-        return {
-            balance: newBalance,
-            socialStatus: newStatus,
-            lastGlitchPurchase: `GAIN CASH MACHINE : +${amount} 🟡`
-        };
-    }),
 
     // Happenings (Global Events)
     happening: null, // 'BAGARRE', 'BRAZZERS', ou null

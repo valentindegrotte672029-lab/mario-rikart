@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { AnimatePresence } from 'framer-motion';
 
@@ -13,14 +13,12 @@ import PagePeach from './components/PagePeach';
 import PageMario from './components/PageMario';
 import PageWario from './components/PageWario';
 import PageChrono from './components/PageChrono';
-import CoinClicker from './components/CoinClicker';
 
 import useStore from './store/useStore';
 import { socket } from './socket';
 
 export default function App() {
   const { speedBoost, currentPage, happening, triggerHappening, username } = useStore();
-  const [showClicker, setShowClicker] = useState(false);
 
   // Gestion des WebSockets en temps réel (Remplace le mock)
   useEffect(() => {
@@ -68,18 +66,7 @@ export default function App() {
             <h1 className="text-gradient">V2026</h1>
             <p>Mario Rikart Experience</p>
             <div className="glow-orb" style={{ background: getThemeColor(currentPage) }}></div>
-
-            <button
-              style={{ marginTop: '30px', background: '#ffcc00', color: 'black', border: 'none', padding: '15px 30px', borderRadius: '25px', fontWeight: 'bold', fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '10px', boxShadow: '0 5px 15px rgba(255,204,0,0.4)', cursor: 'pointer', margin: '30px auto 0 auto' }}
-              onClick={() => setShowClicker(true)}
-            >
-              <span>🟡 GAGNER DES PIÈCES</span>
-            </button>
           </div>
-
-          <AnimatePresence>
-            {showClicker && <CoinClicker onClose={() => setShowClicker(false)} />}
-          </AnimatePresence>
         </div>
       );
     }
