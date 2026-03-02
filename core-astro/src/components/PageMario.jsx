@@ -9,7 +9,7 @@ import html2canvas from 'html2canvas';
 const STICKERS_GALLERY = ['🍄', '⭐️', '🔥', '💩', '💸', '🍷', '🚬', '🤡'];
 
 export default function PageMario() {
-  const { username } = useStore();
+  const { username, bereals } = useStore();
   const [step, setStep] = useState('FEED'); // FEED, CAPTURE_BACK, CAPTURE_FRONT, EDIT
   const [backPhoto, setBackPhoto] = useState(null);
   const [frontPhoto, setFrontPhoto] = useState(null);
@@ -18,24 +18,8 @@ export default function PageMario() {
   const [caption, setCaption] = useState('');
   const [isSending, setIsSending] = useState(false);
 
-  const [bereals, setBereals] = useState([]);
-
   const fileInputBackRef = useRef(null);
   const fileInputFrontRef = useRef(null);
-
-  useEffect(() => {
-    // Écoute de l'historique et des nouveaux posts
-    socket.on('bereals_history', (history) => setBereals(history));
-    socket.on('bereal_broadcast', (post) => setBereals(prev => [post, ...prev]));
-
-    // Demander l'historique si on l'a raté
-    socket.emit('request_bereals');
-
-    return () => {
-      socket.off('bereals_history');
-      socket.off('bereal_broadcast');
-    };
-  }, []);
 
   const handleCaptureBack = async (e) => {
     const file = e.target.files[0];

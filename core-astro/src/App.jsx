@@ -18,7 +18,7 @@ import useStore from './store/useStore';
 import { socket } from './socket';
 
 export default function App() {
-  const { speedBoost, currentPage, happening, triggerHappening, username } = useStore();
+  const { speedBoost, currentPage, happening, triggerHappening, username, setBereals, addBereal } = useStore();
 
   // Gestion des WebSockets en temps réel (Remplace le mock)
   useEffect(() => {
@@ -28,16 +28,18 @@ export default function App() {
       socket.emit('join_game', username);
 
       // 2. Écoute du 'God Mode' (Alertes Centrales)
-      socket.on('global_happening', (type) => {
-        triggerHappening(type);
-      });
+      socket.on('global_happening', (type) => triggerHappening(type));
+      socket.on('bereals_history', (history) => setBereals(history));
+      socket.on('bereal_broadcast', (post) => addBereal(post));
 
       return () => {
         socket.off('global_happening');
+        socket.off('bereals_history');
+        socket.off('bereal_broadcast');
         socket.disconnect();
       };
     }
-  }, [username, triggerHappening]);
+  }, [username, triggerHappening, setBereals, addBereal]);
 
   // Couleurs dynamiques selon la page pour l'ambiance globale
   const getThemeColor = (page) => {

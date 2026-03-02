@@ -10,8 +10,8 @@ export default function PageChrono() {
         if (window.navigator?.vibrate) window.navigator.vibrate(50);
         setStatus('running');
 
-        // Durée aléatoire entre 30s et 1 minute
-        const randomDuration = Math.floor(Math.random() * (60000 - 30000 + 1)) + 30000;
+        // Durée aléatoire entre 5s et 1 minute (Calculée à chaque clic)
+        const randomDuration = Math.floor(Math.random() * (60000 - 5000 + 1)) + 5000;
 
         timerRef.current = setTimeout(() => {
             setStatus('alarm');
@@ -52,7 +52,7 @@ export default function PageChrono() {
                             <p className="desc">Lance le minuteur aveugle. Prenez du poppy jusqu'à ce que l'alarme sonne !</p>
                             <button className="huge-chrono-btn" onClick={startChrono}>
                                 <Timer size={60} />
-                                <span>LANCER<br /><small style={{ fontSize: '0.8rem', opacity: 0.8 }}>(30s - 1min)</small></span>
+                                <span>LANCER<br /><small style={{ fontSize: '0.8rem', opacity: 0.8 }}>(5s - 1min)</small></span>
                             </button>
                         </motion.div>
                     )}

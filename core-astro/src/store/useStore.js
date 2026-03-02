@@ -24,6 +24,11 @@ const useStore = create((set) => ({
     happening: null, // 'BAGARRE', 'BRAZZERS', ou null
     triggerHappening: (event) => set({ happening: event }),
     clearHappening: () => set({ happening: null }),
+
+    // BeReal Feed
+    bereals: [],
+    setBereals: (bereals) => set({ bereals }),
+    addBereal: (bereal) => set((state) => ({ bereals: [bereal, ...state.bereals] })),
 }));
 
 export default useStore;
