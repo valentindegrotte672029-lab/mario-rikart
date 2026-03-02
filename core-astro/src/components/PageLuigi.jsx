@@ -63,7 +63,7 @@ export default function PageLuigi() {
 
       <div className="glass-panel mobile-card luigi-card">
         <div className="card-header">
-          <h1 className="title-mobile">LUIGI</h1>
+          <h1 className="title-mobile">LUI-WEED</h1>
           <p className="subtitle">"Fromagio de zigounetti..."</p>
         </div>
 

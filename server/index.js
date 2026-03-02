@@ -21,6 +21,8 @@ const io = new Server(server, {
 const players = {};
 // Stockage de l'historique des commandes (optionnel pour l'instant)
 const ordersQueue = [];
+// Stockage des publications BeReal
+const berealsQueue = [];
 
 io.on('connection', (socket) => {
     console.log(`⚡ Nouvelle connexion : ${socket.id}`);
@@ -32,6 +34,9 @@ io.on('connection', (socket) => {
 
         // Informe le Master (Admin) qu'un nouveau joueur est là
         io.emit('player_joined', { id: socket.id, username, totalPlayers: Object.keys(players).length });
+
+        // Envoie l'historique BeReal au nouveau joueur
+        socket.emit('bereals_history', berealsQueue);
     });
 
     // 2. Émission d'une commande (Wario Bar)
@@ -47,6 +52,25 @@ io.on('connection', (socket) => {
 
         // On relaie la commande UNIQUEMENT à l'admin (les autres joueurs s'en fichent)
         io.emit('order_received', completeOrder);
+    });
+
+    // 2.5 Émission d'un BeReal (Mario)
+    socket.on('new_bereal', (berealData) => {
+        const username = players[socket.id] || 'Anonyme';
+        const post = {
+            ...berealData,
+            username,
+            timestamp: new Date().toISOString(),
+            id: Date.now()
+        };
+        console.log(`📸 Nouveau BeReal publié par ${username}`);
+        berealsQueue.unshift(post); // Ajoute au début
+
+        // Garder les 50 derniers max pour la mémoire
+        if (berealsQueue.length > 50) berealsQueue.pop();
+
+        // Diffuse à tout le monde (Joueurs + Admin)
+        io.emit('bereal_broadcast', post);
     });
 
     // 3. Diffusion d'un événement global (Envoyé par le Master "God Mode")

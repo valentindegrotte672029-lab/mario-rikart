@@ -1,26 +1,59 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Camera, Send, X, Type } from 'lucide-react';
+import { Camera, Send, X, Type, PlusSquare, SwitchCamera } from 'lucide-react';
 import useStore from '../store/useStore';
 import { socket } from '../socket';
+import { compressImage } from '../utils/imageCompressor';
+import html2canvas from 'html2canvas';
 
 const STICKERS_GALLERY = ['🍄', '⭐️', '🔥', '💩', '💸', '🍷', '🚬', '🤡'];
 
 export default function PageMario() {
   const { username } = useStore();
-  const [photo, setPhoto] = useState(null);
+  const [step, setStep] = useState('FEED'); // FEED, CAPTURE_BACK, CAPTURE_FRONT, EDIT
+  const [backPhoto, setBackPhoto] = useState(null);
+  const [frontPhoto, setFrontPhoto] = useState(null);
+
   const [stickers, setStickers] = useState([]);
   const [caption, setCaption] = useState('');
   const [isSending, setIsSending] = useState(false);
 
-  const fileInputRef = useRef(null);
+  const [bereals, setBereals] = useState([]);
 
-  const handleCapture = (e) => {
+  const fileInputBackRef = useRef(null);
+  const fileInputFrontRef = useRef(null);
+
+  useEffect(() => {
+    // Écoute de l'historique et des nouveaux posts
+    socket.on('bereals_history', (history) => setBereals(history));
+    socket.on('bereal_broadcast', (post) => setBereals(prev => [post, ...prev]));
+
+    // Demander l'historique si on l'a raté
+    socket.emit('request_bereals');
+
+    return () => {
+      socket.off('bereals_history');
+      socket.off('bereal_broadcast');
+    };
+  }, []);
+
+  const handleCaptureBack = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setPhoto(imageUrl);
       if (window.navigator?.vibrate) window.navigator.vibrate(50);
+      const base64 = await compressImage(file, 800);
+      setBackPhoto(base64);
+      setStep('CAPTURE_FRONT');
+    }
+  };
+
+  const handleCaptureFront = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (window.navigator?.vibrate) window.navigator.vibrate(50);
+      const base64 = await compressImage(file, 400); // Plus petit pour le front
+      setFrontPhoto(base64);
+      setStep('EDIT');
     }
   };
 
@@ -31,28 +64,52 @@ export default function PageMario() {
     ]);
   };
 
-  const handleSend = () => {
+  const handleSend = async () => {
     setIsSending(true);
     if (window.navigator?.vibrate) window.navigator.vibrate([50, 100, 50]);
 
-    // Envoi de la notification au Master
-    socket.emit('new_order', {
-      username: username || "Anonyme",
-      item: `📸 A balancé un BeReal épique ! "${caption}"`
-    });
+    // Prendre un screenshot du container avec html2canvas (pour incruster texte et emojis d'un coup)
+    const element = document.querySelector('.photo-editor-container');
+
+    try {
+      const canvas = await html2canvas(element, {
+        backgroundColor: null,
+        scale: 1 // Garder une taille raisonnable
+      });
+      const finalImageBase64 = canvas.toDataURL('image/jpeg', 0.7);
+
+      // Envoi de la notification et de l'image
+      socket.emit('new_bereal', {
+        caption,
+        image: finalImageBase64
+      });
+
+      // On envoie aussi un simple log pour la caisse Wario du Master
+      socket.emit('new_order', {
+        username: username || "Anonyme",
+        item: `📸 A publié un BeReal ! "${caption}"`
+      });
+
+    } catch (err) {
+      console.error("Erreur html2canvas:", err);
+    } // fallback silencieux
 
     setTimeout(() => {
-      setPhoto(null);
+      setBackPhoto(null);
+      setFrontPhoto(null);
       setStickers([]);
       setCaption('');
+      setStep('FEED');
       setIsSending(false);
-    }, 1500);
+    }, 1000);
   };
 
   const cancelPhoto = () => {
-    setPhoto(null);
+    setBackPhoto(null);
+    setFrontPhoto(null);
     setStickers([]);
     setCaption('');
+    setStep('FEED');
   };
 
   return (
@@ -66,38 +123,91 @@ export default function PageMario() {
       <div className="tears-overlay"></div>
 
       <div className="glass-panel mobile-card mario-card">
-        <h1 className="title-mobile mario-title">MARIO</h1>
-        <p className="subtitle sad-subtitle">Snappe tes Goumins en direct 📸</p>
+        <h1 className="title-mobile mario-title">BeMARIO</h1>
+        <p className="subtitle sad-subtitle">Capturez vos Goumins en temps réel 📸</p>
 
-        {!photo ? (
+        {step === 'FEED' && (
+          <div className="feed-section">
+            <button className="btn-primary create-bereal-btn" onClick={() => setStep('CAPTURE_BACK')}>
+              <PlusSquare size={24} /> Ajouter un BeMario
+            </button>
+
+            <div className="bereal-list">
+              {bereals.length === 0 ? (
+                <p className="empty-feed">Aucun post pour le moment. Sois le premier !</p>
+              ) : (
+                bereals.map(post => (
+                  <div className="bereal-post" key={post.id}>
+                    <div className="post-header">
+                      <strong>{post.username}</strong>
+                      <span className="post-time">{new Date(post.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                    </div>
+                    <img src={post.image} alt="BeReal" className="post-image" />
+                    {post.caption && <p className="post-caption-text">{post.caption}</p>}
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        )}
+
+        {step === 'CAPTURE_BACK' && (
           <div className="capture-section">
             <input
               type="file"
               accept="image/*"
               capture="environment"
-              onChange={handleCapture}
-              ref={fileInputRef}
+              onChange={handleCaptureBack}
+              ref={fileInputBackRef}
               style={{ display: 'none' }}
             />
             <button
               className="huge-btn capture-btn"
-              onClick={() => fileInputRef.current.click()}
+              onClick={() => fileInputBackRef.current.click()}
             >
               <Camera size={50} />
-              <span>PRENDRE UN BEREAL</span>
+              <span>1. DÉCOR (Arrière)</span>
             </button>
-            <p className="desc" style={{ marginTop: '20px', color: '#ffaaaa' }}>
-              Montre au Master ce qu'il se passe ici !
-            </p>
+            <button className="btn-secondary cancel-capture-btn" onClick={cancelPhoto}>Annuler</button>
           </div>
-        ) : (
+        )}
+
+        {step === 'CAPTURE_FRONT' && (
+          <div className="capture-section">
+            <input
+              type="file"
+              accept="image/*"
+              capture="user"
+              onChange={handleCaptureFront}
+              ref={fileInputFrontRef}
+              style={{ display: 'none' }}
+            />
+            <button
+              className="huge-btn capture-btn front-capture"
+              onClick={() => fileInputFrontRef.current.click()}
+            >
+              <SwitchCamera size={50} />
+              <span>2. SELFIE (Avant)</span>
+            </button>
+            <button className="btn-secondary cancel-capture-btn" onClick={cancelPhoto}>Annuler</button>
+          </div>
+        )}
+
+        {step === 'EDIT' && (
           <div className="editor-section">
-            <div className="photo-container">
-              <img src={photo} alt="BeReal" className="captured-photo" />
+            {/* Conteneur principal qui sera capturé par html2canvas */}
+            <div className="photo-container photo-editor-container">
+              {/* Photo Arrière-plan */}
+              <img src={backPhoto} alt="Back" className="captured-photo bg-photo" />
+
+              {/* Photo Selfie incrustée */}
+              <div className="front-photo-inset">
+                <img src={frontPhoto} alt="Front" className="captured-photo" />
+              </div>
 
               {/* Le texte par dessus */}
               {caption && (
-                <motion.div className="photo-caption" drag dragConstraints={{ top: -150, bottom: 150, left: -100, right: 100 }}>
+                <motion.div className="photo-caption-overlay" drag dragConstraints={{ top: -150, bottom: 150, left: -100, right: 100 }}>
                   {caption}
                 </motion.div>
               )}
@@ -117,19 +227,17 @@ export default function PageMario() {
             </div>
 
             <div className="editor-tools">
-              {/* Saisie texte */}
               <div className="caption-input-container">
                 <Type size={18} color="#aaa" />
                 <input
                   type="text"
-                  placeholder="Ajoute un texte giga sombre..."
+                  placeholder="Légende Goumin..."
                   value={caption}
                   onChange={(e) => setCaption(e.target.value)}
                   className="caption-input"
                 />
               </div>
 
-              {/* Galerie Stickers */}
               <div className="stickers-gallery">
                 {STICKERS_GALLERY.map(emoji => (
                   <button key={emoji} className="sticker-picker-btn" onClick={() => addSticker(emoji)}>
@@ -138,14 +246,13 @@ export default function PageMario() {
                 ))}
               </div>
 
-              {/* Actions */}
               <div className="editor-actions">
                 <button className="btn-secondary cancel-btn" onClick={cancelPhoto}>
                   <X size={20} /> Annuler
                 </button>
                 <button className={`btn-primary send-btn ${isSending ? 'sending' : ''}`} onClick={handleSend} disabled={isSending}>
                   <Send size={20} />
-                  {isSending ? 'Envoyé!' : 'Envoyer au Master'}
+                  {isSending ? 'Upload...' : 'Publier'}
                 </button>
               </div>
             </div>
@@ -172,14 +279,14 @@ export default function PageMario() {
 
         .mario-card {
           width: 100%;
-          padding: 20px 15px;
+          padding: 20px 15px 80px 15px; /* Padding bottom for Mobile Tab Bar */
           border-radius: 32px;
           border-color: rgba(255, 0, 0, 0.3);
           background: rgba(30, 0, 0, 0.75);
           backdrop-filter: blur(15px);
-          text-align: center;
-          max-height: 90vh;
+          max-height: calc(100vh - 120px);
           overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
         }
 
         .mario-title {
@@ -188,6 +295,7 @@ export default function PageMario() {
           letter-spacing: 2px;
           font-weight: 900;
           margin-bottom: 5px;
+          text-align: center;
           text-shadow: 0 0 15px rgba(255,51,51,0.5);
         }
 
@@ -196,23 +304,95 @@ export default function PageMario() {
           font-style: italic;
           margin-bottom: 25px;
           font-size: 0.9rem;
+          text-align: center;
         }
 
+        /* FEED SECTION */
+        .feed-section {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+        }
+
+        .create-bereal-btn {
+          background: linear-gradient(135deg, #ff3333, #aa0000);
+          color: white;
+          font-weight: bold;
+          font-size: 1.1rem;
+          padding: 15px;
+          border-radius: 15px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          box-shadow: 0 10px 20px rgba(170, 0, 0, 0.5);
+          border: none;
+        }
+
+        .bereal-list {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+        }
+
+        .empty-feed {
+          text-align: center;
+          color: #888;
+          font-style: italic;
+          padding: 20px;
+        }
+
+        .bereal-post {
+          background: rgba(0,0,0,0.5);
+          border-radius: 20px;
+          padding: 15px;
+          border: 1px solid rgba(255,51,51,0.2);
+        }
+
+        .post-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 10px;
+          color: white;
+        }
+        
+        .post-time { color: #888; font-size: 0.8rem; }
+
+        .post-image {
+          width: 100%;
+          border-radius: 15px;
+          aspect-ratio: 3/4;
+          object-fit: cover;
+          border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .post-caption-text {
+          margin-top: 10px;
+          color: #ddd;
+          font-weight: bold;
+          text-align: center;
+        }
+
+        /* CAPTURE SECTION */
         .capture-section {
-          padding: 20px 0;
+          padding: 40px 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 30px;
         }
 
         .huge-btn.capture-btn {
           width: 100%;
           aspect-ratio: 1;
-          max-width: 250px;
-          margin: 0 auto;
-          background: linear-gradient(135deg, #ff3333, #aa0000);
-          border: none;
+          max-width: 200px;
+          background: linear-gradient(135deg, #111, #333);
+          border: 4px solid #ff3333;
           border-radius: 50%;
           color: white;
           font-weight: 900;
-          font-size: 1.2rem;
+          font-size: 1rem;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -222,11 +402,23 @@ export default function PageMario() {
           transition: transform 0.1s;
         }
 
+        .huge-btn.capture-btn.front-capture {
+          border-color: #00ffcc;
+          box-shadow: 0 10px 30px rgba(0, 255, 204, 0.3);
+        }
+
         .huge-btn.capture-btn:active {
           transform: scale(0.95);
         }
 
-        /* Editor Section */
+        .cancel-capture-btn {
+          background: transparent;
+          color: #888;
+          border: none;
+          text-decoration: underline;
+        }
+
+        /* EDITOR SECTION */
         .photo-container {
           position: relative;
           width: 100%;
@@ -244,6 +436,24 @@ export default function PageMario() {
           object-fit: cover;
         }
 
+        .bg-photo {
+          width: 100%;
+          height: 100%;
+        }
+
+        .front-photo-inset {
+          position: absolute;
+          top: 15px;
+          left: 15px;
+          width: 30%;
+          aspect-ratio: 3/4;
+          border-radius: 12px;
+          border: 3px solid black;
+          overflow: hidden;
+          box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+          z-index: 10;
+        }
+
         .draggable-sticker {
           position: absolute;
           top: 30%;
@@ -253,13 +463,12 @@ export default function PageMario() {
           user-select: none;
           touch-action: none;
           filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
+          z-index: 20;
         }
 
-        .draggable-sticker:active {
-          cursor: grabbing;
-        }
+        .draggable-sticker:active { cursor: grabbing; }
 
-        .photo-caption {
+        .photo-caption-overlay {
           position: absolute;
           top: 70%;
           left: 10%;
@@ -274,6 +483,7 @@ export default function PageMario() {
           touch-action: none;
           border-radius: 12px;
           backdrop-filter: blur(5px);
+          z-index: 20;
         }
 
         .editor-tools {
@@ -301,9 +511,7 @@ export default function PageMario() {
           outline: none;
         }
 
-        .caption-input::placeholder {
-          color: #888;
-        }
+        .caption-input::placeholder { color: #888; }
 
         .stickers-gallery {
           display: flex;
@@ -322,34 +530,23 @@ export default function PageMario() {
           transition: background 0.2s;
         }
 
-        .sticker-picker-btn:active {
-          background: rgba(255,255,255,0.2);
-        }
+        .sticker-picker-btn:active { background: rgba(255,255,255,0.2); }
 
-        .editor-actions {
-          display: flex;
-          gap: 10px;
-        }
+        .editor-actions { display: flex; gap: 10px; }
 
         .btn-secondary.cancel-btn {
-          flex: 1;
-          background: rgba(255,255,255,0.1);
-          color: white;
+          flex: 1; background: rgba(255,255,255,0.1); color: white;
           display: flex; align-items: center; justify-content: center; gap: 8px;
           padding: 15px; border-radius: 12px; border: none;
         }
 
         .btn-primary.send-btn {
-          flex: 2;
-          background: linear-gradient(135deg, #ff3333, #cc0000);
-          color: white;
+          flex: 2; background: linear-gradient(135deg, #ff3333, #cc0000); color: white;
           display: flex; align-items: center; justify-content: center; gap: 8px;
           padding: 15px; border-radius: 12px; border: none; font-weight: bold;
         }
 
-        .btn-primary.send-btn.sending {
-          background: #4CAF50;
-        }
+        .btn-primary.send-btn.sending { background: #4CAF50; }
       `}</style>
     </motion.div>
   );

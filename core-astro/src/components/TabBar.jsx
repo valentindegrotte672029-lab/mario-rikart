@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Beaker, Zap, Flame, Beer, Timer } from 'lucide-react';
+import { Home, Beaker, Zap, Flame, Beer, Timer, Camera } from 'lucide-react';
 import useStore from '../store/useStore';
 
 export default function TabBar() {
@@ -10,7 +10,7 @@ export default function TabBar() {
     { id: 'LUIGI', icon: Beaker, label: 'Luigi' },
     { id: 'TOAD', icon: Zap, label: 'Toad' },
     { id: 'PEACH', icon: Flame, label: 'Peach' },
-    { id: 'MARIO', icon: Beer, label: 'Mario' },
+    { id: 'MARIO', icon: Camera, label: 'Mario' },
     { id: 'WARIO', icon: Beer, label: 'Wario' }, // On distinguera Wario & Mario via couleur
     { id: 'CHRONO', icon: Timer, label: 'Chrono' },
   ];

@@ -10,11 +10,10 @@ const INGREDIENTS = [
   { id: 'piment', name: 'Piment pur', emoji: '🌶️' },
   { id: 'tabasco', name: 'Tabasco', emoji: '🔥' },
   { id: 'cornichon', name: 'Jus de cornichon', emoji: '🥒' },
-  { id: 'poppy', name: 'Poppy liquide', emoji: '💧' },
 ];
 
 const LISTEUX = [
-  'Valou', 'Rikart', 'Marie', 'Jean', 'Paul', 'Sophie'
+  'Luigi', 'Toad', 'Peach', 'Mario', 'Wario'
 ];
 
 export default function PageToad() {
@@ -60,7 +59,7 @@ export default function PageToad() {
       transition={{ duration: 0.3 }}
     >
       <div className="glass-panel mobile-card toad-card">
-        <h1 className="title-mobile toad-title">TOAD</h1>
+        <h1 className="title-mobile toad-title">TOAD-XIQUE</h1>
         <p className="subtitle" style={{ textAlign: 'center', color: '#ffbbcc', marginBottom: '15px', fontStyle: 'italic', fontSize: '0.9rem' }}>
           "Créer un mélange atroce qu'un listeux va devoir raout" 🤮
         </p>
@@ -133,13 +132,14 @@ export default function PageToad() {
 
         .toad-card {
           width: 100%;
-          padding: 20px 15px;
+          padding: 20px 15px 80px 15px; /* Added bottom padding for tab bar */
           border-radius: 32px;
           border: 1px solid rgba(255, 51, 102, 0.3);
           background: rgba(25, 5, 10, 0.65);
           backdrop-filter: blur(15px);
-          max-height: 90vh;
+          max-height: calc(100vh - 120px);
           overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
         }
 
         .toad-title {

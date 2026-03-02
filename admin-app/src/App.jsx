@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
-import { Activity, ShieldAlert, Swords, Zap, XCircle, ShoppingBag, Users } from 'lucide-react';
+import { Activity, ShieldAlert, Swords, Zap, XCircle, ShoppingBag, Users, Camera } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Connexion au serveur Node (Environnement dynamique)
@@ -12,10 +12,15 @@ function App() {
   const [isConnected, setIsConnected] = useState(false);
   const [players, setPlayers] = useState(0);
   const [orders, setOrders] = useState([]);
+  const [bereals, setBereals] = useState([]);
   const [activeHappening, setActiveHappening] = useState(null);
+  const [activeTab, setActiveTab] = useState('WARIO'); // 'WARIO' ou 'BEREAL'
 
   useEffect(() => {
-    socket.on('connect', () => setIsConnected(true));
+    socket.on('connect', () => {
+      setIsConnected(true);
+      socket.emit('request_bereals');
+    });
     socket.on('disconnect', () => setIsConnected(false));
 
     // Stats joueurs
@@ -23,9 +28,11 @@ function App() {
     socket.on('player_left', (data) => setPlayers(data.totalPlayers));
 
     // Réception des commandes Wario Bar
-    socket.on('order_received', (order) => {
-      setOrders(prev => [order, ...prev]);
-    });
+    socket.on('order_received', (order) => setOrders(prev => [order, ...prev]));
+
+    // Réception BeReals
+    socket.on('bereals_history', (history) => setBereals(history));
+    socket.on('bereal_broadcast', (post) => setBereals(prev => [post, ...prev]));
 
     return () => {
       socket.off('connect');
@@ -33,6 +40,8 @@ function App() {
       socket.off('player_joined');
       socket.off('player_left');
       socket.off('order_received');
+      socket.off('bereals_history');
+      socket.off('bereal_broadcast');
     };
   }, []);
 
@@ -101,44 +110,99 @@ function App() {
         </div>
       </div>
 
-      {/* MAIN : CAISSE WARIO BAR */}
-      <div className="panel main-content">
-        <div className="panel-title"><ShoppingBag size={18} /> COMMANDES EN DIRECT (Wario Bar)</div>
+      {/* MAIN CONTENT : TABS (COMMANDES / BEREALS) */}
+      <div className="panel main-content" style={{ display: 'flex', flexDirection: 'column' }}>
 
-        {orders.length === 0 ? (
-          <div className="empty-state">
-            <Activity size={48} />
-            <p style={{ marginTop: '15px' }}>En attente de commandes...</p>
-          </div>
-        ) : (
-          <div className="orders-list">
-            <AnimatePresence>
-              {orders.map((order, idx) => (
-                <motion.div
-                  key={idx}
-                  className="order-card"
-                  initial={{ opacity: 0, x: -50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  layout
-                >
-                  <div className="order-info">
-                    <h4>{order.item}</h4>
-                    <p>Client: <span className="order-user">{order.username}</span> • {new Date(order.timestamp).toLocaleTimeString()}</p>
-                  </div>
-                  <div className="order-price" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                    {order.price && <span>{order.price / 1000}k 🟡</span>}
-                    <button
-                      onClick={() => deleteOrder(idx)}
-                      style={{ background: '#4CAF50', color: 'white', border: 'none', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}
+        {/* Navigation des Onglets */}
+        <div style={{ display: 'flex', gap: '15px', borderBottom: '1px solid #333', paddingBottom: '15px', marginBottom: '20px' }}>
+          <button
+            onClick={() => setActiveTab('WARIO')}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '10px', fontWeight: 'bold', border: 'none', cursor: 'pointer', background: activeTab === 'WARIO' ? '#ffcc00' : '#222', color: activeTab === 'WARIO' ? '#000' : '#aaa' }}
+          >
+            <ShoppingBag size={18} /> COMMANDES BAR ({orders.length})
+          </button>
+
+          <button
+            onClick={() => setActiveTab('BEREAL')}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '10px', fontWeight: 'bold', border: 'none', cursor: 'pointer', background: activeTab === 'BEREAL' ? '#ff3333' : '#222', color: activeTab === 'BEREAL' ? '#fff' : '#aaa' }}
+          >
+            <Camera size={18} /> FEED BeMARIO ({bereals.length})
+          </button>
+        </div>
+
+        {/* CONTENU ONGLETS */}
+        <div style={{ flex: 1, overflowY: 'auto' }}>
+
+          {activeTab === 'WARIO' && (
+            orders.length === 0 ? (
+              <div className="empty-state">
+                <Activity size={48} />
+                <p style={{ marginTop: '15px' }}>En attente de commandes...</p>
+              </div>
+            ) : (
+              <div className="orders-list">
+                <AnimatePresence>
+                  {orders.map((order, idx) => (
+                    <motion.div
+                      key={idx}
+                      className="order-card"
+                      initial={{ opacity: 0, x: -50 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      layout
                     >
-                      Livrée ✓
-                    </button>
-                  </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
-        )}
+                      <div className="order-info">
+                        <h4>{order.item}</h4>
+                        <p>Client: <span className="order-user">{order.username}</span> • {new Date(order.timestamp).toLocaleTimeString()}</p>
+                      </div>
+                      <div className="order-price" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                        {order.price && <span>{order.price / 1000}k 🟡</span>}
+                        <button
+                          onClick={() => deleteOrder(idx)}
+                          style={{ background: '#4CAF50', color: 'white', border: 'none', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}
+                        >
+                          Livrée ✓
+                        </button>
+                      </div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+            )
+          )}
+
+          {activeTab === 'BEREAL' && (
+            bereals.length === 0 ? (
+              <div className="empty-state">
+                <Camera size={48} />
+                <p style={{ marginTop: '15px' }}>Aucune publication pour l'instant.</p>
+              </div>
+            ) : (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '20px' }}>
+                <AnimatePresence>
+                  {bereals.map((post) => (
+                    <motion.div
+                      key={post.id}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      layout
+                      style={{ background: '#111', borderRadius: '15px', overflow: 'hidden', border: '1px solid #333' }}
+                    >
+                      <img src={post.image} alt="Bereal" style={{ width: '100%', aspectRatio: '3/4', objectFit: 'cover' }} />
+                      <div style={{ padding: '15px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', color: '#ff3333' }}>
+                          <strong>{post.username}</strong>
+                          <small style={{ color: '#888' }}>{new Date(post.timestamp).toLocaleTimeString()}</small>
+                        </div>
+                        {post.caption && <p style={{ fontSize: '0.9rem', color: '#eee' }}>{post.caption}</p>}
+                      </div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+            )
+          )}
+
+        </div>
       </div>
     </div>
   );
