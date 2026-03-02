@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { AnimatePresence } from 'framer-motion';
+import { Analytics } from '@vercel/analytics/react';
 
 import RainbowRoad from './components/RainbowRoad';
 import ToadBank from './components/ToadBank';
@@ -191,6 +192,7 @@ export default function App() {
         @keyframes cameraShake { 0% { transform: translate(5px, 5px) rotate(0deg); } 100% { transform: translate(-5px, -3px) rotate(1deg); } }
         @keyframes strobe { 0% { background: #ffaa00; } 100% { background: #ff0000; color: white; } }
       `}</style>
+      <Analytics />
     </div>
   );
 }
