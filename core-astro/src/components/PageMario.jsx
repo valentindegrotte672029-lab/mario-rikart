@@ -1,102 +1,156 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Citrus } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Camera, Send, X, Type } from 'lucide-react';
+import useStore from '../store/useStore';
+import { socket } from '../socket';
+
+const STICKERS_GALLERY = ['🍄', '⭐️', '🔥', '💩', '💸', '🍷', '🚬', '🤡'];
 
 export default function PageMario() {
-  const [bunnies, setBunnies] = useState(0);
-  const [isPressing, setIsPressing] = useState(false);
-  const [oranges, setOranges] = useState([]);
-  const [shake, setShake] = useState(false);
+  const { username } = useStore();
+  const [photo, setPhoto] = useState(null);
+  const [stickers, setStickers] = useState([]);
+  const [caption, setCaption] = useState('');
+  const [isSending, setIsSending] = useState(false);
 
-  const handleChubbyBunny = () => {
-    setBunnies(b => b + 1);
+  const fileInputRef = useRef(null);
 
-    // Haptic feedback intense
-    if (window.navigator?.vibrate) window.navigator.vibrate([40, 20, 60]);
+  const handleCapture = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setPhoto(imageUrl);
+      if (window.navigator?.vibrate) window.navigator.vibrate(50);
+    }
+  };
 
-    // Animation de secousse de la carte
-    setShake(true);
-    setTimeout(() => setShake(false), 150);
+  const addSticker = (emoji) => {
+    setStickers(prev => [
+      ...prev,
+      { id: Date.now(), emoji, x: 0, y: 0 }
+    ]);
+  };
 
-    // Pop graphique d'une clémentine
-    const newOrange = {
-      id: Date.now(),
-      x: (Math.random() - 0.5) * 150, // De -75px à +75px en X
-      y: - (Math.random() * 100 + 50), // De -50px à -150px en Y
-      rot: Math.random() * 180 - 90, // Rotation aléatoire
-    };
-    setOranges(prev => [...prev, newOrange]);
+  const handleSend = () => {
+    setIsSending(true);
+    if (window.navigator?.vibrate) window.navigator.vibrate([50, 100, 50]);
 
-    // Nettoyage de la clémentine visuelle
+    // Envoi de la notification au Master
+    socket.emit('new_order', {
+      username: username || "Anonyme",
+      item: `📸 A balancé un BeReal épique ! "${caption}"`
+    });
+
     setTimeout(() => {
-      setOranges(prev => prev.filter(o => o.id !== newOrange.id));
-    }, 1000); // 1 seconde de durée de vie
+      setPhoto(null);
+      setStickers([]);
+      setCaption('');
+      setIsSending(false);
+    }, 1500);
+  };
+
+  const cancelPhoto = () => {
+    setPhoto(null);
+    setStickers([]);
+    setCaption('');
   };
 
   return (
     <motion.div
-      className="page-mobile mario-mobile float-subtle"
+      className="page-mobile mario-mobile"
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 1.05 }}
-      transition={{ duration: 0.8 }}
+      transition={{ duration: 0.3 }}
     >
       <div className="tears-overlay"></div>
 
-      <div className={`glass-panel mobile-card mario-card ${shake ? 'mario-shake' : ''}`}>
-        <h1 className="title-mobile mario-title">G O U M I N</h1>
-        <p className="subtitle sad-subtitle">L'amour rend triste...</p>
+      <div className="glass-panel mobile-card mario-card">
+        <h1 className="title-mobile mario-title">MARIO</h1>
+        <p className="subtitle sad-subtitle">Snappe tes Goumins en direct 📸</p>
 
-        <div className="challenge-container">
-          <h3>Challenge Chubby Bunny</h3>
-          <p className="desc">Combien de clémentines pour oublier Peach ?</p>
-
-          <div className="score-display">
-            <motion.span
-              key={bunnies}
-              initial={{ scale: 1.5, color: '#ffcc00' }}
-              animate={{ scale: 1, color: '#ffa500' }}
-              transition={{ type: 'spring', stiffness: 500, damping: 10 }}
+        {!photo ? (
+          <div className="capture-section">
+            <input
+              type="file"
+              accept="image/*"
+              capture="environment"
+              onChange={handleCapture}
+              ref={fileInputRef}
+              style={{ display: 'none' }}
+            />
+            <button
+              className="huge-btn capture-btn"
+              onClick={() => fileInputRef.current.click()}
             >
-              🍊 {bunnies}
-            </motion.span>
+              <Camera size={50} />
+              <span>PRENDRE UN BEREAL</span>
+            </button>
+            <p className="desc" style={{ marginTop: '20px', color: '#ffaaaa' }}>
+              Montre au Master ce qu'il se passe ici !
+            </p>
           </div>
+        ) : (
+          <div className="editor-section">
+            <div className="photo-container">
+              <img src={photo} alt="BeReal" className="captured-photo" />
 
-          <div className="btn-wrapper" style={{ position: 'relative' }}>
-            {/* Particules clémentines (émojis) */}
-            <AnimatePresence>
-              {oranges.map(orange => (
+              {/* Le texte par dessus */}
+              {caption && (
+                <motion.div className="photo-caption" drag dragConstraints={{ top: -150, bottom: 150, left: -100, right: 100 }}>
+                  {caption}
+                </motion.div>
+              )}
+
+              {/* Les stickers par dessus */}
+              {stickers.map(sticker => (
                 <motion.div
-                  key={orange.id}
-                  initial={{ opacity: 1, scale: 0.5, x: 0, y: 0, rotate: 0 }}
-                  animate={{ opacity: 0, scale: 1.5, x: orange.x, y: orange.y, rotate: orange.rot }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.8, ease: "easeOut" }}
-                  style={{
-                    position: 'absolute',
-                    top: '20%',
-                    left: '40%',
-                    fontSize: '3rem',
-                    pointerEvents: 'none',
-                    zIndex: 20
-                  }}
+                  key={sticker.id}
+                  className="draggable-sticker"
+                  drag
+                  dragConstraints={{ top: -200, left: -150, right: 150, bottom: 200 }}
+                  whileDrag={{ scale: 1.2 }}
                 >
-                  🍊
+                  {sticker.emoji}
                 </motion.div>
               ))}
-            </AnimatePresence>
+            </div>
 
-            <button
-              className={`huge-btn ${isPressing ? 'pressed' : ''}`}
-              onPointerDown={() => setIsPressing(true)}
-              onPointerUp={() => { setIsPressing(false); handleChubbyBunny(); }}
-              onPointerLeave={() => setIsPressing(false)}
-            >
-              <Citrus size={40} className="icon-center" />
-              <span>ENGLOUTIR</span>
-            </button>
+            <div className="editor-tools">
+              {/* Saisie texte */}
+              <div className="caption-input-container">
+                <Type size={18} color="#aaa" />
+                <input
+                  type="text"
+                  placeholder="Ajoute un texte giga sombre..."
+                  value={caption}
+                  onChange={(e) => setCaption(e.target.value)}
+                  className="caption-input"
+                />
+              </div>
+
+              {/* Galerie Stickers */}
+              <div className="stickers-gallery">
+                {STICKERS_GALLERY.map(emoji => (
+                  <button key={emoji} className="sticker-picker-btn" onClick={() => addSticker(emoji)}>
+                    {emoji}
+                  </button>
+                ))}
+              </div>
+
+              {/* Actions */}
+              <div className="editor-actions">
+                <button className="btn-secondary cancel-btn" onClick={cancelPhoto}>
+                  <X size={20} /> Annuler
+                </button>
+                <button className={`btn-primary send-btn ${isSending ? 'sending' : ''}`} onClick={handleSend} disabled={isSending}>
+                  <Send size={20} />
+                  {isSending ? 'Envoyé!' : 'Envoyer au Master'}
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       <style>{`
@@ -107,7 +161,6 @@ export default function PageMario() {
           display: flex;
           align-items: center;
           position: relative;
-          filter: contrast(1.1) saturate(0.8) sepia(0.2);
         }
 
         .tears-overlay {
@@ -119,83 +172,183 @@ export default function PageMario() {
 
         .mario-card {
           width: 100%;
-          padding: 30px 20px;
+          padding: 20px 15px;
           border-radius: 32px;
-          border-color: rgba(255, 0, 0, 0.2);
-          background: rgba(30, 0, 0, 0.7);
-          box-shadow: 0 10px 40px rgba(50, 0, 0, 0.8);
+          border-color: rgba(255, 0, 0, 0.3);
+          background: rgba(30, 0, 0, 0.75);
+          backdrop-filter: blur(15px);
           text-align: center;
-          transition: transform 0.05s;
-        }
-
-        .mario-shake {
-           transform: translate(5px, 8px) rotate(-1deg);
+          max-height: 90vh;
+          overflow-y: auto;
         }
 
         .mario-title {
           font-size: 2.8rem;
           color: #ff3333;
           letter-spacing: 2px;
-          font-weight: 300;
+          font-weight: 900;
+          margin-bottom: 5px;
+          text-shadow: 0 0 15px rgba(255,51,51,0.5);
         }
 
         .sad-subtitle {
           color: #ff9999;
           font-style: italic;
-          margin-bottom: 30px;
-        }
-
-        .challenge-container {
-          background: rgba(0,0,0,0.4);
-          padding: 25px 20px;
-          border-radius: 24px;
-        }
-
-        .challenge-container h3 {
-          font-size: 1.2rem;
-          color: white;
-          margin-bottom: 5px;
-        }
-
-        .desc {
-          font-size: 0.85rem;
-          color: #aaa;
           margin-bottom: 25px;
+          font-size: 0.9rem;
         }
 
-        .score-display {
-          font-size: 4rem;
-          font-weight: 900;
-          color: orange;
-          margin-bottom: 25px;
-          text-shadow: 0 0 30px rgba(255, 165, 0, 0.6);
-          display: flex; justify-content: center; align-items: center;
+        .capture-section {
+          padding: 20px 0;
         }
 
-        .huge-btn {
+        .huge-btn.capture-btn {
           width: 100%;
-          aspect-ratio: 2 / 1;
-          background: linear-gradient(135deg, #ff5500, #aa3300);
+          aspect-ratio: 1;
+          max-width: 250px;
+          margin: 0 auto;
+          background: linear-gradient(135deg, #ff3333, #aa0000);
           border: none;
-          border-radius: 30px;
+          border-radius: 50%;
           color: white;
           font-weight: 900;
-          font-size: 1.5rem;
+          font-size: 1.2rem;
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          gap: 10px;
-          box-shadow: 0 10px 0 #662200;
-          transition: all 0.1s;
-          /* Supprime le highlight bleu iOS */
-          -webkit-tap-highlight-color: transparent;
+          gap: 15px;
+          box-shadow: 0 10px 30px rgba(170, 0, 0, 0.5);
+          transition: transform 0.1s;
         }
 
-        .huge-btn.pressed {
-          transform: translateY(10px);
-          box-shadow: 0 0px 0 #662200;
-          background: linear-gradient(135deg, #dd4400, #992200);
+        .huge-btn.capture-btn:active {
+          transform: scale(0.95);
+        }
+
+        /* Editor Section */
+        .photo-container {
+          position: relative;
+          width: 100%;
+          aspect-ratio: 3/4;
+          background: #000;
+          border-radius: 20px;
+          overflow: hidden;
+          margin-bottom: 15px;
+          border: 2px solid rgba(255, 51, 51, 0.3);
+        }
+
+        .captured-photo {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .draggable-sticker {
+          position: absolute;
+          top: 30%;
+          left: 40%;
+          font-size: 3.5rem;
+          cursor: grab;
+          user-select: none;
+          touch-action: none;
+          filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
+        }
+
+        .draggable-sticker:active {
+          cursor: grabbing;
+        }
+
+        .photo-caption {
+          position: absolute;
+          top: 70%;
+          left: 10%;
+          width: 80%;
+          background: rgba(0,0,0,0.6);
+          color: white;
+          padding: 10px;
+          font-size: 1.2rem;
+          font-weight: bold;
+          text-align: center;
+          cursor: grab;
+          touch-action: none;
+          border-radius: 12px;
+          backdrop-filter: blur(5px);
+        }
+
+        .editor-tools {
+          background: rgba(0,0,0,0.5);
+          padding: 15px;
+          border-radius: 20px;
+        }
+
+        .caption-input-container {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          background: rgba(255,255,255,0.1);
+          padding: 10px 15px;
+          border-radius: 12px;
+          margin-bottom: 15px;
+        }
+
+        .caption-input {
+          flex: 1;
+          background: transparent;
+          border: none;
+          color: white;
+          font-size: 1rem;
+          outline: none;
+        }
+
+        .caption-input::placeholder {
+          color: #888;
+        }
+
+        .stickers-gallery {
+          display: flex;
+          gap: 10px;
+          overflow-x: auto;
+          padding-bottom: 10px;
+          margin-bottom: 15px;
+        }
+
+        .sticker-picker-btn {
+          background: rgba(255,255,255,0.05);
+          border: none;
+          font-size: 1.8rem;
+          padding: 10px;
+          border-radius: 12px;
+          transition: background 0.2s;
+        }
+
+        .sticker-picker-btn:active {
+          background: rgba(255,255,255,0.2);
+        }
+
+        .editor-actions {
+          display: flex;
+          gap: 10px;
+        }
+
+        .btn-secondary.cancel-btn {
+          flex: 1;
+          background: rgba(255,255,255,0.1);
+          color: white;
+          display: flex; align-items: center; justify-content: center; gap: 8px;
+          padding: 15px; border-radius: 12px; border: none;
+        }
+
+        .btn-primary.send-btn {
+          flex: 2;
+          background: linear-gradient(135deg, #ff3333, #cc0000);
+          color: white;
+          display: flex; align-items: center; justify-content: center; gap: 8px;
+          padding: 15px; border-radius: 12px; border: none; font-weight: bold;
+        }
+
+        .btn-primary.send-btn.sending {
+          background: #4CAF50;
         }
       `}</style>
     </motion.div>

@@ -41,6 +41,10 @@ function App() {
     setActiveHappening(type);
   };
 
+  const deleteOrder = (indexToRemove) => {
+    setOrders(prev => prev.filter((_, idx) => idx !== indexToRemove));
+  };
+
   const clearHappening = () => {
     socket.emit('clear_happening');
     setActiveHappening(null);
@@ -79,6 +83,14 @@ function App() {
             <ShieldAlert size={20} /> ALERTE ENLÈVEMENT
           </button>
 
+          <button className="god-btn" style={{ background: '#0055ff', color: 'white', marginTop: '10px' }} onClick={() => trigger('GARDE_A_VOUS')}>
+            🎖️ GARDE À VOUS
+          </button>
+
+          <button className="god-btn" style={{ background: '#9900ff', color: 'white', marginTop: '10px' }} onClick={() => trigger('RAOUL')}>
+            🤮 RAOUL GÉNÉRAL
+          </button>
+
           <div style={{ marginTop: 'auto' }}>
             {activeHappening && (
               <button className="god-btn btn-clear" onClick={clearHappening}>
@@ -113,8 +125,14 @@ function App() {
                     <h4>{order.item}</h4>
                     <p>Client: <span className="order-user">{order.username}</span> • {new Date(order.timestamp).toLocaleTimeString()}</p>
                   </div>
-                  <div className="order-price">
-                    {order.price / 1000}k 🟡
+                  <div className="order-price" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                    {order.price && <span>{order.price / 1000}k 🟡</span>}
+                    <button
+                      onClick={() => deleteOrder(idx)}
+                      style={{ background: '#4CAF50', color: 'white', border: 'none', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}
+                    >
+                      Livrée ✓
+                    </button>
                   </div>
                 </motion.div>
               ))}

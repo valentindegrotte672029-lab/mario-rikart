@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { AnimatePresence } from 'framer-motion';
 
@@ -12,12 +12,15 @@ import PageToad from './components/PageToad';
 import PagePeach from './components/PagePeach';
 import PageMario from './components/PageMario';
 import PageWario from './components/PageWario';
+import PageChrono from './components/PageChrono';
+import CoinClicker from './components/CoinClicker';
 
 import useStore from './store/useStore';
 import { socket } from './socket';
 
 export default function App() {
   const { speedBoost, currentPage, happening, triggerHappening, username } = useStore();
+  const [showClicker, setShowClicker] = useState(false);
 
   // Gestion des WebSockets en temps réel (Remplace le mock)
   useEffect(() => {
@@ -46,6 +49,7 @@ export default function App() {
       case 'PEACH': return 'rgba(255, 0, 255, 0.2)'; // Rose chaud
       case 'MARIO': return 'rgba(255, 0, 0, 0.2)'; // Rouge sombre
       case 'WARIO': return 'rgba(255, 200, 0, 0.2)'; // Or/Jaune
+      case 'CHRONO': return 'rgba(255, 153, 0, 0.2)'; // Orange feu
       default: return 'rgba(0, 255, 204, 0.2)'; // Cyan par défaut
     }
   };
@@ -57,13 +61,25 @@ export default function App() {
       case 'PEACH': return <PagePeach key="peach" />;
       case 'MARIO': return <PageMario key="mario" />;
       case 'WARIO': return <PageWario key="wario" />;
+      case 'CHRONO': return <PageChrono key="chrono" />;
       default: return (
         <div key="home" className="home-screen float-subtle">
           <div className="glass-panel main-glass">
             <h1 className="text-gradient">V2026</h1>
             <p>Mario Rikart Experience</p>
             <div className="glow-orb" style={{ background: getThemeColor(currentPage) }}></div>
+
+            <button
+              style={{ marginTop: '30px', background: '#ffcc00', color: 'black', border: 'none', padding: '15px 30px', borderRadius: '25px', fontWeight: 'bold', fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '10px', boxShadow: '0 5px 15px rgba(255,204,0,0.4)', cursor: 'pointer', margin: '30px auto 0 auto' }}
+              onClick={() => setShowClicker(true)}
+            >
+              <span>🟡 GAGNER DES PIÈCES</span>
+            </button>
           </div>
+
+          <AnimatePresence>
+            {showClicker && <CoinClicker onClose={() => setShowClicker(false)} />}
+          </AnimatePresence>
         </div>
       );
     }
@@ -118,6 +134,18 @@ export default function App() {
           <div className="happening-modal kidnapping">
             <h1>⚠️ ALERTE ENLÈVEMENT ⚠️</h1>
             <p>Le Président Toad a disparu avec la recette du mélange.</p>
+          </div>
+        )}
+        {happening === 'GARDE_A_VOUS' && (
+          <div className="happening-modal" style={{ background: '#0033aa', color: 'white', border: '15px solid #0055ff' }}>
+            <h1 style={{ fontSize: '3.5rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', textShadow: '0 0 20px #fff' }}>GARDE À VOUS !</h1>
+            <p style={{ fontSize: '1.2rem', marginTop: '15px' }}>Fixité absolue exigée.</p>
+          </div>
+        )}
+        {happening === 'RAOUL' && (
+          <div className="happening-modal" style={{ background: '#330066', color: '#ffcc00', animation: 'cameraShake 0.1s infinite alternate', border: '10px dashed #cc00ff' }}>
+            <h1 style={{ fontSize: '4.5rem', fontWeight: 900 }}>RAOUL !!</h1>
+            <p style={{ fontSize: '1.5rem', marginTop: '10px', color: 'white' }}>Préparez les bassines.</p>
           </div>
         )}
       </AnimatePresence>

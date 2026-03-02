@@ -1,138 +1,170 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Vote, FlaskConical } from 'lucide-react';
+import { FlaskConical, Skull, Send } from 'lucide-react';
 import useStore from '../store/useStore';
+import { socket } from '../socket';
+
+const INGREDIENTS = [
+  { id: 'vodka', name: 'Vodka Eco+', emoji: '🍾' },
+  { id: 'lait', name: 'Lait tiède', emoji: '🥛' },
+  { id: 'piment', name: 'Piment pur', emoji: '🌶️' },
+  { id: 'tabasco', name: 'Tabasco', emoji: '🔥' },
+  { id: 'cornichon', name: 'Jus de cornichon', emoji: '🥒' },
+  { id: 'poppy', name: 'Poppy liquide', emoji: '💧' },
+];
+
+const LISTEUX = [
+  'Valou', 'Rikart', 'Marie', 'Jean', 'Paul', 'Sophie'
+];
 
 export default function PageToad() {
-  const [mixValue, setMixValue] = useState(50);
-  const [pollVoted, setPollVoted] = useState(false);
-  const [voteResult, setVoteResult] = useState(80);
+  const { username } = useStore();
+  const [selectedIngredients, setSelectedIngredients] = useState([]);
+  const [selectedVictim, setSelectedVictim] = useState('');
+  const [isSending, setIsSending] = useState(false);
 
-  const handleVote = () => {
-    setPollVoted(true);
-    if (window.navigator?.vibrate) window.navigator.vibrate(50);
+  const toggleIngredient = (id) => {
+    setSelectedIngredients(prev =>
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+    if (window.navigator?.vibrate) window.navigator.vibrate(20);
   };
 
-  const mixColor = `hsl(${120 - (mixValue * 1.2)}, 100%, 50%)`; // Vert (0) à Rouge (100)
+  const handleSendMix = () => {
+    if (selectedIngredients.length === 0 || !selectedVictim) return;
+
+    setIsSending(true);
+    if (window.navigator?.vibrate) window.navigator.vibrate([50, 100, 50]);
+
+    const mixName = "Mélange " + selectedIngredients.map(id => INGREDIENTS.find(i => i.id === id).emoji).join('');
+
+    // Envoi de la commande spéciale au Master
+    socket.emit('new_order', {
+      username: username || "Anonyme",
+      item: `🧪 ${mixName} pour ${selectedVictim} (Atroce)`
+    });
+
+    setTimeout(() => {
+      setSelectedIngredients([]);
+      setSelectedVictim('');
+      setIsSending(false);
+    }, 1500);
+  };
 
   return (
     <motion.div
       className="page-mobile toad-mobile"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 1.05 }}
+      transition={{ duration: 0.3 }}
     >
       <div className="glass-panel mobile-card toad-card">
-        <h1 className="title-mobile toad-title">PHARMACIE</h1>
+        <h1 className="title-mobile toad-title">TOAD</h1>
+        <p className="subtitle" style={{ textAlign: 'center', color: '#ffbbcc', marginBottom: '15px', fontStyle: 'italic', fontSize: '0.9rem' }}>
+          "Créer un mélange atroce qu'un listeux va devoir raout" 🤮
+        </p>
 
-        {/* Sondage Despartoad - Design Gauge Apple */}
+        {/* Section Ingrédients */}
         <section className="toad-section">
           <div className="section-header">
-            <Vote size={20} color="#ff3366" />
-            <h2>Sondage en ligne</h2>
+            <FlaskConical size={20} color="#ff3366" />
+            <h2>1. Choisir les ingrédients</h2>
           </div>
-          <p className="caption">Quel mélange ce soir ?</p>
 
-          {!pollVoted ? (
-            <div className="poll-actions">
-              <button className="vote-btn" onClick={() => { setVoteResult(80); handleVote(); }}>Ricard + Redbull</button>
-              <button className="vote-btn dark" onClick={() => { setVoteResult(20); handleVote(); }}>Éthanol pur</button>
-            </div>
-          ) : (
-            <div className="poll-results">
-              <div className="gauge-row">
-                <span className="gauge-label">Ton Vote vs Global ({voteResult}%)</span>
-                <div
-                  className="gauge-track interactive"
-                  onClick={(e) => {
-                    const rect = e.currentTarget.getBoundingClientRect();
-                    const newPercent = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
-                    setVoteResult(Math.round(newPercent));
-                    if (window.navigator?.vibrate) window.navigator.vibrate(20);
-                  }}
-                >
-                  <motion.div
-                    className="gauge-fill"
-                    animate={{ width: `${voteResult}%` }}
-                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  />
-                </div>
-                <p style={{ fontSize: '0.7rem', color: '#888', marginTop: '5px', textAlign: 'center' }}>
-                  Touche la jauge pour tricher sur le sondage local
-                </p>
-              </div>
-            </div>
-          )}
+          <div className="ingredients-grid">
+            {INGREDIENTS.map(ing => (
+              <button
+                key={ing.id}
+                className={`ingredient-btn ${selectedIngredients.includes(ing.id) ? 'selected' : ''}`}
+                onClick={() => toggleIngredient(ing.id)}
+              >
+                <span className="emoji">{ing.emoji}</span>
+                <span className="name">{ing.name}</span>
+              </button>
+            ))}
+          </div>
         </section>
 
-        {/* Fuel Mixer Slider iOS Natif */}
+        {/* Section Victime */}
         <section className="toad-section">
           <div className="section-header">
-            <FlaskConical size={20} color={mixColor} />
-            <h2>Fuel Mixer</h2>
+            <Skull size={20} color="#ff3366" />
+            <h2>2. Choisir la victime</h2>
           </div>
 
-          <div className="slider-container">
-            <input
-              type="range"
-              className="ios-slider"
-              min="0" max="100"
-              value={mixValue}
-              onChange={(e) => setMixValue(e.target.value)}
-              style={{ '--thumb-color': mixColor }}
-            />
-            <div className="mix-info" style={{ color: mixColor }}>
-              Danger : {mixValue}%
-            </div>
+          <div className="victims-list">
+            {LISTEUX.map(victim => (
+              <button
+                key={victim}
+                className={`victim-btn ${selectedVictim === victim ? 'selected' : ''}`}
+                onClick={() => {
+                  setSelectedVictim(victim);
+                  if (window.navigator?.vibrate) window.navigator.vibrate(20);
+                }}
+              >
+                {victim}
+              </button>
+            ))}
           </div>
         </section>
+
+        {/* Bouton Envoi */}
+        <button
+          className={`btn-primary send-mix-btn ${isSending ? 'sending' : ''}`}
+          disabled={selectedIngredients.length === 0 || !selectedVictim || isSending}
+          onClick={handleSendMix}
+        >
+          <Send size={24} className="btn-icon" />
+          <span>{isSending ? 'Mélange envoyé !' : 'Servir le mélange'}</span>
+        </button>
       </div>
 
       <style>{`
         .toad-mobile {
           --theme-color: #ff3366;
+          --theme-dark: #330a14;
           width: 100%;
           height: 100%;
           display: flex;
           align-items: center;
-          /* Légère vibration permanente de l'écran pour Toad */
-          animation: toadShakes 0.2s infinite alternate;
-        }
-
-        @keyframes toadShakes {
-          0% { transform: translateY(0.5px); }
-          100% { transform: translateY(-0.5px); }
+          position: relative;
         }
 
         .toad-card {
           width: 100%;
-          padding: 25px 20px;
+          padding: 20px 15px;
           border-radius: 32px;
           border: 1px solid rgba(255, 51, 102, 0.3);
           background: rgba(25, 5, 10, 0.65);
+          backdrop-filter: blur(15px);
+          max-height: 90vh;
+          overflow-y: auto;
         }
 
         .toad-title {
           color: white;
-          font-size: 2rem;
+          font-size: 2.2rem;
           font-weight: 900;
           text-align: center;
-          margin-bottom: 25px;
-          text-shadow: 0 0 15px rgba(255, 51, 102, 0.8);
+          margin-bottom: 5px;
+          text-shadow: 0 0 20px rgba(255, 51, 102, 0.8);
+          letter-spacing: 2px;
         }
 
         .toad-section {
           background: rgba(0, 0, 0, 0.4);
           border-radius: 20px;
-          padding: 20px;
+          padding: 15px;
           margin-bottom: 15px;
+          border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .section-header {
           display: flex;
           align-items: center;
           gap: 10px;
-          margin-bottom: 5px;
+          margin-bottom: 15px;
         }
 
         .section-header h2 {
@@ -141,101 +173,97 @@ export default function PageToad() {
           color: #eee;
         }
 
-        .caption {
-          font-size: 0.85rem;
-          color: #aaa;
-          margin-bottom: 15px;
-        }
-
-        .poll-actions {
-          display: flex;
-          flex-direction: column;
+        /* Grille des ingrédients */
+        .ingredients-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
           gap: 10px;
         }
 
-        .vote-btn {
+        .ingredient-btn {
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 12px;
+          padding: 10px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 5px;
+          color: white;
+          transition: all 0.2s ease;
+        }
+
+        .ingredient-btn .emoji {
+          font-size: 1.6rem;
+        }
+
+        .ingredient-btn .name {
+          font-size: 0.75rem;
+          text-align: center;
+          font-weight: 500;
+          line-height: 1.1;
+        }
+
+        .ingredient-btn.selected {
+          background: rgba(255, 51, 102, 0.2);
+          border-color: var(--theme-color);
+          box-shadow: 0 0 15px rgba(255, 51, 102, 0.3);
+          transform: scale(0.95);
+        }
+
+        /* Liste des victimes */
+        .victims-list {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+
+        .victim-btn {
+          background: rgba(255, 255, 255, 0.08);
+          border: 1px solid transparent;
+          color: white;
+          padding: 8px 16px;
+          border-radius: 20px;
+          font-size: 0.9rem;
+          font-weight: 600;
+          transition: all 0.2s;
+        }
+
+        .victim-btn.selected {
           background: var(--theme-color);
           color: white;
-          border: none;
-          padding: 15px;
-          border-radius: 12px;
-          font-weight: bold;
-          font-size: 1rem;
-          transition: transform 0.1s;
-        }
-        
-        .vote-btn.dark {
-          background: #331122;
-          border: 1px solid var(--theme-color);
+          box-shadow: 0 4px 15px rgba(255, 51, 102, 0.5);
+          transform: scale(1.05);
         }
 
-        .vote-btn:active {
-          transform: scale(0.97);
-        }
-
-        .gauge-row {
-          margin-bottom: 12px;
-        }
-
-        .gauge-label {
-          display: block;
-          font-size: 0.8rem;
-          margin-bottom: 5px;
-          font-weight: 600;
-        }
-
-        .gauge-track {
+        /* Bouton Envoi */
+        .send-mix-btn {
           width: 100%;
-          height: 15px;
-          background: rgba(255,255,255,0.1);
-          border-radius: 8px;
-          overflow: hidden;
-          position: relative;
-        }
-
-        .gauge-track.interactive {
-          cursor: pointer;
-          height: 25px;
-          border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .gauge-fill {
-          height: 100%;
-          background: var(--theme-color);
-          border-radius: 8px;
-          transform-origin: left;
-        }
-
-        .gauge-fill.red { background: #ff0000; }
-
-        .slider-container {
-          margin-top: 15px;
-          text-align: center;
-        }
-
-        .ios-slider {
-           -webkit-appearance: none;
-           width: 100%;
-           height: 12px;
-           background: rgba(255,255,255,0.1);
-           border-radius: 6px;
-           outline: none;
-        }
-
-        .ios-slider::-webkit-slider-thumb {
-           -webkit-appearance: none;
-           appearance: none;
-           width: 28px;
-           height: 28px;
-           border-radius: 50%;
-           background: var(--thumb-color, white);
-           box-shadow: 0 0 10px var(--thumb-color, white);
-        }
-
-        .mix-info {
-          margin-top: 15px;
-          font-weight: 900;
+          background: linear-gradient(135deg, #ff3366, #ff0044);
+          color: white;
+          padding: 18px;
+          border-radius: 20px;
           font-size: 1.2rem;
+          font-weight: bold;
+          border: none;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          margin-top: 10px;
+          box-shadow: 0 10px 30px rgba(255, 51, 102, 0.4);
+        }
+
+        .send-mix-btn:disabled {
+          background: #555;
+          box-shadow: none;
+          opacity: 0.5;
+          transform: none;
+        }
+
+        .send-mix-btn.sending {
+          background: #4CAF50;
+          box-shadow: 0 10px 30px rgba(76, 175, 80, 0.4);
         }
       `}</style>
     </motion.div>

@@ -35,7 +35,7 @@ export default function PageWario() {
       exit={{ opacity: 0, scale: 1.05 }}
     >
       <div className="glass-panel mobile-card wario-card">
-        <h1 className="title-mobile wario-title">WARIO'S BAR & RESTO</h1>
+        <h1 className="title-mobile wario-title">WARIO</h1>
         <p className="wario-motto">"Même pour un verre d'eau, tu raques."</p>
 
         {/* Liste iOS Native Style */}

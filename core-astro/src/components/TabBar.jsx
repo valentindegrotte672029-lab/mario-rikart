@@ -1,57 +1,58 @@
 import React from 'react';
-import { Home, Beaker, Zap, Flame, Beer } from 'lucide-react';
+import { Home, Beaker, Zap, Flame, Beer, Timer } from 'lucide-react';
 import useStore from '../store/useStore';
 
 export default function TabBar() {
-    const { currentPage, setPage } = useStore();
+  const { currentPage, setPage } = useStore();
 
-    const tabs = [
-        { id: 'HOME', icon: Home, label: 'Hub' },
-        { id: 'LUIGI', icon: Beaker, label: 'Luigi' },
-        { id: 'TOAD', icon: Zap, label: 'Toad' },
-        { id: 'PEACH', icon: Flame, label: 'Peach' },
-        { id: 'MARIO', icon: Beer, label: 'Mario' },
-        { id: 'WARIO', icon: Beer, label: 'Wario' }, // On distinguera Wario & Mario via couleur
-    ];
+  const tabs = [
+    { id: 'HOME', icon: Home, label: 'Hub' },
+    { id: 'LUIGI', icon: Beaker, label: 'Luigi' },
+    { id: 'TOAD', icon: Zap, label: 'Toad' },
+    { id: 'PEACH', icon: Flame, label: 'Peach' },
+    { id: 'MARIO', icon: Beer, label: 'Mario' },
+    { id: 'WARIO', icon: Beer, label: 'Wario' }, // On distinguera Wario & Mario via couleur
+    { id: 'CHRONO', icon: Timer, label: 'Chrono' },
+  ];
 
-    // Gestion du boost 3D (Haptic feedback si supporté iOS)
-    const handleTabPress = (id) => {
-        if (id === currentPage) return;
+  // Gestion du boost 3D (Haptic feedback si supporté iOS)
+  const handleTabPress = (id) => {
+    if (id === currentPage) return;
 
-        if (window.navigator && window.navigator.vibrate) {
-            window.navigator.vibrate(50); // Petit retour haptique
-        }
+    if (window.navigator && window.navigator.vibrate) {
+      window.navigator.vibrate(50); // Petit retour haptique
+    }
 
-        setPage(id);
+    setPage(id);
 
-        setTimeout(() => {
-            useStore.getState().resetSpeed();
-        }, 800);
-    };
+    setTimeout(() => {
+      useStore.getState().resetSpeed();
+    }, 800);
+  };
 
-    return (
-        <div className="tab-bar-container">
-            <div className="glass-panel tab-bar-inner">
-                {tabs.map(tab => {
-                    const Icon = tab.icon;
-                    const isActive = currentPage === tab.id;
+  return (
+    <div className="tab-bar-container">
+      <div className="glass-panel tab-bar-inner">
+        {tabs.map(tab => {
+          const Icon = tab.icon;
+          const isActive = currentPage === tab.id;
 
-                    return (
-                        <button
-                            key={tab.id}
-                            className={`tab-btn ${isActive ? 'active' : ''}`}
-                            onClick={() => handleTabPress(tab.id)}
-                        >
-                            <div className="icon-wrapper">
-                                <Icon size={24} strokeWidth={isActive ? 2.5 : 2} />
-                            </div>
-                            <span className="tab-label">{tab.label}</span>
-                        </button>
-                    );
-                })}
-            </div>
+          return (
+            <button
+              key={tab.id}
+              className={`tab-btn ${isActive ? 'active' : ''}`}
+              onClick={() => handleTabPress(tab.id)}
+            >
+              <div className="icon-wrapper">
+                <Icon size={24} strokeWidth={isActive ? 2.5 : 2} />
+              </div>
+              <span className="tab-label">{tab.label}</span>
+            </button>
+          );
+        })}
+      </div>
 
-            <style>{`
+      <style>{`
         .tab-bar-container {
           position: absolute;
           bottom: 0;
@@ -116,6 +117,6 @@ export default function TabBar() {
           color: #00ffcc;
         }
       `}</style>
-        </div>
-    );
+    </div>
+  );
 }

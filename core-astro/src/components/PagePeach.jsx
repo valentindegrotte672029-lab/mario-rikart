@@ -38,7 +38,7 @@ export default function PagePeach() {
         <div className="profile-header">
           <div className="avatar glow-avatar">👑</div>
           <div className="titles">
-            <h1 className="title-mobile peach-title">PEACHASSE</h1>
+            <h1 className="title-mobile peach-title">PEACH</h1>
             <p className="only-fans-tag">💎 Top 0.01% Mushroom Kingdom</p>
           </div>
         </div>
