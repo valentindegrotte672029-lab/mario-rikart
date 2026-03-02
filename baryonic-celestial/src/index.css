@@ -1,0 +1,324 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Creepster&display=swap');
+
+:root {
+  --neon-pink: #ff2a85;
+  --neon-green: #39ff14;
+  --dark-bg: #0a0a0c;
+  --surface: #16161a;
+  --surface-elevated: #24242c;
+  --text-primary: #f0f0f0;
+  --text-muted: #888888;
+  --coin-gold: #ffcc00;
+  --mario-red: #e60000;
+  --luigi-green: #00a800;
+  --peach-pink: #ffb8c6;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  font-family: 'Outfit', sans-serif;
+  background-color: var(--dark-bg);
+  color: var(--text-primary);
+  /* Concrete noise texture overlay */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Space Mono', monospace;
+  text-transform: uppercase;
+}
+
+/* Glitch Effect */
+.glitch-text {
+  position: relative;
+  display: inline-block;
+}
+
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--dark-bg);
+}
+
+.glitch-text::before {
+  left: 2px;
+  text-shadow: -2px 0 var(--mario-red);
+  clip: rect(24px, 550px, 90px, 0);
+  animation: glitch-anim-2 3s infinite linear alternate-reverse;
+}
+
+.glitch-text::after {
+  left: -2px;
+  text-shadow: -2px 0 var(--neon-green);
+  clip: rect(85px, 550px, 140px, 0);
+  animation: glitch-anim 2.5s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim {
+  0% {
+    clip: rect(13px, 9999px, 83px, 0);
+  }
+
+  50% {
+    clip: rect(65px, 9999px, 120px, 0);
+  }
+
+  100% {
+    clip: rect(4px, 9999px, 98px, 0);
+  }
+}
+
+@keyframes glitch-anim-2 {
+  0% {
+    clip: rect(42px, 9999px, 14px, 0);
+  }
+
+  50% {
+    clip: rect(12px, 9999px, 89px, 0);
+  }
+
+  100% {
+    clip: rect(85px, 9999px, 32px, 0);
+  }
+}
+
+/* Base Layout Config */
+#root {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* App Level Overrides */
+.app-content {
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+  padding: 100px 1rem 100px 1rem;
+  /* Space for ToadBank header and BottomNav */
+}
+
+/* ToadBank CSS */
+.toad-bank-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 50;
+  padding: 1rem;
+  pointer-events: none;
+}
+
+.toad-bank-card {
+  background-color: var(--surface);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 0 20px rgba(255, 0, 255, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  pointer-events: auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.toad-bank-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--neon-pink), transparent);
+  opacity: 0.5;
+}
+
+.toad-bank-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toad-bank-balance-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.toad-bank-coin {
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--coin-gold), #b38f00);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+  border: 2px solid #fff5cc;
+  color: #4d3d00;
+  font-weight: 900;
+  font-size: 1.1rem;
+}
+
+.toad-bank-balance-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.toad-bank-label {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: 'Space Mono', monospace;
+}
+
+.toad-bank-amount {
+  font-family: 'Space Mono', monospace;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  color: var(--text-primary);
+}
+
+.toad-bank-sobriety-group {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.toad-bank-sobriety-val {
+  font-family: 'Space Mono', monospace;
+  font-weight: 700;
+  color: var(--neon-pink);
+  font-size: 1.1rem;
+}
+
+.sobriety-bar-bg {
+  width: 100%;
+  height: 6px;
+  background-color: #000;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 0.25rem;
+  border: 1px solid #222;
+}
+
+.sobriety-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--mario-red), var(--neon-pink), var(--neon-green));
+}
+
+/* BottomNav CSS */
+.bottom-nav-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 50;
+  background-color: rgba(10, 10, 12, 0.95);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 0.5rem 1rem calc(1rem + env(safe-area-inset-bottom)) 1rem;
+}
+
+.bottom-nav-inner {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem;
+  border-radius: 0.75rem;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  min-width: 64px;
+}
+
+.nav-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.nav-item.active {
+  background-color: var(--surface);
+}
+
+.nav-icon-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.nav-icon-active {
+  filter: drop-shadow(0 0 8px currentColor);
+}
+
+.nav-indicator {
+  position: absolute;
+  bottom: -0.5rem;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  transform: translateX(-50%);
+}
+
+.nav-label {
+  font-size: 0.65rem;
+  font-family: 'Space Mono', monospace;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.nav-label.active {
+  color: inherit;
+}
+
+/* Buttons and Inputs */
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+  color: inherit;
+}
+
+/* Utility Animations */
+.spin-slow {
+  animation: spin 3s linear infinite;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotateY(360deg);
+  }
+}
