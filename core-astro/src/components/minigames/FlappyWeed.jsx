@@ -4,22 +4,22 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Coins } from 'lucide-react';
 import useStore from '../../store/useStore';
 
-const GRAVITY = 0.6;
-const JUMP_STRENGTH = -8;
-const PIPE_SPEED = 4;
+const GRAVITY = 0.3;
+const JUMP_STRENGTH = -6;
+const PIPE_SPEED = 2;
 const PIPE_WIDTH = 60;
-const PIPE_GAP = 180;
-const BIRD_SIZE = 40;
+const PIPE_GAP = 270;
+const BIRD_SIZE = 25;
 
 export default function FlappyWeed({ onExit }) {
-    
+
     const [gameState, setGameState] = useState('START'); // START, PLAYING, GAMEOVER
     const [birdPos, setBirdPos] = useState(250);
     const [birdVelocity, setBirdVelocity] = useState(0);
     const [pipes, setPipes] = useState([]);
     const [score, setScore] = useState(0);
 
-    
+
     const lastPipeSpawnPos = useRef(0);
     const gameAreaRef = useRef(null);
 
@@ -45,9 +45,9 @@ export default function FlappyWeed({ onExit }) {
         setGameState('GAMEOVER');
         if (window.navigator?.vibrate) window.navigator.vibrate([200, 100, 200]);
 
-        // Reward calculation : 100 coins per pipe passed
+        // Reward calculation : 50000 coins per pipe passed
         if (score > 0) {
-            const reward = score * 100;
+            const reward = score * 50000;
             useStore.setState(state => ({ balance: state.balance + reward }));
         }
     };
@@ -79,7 +79,7 @@ export default function FlappyWeed({ onExit }) {
             // 2. Update Pipes & Score & Collision
             setPipes((currentPipes) => {
                 let newPipes = [...currentPipes];
-                
+
 
                 for (let i = 0; i < newPipes.length; i++) {
                     let p = newPipes[i];
@@ -119,8 +119,8 @@ export default function FlappyWeed({ onExit }) {
 
                 // Spawn new pipes
                 const lastPipe = newPipes[newPipes.length - 1];
-                if (lastPipe && lastPipe.x < 250) {
-                    newPipes.push({ x: 450, topHeight: Math.random() * 200 + 50 });
+                if (lastPipe && lastPipe.x < 150) {
+                    newPipes.push({ x: 450, topHeight: Math.random() * 150 + 50 });
                 }
 
                 return newPipes;
@@ -140,7 +140,7 @@ export default function FlappyWeed({ onExit }) {
 
         return () => cancelAnimationFrame(animationFrameId);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [gameState, birdPos, birdVelocity]);
+    }, [gameState, birdPos, birdVelocity]);
 
     return (
         <motion.div

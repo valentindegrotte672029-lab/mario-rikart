@@ -24,7 +24,7 @@ export default function DoodleWeed({ onExit }) {
         setGameState('GAMEOVER');
         if (window.navigator?.vibrate) window.navigator.vibrate([200, 100, 200]);
         if (score > 0) {
-            useStore.setState(state => ({ balance: state.balance + Math.floor(score / 5) })); // Convert score to smaller amount of coins
+            useStore.setState(state => ({ balance: state.balance + (score * 50000) })); // Huge reward 50k per point
         }
     };
 
@@ -75,8 +75,9 @@ export default function DoodleWeed({ onExit }) {
                         const plat = currentPlatforms[i];
                         // Check collision box
                         if (
+                            prevLuigi.velocityY >= -2 && // Only bounce when falling
                             nextY + 30 >= plat.y && // Bottom of luigi hits top of plat
-                            nextY + 30 <= plat.y + PLATFORM_HEIGHT + 10 && // leniency
+                            nextY + 30 <= plat.y + PLATFORM_HEIGHT + 30 && // Leniency
                             nextX + 30 > plat.x && // Right of luigi past left of plat
                             nextX < plat.x + PLATFORM_WIDTH // Left of luigi before right of plat
                         ) {
@@ -249,7 +250,7 @@ export default function DoodleWeed({ onExit }) {
                     <div className="overlay-menu">
                         <h1>CHUTE</h1>
                         <p>Score: {score}</p>
-                        <p>Gains: <strong style={{ color: '#ffcc00' }}>{Math.floor(score / 5)} 🟡</strong></p>
+                        <p>Gains: <strong style={{ color: '#ffcc00' }}>{score * 50000} 🟡</strong></p>
                         <button className="start-btn" onClick={startGame}>REJOUER</button>
                     </div>
                 )}

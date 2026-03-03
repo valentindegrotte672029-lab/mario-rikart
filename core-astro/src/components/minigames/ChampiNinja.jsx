@@ -91,7 +91,7 @@ export default function ChampiNinja({ onExit }) {
     const endGame = () => {
         setGameState('GAMEOVER');
         if (score > 0) {
-            useStore.setState(state => ({ balance: state.balance + score }));
+            useStore.setState(state => ({ balance: state.balance + (score * 5000) }));
         }
     };
 
@@ -151,7 +151,7 @@ export default function ChampiNinja({ onExit }) {
                 {gameState === 'GAMEOVER' && (
                     <div className="overlay-menu">
                         <h1>TERMINE</h1>
-                        <p>Total récolté : <strong style={{ color: '#ffcc00' }}>{score} 🟡</strong></p>
+                        <p>Total récolté : <strong style={{ color: '#ffcc00' }}>{score * 5000} 🟡</strong></p>
                         <button className="start-btn" onClick={startGame}>REJOUER</button>
                     </div>
                 )}

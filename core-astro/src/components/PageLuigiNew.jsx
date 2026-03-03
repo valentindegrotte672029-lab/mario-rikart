@@ -3,105 +3,83 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Wind } from 'lucide-react';
 
-import PacWeed from './minigames/PacWeed';
 import FlappyWeed from './minigames/FlappyWeed';
 import ChampiNinja from './minigames/ChampiNinja';
 import DoodleWeed from './minigames/DoodleWeed';
-import MemoryPerch from './minigames/MemoryPerch';
 
 export default function PageLuigiNew() {
-    const [cleaning, setCleaning] = useState(false);
-    const [activeGame, setActiveGame] = useState(null);
+  const [cleaning, setCleaning] = useState(false);
+  const [activeGame, setActiveGame] = useState(null);
 
-    const handleClean = () => {
-        setCleaning(true);
-        if (window.navigator?.vibrate) window.navigator.vibrate([30, 50, 30]);
-        setTimeout(() => setCleaning(false), 2000);
-    };
+  const handleClean = () => {
+    setCleaning(true);
+    if (window.navigator?.vibrate) window.navigator.vibrate([30, 50, 30]);
+    setTimeout(() => setCleaning(false), 2000);
+  };
 
-    return (
-        <motion.div
-            className="page-mobile luigi-mobile"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.05 }}
-            transition={{ duration: 0.3 }}
-        >
-            <div className="gas-ambient"></div>
+  return (
+    <motion.div
+      className="page-mobile luigi-mobile"
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 1.05 }}
+      transition={{ duration: 0.3 }}
+    >
+      <div className="gas-ambient"></div>
 
-            <div className="glass-panel mobile-card luigi-card">
-                <div className="card-header" style={{ marginBottom: '15px' }}>
-                    <h1 className="title-mobile">LUI-WEED ARCADE</h1>
-                    <p className="subtitle">"Farm des pièces pour les potos !"</p>
-                </div>
+      <div className="glass-panel mobile-card luigi-card">
+        <div className="card-header" style={{ marginBottom: '15px' }}>
+          <h1 className="title-mobile">LUI-WEED ARCADE</h1>
+          <p className="subtitle">"Farm des pièces pour les potos !"</p>
+        </div>
 
-                <div className="arcade-grid">
-                    <button className="arcade-btn pacweed-btn" onClick={() => setActiveGame('PACWEED')}>
-                        <span className="game-icon">👻</span>
-                        <div className="game-info">
-                            <h3>PAC-WEED</h3>
-                            <p>Mange les feuilles magiques.</p>
-                        </div>
-                        <div className="play-tag">JOUER</div>
-                    </button>
-
-                    <button className="arcade-btn flappyweed-btn" onClick={() => setActiveGame('FLAPPYWEED')}>
-                        <span className="game-icon">🪽</span>
-                        <div className="game-info">
-                            <h3>ROULE-TA-FLEUR</h3>
-                            <p>Evite les tuyaux en volant.</p>
-                        </div>
-                        <div className="play-tag">JOUER</div>
-                    </button>
-
-                    <button className="arcade-btn champininja-btn" onClick={() => setActiveGame('CHAMPININJA')}>
-                        <span className="game-icon">🍄</span>
-                        <div className="game-info">
-                            <h3>CHAMPI NINJA</h3>
-                            <p>Taille les champis, évite les bombes.</p>
-                        </div>
-                        <div className="play-tag">JOUER</div>
-                    </button>
-
-                    <button className="arcade-btn doodleweed-btn" onClick={() => setActiveGame('DOODLEWEED')}>
-                        <span className="game-icon">🚀</span>
-                        <div className="game-info">
-                            <h3>DOODLE-WEED</h3>
-                            <p>Monte le plus haut possible !</p>
-                        </div>
-                        <div className="play-tag">JOUER</div>
-                    </button>
-
-                    <button className="arcade-btn memoryperch-btn" onClick={() => setActiveGame('MEMORYPERCH')}>
-                        <span className="game-icon">👁️</span>
-                        <div className="game-info">
-                            <h3>MEMORY PERCHÉ</h3>
-                            <p>Trouve les paires sans bader.</p>
-                        </div>
-                        <div className="play-tag">JOUER</div>
-                    </button>
-                </div>
-
-                <div className="divider"></div>
-
-                <button
-                    className={`btn-secondary vacuum-btn ${cleaning ? 'cleaning' : ''}`}
-                    onClick={handleClean}
-                >
-                    <Wind size={24} className="btn-icon" />
-                    <span>{cleaning ? "Désenfumage..." : "Aspirer Notifs"}</span>
-                </button>
+        <div className="arcade-grid">
+          <button className="arcade-btn flappyweed-btn" onClick={() => setActiveGame('FLAPPYWEED')}>
+            <span className="game-icon">🪽</span>
+            <div className="game-info">
+              <h3>ROULE-TA-FLEUR</h3>
+              <p>Evite les tuyaux en volant.</p>
             </div>
+            <div className="play-tag">JOUER</div>
+          </button>
 
-            <AnimatePresence>
-                {activeGame === 'PACWEED' && <PacWeed key="pacweed" onExit={() => setActiveGame(null)} />}
-                {activeGame === 'FLAPPYWEED' && <FlappyWeed key="flappyweed" onExit={() => setActiveGame(null)} />}
-                {activeGame === 'CHAMPININJA' && <ChampiNinja key="champininja" onExit={() => setActiveGame(null)} />}
-                {activeGame === 'DOODLEWEED' && <DoodleWeed key="doodleweed" onExit={() => setActiveGame(null)} />}
-                {activeGame === 'MEMORYPERCH' && <MemoryPerch key="memoryperch" onExit={() => setActiveGame(null)} />}
-            </AnimatePresence>
+          <button className="arcade-btn champininja-btn" onClick={() => setActiveGame('CHAMPININJA')}>
+            <span className="game-icon">🍄</span>
+            <div className="game-info">
+              <h3>CHAMPI NINJA</h3>
+              <p>Taille les champis, évite les bombes.</p>
+            </div>
+            <div className="play-tag">JOUER</div>
+          </button>
 
-            <style>{`
+          <button className="arcade-btn doodleweed-btn" onClick={() => setActiveGame('DOODLEWEED')}>
+            <span className="game-icon">🚀</span>
+            <div className="game-info">
+              <h3>DOODLE-WEED</h3>
+              <p>Monte le plus haut possible !</p>
+            </div>
+            <div className="play-tag">JOUER</div>
+          </button>
+        </div>
+
+        <div className="divider"></div>
+
+        <button
+          className={`btn-secondary vacuum-btn ${cleaning ? 'cleaning' : ''}`}
+          onClick={handleClean}
+        >
+          <Wind size={24} className="btn-icon" />
+          <span>{cleaning ? "Désenfumage..." : "Aspirer Notifs"}</span>
+        </button>
+      </div>
+
+      <AnimatePresence>
+        {activeGame === 'FLAPPYWEED' && <FlappyWeed key="flappyweed" onExit={() => setActiveGame(null)} />}
+        {activeGame === 'CHAMPININJA' && <ChampiNinja key="champininja" onExit={() => setActiveGame(null)} />}
+        {activeGame === 'DOODLEWEED' && <DoodleWeed key="doodleweed" onExit={() => setActiveGame(null)} />}
+      </AnimatePresence>
+
+      <style>{`
         .luigi-mobile {
           --theme-color: #39ff14;
           width: 100%;
@@ -204,6 +182,6 @@ export default function PageLuigiNew() {
           background: rgba(57, 255, 20, 0.1);
         }
       `}</style>
-        </motion.div>
-    );
+    </motion.div>
+  );
 }
