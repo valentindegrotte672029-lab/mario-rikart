@@ -10,7 +10,7 @@ import DoodleWeed from './minigames/DoodleWeed';
 import useStore from '../store/useStore';
 
 export default function PageLuigiNew() {
-  const { leaderboards, clearHappening } = useStore();
+  const { username, leaderboards, clearHappening } = useStore();
   const [cleaning, setCleaning] = useState(false);
   const [activeGame, setActiveGame] = useState(null);
 
@@ -72,23 +72,38 @@ export default function PageLuigiNew() {
 
           <div className="lb-row">
             <span className="lb-game">🪽 Roule-Ta-Fleur</span>
-            <span className="lb-score">
-              {Object.values(leaderboards.FLAPPYWEED || {}).sort((a, b) => b.score - a.score)[0]?.score || 0} pts
-            </span>
+            <div className="lb-scores-wrapper">
+              {leaderboards.FLAPPYWEED?.[username] && (
+                <span className="lb-personal">Moi: {leaderboards.FLAPPYWEED[username].score}</span>
+              )}
+              <span className="lb-score">
+                Top: {Object.values(leaderboards.FLAPPYWEED || {}).sort((a, b) => b.score - a.score)[0]?.score || 0}
+              </span>
+            </div>
           </div>
 
           <div className="lb-row">
             <span className="lb-game">🍄 Champi Ninja</span>
-            <span className="lb-score">
-              {Object.values(leaderboards.CHAMPININJA || {}).sort((a, b) => b.score - a.score)[0]?.score || 0} pts
-            </span>
+            <div className="lb-scores-wrapper">
+              {leaderboards.CHAMPININJA?.[username] && (
+                <span className="lb-personal">Moi: {leaderboards.CHAMPININJA[username].score}</span>
+              )}
+              <span className="lb-score">
+                Top: {Object.values(leaderboards.CHAMPININJA || {}).sort((a, b) => b.score - a.score)[0]?.score || 0}
+              </span>
+            </div>
           </div>
 
           <div className="lb-row">
             <span className="lb-game">🚀 Doodle-Weed</span>
-            <span className="lb-score">
-              {Object.values(leaderboards.DOODLEWEED || {}).sort((a, b) => b.score - a.score)[0]?.score || 0} pts
-            </span>
+            <div className="lb-scores-wrapper">
+              {leaderboards.DOODLEWEED?.[username] && (
+                <span className="lb-personal">Moi: {leaderboards.DOODLEWEED[username].score}</span>
+              )}
+              <span className="lb-score">
+                Top: {Object.values(leaderboards.DOODLEWEED || {}).sort((a, b) => b.score - a.score)[0]?.score || 0}
+              </span>
+            </div>
           </div>
         </div>
 
@@ -191,6 +206,8 @@ export default function PageLuigiNew() {
         .lb-title { color: white; font-size: 1rem; text-align: center; margin-bottom: 15px; font-weight: bold; }
         .lb-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; align-items: center; }
         .lb-game { color: #aaffaa; }
+        .lb-scores-wrapper { display: flex; align-items: center; gap: 10px; }
+        .lb-personal { color: #ccc; font-size: 0.8rem; font-weight: bold; }
         .lb-score { color: var(--theme-color); font-weight: 900; background: rgba(0,0,0,0.5); padding: 4px 10px; border-radius: 12px; }
 
         .divider {
