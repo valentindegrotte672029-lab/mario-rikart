@@ -29,7 +29,7 @@ export default function DoodleWeed({ onExit }) {
         setGameState('GAMEOVER');
         if (window.navigator?.vibrate) window.navigator.vibrate([200, 100, 200]);
         if (stateRef.current.score > 0) {
-            useStore.setState(state => ({ balance: state.balance + (stateRef.current.score * 2) }));
+            useStore.setState(state => ({ balance: state.balance + (stateRef.current.score * 4) }));
             socket.emit('submit_score', { game: 'DOODLEWEED', score: stateRef.current.score });
         }
     };
@@ -254,7 +254,7 @@ export default function DoodleWeed({ onExit }) {
                     <div className="overlay-menu">
                         <h1>CHUTE</h1>
                         <p>Score: {score}</p>
-                        <p>Gains: <strong style={{ color: '#ffcc00' }}>{score * 2} 🟡</strong></p>
+                        <p>Gains: <strong style={{ color: '#ffcc00' }}>{score * 4} 🟡</strong></p>
                         <button className="start-btn" onClick={startGame}>REJOUER</button>
                     </div>
                 )}

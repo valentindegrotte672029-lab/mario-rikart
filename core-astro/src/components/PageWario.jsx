@@ -13,11 +13,11 @@ export default function PageWario() {
   const [orderQr, setOrderQr] = useState(null);
 
   const menu = [
-    { id: 'ricard', name: 'Gourdasse (Ricard/Eau)', price: 15, icon: '🥃' },
-    { id: 'vodka', name: 'Gourdasse (Vodka/Redbull)', price: 25, icon: '🍹' },
-    { id: 'destruct', name: 'Gourdasse Destruction', price: 50, icon: '☠️' },
-    { id: 'pizza', name: 'Pizza 4 Formaggi', price: 200, icon: '🍕' },
-    { id: 'spacecake', name: 'Space Cake Magique', price: 300, icon: '⭐' },
+    { id: 'gourd-50', name: 'Gourdasse 50cc', price: 15000, icon: '🥃' },
+    { id: 'gourd-100', name: 'Gourdasse 100cc', price: 30000, icon: '🍹' },
+    { id: 'gourd-150', name: 'Gourdasse 150cc', price: 60000, icon: '🧉' },
+    { id: 'gourd-200', name: 'Gourdasse 200cc Destructive', price: 100000, icon: '☠️' },
+    { id: 'spacecake', name: 'Space Cake Céleste', price: 250000, icon: '⭐' },
   ];
 
   const handleBuy = (item) => {
@@ -80,135 +80,149 @@ export default function PageWario() {
       </div>
 
       <style>{`
-  .wario - mobile {
-  --theme - color: #ffcc00;
-  width: 100 %;
-  height: 100 %;
-  display: flex;
-  flex - direction: column;
-  justify - content: flex - start;
-  /* S'adapte au container content-area qui fixe la heigh max */
-}
+        .wario-mobile {
+          --theme-color: #ffcc00;
+          --accent-purple: #9900ff;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+          background: linear-gradient(to bottom, #111111, #220022);
+        }
 
-        .wario - card {
-  flex: 1;
-  width: 100 %;
-  border - radius: 32px;
-  border - color: rgba(255, 204, 0, 0.3);
-  background: rgba(40, 30, 0, 0.75);
-  display: flex;
-  flex - direction: column;
-  /* Scroll iOS interne pour la liste si besoin */
-  overflow: hidden;
-}
+        .wario-card {
+          flex: 1;
+          width: 100%;
+          border-radius: 32px;
+          border-color: rgba(255, 204, 0, 0.4);
+          background: rgba(40, 30, 0, 0.9);
+          box-shadow: 0 0 40px rgba(255, 204, 0, 0.1), inset 0 0 20px rgba(153, 0, 255, 0.1);
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+        }
 
-        .wario - title {
-  color: var(--theme - color);
-  font - size: 1.5rem;
-  text - align: center;
-  margin - top: 25px;
-}
+        .wario-title {
+          color: var(--theme-color);
+          font-size: 1.8rem;
+          text-align: center;
+          margin-top: 25px;
+          font-weight: 900;
+          letter-spacing: 1px;
+          text-shadow: 0 0 15px rgba(255, 204, 0, 0.4);
+        }
 
-        .wario - motto {
-  text - align: center;
-  font - style: italic;
-  color: #aa8800;
-  font - size: 0.85rem;
-  margin - bottom: 20px;
-}
+        .wario-motto {
+          text-align: center;
+          font-style: italic;
+          color: #ff88dd;
+          font-size: 0.85rem;
+          margin-bottom: 20px;
+          text-shadow: 0 0 5px rgba(255, 136, 221, 0.5);
+        }
 
-        /* Design Liste iOS iOS 15+ */
-        .ios - list {
-  flex: 1;
-  background: rgba(255, 255, 255, 0.05);
-  border - radius: 20px;
-  margin: 0 15px 15px 15px;
-  overflow - y: auto;
-  -webkit - overflow - scrolling: touch; /* Scroll fluide iOS */
-  scrollbar - width: none;
-}
-        .ios - list:: -webkit - scrollbar { display: none; }
+        .ios-list {
+          flex: 1;
+          background: rgba(255, 255, 255, 0.02);
+          border-radius: 20px;
+          margin: 0 15px 15px 15px;
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;
+          box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
+          border: 1px solid rgba(255, 204, 0, 0.1);
+        }
+        .ios-list::-webkit-scrollbar { display: none; }
 
-        .ios - list - item {
-  display: flex;
-  align - items: center;
-  padding: 15px 20px;
-  position: relative;
-  cursor: pointer;
-  transition: background 0.2s;
-}
+        .ios-list-item {
+          display: flex;
+          align-items: center;
+          padding: 18px 20px;
+          position: relative;
+          cursor: pointer;
+          transition: background 0.2s, transform 0.1s;
+        }
 
-        .ios - list - item:active {
-  background: rgba(255, 255, 255, 0.1);
-}
+        .ios-list-item:active {
+          background: rgba(255, 204, 0, 0.1);
+          transform: scale(0.98);
+        }
 
-        .item - icon - circle {
-  width: 40px; height: 40px;
-  background: rgba(0, 0, 0, 0.5);
-  border - radius: 10px;
-  display: flex; align - items: center; justify - content: center;
-  font - size: 1.2rem;
-  margin - right: 15px;
-}
+        .item-icon-circle {
+          width: 45px; height: 45px;
+          background: linear-gradient(135deg, rgba(255,204,0,0.2), rgba(153,0,255,0.2));
+          border-radius: 12px;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 1.4rem;
+          margin-right: 15px;
+          border: 1px solid rgba(255,204,0,0.3);
+          box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
 
-        .item - details { flex: 1; }
-        .item - details h4 { font - size: 0.95rem; color: white; margin - bottom: 3px; }
-        .item - details p { font - size: 0.8rem; color: var(--theme - color); font - weight: bold; }
-
-        .chevron { opacity: 0.5; }
-
-        .ios - separator {
-  position: absolute;
-  bottom: 0; right: 0;
-  width: calc(100 % - 75px);
-  height: 1px;
-  background: rgba(255, 255, 255, 0.08);
-}
-
-        .qr - modal - overlay {
-  position: absolute;
-  top: 0; left: 0; width: 100 %; height: 100 %;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop - filter: blur(10px);
-  z - index: 200;
-  display: flex; align - items: center; justify - content: center;
-}
-
-        .qr - modal - box {
-  background: white;
-  color: black;
-  width: 80 %;
-  border - radius: 30px;
-  padding: 30px 20px;
-  text - align: center;
-  display: flex; flex - direction: column; align - items: center;
-}
-
-        .qr - modal - box h3 { margin - top: 15px; font - size: 1.3rem; }
+        .item-details { flex: 1; }
+        .item-details h4 { font-size: 0.95rem; color: white; margin-bottom: 3px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
         
-        .qr - code - text {
-  font - family: monospace;
-  background: #f0f0f0;
-  padding: 10px 20px;
-  border - radius: 10px;
-  font - size: 1.2rem;
-  letter - spacing: 2px;
-  margin: 15px 0;
-  font - weight: bold;
-}
+        .wario-price-tag {
+          display: inline-block;
+          background: rgba(255, 204, 0, 0.15);
+          border: 1px solid rgba(255, 204, 0, 0.5);
+          color: var(--theme-color); font-weight: 900;
+          padding: 3px 10px; border-radius: 12px;
+          font-size: 0.9rem;
+          text-shadow: 0 0 5px rgba(255, 204, 0, 0.5);
+          margin-top: 4px;
+        }
 
-        .qr - modal - box p { color: #555; font - size: 0.9rem; margin - bottom: 25px; }
+        .chevron { opacity: 0.5; color: var(--theme-color); }
 
-        .qr - close - btn {
-  background: #333;
-  color: white;
-  border: none;
-  padding: 12px 30px;
-  border - radius: 20px;
-  font - weight: bold;
-  font - size: 1rem;
-  width: 100 %;
-}
+        .ios-separator {
+          position: absolute;
+          bottom: 0; right: 0;
+          width: calc(100% - 80px);
+          height: 1px;
+          background: rgba(255, 204, 0, 0.15);
+        }
+
+        .qr-modal-overlay {
+          position: absolute;
+          top: 0; left: 0; width: 100%; height: 100%;
+          background: rgba(0, 0, 0, 0.8);
+          backdrop-filter: blur(10px);
+          z-index: 200;
+          display: flex; align-items: center; justify-content: center;
+        }
+
+        .qr-modal-box {
+          background: linear-gradient(135deg, #ffffff, #ffeeaa);
+          color: black;
+          width: 80%;
+          border-radius: 30px;
+          padding: 30px 20px;
+          text-align: center;
+          display: flex; flex-direction: column; align-items: center;
+          box-shadow: 0 10px 40px rgba(255, 204, 0, 0.5);
+          border: 4px solid var(--theme-color);
+        }
+
+        .qr-modal-box h3 { margin-top: 15px; font-size: 1.3rem; font-weight: 900; color: #554400; }
+        
+        .qr-code-text {
+          font-family: monospace;
+          background: #332200;
+          color: var(--theme-color);
+          padding: 10px 20px;
+          border-radius: 10px;
+          font-size: 1.2rem;
+          letter-spacing: 2px;
+          margin: 15px 0;
+          font-weight: bold;
+          border: 1px solid var(--theme-color);
+        }
+
+        .qr-modal-box p { color: #555; font-size: 0.9rem; margin-bottom: 25px; font-weight: bold; }
+
+        .qr-close-btn { background: #111; color: var(--theme-color); font-weight: bold; padding: 12px 30px; border-radius: 20px; font-size: 1rem; width: 100%; border: 1px solid var(--theme-color); cursor: pointer; }
 `}</style>
     </motion.div>
   );

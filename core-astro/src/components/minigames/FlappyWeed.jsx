@@ -47,10 +47,10 @@ export default function FlappyWeed({ onExit }) {
         setGameState('GAMEOVER');
         if (window.navigator?.vibrate) window.navigator.vibrate([200, 100, 200]);
 
-        // Reward calculation : 5 coins per pipe passed
+        // Reward calculation : 10 coins per pipe passed
         // Use scoreRef.current to avoid React closure stale state
         if (scoreRef.current > 0) {
-            const reward = scoreRef.current * 5;
+            const reward = scoreRef.current * 10;
             useStore.setState(state => ({ balance: state.balance + reward }));
 
             // Send score to leaderboard
