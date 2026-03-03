@@ -125,9 +125,9 @@ export default function DoodleWeed({ onExit }) {
                 setScore(state.score); // Sync UI
 
                 // Progressive difficulty: medium ramp-up
-                const difficultyMultiplier = Math.min(state.score / 1000, 1.8);
-                const minDistance = 40 + (30 * difficultyMultiplier);
-                const maxDistanceAdd = 60 + (45 * difficultyMultiplier);
+                const difficultyMultiplier = Math.min(state.score / 1000, 2.5); // Accrue maximum cap for end game
+                const minDistance = 40 + (35 * difficultyMultiplier);
+                const maxDistanceAdd = 60 + (50 * difficultyMultiplier);
 
                 const topPlatY = Math.min(...activePlatforms.map(p => p.y));
                 if (topPlatY > 0) {
@@ -177,6 +177,25 @@ export default function DoodleWeed({ onExit }) {
         return () => cancelAnimationFrame(animationFrameId);
     }, [gameState]);
 
+    // --- NATIVE TOUCH BLOCKER (iOS Safari) ---
+    useEffect(() => {
+        const preventDefault = (e) => {
+            if (e.target.closest('.doodleweed-mobile')) {
+                e.preventDefault();
+            }
+        };
+        // Add non-passive event listeners to strictly block browser actions like zoom, scroll, or text selection
+        document.addEventListener('touchstart', preventDefault, { passive: false });
+        document.addEventListener('touchmove', preventDefault, { passive: false });
+        // Optional: also block long press context menu
+        document.addEventListener('contextmenu', preventDefault, { passive: false });
+
+        return () => {
+            document.removeEventListener('touchstart', preventDefault);
+            document.removeEventListener('touchmove', preventDefault);
+            document.removeEventListener('contextmenu', preventDefault);
+        };
+    }, []);
 
     // --- CONTROLS ---
     const handleTouchStart = (e) => {
