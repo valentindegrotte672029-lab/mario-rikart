@@ -33,6 +33,7 @@ function App() {
     // Réception BeReals
     socket.on('bereals_history', (history) => setBereals(history));
     socket.on('bereal_broadcast', (post) => setBereals(prev => [post, ...prev]));
+    socket.on('bereal_deleted', (postId) => setBereals(prev => prev.filter(b => b.id !== postId)));
 
     return () => {
       socket.off('connect');
@@ -42,6 +43,7 @@ function App() {
       socket.off('order_received');
       socket.off('bereals_history');
       socket.off('bereal_broadcast');
+      socket.off('bereal_deleted');
     };
   }, []);
 
@@ -52,6 +54,10 @@ function App() {
 
   const deleteOrder = (indexToRemove) => {
     setOrders(prev => prev.filter((_, idx) => idx !== indexToRemove));
+  };
+
+  const handleDeleteBereal = (postId) => {
+    socket.emit('delete_bereal', postId);
   };
 
   const clearHappening = () => {
@@ -194,6 +200,12 @@ function App() {
                           <small style={{ color: '#888' }}>{new Date(post.timestamp).toLocaleTimeString()}</small>
                         </div>
                         {post.caption && <p style={{ fontSize: '0.9rem', color: '#eee' }}>{post.caption}</p>}
+                        <button
+                          onClick={() => handleDeleteBereal(post.id)}
+                          style={{ marginTop: '10px', width: '100%', background: '#ff3333', color: 'white', border: 'none', padding: '8px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}
+                        >
+                          Supprimer
+                        </button>
                       </div>
                     </motion.div>
                   ))}

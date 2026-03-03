@@ -73,6 +73,17 @@ io.on('connection', (socket) => {
         io.emit('bereal_broadcast', post);
     });
 
+    // 2.6 Suppression d'un BeReal (Admin Only)
+    socket.on('delete_bereal', (postId) => {
+        const index = berealsQueue.findIndex(b => b.id === postId);
+        if (index !== -1) {
+            console.log(`🗑️ BeReal supprimé (ID: ${postId})`);
+            berealsQueue.splice(index, 1);
+            // On prévient tous les clients de retirer cette image
+            io.emit('bereal_deleted', postId);
+        }
+    });
+
     // 3. Diffusion d'un événement global (Envoyé par le Master "God Mode")
     socket.on('trigger_happening', (happeningType) => {
         console.log(`🚨 GOD MODE ACTIVÉ : ${happeningType} 🚨`);
