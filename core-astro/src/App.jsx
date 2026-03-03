@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { AnimatePresence } from 'framer-motion';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 import RainbowRoad from './components/RainbowRoad';
 import ToadBank from './components/ToadBank';
@@ -106,7 +107,10 @@ export default function App() {
       {/* 4. TabBar Bas (Navigation type iOS) */}
       <TabBar />
 
-      {/* 5. Alertes Happenings (God Mode Admin Control) */}
+      {/* 5. Vercel Speed Insights */}
+      <SpeedInsights />
+
+      {/* 6. Alertes Happenings (God Mode Admin Control) */}
       <AnimatePresence>
         {happening === 'BAGARRE' && (
           <div className="happening-modal bagarre">
