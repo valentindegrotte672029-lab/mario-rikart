@@ -103,7 +103,7 @@ export default function PageMario() {
 
       <div className="glass-panel mobile-card mario-card">
         <h1 className="title-mobile mario-title">BeMARIO</h1>
-        <p className="subtitle sad-subtitle">Capturez vos Goumins en temps réel 📸</p>
+        <p className="subtitle sad-subtitle">Capturez vos B.O. en temps réel 📸</p>
 
         {step === 'FEED' && (
           <div className="feed-section">
