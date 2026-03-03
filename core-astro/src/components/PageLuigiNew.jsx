@@ -118,6 +118,9 @@ export default function PageLuigiNew() {
         </button>
       </div>
 
+      {/* ESPACEUR INVISIBLE POUR GARANTIR LE SCROLL AU-DESSUS DE LA TABBAR */}
+      <div style={{ minHeight: '100px', width: '100%', flexShrink: 0 }}></div>
+
       <AnimatePresence>
         {activeGame === 'FLAPPYWEED' && <FlappyWeed key="flappyweed" onExit={() => setActiveGame(null)} />}
         {activeGame === 'CHAMPININJA' && <ChampiNinja key="champininja" onExit={() => setActiveGame(null)} />}
