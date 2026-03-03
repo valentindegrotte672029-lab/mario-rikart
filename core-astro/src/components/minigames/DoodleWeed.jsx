@@ -94,7 +94,7 @@ export default function DoodleWeed({ onExit }) {
                 }
                 currentPlatforms = keptPlatforms;
 
-                if (hitPlatform && hitPlatform.type !== 'breaking') {
+                if (hitPlatform) {
                     nextVy = hitPlatform.type === 'spring' ? JUMP_FORCE * 1.5 : JUMP_FORCE;
                     if (window.navigator?.vibrate) window.navigator.vibrate(20);
                 }

@@ -34,7 +34,7 @@ export default function FlappyWeed({ onExit }) {
 
     const startGame = () => {
         birdRef.current = { y: 250, v: 0 };
-        pipesRef.current = [{ x: 400, topHeight: Math.random() * 150 + 50 }];
+        pipesRef.current = [{ x: 400, topHeight: Math.random() * 150 + 50, passed: false }];
         scoreRef.current = 0;
         setScore(0);
         setGameState('PLAYING');
@@ -77,12 +77,20 @@ export default function FlappyWeed({ onExit }) {
             // 2. Update Pipes
             let newPipes = [...pipesRef.current];
 
+            // Progressive difficulty calculations
+            let currentSpeed = PIPE_SPEED + (scoreRef.current * 0.2);
+            currentSpeed = Math.min(currentSpeed, 6); // Cap speed
+
+            let currentGap = PIPE_GAP - (scoreRef.current * 1.5);
+            currentGap = Math.max(currentGap, 120); // Min gap size
+
             for (let i = 0; i < newPipes.length; i++) {
                 let p = newPipes[i];
-                p.x -= PIPE_SPEED;
+                p.x -= currentSpeed;
 
                 // Score increment
-                if (p.x === 50) {
+                if (p.x < 50 && !p.passed) {
+                    p.passed = true;
                     scoreRef.current += 1;
                     setScore(scoreRef.current);
                     if (scoreRef.current % 5 === 0 && window.navigator?.vibrate) window.navigator.vibrate(50);
@@ -98,7 +106,7 @@ export default function FlappyWeed({ onExit }) {
                     const birdTop = birdRef.current.y;
                     const birdBottom = birdRef.current.y + BIRD_SIZE;
 
-                    if (birdTop < p.topHeight || birdBottom > (p.topHeight + PIPE_GAP)) {
+                    if (birdTop < p.topHeight || birdBottom > (p.topHeight + currentGap)) {
                         endGame();
                         return; // Stop update loop
                     }
@@ -110,10 +118,11 @@ export default function FlappyWeed({ onExit }) {
                 newPipes.shift();
             }
 
-            // Spawn new pipes
+            // Spawn new pipes based on dynamic speed (maintain distance visually)
             const lastPipe = newPipes[newPipes.length - 1];
-            if (lastPipe && lastPipe.x < 150) {
-                newPipes.push({ x: 450, topHeight: Math.random() * 150 + 50 });
+            const spawnDistance = 150 + (currentSpeed * 10); // Spawn earlier if moving faster
+            if (lastPipe && lastPipe.x < spawnDistance) {
+                newPipes.push({ x: 450, topHeight: Math.random() * 150 + 50, passed: false });
             }
 
             pipesRef.current = newPipes;
@@ -202,8 +211,8 @@ export default function FlappyWeed({ onExit }) {
                                     className="pipe lower-pipe"
                                     style={{
                                         left: `${pipe.x}px`,
-                                        top: `${pipe.topHeight + PIPE_GAP}px`,
-                                        height: `${500 - (pipe.topHeight + PIPE_GAP)}px`
+                                        top: `${pipe.topHeight + Math.max(PIPE_GAP - (scoreRef.current * 1.5), 120)}px`,
+                                        height: `${500}px` // Just fill the bottom
                                     }}
                                 ></div>
                             </React.Fragment>
@@ -254,7 +263,7 @@ export default function FlappyWeed({ onExit }) {
         .bird {
             position: absolute; width: 40px; height: 40px; z-index: 5;
             font-size: 2.5rem; display: flex; justify-content: center; align-items: center;
-            transition: transform 0.1s; filter: drop-shadow(0 0 5px white);
+            filter: drop-shadow(0 0 5px white);
         }
 
         .pipe {
