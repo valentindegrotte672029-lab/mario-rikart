@@ -29,6 +29,10 @@ const useStore = create((set) => ({
     bereals: [],
     setBereals: (bereals) => set({ bereals }),
     addBereal: (bereal) => set((state) => ({ bereals: [bereal, ...state.bereals] })),
+
+    // Leaderboards
+    leaderboards: { FLAPPYWEED: {}, CHAMPININJA: {}, DOODLEWEED: {} },
+    setLeaderboards: (leaderboards) => set({ leaderboards })
 }));
 
 export default useStore;

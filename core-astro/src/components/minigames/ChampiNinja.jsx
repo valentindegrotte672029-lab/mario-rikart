@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Coins, Timer } from 'lucide-react';
 import useStore from '../../store/useStore';
+import { socket } from '../../socket';
 
 const GAME_DURATION = 20; // 20 seconds of intense clicking
 const SPAWN_INTERVAL_MS = 600; // Time between spawns
@@ -90,9 +91,13 @@ export default function ChampiNinja({ onExit }) {
 
     const endGame = () => {
         setGameState('GAMEOVER');
-        if (score > 0) {
-            useStore.setState(state => ({ balance: state.balance + (score * 5000) }));
-        }
+        setScore(currentScore => {
+            if (currentScore > 0) {
+                useStore.setState(state => ({ balance: state.balance + (currentScore * 5000) }));
+                socket.emit('submit_score', { game: 'CHAMPININJA', score: currentScore });
+            }
+            return currentScore;
+        });
     };
 
     const handleSlice = (id, type) => {

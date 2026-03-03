@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Coins } from 'lucide-react';
 import useStore from '../../store/useStore';
+import { socket } from '../../socket';
 
 const GRAVITY = 0.3;
 const JUMP_STRENGTH = -6;
@@ -47,9 +48,13 @@ export default function FlappyWeed({ onExit }) {
         if (window.navigator?.vibrate) window.navigator.vibrate([200, 100, 200]);
 
         // Reward calculation : 50000 coins per pipe passed
-        if (score > 0) {
-            const reward = score * 50000;
+        // Use scoreRef.current to avoid React closure stale state
+        if (scoreRef.current > 0) {
+            const reward = scoreRef.current * 50000;
             useStore.setState(state => ({ balance: state.balance + reward }));
+
+            // Send score to leaderboard
+            socket.emit('submit_score', { game: 'FLAPPYWEED', score: scoreRef.current });
         }
     };
 

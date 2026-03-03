@@ -4,12 +4,13 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Coins } from 'lucide-react';
 import useStore from '../../store/useStore';
+import { socket } from '../../socket';
 
 const GRAVITY = 0.4;
 const JUMP_FORCE = -10;
 const PLATFORM_WIDTH = 60;
 const PLATFORM_HEIGHT = 15;
-const GAME_WIDTH = window.innerWidth; // Will be constrained by mobile container
+const GAME_WIDTH = window.innerWidth - 30; // Deduct the 15px padding on each side so it doesn't bleed off screen
 
 export default function DoodleWeed({ onExit }) {
     const [gameState, setGameState] = useState('START'); // START, PLAYING, GAMEOVER
@@ -28,6 +29,7 @@ export default function DoodleWeed({ onExit }) {
         if (window.navigator?.vibrate) window.navigator.vibrate([200, 100, 200]);
         if (stateRef.current.score > 0) {
             useStore.setState(state => ({ balance: state.balance + (stateRef.current.score * 50000) }));
+            socket.emit('submit_score', { game: 'DOODLEWEED', score: stateRef.current.score });
         }
     };
 

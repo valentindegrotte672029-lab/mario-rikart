@@ -13,8 +13,9 @@ function App() {
   const [players, setPlayers] = useState(0);
   const [orders, setOrders] = useState([]);
   const [bereals, setBereals] = useState([]);
+  const [leaderboards, setLeaderboards] = useState({ FLAPPYWEED: {}, CHAMPININJA: {}, DOODLEWEED: {} });
   const [activeHappening, setActiveHappening] = useState(null);
-  const [activeTab, setActiveTab] = useState('WARIO'); // 'WARIO' ou 'BEREAL'
+  const [activeTab, setActiveTab] = useState('WARIO'); // 'WARIO', 'BEREAL', 'ARCADE'
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -35,6 +36,9 @@ function App() {
     socket.on('bereal_broadcast', (post) => setBereals(prev => [post, ...prev]));
     socket.on('bereal_deleted', (postId) => setBereals(prev => prev.filter(b => b.id !== postId)));
 
+    // Réception Leaderboards
+    socket.on('leaderboards_update', (data) => setLeaderboards(data));
+
     return () => {
       socket.off('connect');
       socket.off('disconnect');
@@ -44,6 +48,7 @@ function App() {
       socket.off('bereals_history');
       socket.off('bereal_broadcast');
       socket.off('bereal_deleted');
+      socket.off('leaderboards_update');
     };
   }, []);
 
@@ -134,6 +139,13 @@ function App() {
           >
             <Camera size={18} /> FEED BeMARIO ({bereals.length})
           </button>
+
+          <button
+            onClick={() => setActiveTab('ARCADE')}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '10px', fontWeight: 'bold', border: 'none', cursor: 'pointer', background: activeTab === 'ARCADE' ? '#39ff14' : '#222', color: activeTab === 'ARCADE' ? '#000' : '#aaa' }}
+          >
+            <Swords size={18} /> LUI-WEED ARCADE
+          </button>
         </div>
 
         {/* CONTENU ONGLETS */}
@@ -212,6 +224,61 @@ function App() {
                 </AnimatePresence>
               </div>
             )
+          )}
+
+          {activeTab === 'ARCADE' && (
+            <div style={{ padding: '20px', background: '#111', borderRadius: '15px', color: 'white' }}>
+              <h2 style={{ color: '#39ff14', marginBottom: '20px' }}>🏆 Classements Mondiaux Arcade</h2>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
+
+                {/* FlappyWeed */}
+                <div style={{ background: '#222', padding: '20px', borderRadius: '10px', border: '1px solid #333' }}>
+                  <h3 style={{ color: '#aaffaa', marginBottom: '15px' }}>🪽 Roule-Ta-Fleur</h3>
+                  {Object.keys(leaderboards.FLAPPYWEED || {}).length === 0 ? <p style={{ color: '#888' }}>Aucun score</p> : (
+                    Object.entries(leaderboards.FLAPPYWEED)
+                      .sort(([, a], [, b]) => b.score - a.score)
+                      .map(([user, data], i) => (
+                        <div key={user} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #333' }}>
+                          <span><strong style={{ color: i === 0 ? '#ffcc00' : 'white' }}>#{i + 1}</strong> {user}</span>
+                          <span style={{ color: '#39ff14', fontWeight: 'bold' }}>{data.score}</span>
+                        </div>
+                      ))
+                  )}
+                </div>
+
+                {/* ChampiNinja */}
+                <div style={{ background: '#222', padding: '20px', borderRadius: '10px', border: '1px solid #333' }}>
+                  <h3 style={{ color: '#aaffaa', marginBottom: '15px' }}>🍄 Champi Ninja</h3>
+                  {Object.keys(leaderboards.CHAMPININJA || {}).length === 0 ? <p style={{ color: '#888' }}>Aucun score</p> : (
+                    Object.entries(leaderboards.CHAMPININJA)
+                      .sort(([, a], [, b]) => b.score - a.score)
+                      .map(([user, data], i) => (
+                        <div key={user} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #333' }}>
+                          <span><strong style={{ color: i === 0 ? '#ffcc00' : 'white' }}>#{i + 1}</strong> {user}</span>
+                          <span style={{ color: '#39ff14', fontWeight: 'bold' }}>{data.score}</span>
+                        </div>
+                      ))
+                  )}
+                </div>
+
+                {/* DoodleWeed */}
+                <div style={{ background: '#222', padding: '20px', borderRadius: '10px', border: '1px solid #333' }}>
+                  <h3 style={{ color: '#aaffaa', marginBottom: '15px' }}>🚀 Doodle-Weed</h3>
+                  {Object.keys(leaderboards.DOODLEWEED || {}).length === 0 ? <p style={{ color: '#888' }}>Aucun score</p> : (
+                    Object.entries(leaderboards.DOODLEWEED)
+                      .sort(([, a], [, b]) => b.score - a.score)
+                      .map(([user, data], i) => (
+                        <div key={user} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #333' }}>
+                          <span><strong style={{ color: i === 0 ? '#ffcc00' : 'white' }}>#{i + 1}</strong> {user}</span>
+                          <span style={{ color: '#39ff14', fontWeight: 'bold' }}>{data.score}</span>
+                        </div>
+                      ))
+                  )}
+                </div>
+
+              </div>
+            </div>
           )}
 
         </div>

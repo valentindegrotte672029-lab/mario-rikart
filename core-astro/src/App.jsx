@@ -46,7 +46,7 @@ class ErrorBoundary extends Component {
 }
 
 export default function App() {
-  const { speedBoost, currentPage, happening, triggerHappening, username, setBereals, addBereal } = useStore();
+  const { speedBoost, currentPage, happening, triggerHappening, username, setBereals, addBereal, setLeaderboards } = useStore();
 
   // Gestion des WebSockets en temps réel (Remplace le mock)
   useEffect(() => {
@@ -58,6 +58,7 @@ export default function App() {
       // 2. Écoute du 'God Mode' (Alertes Centrales)
       socket.on('global_happening', (type) => triggerHappening(type));
       socket.on('bereals_history', (history) => setBereals(history));
+      socket.on('leaderboards_update', (leaderboards) => setLeaderboards(leaderboards));
       socket.on('bereal_broadcast', (post) => addBereal(post));
 
       return () => {

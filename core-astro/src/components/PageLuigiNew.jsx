@@ -7,13 +7,17 @@ import FlappyWeed from './minigames/FlappyWeed';
 import ChampiNinja from './minigames/ChampiNinja';
 import DoodleWeed from './minigames/DoodleWeed';
 
+import useStore from '../store/useStore';
+
 export default function PageLuigiNew() {
+  const { leaderboards, clearHappening } = useStore();
   const [cleaning, setCleaning] = useState(false);
   const [activeGame, setActiveGame] = useState(null);
 
   const handleClean = () => {
     setCleaning(true);
     if (window.navigator?.vibrate) window.navigator.vibrate([30, 50, 30]);
+    clearHappening(); // "Aspirer" really cleans the global happening block
     setTimeout(() => setCleaning(false), 2000);
   };
 
@@ -60,6 +64,32 @@ export default function PageLuigiNew() {
             </div>
             <div className="play-tag">JOUER</div>
           </button>
+        </div>
+
+        {/* --- LEADERBOARD SECTION --- */}
+        <div className="leaderboard-section">
+          <h3 className="lb-title">🏆 Meilleurs Scores Mondiaux</h3>
+
+          <div className="lb-row">
+            <span className="lb-game">🪽 Roule-Ta-Fleur</span>
+            <span className="lb-score">
+              {Object.values(leaderboards.FLAPPYWEED || {}).sort((a, b) => b.score - a.score)[0]?.score || 0} pts
+            </span>
+          </div>
+
+          <div className="lb-row">
+            <span className="lb-game">🍄 Champi Ninja</span>
+            <span className="lb-score">
+              {Object.values(leaderboards.CHAMPININJA || {}).sort((a, b) => b.score - a.score)[0]?.score || 0} pts
+            </span>
+          </div>
+
+          <div className="lb-row">
+            <span className="lb-game">🚀 Doodle-Weed</span>
+            <span className="lb-score">
+              {Object.values(leaderboards.DOODLEWEED || {}).sort((a, b) => b.score - a.score)[0]?.score || 0} pts
+            </span>
+          </div>
         </div>
 
         <div className="divider"></div>
@@ -150,6 +180,15 @@ export default function PageLuigiNew() {
         
         .play-tag { position: absolute; right: 15px; background: var(--theme-color); color: black; font-weight: 800; font-size: 0.8rem; padding: 5px 10px; border-radius: 10px; }
         
+        .leaderboard-section {
+          background: rgba(0,20,0,0.5); border: 1px solid rgba(57, 255, 20, 0.2);
+          border-radius: 15px; padding: 15px; margin-top: 20px;
+        }
+        .lb-title { color: white; font-size: 1rem; text-align: center; margin-bottom: 15px; font-weight: bold; }
+        .lb-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; align-items: center; }
+        .lb-game { color: #aaffaa; }
+        .lb-score { color: var(--theme-color); font-weight: 900; background: rgba(0,0,0,0.5); padding: 4px 10px; border-radius: 12px; }
+
         .divider {
           height: 1px;
           background: rgba(255,255,255,0.1);

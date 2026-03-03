@@ -24,6 +24,14 @@ const ordersQueue = [];
 // Stockage des publications BeReal
 const berealsQueue = [];
 
+// Stockage des Meilleurs Scores par jeu
+// { FLAPPYWEED: { playerName: { score: number, timestamp: string } }, CHAMPININJA: {}, DOODLEWEED: {} }
+const leaderboards = {
+    FLAPPYWEED: {},
+    CHAMPININJA: {},
+    DOODLEWEED: {}
+};
+
 io.on('connection', (socket) => {
     console.log(`⚡ Nouvelle connexion : ${socket.id}`);
 
@@ -37,6 +45,9 @@ io.on('connection', (socket) => {
 
         // Envoie l'historique BeReal au nouveau joueur
         socket.emit('bereals_history', berealsQueue);
+
+        // Envoie le classement actuel au nouveau joueur
+        socket.emit('leaderboards_update', leaderboards);
     });
 
     // 2. Émission d'une commande (Wario Bar)
@@ -89,6 +100,26 @@ io.on('connection', (socket) => {
         console.log(`🚨 GOD MODE ACTIVÉ : ${happeningType} 🚨`);
         // Broadcast à TOUT LE MONDE
         io.emit('global_happening', happeningType);
+    });
+
+    // 4. Soumission d'un score de mini-jeu
+    socket.on('submit_score', ({ game, score }) => {
+        const username = players[socket.id] || 'Anonyme';
+        if (!leaderboards[game]) leaderboards[game] = {};
+
+        const currentBest = leaderboards[game][username]?.score || 0;
+
+        // Seuls les meilleurs scores stricts sont gardés
+        if (score > currentBest) {
+            leaderboards[game][username] = {
+                score,
+                timestamp: new Date().toISOString()
+            };
+            console.log(`🏆 Nouveau record mondial pour ${username} à ${game} : ${score} pts`);
+
+            // Broadcast the updated leaderboards to everyone
+            io.emit('leaderboards_update', leaderboards);
+        }
     });
 
     socket.on('clear_happening', () => {
