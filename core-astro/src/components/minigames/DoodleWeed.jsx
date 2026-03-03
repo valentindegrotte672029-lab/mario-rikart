@@ -10,8 +10,8 @@ const GRAVITY = 0.4;
 const JUMP_FORCE = -10;
 const PLATFORM_WIDTH = 60;
 const PLATFORM_HEIGHT = 15;
-const GAME_WIDTH = window.innerWidth - 30; // Deduct the 15px padding on each side so it doesn't bleed off screen
-
+// Réduire davantage la largeur pour être certain que Luigi ne touche pas le bord absolu
+const GAME_WIDTH = window.innerWidth - 60;
 export default function DoodleWeed({ onExit }) {
     const [gameState, setGameState] = useState('START'); // START, PLAYING, GAMEOVER
     const [score, setScore] = useState(0);
@@ -116,12 +116,17 @@ export default function DoodleWeed({ onExit }) {
                 state.score += Math.floor(diff / 10);
                 setScore(state.score); // Sync UI
 
+                // Progressive difficulty: as score increases, platforms spawn further apart
+                const difficultyMultiplier = Math.min(state.score / 100, 2); // Caps at +200% distance
+                const minDistance = 50 + (20 * difficultyMultiplier);
+                const maxDistanceAdd = 80 + (40 * difficultyMultiplier);
+
                 const topPlatY = Math.min(...activePlatforms.map(p => p.y));
                 if (topPlatY > 0) {
                     activePlatforms.push({
                         id: Date.now(),
                         x: Math.random() * (GAME_WIDTH - PLATFORM_WIDTH),
-                        y: topPlatY - (Math.random() * 80 + 50),
+                        y: topPlatY - (Math.random() * maxDistanceAdd + minDistance),
                         type: Math.random() > 0.8 ? 'spring' : (Math.random() > 0.9 ? 'breaking' : 'normal')
                     });
                 }

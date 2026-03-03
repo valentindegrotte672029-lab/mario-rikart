@@ -115,8 +115,12 @@ export default function PageLuigiNew() {
           width: 100%;
           height: 100%;
           display: flex;
+          flex-direction: column;
           align-items: center;
           position: relative;
+          overflow-y: auto;
+          overflow-x: hidden;
+          padding: calc(var(--safe-top) + 20px) 15px 40px 15px;
         }
 
         .gas-ambient {
