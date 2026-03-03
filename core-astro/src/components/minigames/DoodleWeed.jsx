@@ -15,22 +15,21 @@ export default function DoodleWeed({ onExit }) {
     const [gameState, setGameState] = useState('START'); // START, PLAYING, GAMEOVER
     const [score, setScore] = useState(0);
 
-    // Physics State
-    const [luigi, setLuigi] = useState({ x: GAME_WIDTH / 2, y: 300, velocityY: 0, velocityX: 0 });
-    const [platforms, setPlatforms] = useState([]);
-    const [cameraY] = useState(0);
+    // Physics Refs
+    const stateRef = useRef({
+        luigi: { x: GAME_WIDTH / 2, y: 300, vy: 0, vx: 0 },
+        platforms: [],
+        score: 0
+    });
+    const [renderTick, setRenderTick] = useState(0);
 
     const endGame = () => {
         setGameState('GAMEOVER');
         if (window.navigator?.vibrate) window.navigator.vibrate([200, 100, 200]);
-        if (score > 0) {
-            useStore.setState(state => ({ balance: state.balance + (score * 50000) })); // Huge reward 50k per point
+        if (stateRef.current.score > 0) {
+            useStore.setState(state => ({ balance: state.balance + (stateRef.current.score * 50000) }));
         }
     };
-
-
-    const requestRef = useRef();
-    const touchXRef = useRef(null);
 
     // --- INIT MAP ---
     const generateInitialPlatforms = () => {
@@ -53,167 +52,122 @@ export default function DoodleWeed({ onExit }) {
     };
 
     // --- GAME LOOP ---
-    const updateGame = () => {
-        if (gameState !== 'PLAYING') return;
+    useEffect(() => {
+        let animationFrameId;
 
-        setLuigi((prevLuigi) => {
-            let nextY = prevLuigi.y + prevLuigi.velocityY;
-            let nextVelocityY = prevLuigi.velocityY + GRAVITY;
-            let nextX = prevLuigi.x + prevLuigi.velocityX;
+        const updateGame = () => {
+            if (gameState !== 'PLAYING') return;
+
+            let state = stateRef.current;
+            let currentLuigi = state.luigi;
+            let currentPlatforms = state.platforms;
+
+            let nextY = currentLuigi.y + currentLuigi.vy;
+            let nextVy = currentLuigi.vy + GRAVITY;
+            let nextX = currentLuigi.x + currentLuigi.vx;
 
             // Screen Wrap (Left/Right)
             if (nextX < -30) nextX = GAME_WIDTH;
             if (nextX > GAME_WIDTH) nextX = -30;
 
             // --- COLLISION DETECTION (Only falling down) ---
-            if (prevLuigi.velocityY > 0) {
-                setPlatforms((currentPlatforms) => {
-                    let hit = false;
-                    let newPlatforms = [...currentPlatforms];
+            if (currentLuigi.vy > 0) {
+                let hitPlatform = null;
+                let keptPlatforms = [];
 
-                    for (let i = 0; i < currentPlatforms.length; i++) {
-                        const plat = currentPlatforms[i];
-                        // Check collision box
-                        if (
-                            prevLuigi.velocityY >= -2 && // Only bounce when falling
-                            nextY + 30 >= plat.y && // Bottom of luigi hits top of plat
-                            nextY + 30 <= plat.y + PLATFORM_HEIGHT + 30 && // Leniency
-                            nextX + 30 > plat.x && // Right of luigi past left of plat
-                            nextX < plat.x + PLATFORM_WIDTH // Left of luigi before right of plat
-                        ) {
-                            if (plat.type === 'breaking') {
-                                // Break platform
-                                newPlatforms = currentPlatforms.filter(p => p.id !== plat.id);
-                                hit = false;
-                            } else {
-                                // BOUNCE
-                                hit = true;
-                                nextVelocityY = plat.type === 'spring' ? JUMP_FORCE * 1.5 : JUMP_FORCE;
-                                if (window.navigator?.vibrate) window.navigator.vibrate(20);
-                                break; // Only hit one
-                            }
+                for (let i = 0; i < currentPlatforms.length; i++) {
+                    const plat = currentPlatforms[i];
+
+                    if (!hitPlatform &&
+                        nextY + 30 >= plat.y &&
+                        nextY + 30 <= plat.y + PLATFORM_HEIGHT + 30 &&
+                        nextX + 30 > plat.x - 10 &&
+                        nextX < plat.x + PLATFORM_WIDTH + 10
+                    ) {
+                        hitPlatform = plat;
+                        if (plat.type !== 'breaking') {
+                            keptPlatforms.push(plat);
                         }
+                    } else {
+                        keptPlatforms.push(plat);
                     }
-                    return newPlatforms;
-                });
+                }
+                currentPlatforms = keptPlatforms;
+
+                if (hitPlatform && hitPlatform.type !== 'breaking') {
+                    nextVy = hitPlatform.type === 'spring' ? JUMP_FORCE * 1.5 : JUMP_FORCE;
+                    if (window.navigator?.vibrate) window.navigator.vibrate(20);
+                }
             }
 
             // --- CAMERA PANNING & SCORING ---
-            // If Luigi goes above middle of screen, pan camera down
             if (nextY < 250) {
                 const diff = 250 - nextY;
-                nextY = 250; // Keep luigi at 250
-                // Move platforms down
-                setPlatforms(plats => plats.map(p => ({ ...p, y: p.y + diff })));
-                // Score based on height climbed
-                setScore(s => s + Math.floor(diff / 10));
+                nextY = 250;
 
-                // --- GENERATE NEW PLATFORMS AT TOP ---
-                setPlatforms(plats => {
-                    const topPlatY = Math.min(...plats.map(p => p.y));
-                    if (topPlatY > 0) { // Screen top
-                        return [
-                            ...plats,
-                            {
-                                id: Date.now(),
-                                x: Math.random() * (GAME_WIDTH - PLATFORM_WIDTH),
-                                y: topPlatY - (Math.random() * 80 + 50),
-                                type: Math.random() > 0.8 ? 'spring' : (Math.random() > 0.9 ? 'breaking' : 'normal')
-                            }
-                        ]
-                    }
-                    // Clean up bottom platforms
-                    return plats.filter(p => p.y < 700);
-                });
+                let activePlatforms = [];
+                for (let p of currentPlatforms) {
+                    let py = p.y + diff;
+                    if (py < 700) activePlatforms.push({ ...p, y: py });
+                }
+
+                state.score += Math.floor(diff / 10);
+                setScore(state.score); // Sync UI
+
+                const topPlatY = Math.min(...activePlatforms.map(p => p.y));
+                if (topPlatY > 0) {
+                    activePlatforms.push({
+                        id: Date.now(),
+                        x: Math.random() * (GAME_WIDTH - PLATFORM_WIDTH),
+                        y: topPlatY - (Math.random() * 80 + 50),
+                        type: Math.random() > 0.8 ? 'spring' : (Math.random() > 0.9 ? 'breaking' : 'normal')
+                    });
+                }
+                currentPlatforms = activePlatforms;
             }
 
             // --- GAME OVER CONDITION ---
             if (nextY > 650) {
                 endGame();
+                return;
             }
 
-            return { x: nextX, y: nextY, velocityY: nextVelocityY, velocityX: prevLuigi.velocityX };
-        });
+            state.luigi = { x: nextX, y: nextY, vy: nextVy, vx: currentLuigi.vx };
+            state.platforms = currentPlatforms;
+            stateRef.current = state;
 
-    };
+            setRenderTick(t => t + 1);
+            animationFrameId = requestAnimationFrame(updateGame);
+        };
 
-
-    useEffect(() => {
         if (gameState === 'PLAYING') {
-            requestRef.current = requestAnimationFrame(updateGame);
-            return () => cancelAnimationFrame(requestRef.current);
+            animationFrameId = requestAnimationFrame(updateGame);
         }
-    }, [gameState, updateGame]);
+        return () => cancelAnimationFrame(animationFrameId);
+    }, [gameState]);
 
 
     // --- CONTROLS ---
-    // Accelerometer logic
-    useEffect(() => {
-        const handleMotion = (event) => {
-            if (gameState !== 'PLAYING') return;
-            const accelerationX = event.accelerationIncludingGravity.x;
-            // Depending on OS/Orientation, this might need reversing
-            // For standard portrait, tilt right gives positive X
-            if (accelerationX !== null) {
-                setLuigi(prev => ({ ...prev, velocityX: accelerationX * -1.5 })); // Adjust multiplier for sensitivity
-            }
-        };
-
-        if (window.DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === 'function') {
-            // iOS 13+ requires explicit permission, usually triggered by a user action like 'START'
-        } else {
-            window.addEventListener('devicemotion', handleMotion);
-        }
-
-        return () => window.removeEventListener('devicemotion', handleMotion);
-    }, [gameState]);
-
-    // Touch fallback for desktop/testing
     const handleTouchStart = (e) => {
-        touchXRef.current = e.touches[0].clientX;
+        if (gameState !== 'PLAYING') return;
+        const touchX = e.touches[0].clientX;
+        stateRef.current.luigi.vx = touchX < window.innerWidth / 2 ? -6 : 6;
     };
-    const handleTouchMove = (e) => {
-        if (!touchXRef.current || gameState !== 'PLAYING') return;
-        const currentX = e.touches[0].clientX;
-        const diff = currentX - touchXRef.current;
-        setLuigi(prev => ({ ...prev, velocityX: diff > 0 ? 5 : -5 }));
-        touchXRef.current = currentX;
-    };
+    const handleTouchMove = (e) => { };
     const handleTouchEnd = () => {
-        touchXRef.current = null;
-        setLuigi(prev => ({ ...prev, velocityX: 0 }));
+        if (gameState === 'PLAYING') stateRef.current.luigi.vx = 0;
     };
-
 
     // --- ACTIONS ---
-    const requestDeviceMotionPermission = async () => {
-        if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
-            try {
-                const permissionState = await DeviceMotionEvent.requestPermission();
-                if (permissionState === 'granted') {
-                    // Start game after grant
-                    startGameInner();
-                } else {
-                    alert("On a besoin de tes capteurs pour jouer !");
-                }
-            } catch (error) {
-                console.error(error);
-                startGameInner(); // Fallback if error but not block
-            }
-        } else {
-            startGameInner();
-        }
-    };
-
-    const startGameInner = () => {
-        setPlatforms(generateInitialPlatforms());
-        setLuigi({ x: GAME_WIDTH / 2, y: 300, velocityY: JUMP_FORCE, velocityX: 0 }); // Auto-jump start
+    const startGame = () => {
+        stateRef.current = {
+            luigi: { x: GAME_WIDTH / 2, y: 300, vy: JUMP_FORCE, vx: 0 },
+            platforms: generateInitialPlatforms(),
+            score: 0
+        };
         setScore(0);
         setGameState('PLAYING');
-    }
-
-    const startGame = () => {
-        requestDeviceMotionPermission();
+        setRenderTick(t => t + 1);
     };
 
 
@@ -258,7 +212,7 @@ export default function DoodleWeed({ onExit }) {
                 {/* --- RENDER GAME --- */}
                 <div className="play-area">
                     {/* Platforms */}
-                    {platforms.map(plat => (
+                    {stateRef.current.platforms.map(plat => (
                         <div
                             key={plat.id}
                             className={`platform ${plat.type}`}
@@ -279,9 +233,9 @@ export default function DoodleWeed({ onExit }) {
                         <div
                             className="player-luigi"
                             style={{
-                                left: `${luigi.x}px`,
-                                top: `${luigi.y}px`,
-                                transform: `scaleX(${luigi.velocityX < 0 ? -1 : 1})`
+                                left: `${stateRef.current.luigi.x}px`,
+                                top: `${stateRef.current.luigi.y}px`,
+                                transform: `scaleX(${stateRef.current.luigi.vx < 0 ? -1 : 1})`
                             }}
                         >
                             🧔🏻‍♂️

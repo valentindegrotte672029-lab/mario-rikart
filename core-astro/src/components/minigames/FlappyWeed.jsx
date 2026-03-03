@@ -12,20 +12,20 @@ const PIPE_GAP = 270;
 const BIRD_SIZE = 25;
 
 export default function FlappyWeed({ onExit }) {
-
-    const [gameState, setGameState] = useState('START'); // START, PLAYING, GAMEOVER
-    const [birdPos, setBirdPos] = useState(250);
-    const [birdVelocity, setBirdVelocity] = useState(0);
-    const [pipes, setPipes] = useState([]);
+    const [gameState, setGameState] = useState('START');
     const [score, setScore] = useState(0);
 
-
+    // Physics Refs for 60fps
+    const birdRef = useRef({ y: 250, v: 0 });
+    const pipesRef = useRef([]);
+    const scoreRef = useRef(0);
+    const [renderTick, setRenderTick] = useState(0);
     const lastPipeSpawnPos = useRef(0);
     const gameAreaRef = useRef(null);
 
     const jump = () => {
         if (gameState === 'PLAYING') {
-            setBirdVelocity(JUMP_STRENGTH);
+            birdRef.current.v = JUMP_STRENGTH;
             if (window.navigator?.vibrate) window.navigator.vibrate(20);
         } else if (gameState === 'START' || gameState === 'GAMEOVER') {
             startGame();
@@ -33,12 +33,13 @@ export default function FlappyWeed({ onExit }) {
     };
 
     const startGame = () => {
-        setBirdPos(250);
-        setBirdVelocity(0);
-        setPipes([{ x: 400, topHeight: Math.random() * 200 + 50 }]);
+        birdRef.current = { y: 250, v: 0 };
+        pipesRef.current = [{ x: 400, topHeight: Math.random() * 150 + 50 }];
+        scoreRef.current = 0;
         setScore(0);
         setGameState('PLAYING');
         lastPipeSpawnPos.current = 400;
+        setRenderTick(t => t + 1);
     };
 
     const endGame = () => {
@@ -70,67 +71,60 @@ export default function FlappyWeed({ onExit }) {
             if (gameState !== 'PLAYING') return;
 
             // 1. Update Bird
-            setBirdPos((prev) => {
-                const newPos = prev + birdVelocity;
-                setBirdVelocity(v => v + GRAVITY);
-                return newPos;
-            });
+            birdRef.current.y += birdRef.current.v;
+            birdRef.current.v += GRAVITY;
 
-            // 2. Update Pipes & Score & Collision
-            setPipes((currentPipes) => {
-                let newPipes = [...currentPipes];
+            // 2. Update Pipes
+            let newPipes = [...pipesRef.current];
 
+            for (let i = 0; i < newPipes.length; i++) {
+                let p = newPipes[i];
+                p.x -= PIPE_SPEED;
 
-                for (let i = 0; i < newPipes.length; i++) {
-                    let p = newPipes[i];
-                    p.x -= PIPE_SPEED;
+                // Score increment
+                if (p.x === 50) {
+                    scoreRef.current += 1;
+                    setScore(scoreRef.current);
+                    if (scoreRef.current % 5 === 0 && window.navigator?.vibrate) window.navigator.vibrate(50);
+                }
 
-                    // Score increment
-                    if (p.x === 50) { // Passed the bird
-                        setScore(s => {
-                            const newScore = s + 1;
-                            if (newScore % 5 === 0 && window.navigator?.vibrate) window.navigator.vibrate(50); // Milestone vibrate
-                            return newScore;
-                        });
-                    }
+                // Collision detection
+                const birdLeft = 50;
+                const birdRight = 50 + BIRD_SIZE;
+                const pipeLeft = p.x;
+                const pipeRight = p.x + PIPE_WIDTH;
 
-                    // Collision detection
-                    const birdLeft = 50;
-                    const birdRight = 50 + BIRD_SIZE;
-                    const pipeLeft = p.x;
-                    const pipeRight = p.x + PIPE_WIDTH;
+                if (birdRight > pipeLeft && birdLeft < pipeRight) {
+                    const birdTop = birdRef.current.y;
+                    const birdBottom = birdRef.current.y + BIRD_SIZE;
 
-                    // Hit Horizontal?
-                    if (birdRight > pipeLeft && birdLeft < pipeRight) {
-                        // Hit Vertical ? (Upper pipe or Lower pipe)
-                        const birdTop = birdPos;
-                        const birdBottom = birdPos + BIRD_SIZE;
-
-                        if (birdTop < p.topHeight || birdBottom > (p.topHeight + PIPE_GAP)) {
-                            endGame();
-                        }
+                    if (birdTop < p.topHeight || birdBottom > (p.topHeight + PIPE_GAP)) {
+                        endGame();
+                        return; // Stop update loop
                     }
                 }
-
-                // Remove off-screen pipes
-                if (newPipes.length > 0 && newPipes[0].x < -PIPE_WIDTH) {
-                    newPipes.shift();
-                }
-
-                // Spawn new pipes
-                const lastPipe = newPipes[newPipes.length - 1];
-                if (lastPipe && lastPipe.x < 150) {
-                    newPipes.push({ x: 450, topHeight: Math.random() * 150 + 50 });
-                }
-
-                return newPipes;
-            });
-
-            // Floor / Ceiling Collision
-            if (birdPos > 460 || birdPos < -40) {
-                endGame();
             }
 
+            // Remove off-screen pipes
+            if (newPipes.length > 0 && newPipes[0].x < -PIPE_WIDTH) {
+                newPipes.shift();
+            }
+
+            // Spawn new pipes
+            const lastPipe = newPipes[newPipes.length - 1];
+            if (lastPipe && lastPipe.x < 150) {
+                newPipes.push({ x: 450, topHeight: Math.random() * 150 + 50 });
+            }
+
+            pipesRef.current = newPipes;
+
+            // Floor / Ceiling Collision
+            if (birdRef.current.y > 460 || birdRef.current.y < -40) {
+                endGame();
+                return;
+            }
+
+            setRenderTick(t => t + 1); // Trigger React visual render
             animationFrameId = requestAnimationFrame(updateGame);
         };
 
@@ -139,8 +133,7 @@ export default function FlappyWeed({ onExit }) {
         }
 
         return () => cancelAnimationFrame(animationFrameId);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [gameState, birdPos, birdVelocity]);
+    }, [gameState]);
 
     return (
         <motion.div
@@ -154,7 +147,7 @@ export default function FlappyWeed({ onExit }) {
                 <button className="back-btn" onClick={onExit}><ArrowLeft size={24} /></button>
                 <h2>ROULE-TA-FLEUR</h2>
                 <div className="score-display">
-                    <Coins size={16} color="#ffcc00" /> {(score * 100)}
+                    <Coins size={16} color="#ffcc00" /> {(score * 50000)}
                 </div>
             </div>
 
@@ -177,7 +170,7 @@ export default function FlappyWeed({ onExit }) {
                     <div className="overlay-menu">
                         <h1 style={{ color: '#ff3333' }}>CRASH !</h1>
                         <p>Score : {score} tuyaux</p>
-                        <p>Gains : <strong style={{ color: '#ffcc00' }}>{score * 100} 🟡</strong></p>
+                        <p>Gains : <strong style={{ color: '#ffcc00' }}>{score * 50000} 🟡</strong></p>
                         <button className="start-btn" onClick={(e) => { e.stopPropagation(); startGame(); }}>REJOUER</button>
                     </div>
                 )}
@@ -187,14 +180,14 @@ export default function FlappyWeed({ onExit }) {
                         <div
                             className="bird"
                             style={{
-                                transform: `translateY(${birdPos}px) rotate(${Math.min(birdVelocity * 3, 90)}deg)`,
+                                transform: `translateY(${birdRef.current.y}px) rotate(${Math.min(birdRef.current.v * 3, 90)}deg)`,
                                 left: '50px'
                             }}
                         >
                             ☁️🧔🏻‍♂️
                         </div>
 
-                        {pipes.map((pipe, idx) => (
+                        {pipesRef.current.map((pipe, idx) => (
                             <React.Fragment key={idx}>
                                 {/* Upper Pipe */}
                                 <div

@@ -127,7 +127,7 @@ export default function ChampiNinja({ onExit }) {
                 <button className="back-btn" onClick={onExit}><ArrowLeft size={24} /></button>
                 <h2>CHAMPI NINJA</h2>
                 <div className="score-display">
-                    <Coins size={16} color="#ffcc00" /> {score}
+                    <Coins size={16} color="#ffcc00" /> {score * 5000}
                 </div>
             </div>
 
