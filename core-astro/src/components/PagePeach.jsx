@@ -86,11 +86,11 @@ export default function PagePeach() {
         </div>
 
         <button
-          className="btn-primary massage-btn"
+          className="btn-primary massage-btn shine-effect"
           onClick={() => setShowMassageModal(true)}
-          style={{ width: '100%', marginTop: '20px', background: 'linear-gradient(135deg, #ff00ff, #aa00aa)' }}
         >
-          <Sparkles size={20} /> Commander un Massage VIP (50k 🟡)
+          <Sparkles size={22} className="btn-icon" />
+          <span>Commander un Massage VIP <br /><small>(50k 🟡)</small></span>
         </button>
       </div>
 
@@ -363,6 +363,32 @@ export default function PagePeach() {
           width: 100%; margin-top: 10px; background: linear-gradient(90deg, #ff00ff, #ff0055);
           display: flex; justify-content: center; align-items: center; gap: 10px;
           font-weight: bold; font-size: 1.1rem; padding: 15px; border-radius: 15px;
+        }
+
+        /* PREMIUM VIP MASSAGE BUTTON */
+        .massage-btn {
+          width: 100%; margin-top: 25px;
+          background: linear-gradient(135deg, #ff00ff 0%, #aa00aa 50%, #440044 100%);
+          border: 2px solid #ffbbee;
+          box-shadow: 0 0 20px rgba(255, 0, 255, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.2);
+          color: white; font-weight: 900; font-size: 1.15rem;
+          padding: 18px; border-radius: 20px;
+          position: relative; overflow: hidden;
+          display: flex; align-items: center; justify-content: center; gap: 12px;
+          text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .massage-btn .btn-icon { color: #ffbbee; filter: drop-shadow(0 0 5px white); }
+        .massage-btn small { font-size: 0.8rem; opacity: 0.8; text-transform: none; }
+
+        .shine-effect::before {
+          content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+          background: linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent);
+          transform: skewX(-20deg); animation: shine 3s infinite;
+        }
+        @keyframes shine {
+          0% { left: -100%; }
+          20% { left: 200%; }
+          100% { left: 200%; }
         }
       `}</style>
     </motion.div>

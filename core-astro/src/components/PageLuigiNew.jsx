@@ -135,7 +135,7 @@ export default function PageLuigiNew() {
           position: relative;
           overflow-y: auto;
           overflow-x: hidden;
-          padding: calc(var(--safe-top) + 20px) 15px 40px 15px;
+          padding: calc(var(--safe-top) + 20px) 15px 120px 15px; /* Added massive bottom padding for tab bar */
         }
 
         .gas-ambient {
