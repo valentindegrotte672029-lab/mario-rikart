@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
-import { Activity, ShieldAlert, Swords, Zap, XCircle, ShoppingBag, Users, Camera } from 'lucide-react';
+import { Activity, ShieldAlert, Swords, Zap, XCircle, ShoppingBag, Users, Camera, Heart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Connexion au serveur Node (Environnement dynamique)
@@ -13,9 +13,10 @@ function App() {
   const [players, setPlayers] = useState(0);
   const [orders, setOrders] = useState([]);
   const [bereals, setBereals] = useState([]);
+  const [massages, setMassages] = useState([]);
   const [leaderboards, setLeaderboards] = useState({ FLAPPYWEED: {}, CHAMPININJA: {}, DOODLEWEED: {} });
   const [activeHappening, setActiveHappening] = useState(null);
-  const [activeTab, setActiveTab] = useState('WARIO'); // 'WARIO', 'BEREAL', 'ARCADE'
+  const [activeTab, setActiveTab] = useState('WARIO'); // 'WARIO', 'BEREAL', 'ARCADE', 'MASSAGES'
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -36,6 +37,9 @@ function App() {
     socket.on('bereal_broadcast', (post) => setBereals(prev => [post, ...prev]));
     socket.on('bereal_deleted', (postId) => setBereals(prev => prev.filter(b => b.id !== postId)));
 
+    // Réception Massages
+    socket.on('massage_order_received', (massage) => setMassages(prev => [massage, ...prev]));
+
     // Réception Leaderboards
     socket.on('leaderboards_update', (data) => setLeaderboards(data));
 
@@ -48,6 +52,7 @@ function App() {
       socket.off('bereals_history');
       socket.off('bereal_broadcast');
       socket.off('bereal_deleted');
+      socket.off('massage_order_received');
       socket.off('leaderboards_update');
     };
   }, []);
@@ -145,6 +150,13 @@ function App() {
             style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '10px', fontWeight: 'bold', border: 'none', cursor: 'pointer', background: activeTab === 'ARCADE' ? '#39ff14' : '#222', color: activeTab === 'ARCADE' ? '#000' : '#aaa' }}
           >
             <Swords size={18} /> LUI-WEED ARCADE
+          </button>
+
+          <button
+            onClick={() => setActiveTab('MASSAGES')}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '10px', fontWeight: 'bold', border: 'none', cursor: 'pointer', background: activeTab === 'MASSAGES' ? '#ff00ff' : '#222', color: activeTab === 'MASSAGES' ? '#fff' : '#aaa' }}
+          >
+            <Heart size={18} /> MASSAGES PEACH ({massages.length})
           </button>
         </div>
 
@@ -278,6 +290,46 @@ function App() {
                 </div>
 
               </div>
+            </div>
+          )}
+
+          {/* --- ONGLET MASSAGES PEACH --- */}
+          {activeTab === 'MASSAGES' && (
+            <div style={{ flex: 1, overflowY: 'auto' }}>
+              <h2 style={{ color: '#ffbbee', marginBottom: '20px', borderBottom: '1px solid #ff00ff', paddingBottom: '10px' }}>💆‍♀️ Carnet de Rendez-vous Massages</h2>
+              {massages.length === 0 ? (
+                <p style={{ color: '#888', fontStyle: 'italic', textAlign: 'center', marginTop: '50px' }}>Aucun massage commandé pour l'instant.</p>
+              ) : (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '15px' }}>
+                  {massages.map((massage, idx) => (
+                    <div key={idx} style={{ background: '#200', border: '1px solid #ff00ff', borderRadius: '15px', padding: '15px', position: 'relative' }}>
+
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+                        <strong style={{ color: 'white', fontSize: '1.2rem' }}>{massage.username}</strong>
+                        <span style={{ color: '#ffbbee', fontSize: '0.9rem' }}>{new Date(massage.timestamp).toLocaleTimeString()}</span>
+                      </div>
+
+                      <p style={{ color: '#ccc', margin: '5px 0' }}>
+                        Pour : <strong style={{ color: 'white' }}>{massage.recipient}</strong>
+                      </p>
+
+                      <div style={{ marginTop: '15px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: '#ffbbee', marginBottom: '5px' }}>
+                          <span>Chill 🧊</span>
+                          <span>Hot 🔥 ({massage.intensity}%)</span>
+                        </div>
+                        <div style={{ width: '100%', height: '8px', background: '#330033', borderRadius: '4px', overflow: 'hidden' }}>
+                          <div style={{ width: `${massage.intensity}%`, height: '100%', background: 'linear-gradient(90deg, #00ffff, #ff00ff, #ff0000)' }}></div>
+                        </div>
+                      </div>
+
+                      <div style={{ marginTop: '15px', color: '#ffaa00', fontSize: '0.9rem', fontWeight: 'bold' }}>
+                        Payé : {massage.price} 🟡
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 

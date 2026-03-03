@@ -46,7 +46,7 @@ class ErrorBoundary extends Component {
 }
 
 export default function App() {
-  const { speedBoost, currentPage, happening, triggerHappening, username, setBereals, addBereal, deleteBereal, setLeaderboards } = useStore();
+  const { speedBoost, currentPage, happening, triggerHappening, username, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers } = useStore();
 
   // Gestion des WebSockets en temps réel (Remplace le mock)
   useEffect(() => {
@@ -61,16 +61,18 @@ export default function App() {
       socket.on('leaderboards_update', (leaderboards) => setLeaderboards(leaderboards));
       socket.on('bereal_broadcast', (post) => addBereal(post));
       socket.on('bereal_deleted', (postId) => deleteBereal(postId));
+      socket.on('active_users', (users) => setActiveUsers(users));
 
       return () => {
         socket.off('global_happening');
         socket.off('bereals_history');
         socket.off('bereal_broadcast');
         socket.off('bereal_deleted');
+        socket.off('active_users');
         socket.disconnect();
       };
     }
-  }, [username, triggerHappening, setBereals, addBereal]);
+  }, [username, triggerHappening, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers]);
 
   // Couleurs dynamiques selon la page pour l'ambiance globale
   const getThemeColor = (page) => {

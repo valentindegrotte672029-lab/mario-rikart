@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lock, Heart, ShieldAlert } from 'lucide-react';
+import { Lock, Heart, ShieldAlert, Sparkles, X } from 'lucide-react';
 import useStore from '../store/useStore';
+import { socket } from '../socket';
 
 export default function PagePeach() {
-  const { spendCoins } = useStore();
+  const { username, activeUsers, spendCoins } = useStore();
   const [bblAlert, setBblAlert] = useState(false);
   const [bblClicks, setBblClicks] = useState(0);
+
+  const [showMassageModal, setShowMassageModal] = useState(false);
+  const [massageIntensity, setMassageIntensity] = useState(50);
+  const [massageRecipient, setMassageRecipient] = useState('Moi-même');
+  const [isSending, setIsSending] = useState(false);
 
   // Simulation d'un événement aléatoire BBL Balloon
   React.useEffect(() => {
@@ -23,6 +29,25 @@ export default function PagePeach() {
       setBblAlert(false);
       setBblClicks(0);
     }
+  };
+
+  const handleSendMassage = () => {
+    if (window.navigator?.vibrate) window.navigator.vibrate([50, 50, 50]);
+    setIsSending(true);
+    spendCoins(50000, 'MASSAGE PEACH');
+
+    socket.emit('new_massage_order', {
+      recipient: massageRecipient,
+      intensity: massageIntensity,
+      price: 50000
+    });
+
+    setTimeout(() => {
+      setIsSending(false);
+      setShowMassageModal(false);
+      setMassageIntensity(50);
+      setMassageRecipient('Moi-même');
+    }, 1000);
   };
 
   return (
@@ -59,7 +84,63 @@ export default function PagePeach() {
             <span className="price-tag gold">5M 🟡</span>
           </div>
         </div>
+
+        <button
+          className="btn-primary massage-btn"
+          onClick={() => setShowMassageModal(true)}
+          style={{ width: '100%', marginTop: '20px', background: 'linear-gradient(135deg, #ff00ff, #aa00aa)' }}
+        >
+          <Sparkles size={20} /> Commander un Massage VIP (50k 🟡)
+        </button>
       </div>
+
+      {showMassageModal && (
+        <div className="massage-modal-overlay">
+          <div className="glass-panel mobile-card massage-modal">
+            <div className="modal-header">
+              <h2>Réserver un Massage</h2>
+              <button className="close-btn" onClick={() => setShowMassageModal(false)}><X size={24} /></button>
+            </div>
+
+            <div className="form-group">
+              <label>Pour qui ?</label>
+              <select
+                value={massageRecipient}
+                onChange={(e) => setMassageRecipient(e.target.value)}
+                className="custom-select"
+              >
+                <option value="Moi-même">Moi-même</option>
+                {activeUsers.filter(u => u !== username && u !== 'Master').map((u, i) => (
+                  <option key={i} value={u}>{u}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label>Intensité du Massage : {massageIntensity}%</label>
+              <div className="slider-labels">
+                <span>Chill 🧊</span>
+                <span>Hot 🔥</span>
+              </div>
+              <input
+                type="range"
+                min="1" max="100"
+                value={massageIntensity}
+                onChange={(e) => setMassageIntensity(e.target.value)}
+                className="custom-slider"
+              />
+            </div>
+
+            <button
+              className={`btn-primary confirm-massage-btn ${isSending ? 'sending' : ''}`}
+              onClick={handleSendMassage}
+              disabled={isSending}
+            >
+              <Heart size={20} /> {isSending ? 'Envoi...' : 'Valider la Commande'}
+            </button>
+          </div>
+        </div>
+      )}
 
       <AnimatePresence>
         {bblAlert && (
@@ -226,6 +307,62 @@ export default function PagePeach() {
         @keyframes bounce {
           from { transform: translateY(0px) scale(0.9); }
           to { transform: translateY(-10px) scale(1.1); }
+        }
+
+        /* MASSAGE MODAL UI */
+        .massage-modal-overlay {
+          position: absolute; top:0; left:0; width:100%; height:100%;
+          background: rgba(0,0,0,0.8); z-index: 100;
+          display: flex; align-items: center; justify-content: center;
+          padding: 20px; backdrop-filter: blur(10px);
+        }
+        
+        .massage-modal {
+          width: 100%;
+          background: rgba(30, 0, 30, 0.9);
+          border: 1px solid #ff00ff;
+          padding: 25px;
+        }
+
+        .modal-header {
+          display: flex; justify-content: space-between; align-items: center;
+          margin-bottom: 25px; border-bottom: 1px solid rgba(255,0,255,0.3);
+          padding-bottom: 15px; color: white;
+        }
+
+        .modal-header h2 { font-size: 1.4rem; color: #ffbbee; text-transform: uppercase; letter-spacing: 1px;}
+        .close-btn { background: transparent; border: none; color: #ffbbee; }
+
+        .form-group { margin-bottom: 25px; display: flex; flex-direction: column; gap: 10px;}
+        .form-group label { color: #ffbbee; font-weight: bold; }
+
+        .custom-select {
+          background: rgba(0,0,0,0.5); border: 1px solid #ff00ff;
+          color: white; padding: 12px; border-radius: 12px;
+          font-size: 1.1rem; appearance: none;
+        }
+
+        .slider-labels { display: flex; justify-content: space-between; font-size: 0.9rem; color: #aaa; margin-bottom: 5px; }
+        
+        /* Custom Slider */
+        .custom-slider {
+          -webkit-appearance: none; width: 100%; background: transparent;
+        }
+        .custom-slider::-webkit-slider-thumb {
+          -webkit-appearance: none; height: 25px; width: 25px; border-radius: 50%;
+          background: #ff00ff; cursor: pointer; box-shadow: 0 0 10px #ff00ff;
+          margin-top: -10px;
+        }
+        .custom-slider::-webkit-slider-runnable-track {
+          width: 100%; height: 5px; cursor: pointer;
+          background: linear-gradient(to right, #00ffff, #ff00ff, #ff0000);
+          border-radius: 5px;
+        }
+
+        .confirm-massage-btn {
+          width: 100%; margin-top: 10px; background: linear-gradient(90deg, #ff00ff, #ff0055);
+          display: flex; justify-content: center; align-items: center; gap: 10px;
+          font-weight: bold; font-size: 1.1rem; padding: 15px; border-radius: 15px;
         }
       `}</style>
     </motion.div>

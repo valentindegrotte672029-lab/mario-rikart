@@ -8,6 +8,8 @@ const useStore = create((set) => ({
     // Navigation
     currentPage: 'HOME', // HOME, LUIGI, TOAD, PEACH, MARIO, WARIO
     speedBoost: false,
+    activeUsers: [],
+    setActiveUsers: (users) => set({ activeUsers: users }),
     setPage: (page) => set({ currentPage: page, speedBoost: true }),
     resetSpeed: () => set({ speedBoost: false }),
 

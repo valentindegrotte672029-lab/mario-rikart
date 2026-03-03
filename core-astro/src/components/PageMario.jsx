@@ -237,7 +237,7 @@ export default function PageMario() {
                 <Type size={18} color="#aaa" />
                 <input
                   type="text"
-                  placeholder="Légende Goumin..."
+                  placeholder="Légende B.O...."
                   value={caption}
                   onChange={(e) => setCaption(e.target.value)}
                   className="caption-input"

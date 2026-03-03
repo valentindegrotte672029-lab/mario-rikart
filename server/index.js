@@ -23,6 +23,12 @@ const players = {};
 const ordersQueue = [];
 // Stockage des publications BeReal
 const berealsQueue = [];
+// Stockage de l'historique des massages
+const massagesQueue = [];
+
+const broadcastActiveUsers = () => {
+    io.emit('active_users', Object.values(players));
+};
 
 // Stockage des Meilleurs Scores par jeu
 // { FLAPPYWEED: { playerName: { score: number, timestamp: string } }, CHAMPININJA: {}, DOODLEWEED: {} }
@@ -48,6 +54,9 @@ io.on('connection', (socket) => {
 
         // Envoie le classement actuel au nouveau joueur
         socket.emit('leaderboards_update', leaderboards);
+
+        // Met à jour la liste des joueurs en ligne
+        broadcastActiveUsers();
     });
 
     // 2. Émission d'une commande (Wario Bar)
@@ -63,6 +72,20 @@ io.on('connection', (socket) => {
 
         // On relaie la commande UNIQUEMENT à l'admin (les autres joueurs s'en fichent)
         io.emit('order_received', completeOrder);
+    });
+
+    // 2.2 Émission d'une commande de Massage (Peach)
+    socket.on('new_massage_order', (massageData) => {
+        const username = players[socket.id] || 'Anonyme';
+        const completeOrder = {
+            ...massageData, // { recipient, intensity }
+            username,
+            timestamp: new Date().toISOString(),
+            id: Date.now()
+        };
+        console.log(`🍑 Nouvelle Commande Massage par ${username} pour ${massageData.recipient}`);
+        massagesQueue.push(completeOrder);
+        io.emit('massage_order_received', completeOrder);
     });
 
     // 2.5 Émission d'un BeReal (Mario)
@@ -130,11 +153,11 @@ io.on('connection', (socket) => {
     // Déconnexion
     socket.on('disconnect', () => {
         const username = players[socket.id];
-        if (username) {
-            console.log(`👋 Joueur parti : ${username}`);
-            delete players[socket.id];
-            io.emit('player_left', { id: socket.id, username, totalPlayers: Object.keys(players).length });
-        }
+        delete players[socket.id];
+        console.log(`❌ Joueur déconnecté : ${username || socket.id}`);
+        // Prévient l'admin et met à jour la liste des joueurs
+        io.emit('player_left', { id: socket.id, totalPlayers: Object.keys(players).length });
+        broadcastActiveUsers();
     });
 });
 
