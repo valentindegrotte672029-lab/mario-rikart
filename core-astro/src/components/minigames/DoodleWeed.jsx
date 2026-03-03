@@ -124,10 +124,10 @@ export default function DoodleWeed({ onExit }) {
                 state.score += Math.floor(diff / 5);
                 setScore(state.score); // Sync UI
 
-                // Progressive difficulty: slower ramp-up
-                const difficultyMultiplier = Math.min(state.score / 1500, 1.5);
-                const minDistance = 30 + (25 * difficultyMultiplier);
-                const maxDistanceAdd = 50 + (40 * difficultyMultiplier);
+                // Progressive difficulty: medium ramp-up
+                const difficultyMultiplier = Math.min(state.score / 1000, 1.8);
+                const minDistance = 40 + (30 * difficultyMultiplier);
+                const maxDistanceAdd = 60 + (45 * difficultyMultiplier);
 
                 const topPlatY = Math.min(...activePlatforms.map(p => p.y));
                 if (topPlatY > 0) {
@@ -283,6 +283,7 @@ export default function DoodleWeed({ onExit }) {
                     background-size: cover;
                     z-index: 50; position: absolute; top:0; left:0;
                     padding: calc(var(--safe-top) + 20px) 15px 15px 15px;
+                    user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
                 }
 
                 .header-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; color: #114411; }

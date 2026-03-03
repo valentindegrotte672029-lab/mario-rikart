@@ -17,10 +17,13 @@ const useStore = create((set) => ({
     balance: 500000000,
     socialStatus: "PLUS DE THUNASSE QU'UN DIPLÔME DU BBA",
     lastGlitchPurchase: null, // ex: "ACHAT BLUE SHELL PRO : -99 999 999"
-    spendCoins: (amount, item) => set((state) => ({
-        balance: state.balance - amount,
-        lastGlitchPurchase: `ACHAT ${item} : -${amount} `
-    })),
+    spendCoins: (amount, item) => {
+        set((state) => ({
+            balance: state.balance - amount,
+            lastGlitchPurchase: `ACHAT ${item} : -${amount} `
+        }));
+        setTimeout(() => set({ lastGlitchPurchase: null }), 2000);
+    },
 
     // Happenings (Global Events)
     happening: null, // 'BAGARRE', 'BRAZZERS', ou null
