@@ -29,6 +29,7 @@ const useStore = create((set) => ({
     bereals: [],
     setBereals: (bereals) => set({ bereals }),
     addBereal: (bereal) => set((state) => ({ bereals: [bereal, ...state.bereals] })),
+    deleteBereal: (id) => set((state) => ({ bereals: state.bereals.filter(b => b.id !== id) })),
 
     // Leaderboards
     leaderboards: { FLAPPYWEED: {}, CHAMPININJA: {}, DOODLEWEED: {} },

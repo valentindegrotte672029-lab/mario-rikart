@@ -22,6 +22,7 @@ export default function DoodleWeed({ onExit }) {
         platforms: [],
         score: 0
     });
+    const luigiRef = useRef(null);
     const [renderTick, setRenderTick] = useState(0);
 
     const endGame = () => {
@@ -73,6 +74,8 @@ export default function DoodleWeed({ onExit }) {
             if (nextX > GAME_WIDTH) nextX = -30;
 
             // --- COLLISION DETECTION (Only falling down) ---
+            let platformsChanged = false;
+
             if (currentLuigi.vy > 0) {
                 let hitPlatform = null;
                 let keptPlatforms = [];
@@ -94,6 +97,10 @@ export default function DoodleWeed({ onExit }) {
                         keptPlatforms.push(plat);
                     }
                 }
+
+                if (currentPlatforms.length !== keptPlatforms.length) {
+                    platformsChanged = true;
+                }
                 currentPlatforms = keptPlatforms;
 
                 if (hitPlatform) {
@@ -104,6 +111,7 @@ export default function DoodleWeed({ onExit }) {
 
             // --- CAMERA PANNING & SCORING ---
             if (nextY < 250) {
+                platformsChanged = true;
                 const diff = 250 - nextY;
                 nextY = 250;
 
@@ -143,7 +151,14 @@ export default function DoodleWeed({ onExit }) {
             state.platforms = currentPlatforms;
             stateRef.current = state;
 
-            setRenderTick(t => t + 1);
+            if (luigiRef.current) {
+                luigiRef.current.style.transform = `translate(${nextX}px, ${nextY}px) scaleX(${currentLuigi.vx < 0 ? -1 : 1})`;
+            }
+
+            if (platformsChanged) {
+                setRenderTick(t => t + 1);
+            }
+
             animationFrameId = requestAnimationFrame(updateGame);
         };
 
@@ -238,11 +253,10 @@ export default function DoodleWeed({ onExit }) {
                     {/* Luigi */}
                     {(gameState === 'PLAYING' || gameState === 'GAMEOVER') && (
                         <div
-                            className="player-luigi"
+                            className="luigi"
+                            ref={luigiRef}
                             style={{
-                                left: `${stateRef.current.luigi.x}px`,
-                                top: `${stateRef.current.luigi.y}px`,
-                                transform: `scaleX(${stateRef.current.luigi.vx < 0 ? -1 : 1})`
+                                transform: `translate(${stateRef.current.luigi.x}px, ${stateRef.current.luigi.y}px) scaleX(${stateRef.current.luigi.vx < 0 ? -1 : 1})`
                             }}
                         >
                             🧔🏻‍♂️

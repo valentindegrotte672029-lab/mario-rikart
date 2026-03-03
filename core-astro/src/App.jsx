@@ -46,7 +46,7 @@ class ErrorBoundary extends Component {
 }
 
 export default function App() {
-  const { speedBoost, currentPage, happening, triggerHappening, username, setBereals, addBereal, setLeaderboards } = useStore();
+  const { speedBoost, currentPage, happening, triggerHappening, username, setBereals, addBereal, deleteBereal, setLeaderboards } = useStore();
 
   // Gestion des WebSockets en temps réel (Remplace le mock)
   useEffect(() => {
@@ -60,11 +60,13 @@ export default function App() {
       socket.on('bereals_history', (history) => setBereals(history));
       socket.on('leaderboards_update', (leaderboards) => setLeaderboards(leaderboards));
       socket.on('bereal_broadcast', (post) => addBereal(post));
+      socket.on('bereal_deleted', (postId) => deleteBereal(postId));
 
       return () => {
         socket.off('global_happening');
         socket.off('bereals_history');
         socket.off('bereal_broadcast');
+        socket.off('bereal_deleted');
         socket.disconnect();
       };
     }

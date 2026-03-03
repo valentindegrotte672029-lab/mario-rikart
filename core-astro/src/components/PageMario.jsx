@@ -12,6 +12,7 @@ const STICKERS_GALLERY = ['🍄', '⭐️', '🔥', '💩', '💸', '🍷', '�
 export default function PageMario() {
   const { username, bereals } = useStore();
   const [step, setStep] = useState('FEED'); // FEED, CAPTURE_BACK, CAPTURE_FRONT, EDIT
+  const [swappedPosts, setSwappedPosts] = useState({});
   const [backPhoto, setBackPhoto] = useState(null);
   const [frontPhoto, setFrontPhoto] = useState(null);
 
@@ -49,24 +50,44 @@ export default function PageMario() {
     ]);
   };
 
+  const toggleSwap = (id) => {
+    if (window.navigator?.vibrate) window.navigator.vibrate(20);
+    setSwappedPosts(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
   const handleSend = async () => {
     setIsSending(true);
     if (window.navigator?.vibrate) window.navigator.vibrate([50, 100, 50]);
 
     // Prendre un screenshot du container avec html2canvas (pour incruster texte et emojis d'un coup)
     const element = document.querySelector('.photo-editor-container');
+    const bgImg = element.querySelector('.bg-photo');
+    const frontImg = element.querySelector('.front-photo-inset img');
 
     try {
-      const canvas = await html2canvas(element, {
+      // 1. Image Normale
+      const canvas1 = await html2canvas(element, {
         backgroundColor: null,
         scale: 1 // Garder une taille raisonnable
       });
-      const finalImageBase64 = canvas.toDataURL('image/jpeg', 0.7);
+      const finalImageBase64 = canvas1.toDataURL('image/jpeg', 0.6);
+
+      // 2. Inversion Temporaire pour capture
+      bgImg.src = frontPhoto;
+      frontImg.src = backPhoto;
+
+      const canvas2 = await html2canvas(element, { backgroundColor: null, scale: 1 });
+      const swappedImageBase64 = canvas2.toDataURL('image/jpeg', 0.6);
+
+      // Restauration UI Editor
+      bgImg.src = backPhoto;
+      frontImg.src = frontPhoto;
 
       // Envoi de la notification et de l'image
       socket.emit('new_bereal', {
         caption,
-        image: finalImageBase64
+        image: finalImageBase64,
+        swappedImage: swappedImageBase64
       });
 
     } catch (err) {
@@ -121,7 +142,13 @@ export default function PageMario() {
                       <strong>{post.username}</strong>
                       <span className="post-time">{new Date(post.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                     </div>
-                    <img src={post.image} alt="BeReal" className="post-image" />
+                    <img
+                      src={swappedPosts[post.id] && post.swappedImage ? post.swappedImage : post.image}
+                      alt="BeReal"
+                      className="post-image"
+                      onClick={() => toggleSwap(post.id)}
+                      style={{ cursor: post.swappedImage ? 'pointer' : 'default' }}
+                    />
                     {post.caption && <p className="post-caption-text">{post.caption}</p>}
                   </div>
                 ))
