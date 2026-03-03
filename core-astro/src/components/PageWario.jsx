@@ -13,22 +13,22 @@ export default function PageWario() {
   const [orderQr, setOrderQr] = useState(null);
 
   const menu = [
-    { id: 'ricard', name: 'Gourdasse 50cc (Ricard/Eau)', price: 50, icon: '🥃' },
-    { id: 'vodka', name: 'Gourdasse 100cc (Vodka/Redbull)', price: 100, icon: '🍹' },
-    { id: 'destruct', name: 'Gourdasse 200cc (Destruction)', price: 200, icon: '☠️' },
-    { id: 'pizza', name: 'Pizza 4 Formaggio', price: 120, icon: '🍕' },
-    { id: 'spacecake', name: 'Space Cake Étoile', price: 150, icon: '⭐' },
+    { id: 'ricard', name: 'Gourdasse (Ricard/Eau)', price: 15, icon: '🥃' },
+    { id: 'vodka', name: 'Gourdasse (Vodka/Redbull)', price: 25, icon: '🍹' },
+    { id: 'destruct', name: 'Gourdasse Destruction', price: 50, icon: '☠️' },
+    { id: 'pizza', name: 'Pizza 4 Formaggi', price: 200, icon: '🍕' },
+    { id: 'spacecake', name: 'Space Cake Magique', price: 300, icon: '⭐' },
   ];
 
   const handleBuy = (item) => {
-    spendCoins(item.price * 1000, item.name.toUpperCase());
+    spendCoins(item.price, item.name.toUpperCase());
     if (window.navigator?.vibrate) window.navigator.vibrate([30, 50, 30]);
 
     // Emission Websocket au panel Admin
-    socket.emit('new_order', { item: item.name, price: item.price * 1000, id: item.id });
+    socket.emit('new_order', { item: item.name, price: item.price, id: item.id });
 
     // Génération mock de QR Code
-    setOrderQr(`WRO - ${ Math.random().toString(36).substring(7).toUpperCase() } `);
+    setOrderQr(`WRO - ${Math.random().toString(36).substring(7).toUpperCase()} `);
   };
 
   return (
@@ -49,9 +49,9 @@ export default function PageWario() {
               <div className="item-icon-circle">{item.icon}</div>
               <div className="item-details">
                 <h4>{item.name}</h4>
-                <p>{item.price}k 🟡</p>
+                <p className="wario-price-tag">{item.price} 🟡</p>
               </div>
-              <ChevronRight size={20} color="#666" className="chevron" />
+              <ChevronRight size={20} color="#ffcc00" className="chevron" />
               {index !== menu.length - 1 && <div className="ios-separator"></div>}
             </div>
           ))}

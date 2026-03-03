@@ -14,8 +14,8 @@ const useStore = create((set) => ({
     resetSpeed: () => set({ speedBoost: false }),
 
     // Toad Bank State
-    balance: 500000000,
-    socialStatus: "PLUS DE THUNASSE QU'UN DIPLÔME DU BBA",
+    balance: 100,
+    socialStatus: "PAUVRE HÈRE DU ROYAUME (RMI)",
     lastGlitchPurchase: null, // ex: "ACHAT BLUE SHELL PRO : -99 999 999"
     spendCoins: (amount, item) => {
         set((state) => ({

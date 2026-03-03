@@ -29,7 +29,7 @@ export default function DoodleWeed({ onExit }) {
         setGameState('GAMEOVER');
         if (window.navigator?.vibrate) window.navigator.vibrate([200, 100, 200]);
         if (stateRef.current.score > 0) {
-            useStore.setState(state => ({ balance: state.balance + (stateRef.current.score * 50000) }));
+            useStore.setState(state => ({ balance: state.balance + (stateRef.current.score * 2) }));
             socket.emit('submit_score', { game: 'DOODLEWEED', score: stateRef.current.score });
         }
     };
@@ -254,7 +254,7 @@ export default function DoodleWeed({ onExit }) {
                     <div className="overlay-menu">
                         <h1>CHUTE</h1>
                         <p>Score: {score}</p>
-                        <p>Gains: <strong style={{ color: '#ffcc00' }}>{score * 50000} 🟡</strong></p>
+                        <p>Gains: <strong style={{ color: '#ffcc00' }}>{score * 2} 🟡</strong></p>
                         <button className="start-btn" onClick={startGame}>REJOUER</button>
                     </div>
                 )}
@@ -297,11 +297,11 @@ export default function DoodleWeed({ onExit }) {
                 __html: `
                 .doodleweed-mobile {
                     --theme-color: #00cc66;
-                    width: 100%; height: 100%; display: flex; flex-direction: column;
+                    width: 100vw; height: 100dvh; display: flex; flex-direction: column;
                     background: url('/grid-paper.png'), linear-gradient(to bottom, #e0ffe0 0%, #a0cca0 100%);
                     background-size: cover;
-                    z-index: 50; position: absolute; top:0; left:0;
-                    padding: calc(var(--safe-top) + 20px) 15px 15px 15px;
+                    z-index: 1000; position: fixed; top:0; left:0; right: 0; bottom: 0;
+                    padding: calc(var(--safe-top) + 20px) 15px 30px 15px;
                     user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
                 }
 
@@ -323,7 +323,7 @@ export default function DoodleWeed({ onExit }) {
                 .start-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #002200; }
 
                 .play-area {
-                    width: 100%; height: 100%; position: relative; overflow: hidden;
+                    flex: 1; width: 100%; height: 100%; min-height: 100%; position: relative; overflow: hidden;
                 }
 
                 .luigi {
