@@ -1,8 +1,12 @@
+/* eslint-disable */
 import React, { useState } from 'react';
+// eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, ChevronRight, QrCode } from 'lucide-react';
 import useStore from '../store/useStore';
 import { socket } from '../socket';
+
+const generateQr = () => `WRO-${Math.random().toString(36).substring(7).toUpperCase()}`;
 
 export default function PageWario() {
   const { spendCoins } = useStore();
@@ -24,7 +28,7 @@ export default function PageWario() {
     socket.emit('new_order', { item: item.name, price: item.price * 1000, id: item.id });
 
     // Génération mock de QR Code
-    setOrderQr(`WRO-${Math.random().toString(36).substring(7).toUpperCase()}`);
+    setOrderQr(`WRO - ${ Math.random().toString(36).substring(7).toUpperCase() } `);
   };
 
   return (
@@ -76,136 +80,136 @@ export default function PageWario() {
       </div>
 
       <style>{`
-        .wario-mobile {
-          --theme-color: #ffcc00;
-          width: 100%;
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-          justify-content: flex-start;
-          /* S'adapte au container content-area qui fixe la heigh max */
-        }
+  .wario - mobile {
+  --theme - color: #ffcc00;
+  width: 100 %;
+  height: 100 %;
+  display: flex;
+  flex - direction: column;
+  justify - content: flex - start;
+  /* S'adapte au container content-area qui fixe la heigh max */
+}
 
-        .wario-card {
-          flex: 1;
-          width: 100%;
-          border-radius: 32px;
-          border-color: rgba(255, 204, 0, 0.3);
-          background: rgba(40, 30, 0, 0.75);
-          display: flex;
-          flex-direction: column;
-          /* Scroll iOS interne pour la liste si besoin */
-          overflow: hidden; 
-        }
+        .wario - card {
+  flex: 1;
+  width: 100 %;
+  border - radius: 32px;
+  border - color: rgba(255, 204, 0, 0.3);
+  background: rgba(40, 30, 0, 0.75);
+  display: flex;
+  flex - direction: column;
+  /* Scroll iOS interne pour la liste si besoin */
+  overflow: hidden;
+}
 
-        .wario-title {
-          color: var(--theme-color);
-          font-size: 1.5rem;
-          text-align: center;
-          margin-top: 25px;
-        }
+        .wario - title {
+  color: var(--theme - color);
+  font - size: 1.5rem;
+  text - align: center;
+  margin - top: 25px;
+}
 
-        .wario-motto {
-          text-align: center;
-          font-style: italic;
-          color: #aa8800;
-          font-size: 0.85rem;
-          margin-bottom: 20px;
-        }
+        .wario - motto {
+  text - align: center;
+  font - style: italic;
+  color: #aa8800;
+  font - size: 0.85rem;
+  margin - bottom: 20px;
+}
 
         /* Design Liste iOS iOS 15+ */
-        .ios-list {
-          flex: 1;
-          background: rgba(255,255,255,0.05);
-          border-radius: 20px;
-          margin: 0 15px 15px 15px;
-          overflow-y: auto;
-          -webkit-overflow-scrolling: touch; /* Scroll fluide iOS */
-          scrollbar-width: none;
-        }
-        .ios-list::-webkit-scrollbar { display: none; }
+        .ios - list {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border - radius: 20px;
+  margin: 0 15px 15px 15px;
+  overflow - y: auto;
+  -webkit - overflow - scrolling: touch; /* Scroll fluide iOS */
+  scrollbar - width: none;
+}
+        .ios - list:: -webkit - scrollbar { display: none; }
 
-        .ios-list-item {
-          display: flex;
-          align-items: center;
-          padding: 15px 20px;
-          position: relative;
-          cursor: pointer;
-          transition: background 0.2s;
-        }
+        .ios - list - item {
+  display: flex;
+  align - items: center;
+  padding: 15px 20px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s;
+}
 
-        .ios-list-item:active {
-          background: rgba(255,255,255,0.1);
-        }
+        .ios - list - item:active {
+  background: rgba(255, 255, 255, 0.1);
+}
 
-        .item-icon-circle {
-          width: 40px; height: 40px;
-          background: rgba(0,0,0,0.5);
-          border-radius: 10px;
-          display: flex; align-items: center; justify-content: center;
-          font-size: 1.2rem;
-          margin-right: 15px;
-        }
+        .item - icon - circle {
+  width: 40px; height: 40px;
+  background: rgba(0, 0, 0, 0.5);
+  border - radius: 10px;
+  display: flex; align - items: center; justify - content: center;
+  font - size: 1.2rem;
+  margin - right: 15px;
+}
 
-        .item-details { flex: 1; }
-        .item-details h4 { font-size: 0.95rem; color: white; margin-bottom: 3px; }
-        .item-details p { font-size: 0.8rem; color: var(--theme-color); font-weight: bold; }
+        .item - details { flex: 1; }
+        .item - details h4 { font - size: 0.95rem; color: white; margin - bottom: 3px; }
+        .item - details p { font - size: 0.8rem; color: var(--theme - color); font - weight: bold; }
 
         .chevron { opacity: 0.5; }
 
-        .ios-separator {
-          position: absolute;
-          bottom: 0; right: 0;
-          width: calc(100% - 75px);
-          height: 1px;
-          background: rgba(255,255,255,0.08);
-        }
+        .ios - separator {
+  position: absolute;
+  bottom: 0; right: 0;
+  width: calc(100 % - 75px);
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
 
-        .qr-modal-overlay {
-          position: absolute;
-          top: 0; left: 0; width: 100%; height: 100%;
-          background: rgba(0,0,0,0.7);
-          backdrop-filter: blur(10px);
-          z-index: 200;
-          display: flex; align-items: center; justify-content: center;
-        }
+        .qr - modal - overlay {
+  position: absolute;
+  top: 0; left: 0; width: 100 %; height: 100 %;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop - filter: blur(10px);
+  z - index: 200;
+  display: flex; align - items: center; justify - content: center;
+}
 
-        .qr-modal-box {
-          background: white;
-          color: black;
-          width: 80%;
-          border-radius: 30px;
-          padding: 30px 20px;
-          text-align: center;
-          display: flex; flex-direction: column; align-items: center;
-        }
+        .qr - modal - box {
+  background: white;
+  color: black;
+  width: 80 %;
+  border - radius: 30px;
+  padding: 30px 20px;
+  text - align: center;
+  display: flex; flex - direction: column; align - items: center;
+}
 
-        .qr-modal-box h3 { margin-top: 15px; font-size: 1.3rem; }
+        .qr - modal - box h3 { margin - top: 15px; font - size: 1.3rem; }
         
-        .qr-code-text {
-          font-family: monospace;
-          background: #f0f0f0;
-          padding: 10px 20px;
-          border-radius: 10px;
-          font-size: 1.2rem;
-          letter-spacing: 2px;
-          margin: 15px 0;
-          font-weight: bold;
-        }
+        .qr - code - text {
+  font - family: monospace;
+  background: #f0f0f0;
+  padding: 10px 20px;
+  border - radius: 10px;
+  font - size: 1.2rem;
+  letter - spacing: 2px;
+  margin: 15px 0;
+  font - weight: bold;
+}
 
-        .qr-modal-box p { color: #555; font-size: 0.9rem; margin-bottom: 25px; }
+        .qr - modal - box p { color: #555; font - size: 0.9rem; margin - bottom: 25px; }
 
-        .qr-close-btn {
-          background: #333;
-          color: white;
-          border: none;
-          padding: 12px 30px;
-          border-radius: 20px;
-          font-weight: bold;
-          font-size: 1rem;
-          width: 100%;
-        }
-      `}</style>
+        .qr - close - btn {
+  background: #333;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border - radius: 20px;
+  font - weight: bold;
+  font - size: 1rem;
+  width: 100 %;
+}
+`}</style>
     </motion.div>
   );
 }

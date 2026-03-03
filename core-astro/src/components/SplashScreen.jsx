@@ -1,52 +1,54 @@
 import React, { useState } from 'react';
+// eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
+
 import useStore from '../store/useStore';
 
 export default function SplashScreen() {
-    const [inputValue, setInputValue] = useState('');
-    const { setUsername } = useStore();
+  const [inputValue, setInputValue] = useState('');
+  const { setUsername } = useStore();
 
-    const handleJoin = (e) => {
-        e.preventDefault();
-        if (inputValue.trim().length > 2) {
-            if (window.navigator?.vibrate) window.navigator.vibrate([20, 50, 20]);
-            setUsername(inputValue.trim().toUpperCase());
-        }
-    };
+  const handleJoin = (e) => {
+    e.preventDefault();
+    if (inputValue.trim().length > 2) {
+      if (window.navigator?.vibrate) window.navigator.vibrate([20, 50, 20]);
+      setUsername(inputValue.trim().toUpperCase());
+    }
+  };
 
-    return (
-        <motion.div
-            className="splash-screen"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
-            transition={{ duration: 0.6 }}
-        >
-            <div className="glass-panel splash-card">
-                <h1 className="splash-title">V2026</h1>
-                <p className="splash-subtitle">MARIO RIKART EXPERIENCE</p>
+  return (
+    <motion.div
+      className="splash-screen"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0, scale: 1.1, filter: "blur(10px)" }}
+      transition={{ duration: 0.6 }}
+    >
+      <div className="glass-panel splash-card">
+        <h1 className="splash-title">V2026</h1>
+        <p className="splash-subtitle">MARIO RIKART EXPERIENCE</p>
 
-                <form onSubmit={handleJoin} className="splash-form">
-                    <input
-                        type="text"
-                        placeholder="Écris ton alias..."
-                        value={inputValue}
-                        onChange={(e) => setInputValue(e.target.value)}
-                        className="splash-input"
-                        maxLength={12}
-                        autoFocus
-                    />
-                    <button
-                        type="submit"
-                        className="splash-btn"
-                        disabled={inputValue.trim().length < 3}
-                    >
-                        ENTRER DANS LE KART
-                    </button>
-                </form>
-            </div>
+        <form onSubmit={handleJoin} className="splash-form">
+          <input
+            type="text"
+            placeholder="Écris ton alias..."
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            className="splash-input"
+            maxLength={12}
+            autoFocus
+          />
+          <button
+            type="submit"
+            className="splash-btn"
+            disabled={inputValue.trim().length < 3}
+          >
+            ENTRER DANS LE KART
+          </button>
+        </form>
+      </div>
 
-            <style>{`
+      <style>{`
         .splash-screen {
           position: fixed;
           top: 0; left: 0; right: 0; bottom: 0;
@@ -128,6 +130,6 @@ export default function SplashScreen() {
           transform: scale(0.95);
         }
       `}</style>
-        </motion.div>
-    );
+    </motion.div>
+  );
 }

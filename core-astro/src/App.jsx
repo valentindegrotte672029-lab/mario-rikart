@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Component } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { AnimatePresence } from 'framer-motion';
 
@@ -7,7 +7,7 @@ import ToadBank from './components/ToadBank';
 import TabBar from './components/TabBar';
 import SplashScreen from './components/SplashScreen';
 
-import PageLuigi from './components/PageLuigi';
+import PageLuigi from './components/PageLuigiNew';
 import PageToad from './components/PageToad';
 import PagePeach from './components/PagePeach';
 import PageMario from './components/PageMario';
@@ -16,6 +16,34 @@ import PageChrono from './components/PageChrono';
 
 import useStore from './store/useStore';
 import { socket } from './socket';
+
+class ErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null, errorInfo: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error, errorInfo) {
+    console.error("ErrorBoundary caught an error", error, errorInfo);
+    this.setState({ errorInfo });
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ zIndex: 99999, position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: '#990000', color: 'white', padding: '20px', overflow: 'auto', WebkitOverflowScrolling: 'touch' }}>
+          <h1 style={{ fontSize: '2rem', marginBottom: '10px' }}>💥 CRASH FATAL 💥</h1>
+          <p style={{ fontWeight: 'bold', fontSize: '1.2rem', marginBottom: '10px' }}>{this.state.error && this.state.error.toString()}</p>
+          <pre style={{ fontSize: '0.8rem', whiteSpace: 'pre-wrap', background: 'rgba(0,0,0,0.5)', padding: '10px' }}>
+            {this.state.errorInfo && this.state.errorInfo.componentStack}
+          </pre>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 export default function App() {
   const { speedBoost, currentPage, happening, triggerHappening, username, setBereals, addBereal } = useStore();
@@ -98,9 +126,11 @@ export default function App() {
 
       {/* 3. Contenu Principal défilant (Zone Mobile) */}
       <main className="content-area">
-        <AnimatePresence mode="wait">
-          {renderPage()}
-        </AnimatePresence>
+        <ErrorBoundary>
+          <AnimatePresence mode="wait">
+            {renderPage()}
+          </AnimatePresence>
+        </ErrorBoundary>
       </main>
 
       {/* 4. TabBar Bas (Navigation type iOS) */}

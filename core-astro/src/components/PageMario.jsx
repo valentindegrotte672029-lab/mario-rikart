@@ -1,5 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useRef } from 'react';
+// eslint-disable-next-line no-unused-vars
+import { motion } from 'framer-motion';
 import { Camera, Send, X, Type, PlusSquare, SwitchCamera } from 'lucide-react';
 import useStore from '../store/useStore';
 import { socket } from '../socket';
