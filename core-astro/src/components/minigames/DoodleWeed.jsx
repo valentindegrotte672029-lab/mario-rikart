@@ -6,8 +6,8 @@ import { ArrowLeft, Coins } from 'lucide-react';
 import useStore from '../../store/useStore';
 import { socket } from '../../socket';
 
-const GRAVITY = 0.4;
-const JUMP_FORCE = -10;
+const GRAVITY = 0.45;
+const JUMP_FORCE = -14;
 const PLATFORM_WIDTH = 60;
 const PLATFORM_HEIGHT = 15;
 // Réduire davantage la largeur pour être certain que Luigi ne touche pas le bord absolu
@@ -43,12 +43,12 @@ export default function DoodleWeed({ onExit }) {
         let currentY = 400;
         let idCount = 1;
         while (currentY > -1000) {
-            currentY -= Math.random() * 80 + 50; // Distance between platforms
+            currentY -= Math.random() * 60 + 40; // Distance between platforms
             initialPlatforms.push({
                 id: idCount++,
                 x: Math.random() * (GAME_WIDTH - PLATFORM_WIDTH),
                 y: currentY,
-                type: Math.random() > 0.8 ? 'spring' : (Math.random() > 0.9 ? 'breaking' : 'normal')
+                type: Math.random() > 0.9 ? 'spring' : 'normal'
             });
         }
         return initialPlatforms;
@@ -121,21 +121,30 @@ export default function DoodleWeed({ onExit }) {
                     if (py < 700) activePlatforms.push({ ...p, y: py });
                 }
 
-                state.score += Math.floor(diff / 10);
+                state.score += Math.floor(diff / 5);
                 setScore(state.score); // Sync UI
 
-                // Progressive difficulty: as score increases, platforms spawn further apart
-                const difficultyMultiplier = Math.min(state.score / 100, 2); // Caps at +200% distance
-                const minDistance = 50 + (20 * difficultyMultiplier);
-                const maxDistanceAdd = 80 + (40 * difficultyMultiplier);
+                // Progressive difficulty: slower ramp-up
+                const difficultyMultiplier = Math.min(state.score / 1500, 1.5);
+                const minDistance = 30 + (25 * difficultyMultiplier);
+                const maxDistanceAdd = 50 + (40 * difficultyMultiplier);
 
                 const topPlatY = Math.min(...activePlatforms.map(p => p.y));
                 if (topPlatY > 0) {
+                    // Dynamics platform types
+                    const springChance = Math.max(0.02, 0.15 - (difficultyMultiplier * 0.08));
+                    const breakChance = Math.min(0.4, 0.05 + (difficultyMultiplier * 0.25));
+
+                    const rand = Math.random();
+                    let platType = 'normal';
+                    if (rand < springChance) platType = 'spring';
+                    else if (rand < springChance + breakChance) platType = 'breaking';
+
                     activePlatforms.push({
                         id: Date.now(),
                         x: Math.random() * (GAME_WIDTH - PLATFORM_WIDTH),
                         y: topPlatY - (Math.random() * maxDistanceAdd + minDistance),
-                        type: Math.random() > 0.8 ? 'spring' : (Math.random() > 0.9 ? 'breaking' : 'normal')
+                        type: platType
                     });
                 }
                 currentPlatforms = activePlatforms;
