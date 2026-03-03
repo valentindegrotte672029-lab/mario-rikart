@@ -69,12 +69,6 @@ export default function PageMario() {
         image: finalImageBase64
       });
 
-      // On envoie aussi un simple log pour la caisse Wario du Master
-      socket.emit('new_order', {
-        username: username || "Anonyme",
-        item: `📸 A publié un BeReal ! "${caption}"`
-      });
-
     } catch (err) {
       console.error("Erreur html2canvas:", err);
     } // fallback silencieux
