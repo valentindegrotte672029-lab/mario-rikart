@@ -259,7 +259,7 @@ export default function DoodleWeed({ onExit }) {
                                 transform: `translate(${stateRef.current.luigi.x}px, ${stateRef.current.luigi.y}px) scaleX(${stateRef.current.luigi.vx < 0 ? -1 : 1})`
                             }}
                         >
-                            🧔🏻‍♂️
+                            <img src="/images/yoshi-weed.png" alt="Yoshit" className="yoshi-sprite-doodle" />
                         </div>
                     )}
                 </div>
@@ -297,10 +297,14 @@ export default function DoodleWeed({ onExit }) {
                     width: 100%; height: 100%; position: relative; overflow: hidden;
                 }
 
-                .player-luigi {
-                    position: absolute; width: 30px; height: 30px;
-                    font-size: 2rem; line-height: 1;
+                .luigi {
+                    position: absolute; width: 40px; height: 40px;
                     transition: transform 0.1s; /* Smooth flip */
+                }
+                
+                .yoshi-sprite-doodle {
+                    width: 100%; height: 100%; object-fit: contain;
+                    filter: drop-shadow(0 4px 4px rgba(0,0,0,0.3));
                 }
 
                 .platform {

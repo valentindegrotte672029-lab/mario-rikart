@@ -176,7 +176,9 @@ export default function FlappyWeed({ onExit }) {
                     <div className="overlay-menu">
                         <h1>Appuie pour Voler</h1>
                         <p>100 Pièces par Tuyau passé !</p>
-                        <div className="bird-preview" style={{ marginTop: '20px', fontSize: '3rem', animation: 'float 2s infinite alternate' }}>☁️🧔🏻‍♂️</div>
+                        <div className="bird-preview" style={{ marginTop: '20px', animation: 'float 2s infinite alternate' }}>
+                            <img src="/images/yoshi-weed.png" alt="Yoshit" className="yoshi-sprite" />
+                        </div>
                     </div>
                 )}
 
@@ -198,7 +200,7 @@ export default function FlappyWeed({ onExit }) {
                                 left: '50px'
                             }}
                         >
-                            ☁️🧔🏻‍♂️
+                            <img src="/images/yoshi-weed.png" alt="Yoshit" className="yoshi-sprite" />
                         </div>
 
                         {pipesRef.current.map((pipe, idx) => (
@@ -271,13 +273,11 @@ export default function FlappyWeed({ onExit }) {
             filter: drop-shadow(0 0 5px white);
         }
 
-        .pipe {
-            position: absolute; width: 60px; background: linear-gradient(90deg, #11dd11 0%, #00ff00 50%, #11dd11 100%);
-            border: 3px solid #005500; border-radius: 5px; z-index: 4;
-            box-shadow: inset -5px 0 10px rgba(0,0,0,0.3);
-        }
-        .upper-pipe { top: 0; border-bottom: 8px solid #005500; }
-        .lower-pipe { border-top: 8px solid #005500; }
+        .pipe { position: absolute; width: 60px; background: linear-gradient(90deg, #11dd11, #00aa00, #11dd11); border: 3px solid #005500; border-radius: 5px; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+        .upper-pipe { top: 0; border-bottom: 6px solid #005500; }
+        .lower-pipe { border-top: 6px solid #005500; }
+        
+        .yoshi-sprite { width: 45px; height: 45px; object-fit: contain; filter: drop-shadow(0 0 8px rgba(57, 255, 20, 0.6)); }
       `}</style>
         </motion.div>
     );
