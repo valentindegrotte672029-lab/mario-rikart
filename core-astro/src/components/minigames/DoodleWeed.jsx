@@ -297,7 +297,8 @@ export default function DoodleWeed({ onExit }) {
                 __html: `
                 .doodleweed-mobile {
                     --theme-color: #00cc66;
-                    width: 100vw; height: 100dvh; display: flex; flex-direction: column;
+                    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+                    display: flex; flex-direction: column;
                     background: url('/grid-paper.png'), linear-gradient(to bottom, #e0ffe0 0%, #a0cca0 100%);
                     background-size: cover;
                     z-index: 1000; position: fixed; top: 0; left: 0; right: 0; bottom: 0;

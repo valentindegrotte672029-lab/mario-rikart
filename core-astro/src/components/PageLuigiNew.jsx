@@ -106,20 +106,7 @@ export default function PageLuigiNew() {
             </div>
           </div>
         </div>
-
-        <div className="divider"></div>
-
-        <button
-          className={`btn-secondary vacuum-btn ${cleaning ? 'cleaning' : ''}`}
-          onClick={handleClean}
-        >
-          <Wind size={24} className="btn-icon" />
-          <span>{cleaning ? "Désenfumage..." : "Aspirer Notifs"}</span>
-        </button>
       </div>
-
-      {/* ESPACEUR INVISIBLE POUR GARANTIR LE SCROLL AU-DESSUS DE LA TABBAR */}
-      <div style={{ minHeight: '100px', width: '100%', flexShrink: 0 }}></div>
 
       <AnimatePresence>
         {activeGame === 'FLAPPYWEED' && <FlappyWeed key="flappyweed" onExit={() => setActiveGame(null)} />}
@@ -138,7 +125,7 @@ export default function PageLuigiNew() {
           position: relative;
           overflow-y: auto;
           overflow-x: hidden;
-          padding: calc(var(--safe-top) + 20px) 15px 120px 15px; /* Added massive bottom padding for tab bar */
+          padding: calc(var(--safe-top) + 15px) 15px 30px 15px; /* Reduced bottom padding */
         }
 
         .gas-ambient {
@@ -156,7 +143,7 @@ export default function PageLuigiNew() {
 
         .mobile-card {
           width: 100%;
-          padding: 30px 20px;
+          padding: 20px 15px; /* More compact */
           border-radius: 32px;
           border-color: rgba(57, 255, 20, 0.2);
           box-shadow: 0 10px 40px rgba(0, 50, 0, 0.5);
@@ -166,7 +153,7 @@ export default function PageLuigiNew() {
 
         .card-header {
           text-align: center;
-          margin-bottom: 30px;
+          margin-bottom: 20px;
         }
 
         .title-mobile {
@@ -184,24 +171,24 @@ export default function PageLuigiNew() {
           opacity: 0.8;
         }
 
-        .arcade-grid { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
+        .arcade-grid { display: flex; flex-direction: column; gap: 8px; margin-top: 5px; } /* Tighter gap */
         
         .arcade-btn {
           display: flex; align-items: center; background: rgba(0,0,0,0.6);
-          border: 1px solid rgba(57, 255, 20, 0.3); border-radius: 20px;
-          padding: 15px 15px 15px 12px; color: white; text-align: left; cursor: pointer;
+          border: 1px solid rgba(57, 255, 20, 0.3); border-radius: 16px; /* Smaller radius */
+          padding: 10px 12px 10px 10px; color: white; text-align: left; cursor: pointer; /* Tighter padding */
           transition: transform 0.1s, box-shadow 0.2s; position: relative; overflow: hidden;
         }
         .arcade-btn:active { transform: scale(0.97); }
         
         .pacweed-btn { background: linear-gradient(90deg, rgba(0,20,0,1) 0%, rgba(10,50,10,1) 100%); border-color: var(--theme-color); box-shadow: 0 4px 15px rgba(57,255,20,0.2); }
         
-        .game-icon { font-size: 2.2rem; margin-right: 12px; filter: drop-shadow(0 0 5px var(--theme-color)); flex-shrink: 0; }
+        .game-icon { font-size: 2rem; margin-right: 12px; filter: drop-shadow(0 0 5px var(--theme-color)); flex-shrink: 0; }
         .game-info { flex: 1; display: flex; flex-direction: column; justify-content: center; min-width: 0; padding-right: 65px; }
-        .game-info h3 { font-size: 1.05rem; font-weight: 900; color: var(--theme-color); margin-bottom: 2px; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
-        .game-info p { font-size: 0.75rem; color: #aaa; line-height: 1.3; }
+        .game-info h3 { font-size: 1rem; font-weight: 900; color: var(--theme-color); margin-bottom: 2px; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
+        .game-info p { font-size: 0.7rem; color: #aaa; line-height: 1.2; }
         
-        .play-tag { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: var(--theme-color); color: black; font-weight: 800; font-size: 0.75rem; padding: 5px 8px; border-radius: 8px; flex-shrink: 0; }
+        .play-tag { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: var(--theme-color); color: black; font-weight: 800; font-size: 0.7rem; padding: 4px 6px; border-radius: 6px; flex-shrink: 0; }
         
         .leaderboard-section {
           background: rgba(0,20,0,0.5); border: 1px solid rgba(57, 255, 20, 0.2);
@@ -246,6 +233,6 @@ export default function PageLuigiNew() {
           background: rgba(57, 255, 20, 0.1);
         }
       `}</style>
-    </motion.div>
+    </motion.div >
   );
 }
