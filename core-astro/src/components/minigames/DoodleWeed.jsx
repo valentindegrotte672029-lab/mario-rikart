@@ -29,7 +29,7 @@ export default function DoodleWeed({ onExit }) {
         setGameState('GAMEOVER');
         if (window.navigator?.vibrate) window.navigator.vibrate([200, 100, 200]);
         if (stateRef.current.score > 0) {
-            useStore.setState(state => ({ balance: state.balance + (stateRef.current.score * 10) }));
+            useStore.setState(state => ({ balance: state.balance + (stateRef.current.score * 1) }));
             socket.emit('submit_score', { game: 'DOODLEWEED', score: stateRef.current.score });
         }
     };
@@ -180,7 +180,7 @@ export default function DoodleWeed({ onExit }) {
     // --- NATIVE TOUCH BLOCKER (iOS Safari) ---
     useEffect(() => {
         const preventDefault = (e) => {
-            if (e.target.closest('.doodleweed-mobile') && !e.target.closest('button')) {
+            if (e.target.closest('.play-area')) {
                 e.preventDefault();
             }
         };
@@ -254,7 +254,7 @@ export default function DoodleWeed({ onExit }) {
                     <div className="overlay-menu">
                         <h1>CHUTE</h1>
                         <p>Score: {score}</p>
-                        <p>Gains: <strong style={{ color: '#ffcc00' }}>{score * 10} 🟡</strong></p>
+                        <p>Gains: <strong style={{ color: '#ffcc00' }}>{score * 1} 🟡</strong></p>
                         <button className="start-btn" onClick={startGame}>REJOUER</button>
                     </div>
                 )}

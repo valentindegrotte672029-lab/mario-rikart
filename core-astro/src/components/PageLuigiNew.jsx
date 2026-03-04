@@ -189,18 +189,19 @@ export default function PageLuigiNew() {
         .arcade-btn {
           display: flex; align-items: center; background: rgba(0,0,0,0.6);
           border: 1px solid rgba(57, 255, 20, 0.3); border-radius: 20px;
-          padding: 15px; color: white; text-align: left; cursor: pointer;
+          padding: 15px 15px 15px 12px; color: white; text-align: left; cursor: pointer;
           transition: transform 0.1s, box-shadow 0.2s; position: relative; overflow: hidden;
         }
         .arcade-btn:active { transform: scale(0.97); }
         
         .pacweed-btn { background: linear-gradient(90deg, rgba(0,20,0,1) 0%, rgba(10,50,10,1) 100%); border-color: var(--theme-color); box-shadow: 0 4px 15px rgba(57,255,20,0.2); }
         
-        .game-icon { font-size: 2.5rem; margin-right: 15px; filter: drop-shadow(0 0 5px var(--theme-color)); }
-        .game-info h3 { font-size: 1.1rem; font-weight: 900; color: var(--theme-color); margin-bottom: 3px; letter-spacing: 1px; }
-        .game-info p { font-size: 0.8rem; color: #888; }
+        .game-icon { font-size: 2.2rem; margin-right: 12px; filter: drop-shadow(0 0 5px var(--theme-color)); flex-shrink: 0; }
+        .game-info { flex: 1; display: flex; flex-direction: column; justify-content: center; min-width: 0; padding-right: 65px; }
+        .game-info h3 { font-size: 1.05rem; font-weight: 900; color: var(--theme-color); margin-bottom: 2px; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
+        .game-info p { font-size: 0.75rem; color: #aaa; line-height: 1.3; }
         
-        .play-tag { position: absolute; right: 15px; background: var(--theme-color); color: black; font-weight: 800; font-size: 0.8rem; padding: 5px 10px; border-radius: 10px; }
+        .play-tag { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: var(--theme-color); color: black; font-weight: 800; font-size: 0.75rem; padding: 5px 8px; border-radius: 8px; flex-shrink: 0; }
         
         .leaderboard-section {
           background: rgba(0,20,0,0.5); border: 1px solid rgba(57, 255, 20, 0.2);
