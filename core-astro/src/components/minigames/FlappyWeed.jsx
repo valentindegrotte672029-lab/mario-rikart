@@ -47,10 +47,10 @@ export default function FlappyWeed({ onExit }) {
         setGameState('GAMEOVER');
         if (window.navigator?.vibrate) window.navigator.vibrate([200, 100, 200]);
 
-        // Reward calculation : 10 coins per pipe passed
+        // Reward calculation : 50 coins per pipe passed
         // Use scoreRef.current to avoid React closure stale state
         if (scoreRef.current > 0) {
-            const reward = scoreRef.current * 10;
+            const reward = scoreRef.current * 50;
             useStore.setState(state => ({ balance: state.balance + reward }));
 
             // Send score to leaderboard
@@ -161,7 +161,7 @@ export default function FlappyWeed({ onExit }) {
                 <button className="back-btn" onClick={onExit}><ArrowLeft size={24} /></button>
                 <h2>ROULE-TA-FLEUR</h2>
                 <div className="score-display">
-                    <Coins size={16} color="#ffcc00" /> {(score * 50000)}
+                    <Coins size={16} color="#ffcc00" /> {score * 50}
                 </div>
             </div>
 
@@ -186,7 +186,7 @@ export default function FlappyWeed({ onExit }) {
                     <div className="overlay-menu">
                         <h1 style={{ color: '#ff3333' }}>CRASH !</h1>
                         <p>Score : {score} tuyaux</p>
-                        <p>Gains : <strong style={{ color: '#ffcc00' }}>{score * 50000} 🟡</strong></p>
+                        <p>Gains : <strong style={{ color: '#ffcc00' }}>{score * 50} 🟡</strong></p>
                         <button className="start-btn" onClick={(e) => { e.stopPropagation(); startGame(); }}>REJOUER</button>
                     </div>
                 )}
