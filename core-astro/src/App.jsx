@@ -1,6 +1,6 @@
 import React, { useEffect, Component } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 import RainbowRoad from './components/RainbowRoad';
 import ToadBank from './components/ToadBank';
