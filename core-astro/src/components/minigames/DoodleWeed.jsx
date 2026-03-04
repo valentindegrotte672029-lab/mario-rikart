@@ -300,8 +300,8 @@ export default function DoodleWeed({ onExit }) {
                     width: 100vw; height: 100dvh; display: flex; flex-direction: column;
                     background: url('/grid-paper.png'), linear-gradient(to bottom, #e0ffe0 0%, #a0cca0 100%);
                     background-size: cover;
-                    z-index: 1000; position: fixed; top:0; left:0; right: 0; bottom: 0;
-                    padding: calc(var(--safe-top) + 20px) 15px 30px 15px;
+                    z-index: 1000; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+                    padding: calc(var(--safe-top) + 85px) 15px 30px 15px;
                     user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
                 }
 

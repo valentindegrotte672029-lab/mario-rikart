@@ -194,7 +194,7 @@ export default function ChampiNinja({ onExit }) {
                     background: url('/grain.png'), linear-gradient(135deg, #110000 0%, #330011 100%);
                     background-blend-mode: overlay;
                     z-index: 50; position: absolute; top:0; left:0;
-                    padding: calc(var(--safe-top) + 20px) 15px 15px 15px;
+                    padding: calc(var(--safe-top) + 85px) 15px 15px 15px;
                 }
 
                 .header-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; color: var(--theme-color); }
