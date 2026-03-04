@@ -1,6 +1,6 @@
 import React, { useEffect, Component } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 
 import RainbowRoad from './components/RainbowRoad';
 import ToadBank from './components/ToadBank';
@@ -46,7 +46,7 @@ class ErrorBoundary extends Component {
 }
 
 export default function App() {
-  const { speedBoost, currentPage, setPage, happening, triggerHappening, username, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, errorMsg } = useStore();
+  const { speedBoost, currentPage, happening, triggerHappening, username, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, errorMsg } = useStore();
 
   // Gestion des WebSockets en temps réel (Remplace le mock)
   useEffect(() => {
@@ -129,20 +129,6 @@ export default function App() {
           </AnimatePresence>
         </ErrorBoundary>
       </main>
-      {/* 4. Bouton Retour Global (Visible hors du Home) */}
-      <AnimatePresence>
-        {currentPage !== 'HOME' && (
-          <motion.button
-            className="global-home-btn"
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.5 }}
-            onClick={() => setPage('HOME')}
-          >
-            🏠
-          </motion.button>
-        )}
-      </AnimatePresence>
 
       {/* 5. Alertes Happenings & Erreurs (Economie) */}
       <AnimatePresence>
@@ -219,6 +205,24 @@ export default function App() {
         }
         .content-area > * { pointer-events: auto; width: 100%; max-width: 450px; }
 
+        .global-error-toast {
+          position: fixed;
+          top: 90px;
+          left: 5%;
+          width: 90%;
+          background: rgba(220, 0, 0, 0.95);
+          color: white;
+          padding: 15px;
+          border-radius: 12px;
+          text-align: center;
+          font-weight: bold;
+          font-size: 0.95rem;
+          z-index: 10000;
+          box-shadow: 0 10px 30px rgba(255, 0, 0, 0.4);
+          border: 1px solid #ff4444;
+          backdrop-filter: blur(10px);
+        }
+
         .home-screen { display: flex; justify-content: center; }
         .main-glass { padding: 40px 30px; border-radius: 40px; text-align: center; position: relative; overflow: hidden; }
         .main-glass h1 { font-size: 3rem; font-weight: 900; margin-bottom: 10px; }
@@ -239,6 +243,6 @@ export default function App() {
         @keyframes cameraShake { 0% { transform: translate(5px, 5px) rotate(0deg); } 100% { transform: translate(-5px, -3px) rotate(1deg); } }
         @keyframes strobe { 0% { background: #ffaa00; } 100% { background: #ff0000; color: white; } }
       `}</style>
-    </div>
+    </div >
   );
 }
