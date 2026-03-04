@@ -17,12 +17,23 @@ const useStore = create((set) => ({
     balance: 100,
     socialStatus: "PAUVRE HÈRE DU ROYAUME (RMI)",
     lastGlitchPurchase: null, // ex: "ACHAT BLUE SHELL PRO : -99 999 999"
+    errorMsg: null,
     spendCoins: (amount, item) => {
-        set((state) => ({
-            balance: state.balance - amount,
+        const state = set; // Reference to get
+        const currentState = useStore.getState();
+
+        if (currentState.balance < amount) {
+            set({ errorMsg: `Tu n'as pas assez de pièces pour payer ${item} ! Joues à des mini-jeux pour gagner plus de pièces.` });
+            setTimeout(() => set({ errorMsg: null }), 5000);
+            return false;
+        }
+
+        set((s) => ({
+            balance: s.balance - amount,
             lastGlitchPurchase: `ACHAT ${item} : -${amount} `
         }));
         setTimeout(() => set({ lastGlitchPurchase: null }), 2000);
+        return true;
     },
 
     // Happenings (Global Events)

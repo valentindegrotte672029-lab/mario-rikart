@@ -10,11 +10,6 @@ export default function PagePeach() {
   const [bblAlert, setBblAlert] = useState(false);
   const [bblClicks, setBblClicks] = useState(0);
 
-  const [showMassageModal, setShowMassageModal] = useState(false);
-  const [massageIntensity, setMassageIntensity] = useState(50);
-  const [massageRecipient, setMassageRecipient] = useState('Moi-même');
-  const [isSending, setIsSending] = useState(false);
-
   // Simulation d'un événement aléatoire BBL Balloon
   React.useEffect(() => {
     const timer = setTimeout(() => setBblAlert(true), 4000);
@@ -31,24 +26,6 @@ export default function PagePeach() {
     }
   };
 
-  const handleSendMassage = () => {
-    if (window.navigator?.vibrate) window.navigator.vibrate([50, 50, 50]);
-    setIsSending(true);
-    spendCoins(50000, 'MASSAGE PEACH');
-
-    socket.emit('new_massage_order', {
-      recipient: massageRecipient,
-      intensity: massageIntensity,
-      price: 50000
-    });
-
-    setTimeout(() => {
-      setIsSending(false);
-      setShowMassageModal(false);
-      setMassageIntensity(50);
-      setMassageRecipient('Moi-même');
-    }, 1000);
-  };
 
   return (
     <motion.div
@@ -84,64 +61,8 @@ export default function PagePeach() {
             <span className="price-tag gold">5M 🟡</span>
           </div>
         </div>
-
-        <button
-          className="btn-primary massage-btn shine-effect"
-          onClick={() => setShowMassageModal(true)}
-        >
-          <Sparkles size={22} className="btn-icon" />
-          <span>Commander un Massage VIP <br /><small>(50k 🟡)</small></span>
-        </button>
-      </div>
-
-      {showMassageModal && (
-        <div className="massage-modal-overlay">
-          <div className="glass-panel mobile-card massage-modal">
-            <div className="modal-header">
-              <h2>Réserver un Massage</h2>
-              <button className="close-btn" onClick={() => setShowMassageModal(false)}><X size={24} /></button>
-            </div>
-
-            <div className="form-group">
-              <label>Pour qui ?</label>
-              <select
-                value={massageRecipient}
-                onChange={(e) => setMassageRecipient(e.target.value)}
-                className="custom-select"
-              >
-                <option value="Moi-même">Moi-même</option>
-                {activeUsers.filter(u => u !== username && u !== 'Master').map((u, i) => (
-                  <option key={i} value={u}>{u}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label>Intensité du Massage : {massageIntensity}%</label>
-              <div className="slider-labels">
-                <span>Chill 🧊</span>
-                <span>Hot 🔥</span>
-              </div>
-              <input
-                type="range"
-                min="1" max="100"
-                value={massageIntensity}
-                onChange={(e) => setMassageIntensity(e.target.value)}
-                className="custom-slider"
-              />
-            </div>
-
-            <button
-              className={`btn-primary confirm-massage-btn ${isSending ? 'sending' : ''}`}
-              onClick={handleSendMassage}
-              disabled={isSending}
-            >
-              <Heart size={20} /> {isSending ? 'Envoi...' : 'Valider la Commande'}
-            </button>
-          </div>
         </div>
-      )}
-
+      </div>
       <AnimatePresence>
         {bblAlert && (
           <motion.div
@@ -391,6 +312,6 @@ export default function PagePeach() {
           100% { left: 200%; }
         }
       `}</style>
-    </motion.div>
+    </motion.div >
   );
 }

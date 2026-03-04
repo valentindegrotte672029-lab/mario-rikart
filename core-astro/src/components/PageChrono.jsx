@@ -6,6 +6,45 @@ import { Timer, AlertTriangle, RefreshCcw } from 'lucide-react';
 export default function PageChrono() {
     const [status, setStatus] = useState('idle'); // 'idle', 'running', 'alarm'
     const timerRef = useRef(null);
+    const audioCtxRef = useRef(null);
+    const oscillatorRef = useRef(null);
+
+    const playSiren = () => {
+        if (!audioCtxRef.current) {
+            audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        const ctx = audioCtxRef.current;
+        if (ctx.state === 'suspended') ctx.resume();
+
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        // Siren effect (frequency modulation)
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(600, ctx.currentTime);
+
+        // Loop frequency up and down for a harsh alarm
+        for (let i = 0; i < 20; i++) {
+            osc.frequency.linearRampToValueAtTime(1000, ctx.currentTime + i * 0.5 + 0.25);
+            osc.frequency.linearRampToValueAtTime(600, ctx.currentTime + i * 0.5 + 0.5);
+        }
+
+        gain.gain.setValueAtTime(0, ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.5, ctx.currentTime + 0.1);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        oscillatorRef.current = osc;
+    };
+
+    const stopSiren = () => {
+        if (oscillatorRef.current) {
+            oscillatorRef.current.stop();
+            oscillatorRef.current.disconnect();
+            oscillatorRef.current = null;
+        }
+    };
 
     const startChrono = () => {
         if (window.navigator?.vibrate) window.navigator.vibrate(50);
@@ -16,6 +55,7 @@ export default function PageChrono() {
 
         timerRef.current = setTimeout(() => {
             setStatus('alarm');
+            playSiren();
             if (window.navigator?.vibrate) {
                 window.navigator.vibrate([500, 200, 500, 200, 1000]); // Grosse vibration
             }
@@ -24,12 +64,17 @@ export default function PageChrono() {
 
     const resetChrono = () => {
         clearTimeout(timerRef.current);
+        stopSiren();
         setStatus('idle');
         if (window.navigator?.vibrate) window.navigator.vibrate(20);
     };
 
     useEffect(() => {
-        return () => clearTimeout(timerRef.current);
+        return () => {
+            clearTimeout(timerRef.current);
+            stopSiren();
+            if (audioCtxRef.current) audioCtxRef.current.close();
+        };
     }, []);
 
     return (

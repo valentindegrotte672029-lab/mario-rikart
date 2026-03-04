@@ -201,35 +201,37 @@ export default function PageMario() {
 
         {step === 'EDIT' && (
           <div className="editor-section">
-            {/* Conteneur principal qui sera capturé par html2canvas */}
-            <div className="photo-container photo-editor-container">
-              {/* Photo Arrière-plan */}
-              <img src={backPhoto} alt="Back" className="captured-photo bg-photo" />
+            <div className="photo-editor-wrapper">
+              <div className="photo-container photo-editor-container">
+                {/* Photo Arrière-plan */}
+                <img src={backPhoto} alt="Back" className="captured-photo bg-photo" />
 
-              {/* Photo Selfie incrustée */}
-              <div className="front-photo-inset">
-                <img src={frontPhoto} alt="Front" className="captured-photo" />
+                {/* Photo Selfie incrustée */}
+                <div className="front-photo-inset">
+                  <img src={frontPhoto} alt="Front" className="captured-photo" />
+                </div>
+
+                {/* Les stickers par dessus */}
+                {stickers.map(sticker => (
+                  <motion.div
+                    key={sticker.id}
+                    className="draggable-sticker"
+                    drag
+                    dragConstraints={{ top: -200, left: -150, right: 150, bottom: 200 }}
+                    whileDrag={{ scale: 1.2 }}
+                    onClick={() => setStickers(prev => prev.filter(s => s.id !== sticker.id))}
+                  >
+                    {sticker.emoji}
+                  </motion.div>
+                ))}
               </div>
 
-              {/* Le texte par dessus */}
+              {/* Le texte EN DESSOUS (Zone blanche/transparente du container html2canvas) */}
               {caption && (
-                <motion.div className="photo-caption-overlay" drag dragConstraints={{ top: -150, bottom: 150, left: -100, right: 100 }}>
-                  {caption}
-                </motion.div>
+                <div className="caption-display-area">
+                  <p className="caption-display-text">{caption}</p>
+                </div>
               )}
-
-              {/* Les stickers par dessus */}
-              {stickers.map(sticker => (
-                <motion.div
-                  key={sticker.id}
-                  className="draggable-sticker"
-                  drag
-                  dragConstraints={{ top: -200, left: -150, right: 150, bottom: 200 }}
-                  whileDrag={{ scale: 1.2 }}
-                >
-                  {sticker.emoji}
-                </motion.div>
-              ))}
             </div>
 
             <div className="editor-tools">

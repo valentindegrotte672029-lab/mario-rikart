@@ -4,8 +4,8 @@ import { AnimatePresence } from 'framer-motion';
 
 import RainbowRoad from './components/RainbowRoad';
 import ToadBank from './components/ToadBank';
-import TabBar from './components/TabBar';
 import SplashScreen from './components/SplashScreen';
+import PageHome from './components/PageHome';
 
 import PageLuigi from './components/PageLuigiNew';
 import PageToad from './components/PageToad';
@@ -46,7 +46,7 @@ class ErrorBoundary extends Component {
 }
 
 export default function App() {
-  const { speedBoost, currentPage, happening, triggerHappening, username, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers } = useStore();
+  const { speedBoost, currentPage, setPage, happening, triggerHappening, username, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, errorMsg } = useStore();
 
   // Gestion des WebSockets en temps réel (Remplace le mock)
   useEffect(() => {
@@ -95,15 +95,7 @@ export default function App() {
       case 'MARIO': return <PageMario key="mario" />;
       case 'WARIO': return <PageWario key="wario" />;
       case 'CHRONO': return <PageChrono key="chrono" />;
-      default: return (
-        <div key="home" className="home-screen float-subtle">
-          <div className="glass-panel main-glass">
-            <h1 className="text-gradient">V2026</h1>
-            <p>Mario Rikart Experience</p>
-            <div className="glow-orb" style={{ background: getThemeColor(currentPage) }}></div>
-          </div>
-        </div>
-      );
+      default: return <PageHome key="home" />;
     }
   };
 
@@ -137,12 +129,33 @@ export default function App() {
           </AnimatePresence>
         </ErrorBoundary>
       </main>
-
-      {/* 4. TabBar Bas (Navigation type iOS) */}
-      <TabBar />
-
-      {/* 5. Alertes Happenings (God Mode Admin Control) */}
+      {/* 4. Bouton Retour Global (Visible hors du Home) */}
       <AnimatePresence>
+        {currentPage !== 'HOME' && (
+          <motion.button
+            className="global-home-btn"
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.5 }}
+            onClick={() => setPage('HOME')}
+          >
+            🏠
+          </motion.button>
+        )}
+      </AnimatePresence>
+
+      {/* 5. Alertes Happenings & Erreurs (Economie) */}
+      <AnimatePresence>
+        {errorMsg && (
+          <motion.div
+            className="global-error-toast"
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+          >
+            {errorMsg}
+          </motion.div>
+        )}
         {happening === 'BAGARRE' && (
           <div className="happening-modal bagarre">
             <h1>BAGARRE GÉNÉRALE !</h1>
