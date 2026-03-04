@@ -31,7 +31,7 @@ const QUESTIONS = [
         id: 4,
         text: "Tu préfères :",
         options: [
-            { text: "Spot 🐶", value: "spot" },
+            { text: "Spot 👮‍♂️", value: "spot" },
             { text: "Le dyslexique qui livre des dwichs 🚲", value: "dyslexique" }
         ]
     },
@@ -56,7 +56,7 @@ const QUESTIONS = [
         text: "Tu préfères :",
         options: [
             { text: "Lécher le couloir des assos 👅", value: "couloir" },
-            { text: "Le chef cuisto du Massala Bar 👨‍🍳", value: "massala" }
+            { text: "Le chef cuisto du Massala Bar 🇮🇳", value: "massala" }
         ]
     },
     {
@@ -71,8 +71,8 @@ const QUESTIONS = [
         id: 9,
         text: "T'es plutôt :",
         options: [
-            { text: "La PC 💻", value: "pc" },
-            { text: "Le discours RDA 🗣️🇩🇪", value: "rda" }
+            { text: "La PC 🚑", value: "pc" },
+            { text: "Le discours RDA 👑", value: "rda" }
         ]
     },
     {
