@@ -13,6 +13,7 @@ import PagePeach from './components/PagePeach';
 import PageMario from './components/PageMario';
 import PageWario from './components/PageWario';
 import PageChrono from './components/PageChrono';
+import PagePsych from './components/PagePsych';
 
 import useStore from './store/useStore';
 import { socket } from './socket';
@@ -83,6 +84,7 @@ export default function App() {
       case 'MARIO': return 'rgba(255, 0, 0, 0.2)'; // Rouge sombre
       case 'WARIO': return 'rgba(255, 200, 0, 0.2)'; // Or/Jaune
       case 'CHRONO': return 'rgba(255, 153, 0, 0.2)'; // Orange feu
+      case 'PSYCH': return 'rgba(0, 255, 255, 0.2)'; // Cyan fluo
       default: return 'rgba(0, 255, 204, 0.2)'; // Cyan par défaut
     }
   };
@@ -95,6 +97,7 @@ export default function App() {
       case 'MARIO': return <PageMario key="mario" />;
       case 'WARIO': return <PageWario key="wario" />;
       case 'CHRONO': return <PageChrono key="chrono" />;
+      case 'PSYCH': return <PagePsych key="psych" />;
       default: return <PageHome key="home" />;
     }
   };
