@@ -61,7 +61,6 @@ export default function PagePeach() {
             <span className="price-tag gold">5M 🟡</span>
           </div>
         </div>
-        </div>
       </div>
       <AnimatePresence>
         {bblAlert && (
