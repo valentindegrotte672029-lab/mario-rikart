@@ -7,7 +7,7 @@ import useStore from '../store/useStore';
 import { socket } from '../socket';
 
 const INGREDIENTS = [
-  { id: 'vodka', name: 'Vodka Eco+', emoji: '🍾' },
+  { id: 'vodka', name: 'Vodka', emoji: '🍾' },
   { id: 'lait', name: 'Lait tiède', emoji: '🥛' },
   { id: 'piment', name: 'Piment pur', emoji: '🌶️' },
   { id: 'tabasco', name: 'Tabasco', emoji: '🔥' },
@@ -25,9 +25,15 @@ export default function PageToad() {
   const [isSending, setIsSending] = useState(false);
 
   const toggleIngredient = (id) => {
-    setSelectedIngredients(prev =>
-      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
-    );
+    setSelectedIngredients(prev => {
+      const isSelected = prev.includes(id);
+      if (isSelected) {
+        return prev.filter(i => i !== id);
+      } else {
+        if (prev.length >= 3) return prev; // Max 3 limit
+        return [...prev, id];
+      }
+    });
     if (window.navigator?.vibrate) window.navigator.vibrate(20);
   };
 
@@ -62,8 +68,11 @@ export default function PageToad() {
     >
       <div className="glass-panel mobile-card toad-card">
         <h1 className="title-mobile toad-title">TOAD-XIQUE</h1>
-        <p className="subtitle" style={{ textAlign: 'center', color: '#ffbbcc', marginBottom: '15px', fontStyle: 'italic', fontSize: '0.9rem' }}>
+        <p className="subtitle" style={{ textAlign: 'center', color: '#ffbbcc', marginBottom: '5px', fontStyle: 'italic', fontSize: '0.9rem' }}>
           "Créer un mélange atroce qu'un listeux va devoir raout" 🤮
+        </p>
+        <p className="subtitle" style={{ textAlign: 'center', color: '#ff3366', marginBottom: '15px', fontWeight: 'bold', fontSize: '0.8rem' }}>
+          ⚠️ MAX 3 INGRÉDIENTS ⚠️
         </p>
 
         {/* Section Ingrédients */}
