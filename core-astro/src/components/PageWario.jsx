@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, ChevronRight, QrCode } from 'lucide-react';
+import { ShoppingBag, ChevronRight } from 'lucide-react';
 import useStore from '../store/useStore';
 import { socket } from '../socket';
 
@@ -68,7 +68,7 @@ export default function PageWario() {
               onClick={() => setOrderQr(null)}
             >
               <div className="qr-modal-box" onClick={(e) => e.stopPropagation()}>
-                <QrCode size={100} color="black" />
+                <div style={{ fontSize: '5rem', marginBottom: '10px' }}>🎫</div>
                 <h3>Commande Validée</h3>
                 <div className="qr-code-text">{orderQr}</div>
                 <p>Présente ce code au barman.</p>
