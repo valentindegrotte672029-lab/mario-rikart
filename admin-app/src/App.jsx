@@ -162,7 +162,7 @@ function App() {
                 <AnimatePresence>
                   {orders.map((order, idx) => (
                     <motion.div
-                      key={idx}
+                      key={order.timestamp + '-' + idx}
                       className="order-card"
                       initial={{ opacity: 0, x: -50 }}
                       animate={{ opacity: 1, x: 0 }}
