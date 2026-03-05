@@ -21,7 +21,11 @@ export default function PageWario() {
   ];
 
   const handleBuy = (item) => {
-    spendCoins(item.price, item.name.toUpperCase());
+    const success = spendCoins(item.price, item.name.toUpperCase());
+    if (!success) {
+      if (window.navigator?.vibrate) window.navigator.vibrate(200);
+      return;
+    }
     if (window.navigator?.vibrate) window.navigator.vibrate([30, 50, 30]);
 
     // Emission Websocket au panel Admin
