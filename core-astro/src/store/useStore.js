@@ -54,7 +54,12 @@ const useStore = create(
 
     // Leaderboards
     leaderboards: { FLAPPYWEED: {}, CHAMPININJA: {}, DOODLEWEED: {} },
-    setLeaderboards: (leaderboards) => set({ leaderboards })
+    setLeaderboards: (leaderboards) => set({ leaderboards }),
+
+    // PolyMarket (Bets)
+    bets: [],
+    setBets: (bets) => set({ bets }),
+    setBalance: (balance) => set({ balance })
     }),
     {
         name: 'mario-rikart-storage',

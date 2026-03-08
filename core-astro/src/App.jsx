@@ -14,6 +14,7 @@ import PageMario from './components/PageMario';
 import PageWario from './components/PageWario';
 import PageChrono from './components/PageChrono';
 import PagePsych from './components/PagePsych';
+import PageCasino from './components/PageCasino';
 
 import useStore from './store/useStore';
 import { socket } from './socket';
@@ -47,7 +48,7 @@ class ErrorBoundary extends Component {
 }
 
 export default function App() {
-  const { speedBoost, currentPage, happening, triggerHappening, username, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, errorMsg, balance, socialStatus } = useStore();
+  const { speedBoost, currentPage, happening, triggerHappening, username, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, errorMsg, balance, socialStatus, setBets, setBalance } = useStore();
 
   // Gestion des WebSockets en temps réel (Remplace le mock)
   useEffect(() => {
@@ -63,6 +64,12 @@ export default function App() {
       socket.on('bereal_broadcast', (post) => addBereal(post));
       socket.on('bereal_deleted', (postId) => deleteBereal(postId));
       socket.on('active_users', (users) => setActiveUsers(users));
+      socket.on('sync_bets', (bets) => setBets(bets));
+      socket.on('balance_update', (newBalance) => setBalance(newBalance));
+      socket.on('bet_resolved', () => {
+          // Si un pari est résolu par l'admin, on synchronise notre balance globale
+          socket.emit('request_my_balance', username);
+      });
 
       return () => {
         socket.off('global_happening');
@@ -70,10 +77,13 @@ export default function App() {
         socket.off('bereal_broadcast');
         socket.off('bereal_deleted');
         socket.off('active_users');
+        socket.off('sync_bets');
+        socket.off('balance_update');
+        socket.off('bet_resolved');
         socket.disconnect();
       };
     }
-  }, [username, triggerHappening, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers]);
+  }, [username, triggerHappening, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, setBets, setBalance]);
 
   // Synchronisation continue des pièces et du rang vers le serveur
   useEffect(() => {
@@ -92,6 +102,7 @@ export default function App() {
       case 'WARIO': return 'rgba(255, 200, 0, 0.2)'; // Or/Jaune
       case 'CHRONO': return 'rgba(255, 153, 0, 0.2)'; // Orange feu
       case 'PSYCH': return 'rgba(0, 255, 255, 0.2)'; // Cyan fluo
+      case 'CASINO': return 'rgba(255, 0, 255, 0.2)'; // Magenta fluo
       default: return 'rgba(0, 255, 204, 0.2)'; // Cyan par défaut
     }
   };
@@ -105,6 +116,7 @@ export default function App() {
       case 'WARIO': return <PageWario key="wario" />;
       case 'CHRONO': return <PageChrono key="chrono" />;
       case 'PSYCH': return <PagePsych key="psych" />;
+      case 'CASINO': return <PageCasino key="casino" />;
       default: return <PageHome key="home" />;
     }
   };

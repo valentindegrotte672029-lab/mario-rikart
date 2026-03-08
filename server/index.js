@@ -57,6 +57,23 @@ const saveUsers = () => {
     fs.writeFileSync(USERS_FILE, JSON.stringify(usersDb, null, 2));
 };
 
+// Base de données Paris (PolyMarket)
+const BETS_FILE = path.join(__dirname, 'bets.json');
+let betsDb = [];
+if (fs.existsSync(BETS_FILE)) {
+    try {
+        betsDb = JSON.parse(fs.readFileSync(BETS_FILE, 'utf-8'));
+    } catch (e) {
+        betsDb = [];
+    }
+} else {
+    fs.writeFileSync(BETS_FILE, JSON.stringify([]));
+}
+
+const saveBets = () => {
+    fs.writeFileSync(BETS_FILE, JSON.stringify(betsDb, null, 2));
+};
+
 io.on('connection', (socket) => {
     console.log(`⚡ Nouvelle connexion : ${socket.id}`);
 
@@ -113,6 +130,7 @@ io.on('connection', (socket) => {
         console.log(`👑 Admin connecté : ${socket.id}`);
         // Synchronisation des historiques de commandes (Offline)
         socket.emit('sync_orders', ordersQueue);
+        socket.emit('sync_bets', betsDb);
         // On pourrait aussi sync massagesQueue si besoin
     });
 
@@ -134,6 +152,88 @@ io.on('connection', (socket) => {
         socket.emit('users_data', adminUsersList);
     });
 
+    // 0.7 PolyMarket : Gestion des Paris
+    socket.on('create_bet', (betData) => {
+        const newBet = {
+            id: Date.now().toString(),
+            question: betData.question,
+            options: betData.options,
+            status: 'OPEN',
+            winningOption: null,
+            betsPlaced: [], // { username, optionIdx, amount }
+            createdAt: new Date().toISOString()
+        };
+        betsDb.unshift(newBet);
+        saveBets();
+        io.emit('sync_bets', betsDb);
+    });
+
+    socket.on('place_bet', ({ betId, optionIdx, amount, username }) => {
+        const bet = betsDb.find(b => b.id === betId);
+        const alias = username.toUpperCase();
+        if (bet && bet.status === 'OPEN' && usersDb[alias] && usersDb[alias].balance >= amount) {
+            // Deduct balance instantly to prevent double-spending without client update, though client handles it too
+            // Important: we just record it, the client already deducted its local store, 
+            // but we must be sure to not deduct twice if sync_user_data runs.
+            // Actually, we'll let `sync_user_data` handle the balance deduction from the client.
+            // We just record the bet.
+            bet.betsPlaced.push({ username: alias, optionIdx, amount });
+            saveBets();
+            io.emit('sync_bets', betsDb);
+        }
+    });
+
+    socket.on('resolve_bet', ({ betId, winningOptionIdx }) => {
+        const bet = betsDb.find(b => b.id === betId);
+        if (bet && bet.status === 'OPEN') {
+            bet.status = 'RESOLVED';
+            bet.winningOption = winningOptionIdx;
+
+            // Calcul du pot total
+            const totalPot = bet.betsPlaced.reduce((acc, b) => acc + b.amount, 0);
+            
+            // Subvention du casino (+20% à +50% aléatoire)
+            const casinoBonus = 1 + (Math.floor(Math.random() * 31) + 20) / 100; // 1.2 à 1.5
+            const subsidizedPot = Math.floor(totalPot * casinoBonus);
+
+            // GAGNANTS
+            const winningBets = bet.betsPlaced.filter(b => b.optionIdx === winningOptionIdx);
+            const totalWinningStakes = winningBets.reduce((acc, b) => acc + b.amount, 0);
+
+            if (totalWinningStakes > 0) {
+                // Redistribuer proportionnellement
+                winningBets.forEach(wb => {
+                    const share = wb.amount / totalWinningStakes;
+                    const winnings = Math.floor(subsidizedPot * share);
+                    
+                    // On crédite les utilisateurs dans la DB
+                    if (usersDb[wb.username]) {
+                        usersDb[wb.username].balance = (usersDb[wb.username].balance || 0) + winnings;
+                    }
+                });
+                saveUsers();
+            }
+
+            saveBets();
+            io.emit('sync_bets', betsDb);
+            // On force les clients gagnants à refetch leur balance (via un broadcast ciblé ou global)
+            io.emit('bet_resolved', { betId, winningOptionIdx, totalPot, subsidizedPot });
+        }
+    });
+
+    socket.on('delete_bet', (betId) => {
+        betsDb = betsDb.filter(b => b.id !== betId);
+        saveBets();
+        io.emit('sync_bets', betsDb);
+    });
+
+    socket.on('request_my_balance', (username) => {
+        const alias = username?.toUpperCase();
+        if (alias && usersDb[alias]) {
+            socket.emit('balance_update', usersDb[alias].balance);
+        }
+    });
+
     // 1. Connexion d'un joueur
     socket.on('join_game', (username) => {
         players[socket.id] = username;
@@ -147,6 +247,9 @@ io.on('connection', (socket) => {
 
         // Envoie le classement actuel au nouveau joueur
         socket.emit('leaderboards_update', leaderboards);
+
+        // Envoie l'historique des paris
+        socket.emit('sync_bets', betsDb);
 
         // Met à jour la liste des joueurs en ligne
         broadcastActiveUsers();

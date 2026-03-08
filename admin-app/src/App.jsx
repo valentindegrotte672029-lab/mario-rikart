@@ -15,8 +15,13 @@ function App() {
   const [bereals, setBereals] = useState([]);
   const [leaderboards, setLeaderboards] = useState({ FLAPPYWEED: {}, CHAMPININJA: {}, DOODLEWEED: {} });
   const [usersData, setUsersData] = useState([]);
+  const [bets, setBets] = useState([]);
   const [activeHappening, setActiveHappening] = useState(null);
-  const [activeTab, setActiveTab] = useState('WARIO'); // 'WARIO', 'BEREAL', 'ARCADE', 'USERS'
+  const [activeTab, setActiveTab] = useState('WARIO'); // 'WARIO', 'BEREAL', 'ARCADE', 'USERS', 'BETS'
+
+  // Formulaire Paris
+  const [betQuestion, setBetQuestion] = useState('');
+  const [betOptions, setBetOptions] = useState(['', '']);
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -46,6 +51,9 @@ function App() {
     // Réception Liste Joueurs
     socket.on('users_data', (data) => setUsersData(data));
 
+    // Réception des Paris
+    socket.on('sync_bets', (data) => setBets(data));
+
     return () => {
       socket.off('connect');
       socket.off('disconnect');
@@ -58,6 +66,7 @@ function App() {
       socket.off('bereal_deleted');
       socket.off('leaderboards_update');
       socket.off('users_data');
+      socket.off('sync_bets');
     };
   }, []);
 
@@ -161,6 +170,13 @@ function App() {
             style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '10px', fontWeight: 'bold', border: 'none', cursor: 'pointer', background: activeTab === 'USERS' ? '#00ffcc' : '#222', color: activeTab === 'USERS' ? '#000' : '#aaa' }}
           >
             <Users size={18} /> JOUEURS ({usersData.length})
+          </button>
+
+          <button
+            onClick={() => setActiveTab('BETS')}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '10px', fontWeight: 'bold', border: 'none', cursor: 'pointer', background: activeTab === 'BETS' ? '#ff00ff' : '#222', color: activeTab === 'BETS' ? '#000' : '#aaa' }}
+          >
+             🎰 PARIS ({bets.filter(b => b.status === 'OPEN').length})
           </button>
         </div>
 
@@ -360,6 +376,125 @@ function App() {
                   </tbody>
                 </table>
               </div>
+            </div>
+          )}
+
+          {activeTab === 'BETS' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              
+              {/* CREATION D'UN PARI */}
+              <div style={{ padding: '20px', background: '#2a1a2a', borderRadius: '15px', color: 'white', border: '1px solid #ff00ff' }}>
+                <h2 style={{ color: '#ff00ff', margin: '0 0 15px 0' }}>🪄 Créer un Pari PolyMarket</h2>
+                <input 
+                  type="text" 
+                  placeholder="Ex: Qui va finir dans la piscine ce soir ?" 
+                  value={betQuestion}
+                  onChange={e => setBetQuestion(e.target.value)}
+                  style={{ width: '100%', padding: '10px', marginBottom: '15px', borderRadius: '5px', border: 'none', background: '#111', color: 'white' }}
+                />
+                
+                {betOptions.map((opt, idx) => (
+                  <div key={idx} style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
+                    <input 
+                      type="text" 
+                      placeholder={`Option ${idx + 1}`} 
+                      value={opt}
+                      onChange={e => {
+                        const newOpts = [...betOptions];
+                        newOpts[idx] = e.target.value;
+                        setBetOptions(newOpts);
+                      }}
+                      style={{ flex: 1, padding: '10px', borderRadius: '5px', border: 'none', background: '#111', color: 'white' }}
+                    />
+                    {betOptions.length > 2 && (
+                      <button onClick={() => setBetOptions(betOptions.filter((_, i) => i !== idx))} style={{ background: '#ff3333', color: 'white', border: 'none', borderRadius: '5px', padding: '0 15px', cursor: 'pointer' }}>X</button>
+                    )}
+                  </div>
+                ))}
+                
+                <div style={{ display: 'flex', gap: '15px', marginTop: '10px' }}>
+                  <button 
+                    onClick={() => setBetOptions([...betOptions, ''])}
+                    style={{ background: '#444', color: 'white', border: 'none', borderRadius: '5px', padding: '10px 15px', cursor: 'pointer' }}
+                  >
+                    + Ajouter Option
+                  </button>
+                  <button 
+                    onClick={() => {
+                        const validOpts = betOptions.filter(o => o.trim() !== '');
+                        if (betQuestion.trim() && validOpts.length >= 2) {
+                            socket.emit('create_bet', { question: betQuestion, options: validOpts });
+                            setBetQuestion('');
+                            setBetOptions(['', '']);
+                        } else {
+                            alert("Il faut une question et au moins 2 options !");
+                        }
+                    }}
+                    style={{ background: '#ff00ff', color: 'white', border: 'none', borderRadius: '5px', padding: '10px 15px', cursor: 'pointer', fontWeight: 'bold' }}
+                  >
+                    🚀 Lancer le Pari sur les Téléphones
+                  </button>
+                </div>
+              </div>
+
+              {/* LISTE DES PARIS ACTIFS ET TERMINES */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '20px' }}>
+                {bets.map(bet => {
+                  const totalPot = bet.betsPlaced.reduce((acc, b) => acc + b.amount, 0);
+                  return (
+                    <div key={bet.id} style={{ background: '#111', border: bet.status === 'OPEN' ? '2px solid #ff00ff' : '2px solid #444', borderRadius: '15px', padding: '20px', position: 'relative' }}>
+                      <div style={{ position: 'absolute', top: 10, right: 10, background: bet.status === 'OPEN' ? '#ff00ff' : '#444', color: 'white', padding: '3px 8px', borderRadius: '10px', fontSize: '0.8rem', fontWeight: 'bold' }}>
+                        {bet.status === 'OPEN' ? 'EN COURS' : 'TERMINÉ'}
+                      </div>
+                      
+                      <h3 style={{ color: 'white', marginTop: 0, marginBottom: '5px', paddingRight: '60px' }}>{bet.question}</h3>
+                      <p style={{ color: '#aaa', margin: '0 0 15px 0', fontSize: '0.9rem' }}>Cagnotte Globale: <span style={{ color: '#ffcc00', fontWeight: 'bold' }}>{totalPot} 🟡</span></p>
+
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        {bet.options.map((opt, idx) => {
+                          const optionBets = bet.betsPlaced.filter(b => b.optionIdx === idx);
+                          const optionTotal = optionBets.reduce((acc, b) => acc + b.amount, 0);
+                          const percentage = totalPot > 0 ? ((optionTotal / totalPot) * 100).toFixed(0) : 0;
+                          const isWinner = bet.winningOption === idx;
+
+                          return (
+                            <div key={idx} style={{ background: isWinner ? '#004400' : '#222', border: isWinner ? '1px solid #39ff14' : '1px solid #333', padding: '10px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                              <div style={{ flex: 1 }}>
+                                <div style={{ color: isWinner ? '#aaffaa' : 'white', fontWeight: 'bold' }}>{opt}</div>
+                                <div style={{ color: '#888', fontSize: '0.8rem' }}>{optionTotal} 🟡 misés en tout ({percentage}%)</div>
+                              </div>
+                              
+                              {bet.status === 'OPEN' && (
+                                <button
+                                  onClick={() => {
+                                      if(window.confirm(`Déclarer "${opt}" comme gagnant ? Cela va injecter l'argent en fraude et redistribuer la cagnotte aux gagnants.`)) {
+                                          socket.emit('resolve_bet', { betId: bet.id, winningOptionIdx: idx });
+                                      }
+                                  }}
+                                  style={{ background: '#ff00ff', color: 'white', border: 'none', padding: '8px 12px', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.8rem' }}
+                                >
+                                  C'est la réponse !
+                                </button>
+                              )}
+                              {isWinner && <span style={{ color: '#39ff14', fontWeight: 'bold' }}>🏆 GAGNANT</span>}
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      {bet.status === 'RESOLVED' && (
+                         <button 
+                            onClick={() => socket.emit('delete_bet', bet.id)}
+                            style={{ width: '100%', marginTop: '15px', background: 'transparent', border: '1px solid #555', color: '#888', padding: '10px', borderRadius: '5px', cursor: 'pointer' }}
+                         >
+                            Supprimer des archives
+                         </button>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
             </div>
           )}
 
