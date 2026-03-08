@@ -4,7 +4,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import useStore from '../store/useStore';
 
 export default function ToadBankMobile() {
-  const { balance, lastGlitchPurchase, username, currentPage, setPage } = useStore();
+  const { balance, lastGlitchPurchase, username, currentPage, setPage, logout } = useStore();
+
+  const handleLogout = () => {
+    if (window.confirm("🔴 Veux-tu vraiment te déconnecter de ton profil ?")) {
+      logout();
+    }
+  };
 
   return (
     <div className="toad-bank-header">
@@ -31,7 +37,7 @@ export default function ToadBankMobile() {
           </div>
         </div>
 
-        <div className="profile-pic">
+        <div className="profile-pic" onClick={handleLogout} style={{ cursor: 'pointer' }}>
           <span style={{ fontSize: '1rem', fontWeight: 'bold', color: 'white' }}>
             {username ? username.substring(0, 2) : '🍄'}
           </span>
@@ -117,15 +123,23 @@ export default function ToadBankMobile() {
         }
 
         .profile-pic {
-          width: 38px;
-          height: 38px;
-          background: rgba(255, 255, 255, 0.1);
+          width: 45px;
+          height: 45px;
+          background: linear-gradient(135deg, #ff0055, #ffcc00);
           border-radius: 50%;
+          border: 2px solid white;
+          box-shadow: 0 0 10px rgba(0,0,0,0.5);
           display: flex;
           align-items: center;
           justify-content: center;
-          font-size: 1.5rem;
-          border: 1px solid rgba(255, 255, 255, 0.2);
+          position: relative;
+          z-index: 10;
+          transition: transform 0.2s;
+          cursor: pointer;
+        }
+
+        .profile-pic:active {
+          transform: scale(0.9);
         }
 
         .glitch-toast {

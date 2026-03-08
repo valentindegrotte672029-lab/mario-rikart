@@ -7,6 +7,7 @@ const useStore = create(
     // Identification Joueur
     username: null,
     setUsername: (name) => set({ username: name }),
+    logout: () => set({ username: null, balance: 100, socialStatus: "PAUVRE HÈRE DU ROYAUME (RMI)" }),
 
     // Navigation
     currentPage: 'HOME', // HOME, LUIGI, TOAD, PEACH, MARIO, WARIO
