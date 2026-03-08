@@ -106,8 +106,11 @@ class PokerEngine {
         
         // Check balance
         const alias = username.toUpperCase();
-        if (!this.usersDb[alias] || this.usersDb[alias].balance < this.state.buyIn) {
-            return { error: 'Fonds insuffisants' };
+        console.log(`[POKER] Player ${alias} joining. Db Data:`, this.usersDb[alias]);
+        const playerBal = this.usersDb[alias] ? (this.usersDb[alias].balance || 0) : 0;
+        
+        if (!this.usersDb[alias] || playerBal < this.state.buyIn) {
+            return { error: `Fonds insuffisants (${playerBal} 🟡 / ${this.state.buyIn})` };
         }
 
         this.state.players.push({

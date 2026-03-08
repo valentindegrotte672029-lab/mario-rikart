@@ -121,7 +121,14 @@ io.on('connection', (socket) => {
     // 0.1 Sauvegarde Serveur des Données Joueur (Appelé par Zustand)
     socket.on('sync_user_data', ({ username, balance, socialStatus }) => {
         const alias = username?.toUpperCase();
-        if (alias && usersDb[alias]) {
+        if (alias) {
+            if (!usersDb[alias]) {
+                // Si le serveur a redémarré et que le client a skip le login car il était déjà authentifié localement
+                usersDb[alias] = {
+                    createdAt: new Date().toISOString(),
+                    password: '' // Connu par le client uniquement, ou perdu si memory wipe total
+                };
+            }
             usersDb[alias].balance = balance;
             usersDb[alias].socialStatus = socialStatus;
             saveUsers();
