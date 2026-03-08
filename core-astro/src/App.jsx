@@ -47,7 +47,7 @@ class ErrorBoundary extends Component {
 }
 
 export default function App() {
-  const { speedBoost, currentPage, happening, triggerHappening, username, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, errorMsg } = useStore();
+  const { speedBoost, currentPage, happening, triggerHappening, username, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, errorMsg, balance, socialStatus } = useStore();
 
   // Gestion des WebSockets en temps réel (Remplace le mock)
   useEffect(() => {
@@ -74,6 +74,13 @@ export default function App() {
       };
     }
   }, [username, triggerHappening, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers]);
+
+  // Synchronisation continue des pièces et du rang vers le serveur
+  useEffect(() => {
+    if (username && socket.connected) {
+      socket.emit('sync_user_data', { username, balance, socialStatus });
+    }
+  }, [balance, socialStatus, username]);
 
   // Couleurs dynamiques selon la page pour l'ambiance globale
   const getThemeColor = (page) => {

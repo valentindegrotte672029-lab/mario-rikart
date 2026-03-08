@@ -65,15 +65,46 @@ io.on('connection', (socket) => {
         const alias = username.toUpperCase();
         if (usersDb[alias]) {
             if (usersDb[alias].password === password) {
-                callback({ success: true, isNew: false, message: "Bon retour parmi nous !" });
+                callback({ 
+                    success: true, 
+                    isNew: false, 
+                    message: "Bon retour parmi nous !",
+                    userData: {
+                        balance: usersDb[alias].balance || 100,
+                        socialStatus: usersDb[alias].socialStatus || "PAUVRE HÈRE DU ROYAUME (RMI)"
+                    }
+                });
             } else {
                 callback({ success: false, message: "🚨 Mot de passe incorrect." });
             }
         } else {
             // Création automatique si le pseudo n'existe pas
-            usersDb[alias] = { password, createdAt: new Date().toISOString() };
+            usersDb[alias] = { 
+                password, 
+                createdAt: new Date().toISOString(),
+                balance: 100,
+                socialStatus: "PAUVRE HÈRE DU ROYAUME (RMI)"
+            };
             saveUsers();
-            callback({ success: true, isNew: true, message: "🎉 Nouveau compte créé !" });
+            callback({ 
+                success: true, 
+                isNew: true, 
+                message: "🎉 Nouveau compte créé !",
+                userData: {
+                    balance: 100,
+                    socialStatus: "PAUVRE HÈRE DU ROYAUME (RMI)"
+                }
+            });
+        }
+    });
+
+    // 0.1 Sauvegarde Serveur des Données Joueur (Appelé par Zustand)
+    socket.on('sync_user_data', ({ username, balance, socialStatus }) => {
+        const alias = username?.toUpperCase();
+        if (alias && usersDb[alias]) {
+            usersDb[alias].balance = balance;
+            usersDb[alias].socialStatus = socialStatus;
+            saveUsers();
         }
     });
 
