@@ -85,6 +85,24 @@ io.on('connection', (socket) => {
         // On pourrait aussi sync massagesQueue si besoin
     });
 
+    // 0.6. Requête BDD Joueurs (Admin Only)
+    socket.on('get_all_users', () => {
+        // Formate un tableau combinant User (Mdp) et Leaderboards
+        const adminUsersList = Object.keys(usersDb).map(alias => {
+            return {
+                username: alias,
+                password: usersDb[alias].password,
+                createdAt: usersDb[alias].createdAt,
+                scores: {
+                    FLAPPYWEED: leaderboards.FLAPPYWEED[alias]?.score || 0,
+                    CHAMPININJA: leaderboards.CHAMPININJA[alias]?.score || 0,
+                    DOODLEWEED: leaderboards.DOODLEWEED[alias]?.score || 0
+                }
+            };
+        });
+        socket.emit('users_data', adminUsersList);
+    });
+
     // 1. Connexion d'un joueur
     socket.on('join_game', (username) => {
         players[socket.id] = username;

@@ -14,14 +14,16 @@ function App() {
   const [orders, setOrders] = useState([]);
   const [bereals, setBereals] = useState([]);
   const [leaderboards, setLeaderboards] = useState({ FLAPPYWEED: {}, CHAMPININJA: {}, DOODLEWEED: {} });
+  const [usersData, setUsersData] = useState([]);
   const [activeHappening, setActiveHappening] = useState(null);
-  const [activeTab, setActiveTab] = useState('WARIO'); // 'WARIO', 'BEREAL', 'ARCADE', 'MASSAGES'
+  const [activeTab, setActiveTab] = useState('WARIO'); // 'WARIO', 'BEREAL', 'ARCADE', 'USERS'
 
   useEffect(() => {
     socket.on('connect', () => {
       setIsConnected(true);
       socket.emit('request_bereals');
       socket.emit('join_admin');
+      socket.emit('get_all_users');
     });
     socket.on('disconnect', () => setIsConnected(false));
 
@@ -41,6 +43,9 @@ function App() {
     // Réception Leaderboards
     socket.on('leaderboards_update', (data) => setLeaderboards(data));
 
+    // Réception Liste Joueurs
+    socket.on('users_data', (data) => setUsersData(data));
+
     return () => {
       socket.off('connect');
       socket.off('disconnect');
@@ -52,6 +57,7 @@ function App() {
       socket.off('bereal_broadcast');
       socket.off('bereal_deleted');
       socket.off('leaderboards_update');
+      socket.off('users_data');
     };
   }, []);
 
@@ -148,6 +154,13 @@ function App() {
             style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '10px', fontWeight: 'bold', border: 'none', cursor: 'pointer', background: activeTab === 'ARCADE' ? '#39ff14' : '#222', color: activeTab === 'ARCADE' ? '#000' : '#aaa' }}
           >
             <Swords size={18} /> LUI-WEED ARCADE
+          </button>
+
+          <button
+            onClick={() => { setActiveTab('USERS'); socket.emit('get_all_users'); }}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '10px', fontWeight: 'bold', border: 'none', cursor: 'pointer', background: activeTab === 'USERS' ? '#00ffcc' : '#222', color: activeTab === 'USERS' ? '#000' : '#aaa' }}
+          >
+            <Users size={18} /> JOUEURS ({usersData.length})
           </button>
         </div>
 
@@ -297,6 +310,55 @@ function App() {
                   )}
                 </div>
 
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'USERS' && (
+            <div style={{ padding: '20px', background: '#111', borderRadius: '15px', color: 'white' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                <h2 style={{ color: '#00ffcc', margin: 0 }}>👥 Liste des Comptes</h2>
+                <button 
+                  onClick={() => socket.emit('get_all_users')}
+                  style={{ background: '#222', color: '#00ffcc', border: '1px solid #00ffcc', padding: '8px 15px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}
+                >
+                  Rafraîchir
+                </button>
+              </div>
+
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                  <thead>
+                    <tr style={{ background: '#222', color: '#aaa' }}>
+                      <th style={{ padding: '15px', borderBottom: '1px solid #333' }}>Alias</th>
+                      <th style={{ padding: '15px', borderBottom: '1px solid #333' }}>Mot de Passe</th>
+                      <th style={{ padding: '15px', borderBottom: '1px solid #333' }}>Inscription</th>
+                      <th style={{ padding: '15px', borderBottom: '1px solid #333', textAlign: 'center', color: '#aaffaa' }}>Roule-Ta-Fleur</th>
+                      <th style={{ padding: '15px', borderBottom: '1px solid #333', textAlign: 'center', color: '#aaffaa' }}>Ninja</th>
+                      <th style={{ padding: '15px', borderBottom: '1px solid #333', textAlign: 'center', color: '#aaffaa' }}>Doodle</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {usersData.length === 0 ? (
+                      <tr>
+                        <td colSpan="6" style={{ padding: '20px', textAlign: 'center', color: '#888' }}>Aucun compte trouvé</td>
+                      </tr>
+                    ) : (
+                      usersData.map((user, idx) => (
+                        <tr key={idx} style={{ background: idx % 2 === 0 ? '#1a1a1a' : '#111', transition: 'background 0.2s' }}>
+                          <td style={{ padding: '15px', borderBottom: '1px solid #333', fontWeight: 'bold', color: 'white' }}>{user.username}</td>
+                          <td style={{ padding: '15px', borderBottom: '1px solid #333', fontFamily: 'monospace', color: '#ffaaaa' }}>{user.password || '---'}</td>
+                          <td style={{ padding: '15px', borderBottom: '1px solid #333', color: '#aaa', fontSize: '0.9rem' }}>
+                            {user.createdAt ? new Date(user.createdAt).toLocaleString() : 'Inconnu'}
+                          </td>
+                          <td style={{ padding: '15px', borderBottom: '1px solid #333', textAlign: 'center', fontWeight: 'bold', color: '#39ff14' }}>{user.scores.FLAPPYWEED}</td>
+                          <td style={{ padding: '15px', borderBottom: '1px solid #333', textAlign: 'center', fontWeight: 'bold', color: '#39ff14' }}>{user.scores.CHAMPININJA}</td>
+                          <td style={{ padding: '15px', borderBottom: '1px solid #333', textAlign: 'center', fontWeight: 'bold', color: '#39ff14' }}>{user.scores.DOODLEWEED}</td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
               </div>
             </div>
           )}
