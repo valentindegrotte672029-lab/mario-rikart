@@ -58,6 +58,16 @@ export default function App() {
       socket.connect();
       socket.emit('join_game', username);
 
+      const onConnect = () => {
+         const state = useStore.getState();
+         socket.emit('sync_user_data', { 
+             username: state.username, 
+             balance: state.balance, 
+             socialStatus: state.socialStatus 
+         });
+      };
+      socket.on('connect', onConnect);
+       
       // 2. Écoute du 'God Mode' (Alertes Centrales)
       socket.on('global_happening', (type) => triggerHappening(type));
       socket.on('bereals_history', (history) => setBereals(history));
@@ -75,6 +85,7 @@ export default function App() {
       socket.on('poker_error', (err) => alert("Poker: " + err));
 
       return () => {
+        socket.off('connect', onConnect);
         socket.off('global_happening');
         socket.off('bereals_history');
         socket.off('bereal_broadcast');
