@@ -15,6 +15,7 @@ import PageWario from './components/PageWario';
 import PageChrono from './components/PageChrono';
 import PagePsych from './components/PagePsych';
 import PageCasino from './components/PageCasino';
+import PagePoker from './components/PagePoker';
 
 import useStore from './store/useStore';
 import { socket } from './socket';
@@ -48,7 +49,7 @@ class ErrorBoundary extends Component {
 }
 
 export default function App() {
-  const { speedBoost, currentPage, happening, triggerHappening, username, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, errorMsg, balance, socialStatus, setBets, setBalance } = useStore();
+  const { speedBoost, currentPage, happening, triggerHappening, username, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, errorMsg, balance, socialStatus, setBets, setBalance, setPokerState } = useStore();
 
   // Gestion des WebSockets en temps réel (Remplace le mock)
   useEffect(() => {
@@ -70,6 +71,8 @@ export default function App() {
           // Si un pari est résolu par l'admin, on synchronise notre balance globale
           socket.emit('request_my_balance', username);
       });
+      socket.on('poker_state', (state) => setPokerState(state));
+      socket.on('poker_error', (err) => alert("Poker: " + err));
 
       return () => {
         socket.off('global_happening');
@@ -80,10 +83,12 @@ export default function App() {
         socket.off('sync_bets');
         socket.off('balance_update');
         socket.off('bet_resolved');
+        socket.off('poker_state');
+        socket.off('poker_error');
         socket.disconnect();
       };
     }
-  }, [username, triggerHappening, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, setBets, setBalance]);
+  }, [username, triggerHappening, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, setBets, setBalance, setPokerState]);
 
   // Synchronisation continue des pièces et du rang vers le serveur
   useEffect(() => {
@@ -103,6 +108,7 @@ export default function App() {
       case 'CHRONO': return 'rgba(255, 153, 0, 0.2)'; // Orange feu
       case 'PSYCH': return 'rgba(0, 255, 255, 0.2)'; // Cyan fluo
       case 'CASINO': return 'rgba(255, 0, 255, 0.2)'; // Magenta fluo
+      case 'POKER': return 'rgba(0, 150, 0, 0.2)'; // Vert Tapis
       default: return 'rgba(0, 255, 204, 0.2)'; // Cyan par défaut
     }
   };
@@ -117,6 +123,7 @@ export default function App() {
       case 'CHRONO': return <PageChrono key="chrono" />;
       case 'PSYCH': return <PagePsych key="psych" />;
       case 'CASINO': return <PageCasino key="casino" />;
+      case 'POKER': return <PagePoker key="poker" />;
       default: return <PageHome key="home" />;
     }
   };

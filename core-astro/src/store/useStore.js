@@ -59,6 +59,11 @@ const useStore = create(
     // PolyMarket (Bets)
     bets: [],
     setBets: (bets) => set({ bets }),
+
+    // Poker State
+    pokerState: null,
+    setPokerState: (pokerState) => set({ pokerState }),
+
     setBalance: (balance) => set({ balance })
     }),
     {

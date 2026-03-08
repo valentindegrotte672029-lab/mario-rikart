@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Beaker, Zap, Flame, Camera, Beer, Timer, Brain, Gem } from 'lucide-react';
+import { Beaker, Zap, Flame, Camera, Beer, Timer, Brain, Gem, Spade } from 'lucide-react';
 import useStore from '../store/useStore';
 
 export default function PageHome() {
@@ -15,6 +15,7 @@ export default function PageHome() {
     { id: 'CHRONO', icon: Timer, label: 'Poppy', color: '#ff9900', bg: 'linear-gradient(135deg, #4a2a0f, #8a4a1a)' },
     { id: 'PSYCH', icon: Brain, label: 'Le Test', color: '#00ffff', bg: 'linear-gradient(135deg, #0f4a4a, #1a8a8a)' },
     { id: 'CASINO', icon: Gem, label: 'Paris IRL', color: '#ff00ff', bg: 'linear-gradient(135deg, #4a0f4a, #8a1a8a)' },
+    { id: 'POKER', icon: Spade, label: 'Poker', color: '#00ff66', bg: 'linear-gradient(135deg, #0a3a0a, #1a5a1a)' },
   ];
 
   return (
