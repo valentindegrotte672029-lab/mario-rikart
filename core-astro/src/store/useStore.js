@@ -1,6 +1,9 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
-const useStore = create((set) => ({
+const useStore = create(
+    persist(
+        (set) => ({
     // Identification Joueur
     username: null,
     setUsername: (name) => set({ username: name }),
@@ -49,7 +52,16 @@ const useStore = create((set) => ({
 
     // Leaderboards
     leaderboards: { FLAPPYWEED: {}, CHAMPININJA: {}, DOODLEWEED: {} },
-    setLeaderboards: (leaderboards) => set({ leaderboards })
-}));
+    }),
+    {
+        name: 'mario-rikart-storage',
+        // On ne sauvegarde que les éléments clés (pseudo, argent, statut social)
+        partialize: (state) => ({ 
+            username: state.username, 
+            balance: state.balance, 
+            socialStatus: state.socialStatus 
+        }),
+    }
+));
 
 export default useStore;

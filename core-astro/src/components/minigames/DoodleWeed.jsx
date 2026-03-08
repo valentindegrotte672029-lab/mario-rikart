@@ -16,11 +16,11 @@ export default function DoodleWeed({ onExit }) {
     const [gameState, setGameState] = useState('START'); // START, PLAYING, GAMEOVER
     const [score, setScore] = useState(0);
 
-    // Physics Refs
     const stateRef = useRef({
         luigi: { x: GAME_WIDTH / 2, y: 300, vy: 0, vx: 0 },
         platforms: [],
-        score: 0
+        score: 0,
+        targetX: GAME_WIDTH / 2 // Pour le suivi fluide du doigt
     });
     const luigiRef = useRef(null);
     const [renderTick, setRenderTick] = useState(0);
@@ -69,26 +69,32 @@ export default function DoodleWeed({ onExit }) {
             let nextVy = currentLuigi.vy + GRAVITY;
             let nextX = currentLuigi.x + currentLuigi.vx;
 
+            // Mouvement Horizontal (Smooth Follow Touch)
+            nextX += (state.targetX - nextX) * 0.15; // Lissage (Lerp)
+
             // Screen Wrap (Left/Right)
             if (nextX < -30) nextX = GAME_WIDTH;
             if (nextX > GAME_WIDTH) nextX = -30;
 
-            // --- COLLISION DETECTION (Only falling down) ---
+            // --- COLLISION DETECTION (Anti-Tunneling Sweep) ---
             let platformsChanged = false;
 
             if (currentLuigi.vy > 0) {
                 let hitPlatform = null;
                 let keptPlatforms = [];
 
+                // On vérifie le segment de chute [currentY, nextY]
+                let startY = currentLuigi.y + 30; // 30 = pieds de luigi (bas de la hitbox)
+                let endY = nextY + 30;
+
                 for (let i = 0; i < currentPlatforms.length; i++) {
                     const plat = currentPlatforms[i];
 
-                    if (!hitPlatform &&
-                        nextY + 30 >= plat.y &&
-                        nextY + 30 <= plat.y + PLATFORM_HEIGHT + 30 &&
-                        nextX + 30 > plat.x - 10 &&
-                        nextX < plat.x + PLATFORM_WIDTH + 10
-                    ) {
+                    // Le joueur était-il au-dessus de la plateforme à la frame précédente, et l'a dépassée à la frame actuelle ?
+                    const isFallingThrough = startY <= plat.y + 10 && endY >= plat.y;
+                    const isHorizontallyAligned = nextX + 30 > plat.x - 10 && nextX < plat.x + PLATFORM_WIDTH + 10;
+
+                    if (!hitPlatform && isFallingThrough && isHorizontallyAligned) {
                         hitPlatform = plat;
                         if (plat.type !== 'breaking') {
                             keptPlatforms.push(plat);
@@ -104,6 +110,8 @@ export default function DoodleWeed({ onExit }) {
                 currentPlatforms = keptPlatforms;
 
                 if (hitPlatform) {
+                    // Snap to platform and jump
+                    nextY = hitPlatform.y - 30;
                     nextVy = hitPlatform.type === 'spring' ? JUMP_FORCE * 1.5 : JUMP_FORCE;
                     if (window.navigator?.vibrate) window.navigator.vibrate(20);
                 }
@@ -198,14 +206,19 @@ export default function DoodleWeed({ onExit }) {
     }, []);
 
     // --- CONTROLS ---
-    const handleTouchStart = (e) => {
+    // Update targetX directly based on touch position relative to the window
+    const updateTargetX = (e) => {
         if (gameState !== 'PLAYING') return;
         const touchX = e.touches[0].clientX;
-        stateRef.current.luigi.vx = touchX < window.innerWidth / 2 ? -6 : 6;
+        stateRef.current.targetX = touchX;
+        // Déterminer la direction visuelle de Luigi
+        stateRef.current.luigi.vx = touchX < stateRef.current.luigi.x ? -1 : 1; 
     };
-    const handleTouchMove = (e) => { };
+
+    const handleTouchStart = updateTargetX;
+    const handleTouchMove = updateTargetX;
     const handleTouchEnd = () => {
-        if (gameState === 'PLAYING') stateRef.current.luigi.vx = 0;
+        // Optionnel : ne rien faire, Luigi continue vers la dernière position.
     };
 
     // --- ACTIONS ---
@@ -213,7 +226,8 @@ export default function DoodleWeed({ onExit }) {
         stateRef.current = {
             luigi: { x: GAME_WIDTH / 2, y: 300, vy: JUMP_FORCE, vx: 0 },
             platforms: generateInitialPlatforms(),
-            score: 0
+            score: 0,
+            targetX: GAME_WIDTH / 2
         };
         setScore(0);
         setGameState('PLAYING');

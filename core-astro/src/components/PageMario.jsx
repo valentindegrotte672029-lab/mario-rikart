@@ -37,7 +37,8 @@ export default function PageMario() {
     const file = e.target.files[0];
     if (file) {
       if (window.navigator?.vibrate) window.navigator.vibrate(50);
-      const base64 = await compressImage(file, 400); // Plus petit pour le front
+      setStep('PROCESSING'); // Étape de chargement visuel accélérée au lieu de freeze
+      const base64 = await compressImage(file, 400);
       setFrontPhoto(base64);
       setStep('EDIT');
     }
@@ -180,6 +181,7 @@ export default function PageMario() {
 
         {step === 'CAPTURE_FRONT' && (
           <div className="capture-section">
+            <h3 style={{ color: 'white', marginBottom: '10px' }}>📸 Décor capturé !</h3>
             <input
               type="file"
               accept="image/*"
@@ -196,6 +198,12 @@ export default function PageMario() {
               <span>2. SELFIE (Avant)</span>
             </button>
             <button className="btn-secondary cancel-capture-btn" onClick={cancelPhoto}>Annuler</button>
+          </div>
+        )}
+
+        {step === 'PROCESSING' && (
+          <div className="capture-section" style={{ padding: '80px 0' }}>
+            <h3 className="blink-text" style={{ color: '#00ffcc', fontSize: '1.5rem' }}>Développement... 🎞️</h3>
           </div>
         )}
 
@@ -424,6 +432,15 @@ export default function PageMario() {
           color: #888;
           border: none;
           text-decoration: underline;
+        }
+
+        .blink-text {
+          animation: blink 1s infinite alternate;
+        }
+
+        @keyframes blink {
+          0% { opacity: 0.3; }
+          100% { opacity: 1; }
         }
 
         /* EDITOR SECTION */

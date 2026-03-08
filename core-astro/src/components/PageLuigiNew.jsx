@@ -1,7 +1,7 @@
 /* eslint-disable */
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Wind } from 'lucide-react';
+import { Wind, Trophy, X } from 'lucide-react';
 
 import FlappyWeed from './minigames/FlappyWeed';
 import ChampiNinja from './minigames/ChampiNinja';
@@ -13,6 +13,7 @@ export default function PageLuigiNew() {
   const { username, leaderboards, clearHappening } = useStore();
   const [cleaning, setCleaning] = useState(false);
   const [activeGame, setActiveGame] = useState(null);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
 
   const handleClean = () => {
     setCleaning(true);
@@ -66,47 +67,71 @@ export default function PageLuigiNew() {
           </button>
         </div>
 
-        {/* --- LEADERBOARD SECTION --- */}
-        <div className="leaderboard-section">
-          <h3 className="lb-title">🏆 Meilleurs Scores Mondiaux</h3>
-
-          <div className="lb-row">
-            <span className="lb-game">🪽 Roule-Ta-Fleur</span>
-            <div className="lb-scores-wrapper">
-              {leaderboards.FLAPPYWEED?.[username] && (
-                <span className="lb-personal">Moi: {leaderboards.FLAPPYWEED[username].score}</span>
-              )}
-              <span className="lb-score">
-                Top: {Object.values(leaderboards.FLAPPYWEED || {}).sort((a, b) => b.score - a.score)[0]?.score || 0}
-              </span>
-            </div>
-          </div>
-
-          <div className="lb-row">
-            <span className="lb-game">🍄 Champi Ninja</span>
-            <div className="lb-scores-wrapper">
-              {leaderboards.CHAMPININJA?.[username] && (
-                <span className="lb-personal">Moi: {leaderboards.CHAMPININJA[username].score}</span>
-              )}
-              <span className="lb-score">
-                Top: {Object.values(leaderboards.CHAMPININJA || {}).sort((a, b) => b.score - a.score)[0]?.score || 0}
-              </span>
-            </div>
-          </div>
-
-          <div className="lb-row">
-            <span className="lb-game">🚀 Doodle-Weed</span>
-            <div className="lb-scores-wrapper">
-              {leaderboards.DOODLEWEED?.[username] && (
-                <span className="lb-personal">Moi: {leaderboards.DOODLEWEED[username].score}</span>
-              )}
-              <span className="lb-score">
-                Top: {Object.values(leaderboards.DOODLEWEED || {}).sort((a, b) => b.score - a.score)[0]?.score || 0}
-              </span>
-            </div>
-          </div>
+        {/* --- LEADERBOARD ACTION --- */}
+        <div style={{ padding: '0 5px' }}>
+          <button className="leaderboard-full-btn" onClick={() => setShowLeaderboard(true)}>
+            <Trophy size={18} color="#ffcc00" /> VOIR LE CLASSEMENT MONDIAL <Trophy size={18} color="#ffcc00" />
+          </button>
         </div>
       </div>
+
+      {/* --- MODALE CLASSEMENT --- */}
+      <AnimatePresence>
+        {showLeaderboard && (
+          <motion.div 
+            className="leaderboard-modal"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+          >
+            <div className="lb-header-modal">
+              <h2>🏆 HALL OF FAME</h2>
+              <button className="lb-close-btn" onClick={() => setShowLeaderboard(false)}><X size={26} /></button>
+            </div>
+
+            <div className="lb-scroll-content">
+              {/* FlappyWeed */}
+              <div className="lb-category">
+                <h3>💨 Roule-Ta-Feuille</h3>
+                {Object.keys(leaderboards.FLAPPYWEED || {}).length === 0 ? <p className="empty-lb">Aucun score</p> : (
+                  Object.entries(leaderboards.FLAPPYWEED).sort(([,a], [,b]) => b.score - a.score).slice(0, 10).map(([user, data], i) => (
+                    <div key={user} className="lb-line">
+                      <span><span className="rank-pos">#{i+1}</span> {user}</span>
+                      <span className="lb-points">{data.score}</span>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {/* Champi Ninja */}
+              <div className="lb-category">
+                <h3>🍄 Champi Ninja</h3>
+                {Object.keys(leaderboards.CHAMPININJA || {}).length === 0 ? <p className="empty-lb">Aucun score</p> : (
+                  Object.entries(leaderboards.CHAMPININJA).sort(([,a], [,b]) => b.score - a.score).slice(0, 10).map(([user, data], i) => (
+                    <div key={user} className="lb-line">
+                      <span><span className="rank-pos">#{i+1}</span> {user}</span>
+                      <span className="lb-points">{data.score}</span>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {/* Doodle Weed */}
+              <div className="lb-category">
+                <h3>🚀 Doodle-Weed</h3>
+                {Object.keys(leaderboards.DOODLEWEED || {}).length === 0 ? <p className="empty-lb">Aucun score</p> : (
+                  Object.entries(leaderboards.DOODLEWEED).sort(([,a], [,b]) => b.score - a.score).slice(0, 10).map(([user, data], i) => (
+                    <div key={user} className="lb-line">
+                      <span><span className="rank-pos">#{i+1}</span> {user}</span>
+                      <span className="lb-points">{data.score}</span>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {activeGame === 'FLAPPYWEED' && <FlappyWeed key="flappyweed" onExit={() => setActiveGame(null)} />}
@@ -227,11 +252,44 @@ export default function PageLuigiNew() {
           transform: scale(0.96);
         }
 
-        .vacuum-btn.cleaning {
-          border-color: var(--theme-color);
-          color: var(--theme-color);
-          background: rgba(57, 255, 20, 0.1);
+        .leaderboard-full-btn {
+          width: 100%; margin-top: 15px; margin-bottom: 5px;
+          background: linear-gradient(135deg, #112211, #001100);
+          color: white; border: 2px solid #ffcc00;
+          padding: 15px; border-radius: 16px;
+          font-weight: 900; font-size: 1rem;
+          display: flex; align-items: center; justify-content: center; gap: 8px;
+          box-shadow: 0 4px 15px rgba(255, 204, 0, 0.2); transition: transform 0.1s;
         }
+        .leaderboard-full-btn:active { transform: scale(0.96); }
+
+        .leaderboard-modal {
+          position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+          background: rgba(5, 15, 5, 0.95); backdrop-filter: blur(15px);
+          z-index: 100; display: flex; flex-direction: column;
+        }
+
+        .lb-header-modal {
+          display: flex; justify-content: space-between; align-items: center;
+          padding: 25px 20px 15px 20px; border-bottom: 2px solid #336633;
+        }
+        .lb-header-modal h2 { color: #ffcc00; font-size: 1.5rem; font-weight: 900; letter-spacing: 1px;}
+        .lb-close-btn { background: none; border: none; color: white; padding: 5px; cursor: pointer; }
+
+        .lb-scroll-content {
+          flex: 1; padding: 20px; overflow-y: auto;
+          display: flex; flex-direction: column; gap: 20px;
+        }
+
+        .lb-category { background: rgba(0,0,0,0.4); border-radius: 15px; padding: 15px; border: 1px solid rgba(57, 255, 20, 0.2); }
+        .lb-category h3 { color: #aaffaa; font-size: 1.1rem; border-bottom: 1px solid #224422; padding-bottom: 8px; margin-bottom: 12px; }
+        .empty-lb { color: #888; font-style: italic; font-size: 0.9rem; text-align: center; }
+
+        .lb-line { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #1a331a; font-size: 1rem; }
+        .lb-line:last-child { border-bottom: none; }
+        .rank-pos { color: #ffcc00; font-weight: bold; margin-right: 8px; font-variant-numeric: tabular-nums; }
+        .lb-points { color: #39ff14; font-weight: 900; font-variant-numeric: tabular-nums; }
+
       `}</style>
     </motion.div >
   );
