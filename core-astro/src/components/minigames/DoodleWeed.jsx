@@ -19,8 +19,7 @@ export default function DoodleWeed({ onExit }) {
     const stateRef = useRef({
         luigi: { x: GAME_WIDTH / 2, y: 300, vy: 0, vx: 0 },
         platforms: [],
-        score: 0,
-        targetX: GAME_WIDTH / 2 // Pour le suivi fluide du doigt
+        score: 0
     });
     const luigiRef = useRef(null);
     const [renderTick, setRenderTick] = useState(0);
@@ -69,8 +68,8 @@ export default function DoodleWeed({ onExit }) {
             let nextVy = currentLuigi.vy + GRAVITY;
             let nextX = currentLuigi.x + currentLuigi.vx;
 
-            // Mouvement Horizontal (Smooth Follow Touch)
-            nextX += (state.targetX - nextX) * 0.15; // Lissage (Lerp)
+            // Mouvement Horizontal
+            nextX += currentLuigi.vx;
 
             // Screen Wrap (Left/Right)
             if (nextX < -30) nextX = GAME_WIDTH;
@@ -206,19 +205,16 @@ export default function DoodleWeed({ onExit }) {
     }, []);
 
     // --- CONTROLS ---
-    // Update targetX directly based on touch position relative to the window
-    const updateTargetX = (e) => {
+    const handleTouchStart = (e) => {
         if (gameState !== 'PLAYING') return;
         const touchX = e.touches[0].clientX;
-        stateRef.current.targetX = touchX;
-        // Déterminer la direction visuelle de Luigi
-        stateRef.current.luigi.vx = touchX < stateRef.current.luigi.x ? -1 : 1; 
+        stateRef.current.luigi.vx = touchX < window.innerWidth / 2 ? -6 : 6;
     };
-
-    const handleTouchStart = updateTargetX;
-    const handleTouchMove = updateTargetX;
+    
+    const handleTouchMove = (e) => { };
+    
     const handleTouchEnd = () => {
-        // Optionnel : ne rien faire, Luigi continue vers la dernière position.
+        if (gameState === 'PLAYING') stateRef.current.luigi.vx = 0;
     };
 
     // --- ACTIONS ---
@@ -226,8 +222,7 @@ export default function DoodleWeed({ onExit }) {
         stateRef.current = {
             luigi: { x: GAME_WIDTH / 2, y: 300, vy: JUMP_FORCE, vx: 0 },
             platforms: generateInitialPlatforms(),
-            score: 0,
-            targetX: GAME_WIDTH / 2
+            score: 0
         };
         setScore(0);
         setGameState('PLAYING');
