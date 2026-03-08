@@ -21,6 +21,7 @@ function App() {
     socket.on('connect', () => {
       setIsConnected(true);
       socket.emit('request_bereals');
+      socket.emit('join_admin');
     });
     socket.on('disconnect', () => setIsConnected(false));
 
@@ -30,6 +31,7 @@ function App() {
 
     // Réception des commandes Wario Bar
     socket.on('order_received', (order) => setOrders(prev => [order, ...prev]));
+    socket.on('sync_orders', (history) => setOrders(history.slice().reverse()));
 
     // Réception BeReals
     socket.on('bereals_history', (history) => setBereals(history));
@@ -45,6 +47,7 @@ function App() {
       socket.off('player_joined');
       socket.off('player_left');
       socket.off('order_received');
+      socket.off('sync_orders');
       socket.off('bereals_history');
       socket.off('bereal_broadcast');
       socket.off('bereal_deleted');
@@ -158,29 +161,46 @@ function App() {
                 <p style={{ marginTop: '15px' }}>En attente de commandes...</p>
               </div>
             ) : (
-              <div className="orders-list">
+              <div className="orders-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '20px', padding: '10px' }}>
                 <AnimatePresence>
-                  {orders.map((order, idx) => (
+                  {Object.entries(
+                    orders.reduce((acc, order) => {
+                      if (!acc[order.username]) acc[order.username] = [];
+                      acc[order.username].push(order);
+                      return acc;
+                    }, {})
+                  ).map(([user, userOrders]) => (
                     <motion.div
-                      key={order.timestamp + '-' + idx}
-                      className="order-card"
-                      initial={{ opacity: 0, x: -50 }}
-                      animate={{ opacity: 1, x: 0 }}
+                      key={user}
+                      className="user-ticket-card"
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
                       layout
+                      style={{ background: '#222', borderRadius: '15px', padding: '15px', border: '1px solid #ffcc00' }}
                     >
-                      <div className="order-info">
-                        <h4>{order.item}</h4>
-                        <p>Client: <span className="order-user">{order.username}</span> • {new Date(order.timestamp).toLocaleTimeString()}</p>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #444', paddingBottom: '10px', marginBottom: '10px' }}>
+                        <h3 style={{ color: '#ffcc00', margin: 0, fontSize: '1.2rem', textTransform: 'uppercase' }}>Ticket de {user}</h3>
+                        <span style={{ color: '#aaa', fontSize: '0.8rem' }}>{userOrders.length} article(s)</span>
                       </div>
-                      <div className="order-price" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                        {order.price && <span>{order.price / 1000}k 🟡</span>}
-                        <button
-                          onClick={() => deleteOrder(idx)}
-                          style={{ background: '#4CAF50', color: 'white', border: 'none', padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}
-                        >
-                          Livrée ✓
-                        </button>
-                      </div>
+                      
+                      <ul style={{ listStyleType: 'none', padding: 0, margin: '0 0 15px 0' }}>
+                        {userOrders.map((o, i) => (
+                           <li key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px dashed #333' }}>
+                             <span style={{ color: 'white', fontWeight: 'bold' }}>- {o.item}</span>
+                             <span style={{ color: '#00ffcc' }}>{o.price / 1000}k 🟡</span>
+                           </li>
+                        ))}
+                      </ul>
+
+                      <button 
+                        onClick={() => setOrders(prev => prev.filter(o => o.username !== user))}
+                        style={{ width: '100%', padding: '12px', borderRadius: '8px', border: 'none', background: '#4CAF50', color: 'white', fontWeight: '900', cursor: 'pointer', transition: 'transform 0.1s' }}
+                        onMouseDown={(e) => e.target.style.transform = 'scale(0.97)'}
+                        onMouseUp={(e) => e.target.style.transform = 'scale(1)'}
+                      >
+                        ✔ SERVIR LA TABLE COMPLÈTE
+                      </button>
                     </motion.div>
                   ))}
                 </AnimatePresence>

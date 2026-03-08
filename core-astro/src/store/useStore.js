@@ -52,6 +52,7 @@ const useStore = create(
 
     // Leaderboards
     leaderboards: { FLAPPYWEED: {}, CHAMPININJA: {}, DOODLEWEED: {} },
+    setLeaderboards: (leaderboards) => set({ leaderboards })
     }),
     {
         name: 'mario-rikart-storage',

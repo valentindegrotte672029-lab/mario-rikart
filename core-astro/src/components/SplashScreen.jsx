@@ -3,16 +3,37 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 
 import useStore from '../store/useStore';
+import { socket } from '../socket';
 
 export default function SplashScreen() {
   const [inputValue, setInputValue] = useState('');
+  const [passwordValue, setPasswordValue] = useState('');
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const { setUsername } = useStore();
 
   const handleJoin = (e) => {
     e.preventDefault();
-    if (inputValue.trim().length > 2) {
+    if (inputValue.trim().length > 2 && passwordValue.trim().length > 2) {
       if (window.navigator?.vibrate) window.navigator.vibrate([20, 50, 20]);
-      setUsername(inputValue.trim().toUpperCase());
+      
+      setIsLoading(true);
+      setError(null);
+
+      if (!socket.connected) socket.connect();
+
+      socket.emit('authenticate', {
+        username: inputValue.trim().toUpperCase(),
+        password: passwordValue
+      }, (response) => {
+        setIsLoading(false);
+        if (response.success) {
+          setUsername(inputValue.trim().toUpperCase());
+        } else {
+          setError(response.message);
+          socket.disconnect();
+        }
+      });
     }
   };
 
@@ -31,19 +52,29 @@ export default function SplashScreen() {
         <form onSubmit={handleJoin} className="splash-form">
           <input
             type="text"
-            placeholder="Écris ton alias..."
+            placeholder="Écris ton pseudo..."
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             className="splash-input"
             maxLength={12}
             autoFocus
           />
+          <input
+            type="password"
+            placeholder="Mot de passe (4 char min)"
+            value={passwordValue}
+            onChange={(e) => setPasswordValue(e.target.value)}
+            className="splash-input"
+          />
+
+          {error && <div className="splash-error">{error}</div>}
+
           <button
             type="submit"
             className="splash-btn"
-            disabled={inputValue.trim().length < 3}
+            disabled={inputValue.trim().length < 3 || passwordValue.trim().length < 4 || isLoading}
           >
-            ENTRER DANS LE KART
+            {isLoading ? "VÉRIFICATION..." : "ENTRER DANS LE KART"}
           </button>
         </form>
       </div>
@@ -128,6 +159,15 @@ export default function SplashScreen() {
 
         .splash-btn:not(:disabled):active {
           transform: scale(0.95);
+        }
+
+        .splash-error {
+          color: #ff5555;
+          font-size: 0.9rem;
+          font-weight: bold;
+          margin-top: -8px;
+          margin-bottom: 5px;
+          text-align: center;
         }
       `}</style>
     </motion.div>

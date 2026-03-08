@@ -2,6 +2,8 @@ const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const cors = require('cors');
+const fs = require('fs');
+const path = require('path');
 
 const app = express();
 app.use(cors());
@@ -38,8 +40,50 @@ const leaderboards = {
     DOODLEWEED: {}
 };
 
+// Base de données Utilisateurs (Comptes)
+const USERS_FILE = path.join(__dirname, 'users.json');
+let usersDb = {};
+if (fs.existsSync(USERS_FILE)) {
+    try {
+        usersDb = JSON.parse(fs.readFileSync(USERS_FILE, 'utf-8'));
+    } catch (e) {
+        usersDb = {};
+    }
+} else {
+    fs.writeFileSync(USERS_FILE, JSON.stringify({}));
+}
+
+const saveUsers = () => {
+    fs.writeFileSync(USERS_FILE, JSON.stringify(usersDb, null, 2));
+};
+
 io.on('connection', (socket) => {
     console.log(`⚡ Nouvelle connexion : ${socket.id}`);
+
+    // 0. Authentification Joueur 
+    socket.on('authenticate', ({ username, password }, callback) => {
+        const alias = username.toUpperCase();
+        if (usersDb[alias]) {
+            if (usersDb[alias].password === password) {
+                callback({ success: true, isNew: false, message: "Bon retour parmi nous !" });
+            } else {
+                callback({ success: false, message: "🚨 Mot de passe incorrect." });
+            }
+        } else {
+            // Création automatique si le pseudo n'existe pas
+            usersDb[alias] = { password, createdAt: new Date().toISOString() };
+            saveUsers();
+            callback({ success: true, isNew: true, message: "🎉 Nouveau compte créé !" });
+        }
+    });
+
+    // 0.5. Connexion de l'Admin
+    socket.on('join_admin', () => {
+        console.log(`👑 Admin connecté : ${socket.id}`);
+        // Synchronisation des historiques de commandes (Offline)
+        socket.emit('sync_orders', ordersQueue);
+        // On pourrait aussi sync massagesQueue si besoin
+    });
 
     // 1. Connexion d'un joueur
     socket.on('join_game', (username) => {
