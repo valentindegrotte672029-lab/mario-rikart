@@ -232,14 +232,13 @@ export default function PagePoker() {
                       </div>
                    ))}
 
-                   {/* Pot (Moved to extreme top edge to avoid overlapping center cards) */}
-                   <div className="pot-hud">
-                       POT: {pokerState.pot} 🟡<br/>
-                       {pokerState.prizePool > 0 && <span style={{fontSize: '0.7rem', color: '#ffcc00'}}>À GAGNER: {pokerState.prizePool} 🟡</span>}
-                   </div>
-
                    {/* Center / Community */}
                    <div className="table-center">
+                       {/* Pot is now strictly inside the center layout */}
+                       <div className="pot-hud">
+                           POT: {pokerState.pot} 🟡<br/>
+                           {pokerState.prizePool > 0 && <span style={{fontSize: '0.7rem', color: '#ffcc00'}}>À GAGNER: {pokerState.prizePool} 🟡</span>}
+                       </div>
                        <div className="community-cards">
                            {pokerState.communityCards.map((c, i) => <PokerCard key={i} card={c} />)}
                        </div>
@@ -401,13 +400,15 @@ export default function PagePoker() {
           display: flex;
           flex-direction: column;
           position: relative;
-          background-color: #08110a; /* Dark sleek background */
+          background-color: transparent;
           color: white;
+          min-height: 0;
         }
 
         .tapis-vert {
           flex: 1;
-          margin: 10px;
+          margin: 0;
+          margin-bottom: 10px;
           background: #0f4f25;
           border-radius: 40px;
           border: 4px solid #1a1a1a;
@@ -417,12 +418,14 @@ export default function PagePoker() {
           justify-content: center;
           position: relative;
           overflow: hidden;
+          min-height: 0;
         }
 
         .inner-table {
           width: 100%;
           height: 100%;
           position: relative;
+          min-height: 0;
         }
 
         /* SEATS */
@@ -491,14 +494,14 @@ export default function PagePoker() {
         .player-cards {
            display: flex;
            gap: 2px;
-           margin-top: -5px;
+           margin-top: 5px;
         }
         .my-cards {
            display: flex;
            flex-direction: row;
            gap: 5px;
-           margin-top: -15px;
-           margin-bottom: -10px;
+           margin-top: 5px;
+           margin-bottom: 5px;
            z-index: 1;
            transform: scale(1.1);
         }
@@ -506,17 +509,18 @@ export default function PagePoker() {
         /* CENTER AREA */
         .table-center {
            position: absolute;
-           top: 55%; left: 50%;
+           top: 50%; left: 50%;
            transform: translate(-50%, -50%);
            display: flex; flex-direction: column; align-items: center;
+           gap: 10px;
         }
 
         .pot-hud {
-           position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
            background: rgba(0,0,0,0.8); padding: 5px 20px; border-radius: 20px;
            color: white; font-weight: 900; font-size: 1.1rem;
            border: 1px solid #ffcc00; text-align: center; z-index: 5;
            white-space: nowrap; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+           margin-bottom: 5px;
         }
 
         .community-cards {
@@ -525,7 +529,7 @@ export default function PagePoker() {
         }
 
         .last-action-log {
-           position: absolute; top: -35px;
+           position: absolute; bottom: -30px;
            background: rgba(0,0,0,0.6); color: white;
            padding: 3px 15px; border-radius: 10px;
            font-size: 0.8rem; font-style: italic; white-space: nowrap;
@@ -604,11 +608,11 @@ export default function PagePoker() {
 
         .btn-leave-table {
             position: absolute;
-            top: 10px;
-            left: 10px;
+            top: -25px;
+            left: 0px;
             background: transparent;
-            color: rgba(255,255,255,0.4);
-            font-size: 0.7rem;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.75rem;
             text-transform: uppercase;
             padding: 5px;
             border: none;

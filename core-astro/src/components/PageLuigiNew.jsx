@@ -23,13 +23,14 @@ export default function PageLuigiNew() {
   };
 
   return (
-    <motion.div
-      className="page-mobile luigi-mobile"
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 1.05 }}
-      transition={{ duration: 0.3 }}
-    >
+    <>
+      <motion.div
+        className="page-mobile luigi-mobile"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.3 }}
+      >
       <div className="gas-ambient"></div>
 
       <div className="glass-panel mobile-card luigi-card">
@@ -132,6 +133,8 @@ export default function PageLuigiNew() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      </motion.div>
 
       <AnimatePresence>
         {activeGame === 'FLAPPYWEED' && <FlappyWeed key="flappyweed" onExit={() => setActiveGame(null)} />}
@@ -291,6 +294,6 @@ export default function PageLuigiNew() {
         .lb-points { color: #39ff14; font-weight: 900; font-variant-numeric: tabular-nums; }
 
       `}</style>
-    </motion.div >
+    </>
   );
 }

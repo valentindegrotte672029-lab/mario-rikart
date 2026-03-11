@@ -443,10 +443,7 @@ class PokerEngine {
         }
     }
 
-    // Helper to convert card objects to poker-solver format (e.g., 'As', 'Kh')
-    toPokerSolverFormat(card) {
-        return `${card.value}${card.suit.toLowerCase()}`;
-    }
+    // Helper removed because cards are already 'Ah', 'Ts' in PokerSolver format
 
     executeBotAction(bot) {
         const toCall = this.state.highestBet - bot.currentBet;
@@ -464,17 +461,16 @@ class PokerEngine {
         
         // Base strength on hole cards (pre-flop)
         if (this.state.communityCards.length === 0) {
-            const ranks = bot.cards.map(c => '23456789TJQKA'.indexOf(c.value));
+            const ranks = bot.cards.map(c => '23456789TJQKA'.indexOf(c[0]));
             const isPair = ranks[0] === ranks[1];
-            const hasHighCard = bot.cards.some(c => ['A', 'K', 'Q', 'J'].includes(c.value));
+            const hasHighCard = bot.cards.some(c => ['A', 'K', 'Q', 'J'].includes(c[0]));
             
-            if (isPair) strength = ['A','K','Q','J'].includes(bot.cards[0].value) ? 0.9 : 0.6;
+            if (isPair) strength = ['A','K','Q','J'].includes(bot.cards[0][0]) ? 0.9 : 0.6;
             else if (hasHighCard) strength = 0.5;
             else strength = 0.2;
         } else {
             // Evaluated hand rank
-            const allCardsFormatted = totalCards.map(c => this.toPokerSolverFormat(c));
-            const currentHand = Hand.solve(allCardsFormatted);
+            const currentHand = Hand.solve(totalCards);
             const rankNum = currentHand.rank; // 1 (High Card) to 9 (Straight Flush)
             strength = rankNum / 9;
         }
