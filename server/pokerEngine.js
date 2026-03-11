@@ -390,17 +390,69 @@ class PokerEngine {
         // Check if we need to showdown immediately (e.g. everyone is all-in)
         const bettingActive = this.state.players.filter(p => !p.folded && !p.allIn);
         if (bettingActive.length <= 1) {
-            // Fast forward to showdown
-            while (this.state.communityCards.length < 5) {
-                this.state.communityCards.push(this.state.deck.pop());
-            }
-            this.evaluateShowdown();
+            // Dramatic staged reveal instead of instant dump
+            this.stagedAllInReveal();
             return;
         }
 
         this.state.currentTurnIdx = this.getNextActiveIndex(this.state.dealerIdx);
         this.emitState();
         this.scheduleBotTurn();
+    }
+
+    stagedAllInReveal() {
+        // Show cards face-up during all-in by switching to SHOWDOWN mode
+        this.state.status = 'SHOWDOWN';
+        
+        const steps = [];
+        const cardsNeeded = 5 - this.state.communityCards.length;
+        
+        if (cardsNeeded >= 3 && this.state.communityCards.length === 0) {
+            // Need flop (3 cards)
+            steps.push(() => {
+                this.state.communityCards.push(this.state.deck.pop(), this.state.deck.pop(), this.state.deck.pop());
+                this.addLog('🃏 FLOP...');
+                this.emitState();
+            });
+        }
+        
+        if (this.state.communityCards.length + (steps.length > 0 ? 3 : 0) < 4) {
+            // Need turn
+            steps.push(() => {
+                if (this.state.communityCards.length < 4) {
+                    this.state.communityCards.push(this.state.deck.pop());
+                }
+                this.addLog('🃏 TURN...');
+                this.emitState();
+            });
+        }
+        
+        if (this.state.communityCards.length + (steps.length > 0 ? 3 : 0) < 5) {
+            // Need river 
+            steps.push(() => {
+                if (this.state.communityCards.length < 5) {
+                    this.state.communityCards.push(this.state.deck.pop());
+                }
+                this.addLog('🃏 RIVER...');
+                this.emitState();
+            });
+        }
+
+        // Execute steps with delays
+        let delay = 0;
+        steps.forEach((step, i) => {
+            delay += (i === 0) ? 500 : 1500;
+            setTimeout(step, delay);
+        });
+        
+        // Final showdown after all cards revealed
+        setTimeout(() => {
+            // Fill any remaining cards just in case
+            while (this.state.communityCards.length < 5) {
+                this.state.communityCards.push(this.state.deck.pop());
+            }
+            this.evaluateShowdown();
+        }, delay + 2000);
     }
 
     evaluateShowdown() {
