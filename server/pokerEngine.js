@@ -153,7 +153,9 @@ class PokerEngine {
                const humans = this.state.players.filter(pl => !pl.isBot && pl.id !== 'disconnected');
                if (humans.length === 0) {
                    // End game instantly
+                   if (this.timeoutId) clearTimeout(this.timeoutId);
                    this.resetTable();
+                   this.emitState();
                } else {
                    this.emitState();
                }
@@ -513,6 +515,12 @@ class PokerEngine {
                 this.pokerStats[p.username].totalWinnings += splitPot;
             }
         });
+
+        // Auto-broadcast stats to admin
+        const statsArray = Object.entries(this.pokerStats).map(([username, data]) => ({
+            username, ...data
+        })).sort((a, b) => b.wins - a.wins);
+        this.io.emit('poker_history', statsArray);
 
         this.emitState();
 

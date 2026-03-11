@@ -201,7 +201,7 @@ export default function PagePoker() {
            >
               {[200, 300, 400, 600, 1000, 1500, 200, 300, 400, 600, 1000, 1500].map((amt, i) => (
                 <div key={i} className="wheel-segment" style={{
-                  transform: `rotate(${i * 30}deg)`,
+                  transform: `rotate(${i * 30 - 90 + 15}deg)`,
                 }}>
                   <span className="seg-label">{amt}</span>
                 </div>
@@ -400,12 +400,11 @@ export default function PagePoker() {
         }
         .seg-label {
           position: absolute;
-          left: 60px; top: -8px;
+          left: 55px; top: -7px;
           color: white;
           font-weight: 900;
-          font-size: 0.65rem;
-          text-shadow: 1px 1px 4px rgba(0,0,0,0.9);
-          transform: rotate(15deg);
+          font-size: 0.7rem;
+          text-shadow: 1px 1px 4px rgba(0,0,0,0.9), 0 0 6px rgba(0,0,0,0.7);
           pointer-events: none;
         }
         
