@@ -185,7 +185,20 @@ export default function PagePoker() {
              </div>
            )}
         </div>
-      ) : pokerState.status === 'SPINNING' ? (
+      ) : pokerState.status === 'SPINNING' ? (() => {
+        // Calculate target rotation so the wheel lands on the correct prize segment
+        const SEGMENTS = [200, 300, 400, 600, 1000, 1500, 200, 300, 400, 600, 1000, 1500];
+        const prize = pokerState.prizePool || 200;
+        // Find all matching segment indices
+        const matchingIndices = SEGMENTS.map((v, i) => v === prize ? i : -1).filter(i => i >= 0);
+        // Pick one randomly (seeded by prizePool to be stable across re-renders)
+        const segIdx = matchingIndices.length > 0 ? matchingIndices[prize % matchingIndices.length] : 0;
+        // Segment center in conic-gradient space (from top, clockwise)
+        const targetAngle = segIdx * 30 + 15;
+        // Total rotation: 8 full spins + land on segment
+        const totalRotation = 360 * 8 + targetAngle;
+
+        return (
         <div className="poker-spinner">
            <h2>TIRAGE DU MAGOT !</h2>
            
@@ -193,13 +206,13 @@ export default function PagePoker() {
            <motion.div 
              className="jackpot-wheel"
              initial={{ rotate: 0 }}
-             animate={{ rotate: 360 * 8 + 45 }}
+             animate={{ rotate: totalRotation }}
              transition={{ duration: 5, ease: [0.15, 0.60, 0.10, 1.00] }}
              onUpdate={(v) => {
                  if (Math.random() < 0.10 && v.rotate > 100) playCardSound();
              }}
            >
-              {[200, 300, 400, 600, 1000, 1500, 200, 300, 400, 600, 1000, 1500].map((amt, i) => (
+              {SEGMENTS.map((amt, i) => (
                 <div key={i} className="wheel-segment" style={{
                   transform: `rotate(${i * 30 - 90 + 15}deg)`,
                 }}>
@@ -224,7 +237,7 @@ export default function PagePoker() {
              )}
            </AnimatePresence>
         </div>
-      ) : (
+        ); })() : (
         <div className="poker-table-container">
             {/* TOP INFO BAR */}
             <div className="poker-top-bar">
