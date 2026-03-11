@@ -36,16 +36,16 @@ class PokerEngine {
             buyIn: 100,
             prizePool: 0,
             multiplier: 0,
-            players: [], // { id, username, isBot, chips: 1000, currentBet: 0, folded: false, allIn: false, cards: [] }
+            players: [], // { id, username, isBot, chips: 500, currentBet: 0, folded: false, allIn: false, cards: [] }
             communityCards: [],
             deck: [],
             pot: 0,
             dealerIdx: 0,
             currentTurnIdx: 0,
             highestBet: 0,
-            minRaise: 20, // Big blind is 20
-            smallBlind: 10,
-            bigBlind: 20,
+            minRaise: 50, // Big blind is 50
+            smallBlind: 25,
+            bigBlind: 50,
             winners: [],
             lastAction: null, // string description for UI
             handsPlayed: 0
@@ -118,7 +118,7 @@ class PokerEngine {
             id: socketId,
             username: username,
             isBot: false,
-            chips: 1000, // Tournament stack
+            chips: 500, // Tournament stack - short format
             currentBet: 0,
             folded: false,
             allIn: false,
@@ -168,7 +168,7 @@ class PokerEngine {
                 id: `bot_${Math.random()}`,
                 username: BOT_NAMES[this.state.players.length] || 'Bot',
                 isBot: true,
-                chips: 1000,
+                chips: 500,
                 currentBet: 0,
                 folded: false,
                 allIn: false,
@@ -212,7 +212,7 @@ class PokerEngine {
 
         setTimeout(() => {
             this.startNextHand();
-        }, 3000);
+        }, 2000);
     }
 
     startNextHand() {
@@ -252,10 +252,10 @@ class PokerEngine {
         this.state.winners = [];
 
         this.state.handsPlayed = (this.state.handsPlayed || 0) + 1;
-        if (this.state.handsPlayed > 1 && this.state.handsPlayed % 3 === 0) {
-           this.state.smallBlind *= 2;
-           this.state.bigBlind *= 2;
-           this.addLog(`⚡ NIVEAU SUIVANT ! Blindes: ${this.state.smallBlind}/${this.state.bigBlind}`);
+        if (this.state.handsPlayed > 1 && this.state.handsPlayed % 2 === 0) {
+           this.state.smallBlind = Math.floor(this.state.smallBlind * 2.5);
+           this.state.bigBlind = Math.floor(this.state.bigBlind * 2.5);
+           this.addLog(`⚡ TURBO ! Blindes: ${this.state.smallBlind}/${this.state.bigBlind}`);
         }
 
         this.state.players.forEach(p => {
@@ -427,7 +427,7 @@ class PokerEngine {
         this.addLog(`${winLog} remporte le pot avec ${winnersHand[0].descr}`);
         this.emitState();
 
-        setTimeout(() => this.startNextHand(), 4000); // Speed up transition
+        setTimeout(() => this.startNextHand(), 1500); // Ultra fast transition
     }
 
     scheduleBotTurn() {
