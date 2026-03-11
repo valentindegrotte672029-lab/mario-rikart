@@ -236,8 +236,10 @@ export default function FlappyWeed({ onExit }) {
             --sky-color: #87CEEB;
             position: fixed; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 450px;
             display: flex; flex-direction: column;
-            background: rgba(10, 20, 10, 0.95); z-index: 50;
+            background-color: #050a05;
+            z-index: 50;
             padding: calc(var(--safe-top) + 85px) 15px 15px 15px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.9);
         }
 
         .header-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; color: var(--theme-color); }

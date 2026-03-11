@@ -42,6 +42,35 @@ const playWinSound = () => {
    setTimeout(() => playTone(1046.50, 0.4, 'sine', 0.1), 300); 
 };
 
+const playFoldSound = () => {
+    playTone(200, 0.2, 'triangle', 0.05);
+    setTimeout(() => playTone(150, 0.3, 'triangle', 0.05), 100);
+};
+
+const playCallSound = () => {
+    // 2 quick chips
+    playChipSound();
+    setTimeout(playChipSound, 100);
+};
+
+const playRaiseSound = () => {
+    // Aggressive slide up
+    if (!audioCtx) return;
+    try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.2);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.2);
+    } catch(e) {}
+};
+
 // --- CARD COMPONENT ---
 const PokerCard = ({ card }) => {
   if (!card) return null;
@@ -111,6 +140,10 @@ export default function PagePoker() {
 
   const handleAction = (action) => {
     initAudio();
+    if (action === 'fold') playFoldSound();
+    if (action === 'call') playCallSound();
+    if (action === 'raise') playRaiseSound();
+    
     socket.emit('poker_action', { action, amount: raiseAmount });
   };
 
@@ -156,7 +189,13 @@ export default function PagePoker() {
              initial={{ rotate: 0 }}
              animate={{ rotate: 360 * 5 + 45 }} // Turn 5 times
              transition={{ duration: 2.5, ease: 'easeOut' }}
-           ></motion.div>
+             onUpdate={(v) => {
+                 // Play ticking sound pseudo randomly
+                 if (Math.random() < 0.15 && v.rotate > 100) playCardSound();
+             }}
+           >
+              <div className="wheel-center-logo">🎰</div>
+           </motion.div>
 
            <motion.div 
              className="jackpot-amount"
@@ -292,26 +331,38 @@ export default function PagePoker() {
         .poker-spinner { text-align: center; color: white; position: relative; }
         
         .wheel-pointer {
-           font-size: 2rem; color: white;
-           position: absolute; top: 40px; left: 50%; transform: translateX(-50%);
-           z-index: 10; text-shadow: 0 0 10px black;
+           font-size: 2.5rem; color: #ffeb3b;
+           position: absolute; top: 35px; left: 50%; transform: translateX(-50%);
+           z-index: 10; text-shadow: 0 4px 10px rgba(0,0,0,0.8);
+           filter: drop-shadow(0 0 5px #ffeb3b);
         }
 
         .jackpot-wheel {
-          width: 150px; height: 150px; border-radius: 50%;
-          border: 4px solid #ffcc00; margin: 30px auto;
-          background: conic-gradient(#ff0000 0% 16%, #00ff00 16% 33%, #0000ff 33% 50%, #ffff00 50% 66%, #ff00ff 66% 83%, #00ffff 83% 100%);
-          box-shadow: 0 0 30px #ffcc00; position: relative;
+          width: 200px; height: 200px; border-radius: 50%;
+          border: 8px solid #333; margin: 30px auto;
+          background: conic-gradient(
+             #e53935 0deg 30deg, #1e88e5 30deg 60deg, 
+             #43a047 60deg 90deg, #fdd835 90deg 120deg, 
+             #8e24aa 120deg 150deg, #e53935 150deg 180deg, 
+             #1e88e5 180deg 210deg, #43a047 210deg 240deg, 
+             #fdd835 240deg 270deg, #8e24aa 270deg 300deg,
+             #ff9800 300deg 330deg, #00acc1 330deg 360deg
+          );
+          box-shadow: 0 0 40px #ffcc00, inset 0 0 20px rgba(0,0,0,0.5); 
+          position: relative;
+          display: flex; align-items: center; justify-content: center;
         }
-        .jackpot-wheel::after {
-          content: '🎰'; font-size: 2.5rem; position: absolute;
-          top: 50%; left: 50%; transform: translate(-50%, -50%);
-          background: #222; border-radius: 50%; padding: 10px;
-          border: 2px solid #555;
+        
+        .wheel-center-logo {
+          width: 50px; height: 50px; background: radial-gradient(circle, #fff, #bbb);
+          border-radius: 50%; border: 4px solid #222;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 1.5rem; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+          z-index: 2;
         }
 
         .jackpot-amount {
-          font-size: 4rem; font-weight: 900; color: #ffcc00;
+          font-size: 4.5rem; font-weight: 900; color: #ffeb3b;
           text-shadow: 0 0 20px #ffcc00; margin-top: -15px;
         }
 

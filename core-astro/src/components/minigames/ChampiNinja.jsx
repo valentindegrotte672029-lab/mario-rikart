@@ -192,10 +192,12 @@ export default function ChampiNinja({ onExit }) {
                     --theme-color: #ff3366;
                     position: fixed; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 450px;
                     display: flex; flex-direction: column;
-                    background: url('/grain.png'), linear-gradient(135deg, #110000 0%, #330011 100%);
+                    background-color: #110000;
+                    background-image: url('/grain.png'), linear-gradient(135deg, #110000 0%, #330011 100%);
                     background-blend-mode: overlay;
                     z-index: 50;
                     padding: calc(var(--safe-top) + 85px) 15px 15px 15px;
+                    box-shadow: 0 0 50px rgba(0,0,0,0.9);
                 }
 
                 .header-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; color: var(--theme-color); }
