@@ -144,6 +144,14 @@ io.on('connection', (socket) => {
         // On pourrait aussi sync massagesQueue si besoin
     });
 
+    socket.on('request_poker_stats', () => {
+        const stats = Object.entries(pokerEngine.pokerStats || {}).map(([username, data]) => ({
+            username,
+            ...data
+        })).sort((a, b) => b.wins - a.wins);
+        socket.emit('poker_history', stats);
+    });
+
     // 0.6. Requête BDD Joueurs (Admin Only)
     socket.on('get_all_users', () => {
         // Formate un tableau combinant User (Mdp) et Leaderboards

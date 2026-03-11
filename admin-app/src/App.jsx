@@ -16,8 +16,10 @@ function App() {
   const [leaderboards, setLeaderboards] = useState({ FLAPPYWEED: {}, CHAMPININJA: {}, DOODLEWEED: {} });
   const [usersData, setUsersData] = useState([]);
   const [bets, setBets] = useState([]);
+  const [pokerLive, setPokerLive] = useState(null);
+  const [pokerHistory, setPokerHistory] = useState([]);
   const [activeHappening, setActiveHappening] = useState(null);
-  const [activeTab, setActiveTab] = useState('WARIO'); // 'WARIO', 'BEREAL', 'ARCADE', 'USERS', 'BETS'
+  const [activeTab, setActiveTab] = useState('WARIO'); // 'WARIO', 'BEREAL', 'ARCADE', 'USERS', 'BETS', 'POKER'
 
   // Formulaire Paris
   const [betQuestion, setBetQuestion] = useState('');
@@ -54,6 +56,10 @@ function App() {
     // Réception des Paris
     socket.on('sync_bets', (data) => setBets(data));
 
+    // Poker Live
+    socket.on('poker_state', (state) => setPokerLive(state));
+    socket.on('poker_history', (history) => setPokerHistory(history));
+
     return () => {
       socket.off('connect');
       socket.off('disconnect');
@@ -67,6 +73,8 @@ function App() {
       socket.off('leaderboards_update');
       socket.off('users_data');
       socket.off('sync_bets');
+      socket.off('poker_state');
+      socket.off('poker_history');
     };
   }, []);
 
@@ -177,6 +185,13 @@ function App() {
             style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '10px', fontWeight: 'bold', border: 'none', cursor: 'pointer', background: activeTab === 'BETS' ? '#ff00ff' : '#222', color: activeTab === 'BETS' ? '#000' : '#aaa' }}
           >
              🎰 PARIS ({bets.filter(b => b.status === 'OPEN').length})
+          </button>
+
+          <button
+            onClick={() => { setActiveTab('POKER'); socket.emit('request_poker_stats'); }}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '10px', fontWeight: 'bold', border: 'none', cursor: 'pointer', background: activeTab === 'POKER' ? '#4ade80' : '#222', color: activeTab === 'POKER' ? '#000' : '#aaa' }}
+          >
+             🃁 POKER LIVE
           </button>
         </div>
 
@@ -498,7 +513,125 @@ function App() {
             </div>
           )}
 
-          {/* --- FIN DES ONGLETS --- */}
+          {/* --- FIN DES ONGLETS EXISTANTS --- */}
+
+          {activeTab === 'POKER' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+
+              {/* LIVE TABLE */}
+              <div style={{ padding: '20px', background: '#0a1f0a', borderRadius: '15px', border: '1px solid #4ade80' }}>
+                <h2 style={{ color: '#4ade80', margin: '0 0 15px 0' }}>🟢 Table en Direct</h2>
+
+                {!pokerLive || pokerLive.status === 'WAITING' ? (
+                  <div style={{ textAlign: 'center', padding: '40px', color: '#888' }}>
+                    <p style={{ fontSize: '1.2rem' }}>Aucune partie en cours</p>
+                    <p style={{ fontSize: '0.9rem' }}>En attente qu'un joueur s'assoie...</p>
+                  </div>
+                ) : (
+                  <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px', padding: '10px', background: '#111', borderRadius: '10px' }}>
+                      <span style={{ color: '#4ade80', fontWeight: 900 }}>Phase: {pokerLive.status}</span>
+                      <span style={{ color: '#ffcc00', fontWeight: 900 }}>POT: {pokerLive.pot} 🟡</span>
+                      <span style={{ color: '#aaa' }}>Gain: {pokerLive.prizePool} 🟡</span>
+                      <span style={{ color: '#888', fontSize: '0.8rem' }}>Main #{pokerLive.handsPlayed || 1}</span>
+                    </div>
+
+                    {/* Community Cards */}
+                    {pokerLive.communityCards && pokerLive.communityCards.length > 0 && (
+                      <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '15px' }}>
+                        {pokerLive.communityCards.map((c, i) => (
+                          <div key={i} style={{ background: 'white', color: ['h','d'].includes(c[1]) ? 'red' : 'black', padding: '8px 6px', borderRadius: '6px', fontWeight: 900, fontFamily: 'monospace', fontSize: '1rem', minWidth: '35px', textAlign: 'center', boxShadow: '0 2px 6px rgba(0,0,0,0.4)' }}>
+                            {c}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Players */}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '10px' }}>
+                      {pokerLive.players && pokerLive.players.map((p, i) => (
+                        <div key={i} style={{
+                          background: pokerLive.currentTurnIdx === i ? '#143314' : '#1a1a1a',
+                          border: pokerLive.currentTurnIdx === i ? '2px solid #4ade80' : '1px solid #333',
+                          borderRadius: '10px', padding: '12px',
+                          opacity: p.folded ? 0.4 : 1
+                        }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
+                            <span style={{ color: 'white', fontWeight: 'bold' }}>{p.username} {p.isBot ? '🤖' : '👤'}</span>
+                            <span style={{ color: '#ffcc00', fontWeight: 'bold' }}>{p.chips} 🟡</span>
+                          </div>
+                          <div style={{ display: 'flex', gap: '5px' }}>
+                            {p.cards && p.cards.map((c, ci) => (
+                              <span key={ci} style={{
+                                background: c === 'hidden' ? '#cc0000' : 'white',
+                                color: c !== 'hidden' && ['h','d'].includes(c[1]) ? 'red' : 'black',
+                                padding: '3px 5px', borderRadius: '3px', fontFamily: 'monospace', fontWeight: 900, fontSize: '0.8rem'
+                              }}>
+                                {c === 'hidden' ? '?' : c}
+                              </span>
+                            ))}
+                          </div>
+                          {p.currentBet > 0 && <div style={{ color: '#4ade80', fontSize: '0.8rem', marginTop: '5px' }}>Mise: {p.currentBet}</div>}
+                          {p.folded && <div style={{ color: '#ff6b6b', fontSize: '0.8rem', marginTop: '3px' }}>COUCHÉ</div>}
+                          {p.allIn && <div style={{ color: '#ffcc00', fontSize: '0.8rem', marginTop: '3px', fontWeight: 900 }}>ALL-IN!</div>}
+                        </div>
+                      ))}
+                    </div>
+
+                    {pokerLive.lastAction && (
+                      <div style={{ marginTop: '15px', textAlign: 'center', color: '#aaa', fontStyle: 'italic', background: '#111', padding: '8px', borderRadius: '8px' }}>
+                        {pokerLive.lastAction}
+                      </div>
+                    )}
+
+                    {pokerLive.winners && pokerLive.winners.length > 0 && (
+                      <div style={{ marginTop: '15px', textAlign: 'center', color: '#ffcc00', fontWeight: 900, fontSize: '1.2rem', background: 'rgba(255,204,0,0.1)', padding: '15px', borderRadius: '10px', border: '1px solid #ffcc00' }}>
+                        🏆 Gagnant(s): {pokerLive.winners.join(', ')}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* POKER STATS TABLE */}
+              <div style={{ padding: '20px', background: '#111', borderRadius: '15px', color: 'white' }}>
+                <h2 style={{ color: '#4ade80', margin: '0 0 15px 0' }}>📊 Historique & Statistiques</h2>
+                {pokerHistory.length === 0 ? (
+                  <p style={{ color: '#888', textAlign: 'center', padding: '20px' }}>Aucune partie terminée pour l'instant.</p>
+                ) : (
+                  <div style={{ overflowX: 'auto' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                      <thead>
+                        <tr style={{ background: '#222', color: '#aaa' }}>
+                          <th style={{ padding: '12px', borderBottom: '1px solid #333' }}>Joueur</th>
+                          <th style={{ padding: '12px', borderBottom: '1px solid #333', textAlign: 'center' }}>Parties</th>
+                          <th style={{ padding: '12px', borderBottom: '1px solid #333', textAlign: 'center', color: '#4ade80' }}>Victoires</th>
+                          <th style={{ padding: '12px', borderBottom: '1px solid #333', textAlign: 'center', color: '#ff6b6b' }}>Défaites</th>
+                          <th style={{ padding: '12px', borderBottom: '1px solid #333', textAlign: 'center', color: '#ffcc00' }}>Gains Totaux</th>
+                          <th style={{ padding: '12px', borderBottom: '1px solid #333', textAlign: 'center' }}>Win Rate</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {pokerHistory.map((stat, idx) => (
+                          <tr key={idx} style={{ background: idx % 2 === 0 ? '#1a1a1a' : '#111' }}>
+                            <td style={{ padding: '12px', borderBottom: '1px solid #222', fontWeight: 'bold' }}>{stat.username}</td>
+                            <td style={{ padding: '12px', borderBottom: '1px solid #222', textAlign: 'center' }}>{stat.games}</td>
+                            <td style={{ padding: '12px', borderBottom: '1px solid #222', textAlign: 'center', color: '#4ade80', fontWeight: 'bold' }}>{stat.wins}</td>
+                            <td style={{ padding: '12px', borderBottom: '1px solid #222', textAlign: 'center', color: '#ff6b6b' }}>{stat.games - stat.wins}</td>
+                            <td style={{ padding: '12px', borderBottom: '1px solid #222', textAlign: 'center', color: '#ffcc00', fontWeight: 'bold' }}>{stat.totalWinnings} 🟡</td>
+                            <td style={{ padding: '12px', borderBottom: '1px solid #222', textAlign: 'center', fontWeight: 'bold', color: (stat.wins / stat.games * 100) > 50 ? '#4ade80' : '#ff6b6b' }}>
+                              {stat.games > 0 ? (stat.wins / stat.games * 100).toFixed(0) : 0}%
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+
+            </div>
+          )}
 
         </div>
       </div>

@@ -28,6 +28,7 @@ class PokerEngine {
         
         this.resetTable();
         this.timeoutId = null;
+        this.pokerStats = {}; // { username: { games: 0, wins: 0, totalWinnings: 0 } }
     }
 
     resetTable() {
@@ -477,6 +478,21 @@ class PokerEngine {
         });
 
         this.addLog(`${winLog} remporte le pot avec ${winnersHand[0].descr}`);
+
+        // Track stats for non-bot players
+        const humanPlayers = this.state.players.filter(p => !p.isBot && p.id !== 'disconnected');
+        const winnerNames = winnersHand.map(w => w.player.username);
+        humanPlayers.forEach(p => {
+            if (!this.pokerStats[p.username]) {
+                this.pokerStats[p.username] = { games: 0, wins: 0, totalWinnings: 0 };
+            }
+            this.pokerStats[p.username].games++;
+            if (winnerNames.includes(p.username)) {
+                this.pokerStats[p.username].wins++;
+                this.pokerStats[p.username].totalWinnings += splitPot;
+            }
+        });
+
         this.emitState();
 
         setTimeout(() => this.startNextHand(), 3000); // Give time to read results
