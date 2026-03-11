@@ -7,7 +7,7 @@ import useStore from '../../store/useStore';
 import { socket } from '../../socket';
 
 const GAME_DURATION = 20; // 20 seconds of intense clicking
-const SPAWN_INTERVAL_MS = 150; // VERY FAST Time between spawns
+const SPAWN_INTERVAL_MS = 350; // VERY FAST Time between spawns
 
 export default function ChampiNinja({ onExit }) {
     const [gameState, setGameState] = useState('START'); // START, PLAYING, GAMEOVER
@@ -28,7 +28,7 @@ export default function ChampiNinja({ onExit }) {
             const updatedItems = currentItems.map(item => ({
                 ...item,
                 y: item.y - item.velocityY,
-                velocityY: item.velocityY - 1.8 // VERY HIGH Gravity effect
+                velocityY: item.velocityY - 0.7 // VERY HIGH Gravity effect
             }));
 
             // Remove items that fell out of screen (y > 600)
@@ -43,7 +43,7 @@ export default function ChampiNinja({ onExit }) {
         if (gameState !== 'PLAYING') return;
 
         // 50% chance for a bomb (chaotic)
-        const isBomb = Math.random() > 0.5; 
+        const isBomb = Math.random() > 0.7; 
         const isGolden = !isBomb && Math.random() > 0.9; // 10% chance for golden champi if not bomb
 
         const newItem = {
@@ -51,7 +51,7 @@ export default function ChampiNinja({ onExit }) {
             x: Math.random() * 80 + 10, // 10% to 90% view width
             y: 500, // Spawn from bottom
             type: isBomb ? 'bomb' : (isGolden ? 'golden' : 'champi'),
-            velocityY: Math.random() * 12 + 28, // Fast initial jump strength
+            velocityY: Math.random() * 8 + 18, // Fast initial jump strength
             rotation: Math.random() * 360,
         };
 
@@ -94,7 +94,7 @@ export default function ChampiNinja({ onExit }) {
         setGameState('GAMEOVER');
         setScore(currentScore => {
             if (currentScore > 0) {
-                useStore.setState(state => ({ balance: state.balance + Math.floor(currentScore / 5) }));
+                useStore.setState(state => ({ balance: state.balance + (currentScore * 6) }));
                 socket.emit('submit_score', { game: 'CHAMPININJA', score: currentScore });
             }
             return currentScore;
@@ -108,7 +108,7 @@ export default function ChampiNinja({ onExit }) {
 
         if (type === 'bomb') {
             if (window.navigator?.vibrate) window.navigator.vibrate([200, 100, 200]);
-            setScore(prev => Math.max(0, prev - 300)); // Heavy Penality
+            setScore(prev => Math.max(0, prev - 100)); // Heavy Penality
             // Optional : Flash screen effect ?
         } else if (type === 'golden') {
             setScore(prev => prev + 50); // Big reward
@@ -133,7 +133,7 @@ export default function ChampiNinja({ onExit }) {
                 <button className="back-btn" onClick={onExit}><ArrowLeft size={24} /></button>
                 <h2>CHAMPI NINJA</h2>
                 <div className="score-display">
-                    <Coins size={16} color="#ffcc00" /> {Math.floor(score / 5)}
+                    <Coins size={16} color="#ffcc00" /> {score * 6}
                 </div>
             </div>
 
@@ -157,7 +157,7 @@ export default function ChampiNinja({ onExit }) {
                 {gameState === 'GAMEOVER' && (
                     <div className="overlay-menu">
                         <h1>TERMINE</h1>
-                        <p>Total récolté : <strong style={{ color: '#ffcc00' }}>{Math.floor(score / 5)} 🟡</strong></p>
+                        <p>Total récolté : <strong style={{ color: '#ffcc00' }}>{score * 6} 🟡</strong></p>
                         <button className="start-btn" onClick={startGame}>REJOUER</button>
                     </div>
                 )}

@@ -5,11 +5,11 @@ import { ArrowLeft, Coins } from 'lucide-react';
 import useStore from '../../store/useStore';
 import { socket } from '../../socket';
 
-const GRAVITY = 0.65;
-const JUMP_STRENGTH = -11;
-const PIPE_SPEED = 5;
+const GRAVITY = 0.45;
+const JUMP_STRENGTH = -8.5;
+const PIPE_SPEED = 3.5;
 const PIPE_WIDTH = 60;
-const PIPE_GAP = 180;
+const PIPE_GAP = 220;
 const BIRD_SIZE = 25;
 
 export default function FlappyWeed({ onExit }) {
@@ -50,7 +50,7 @@ export default function FlappyWeed({ onExit }) {
         // Reward calculation : 50 coins per pipe passed
         // Use scoreRef.current to avoid React closure stale state
         if (scoreRef.current > 0) {
-            const reward = scoreRef.current * 1;
+            const reward = scoreRef.current * 60;
             useStore.setState(state => ({ balance: state.balance + reward }));
 
             // Send score to leaderboard

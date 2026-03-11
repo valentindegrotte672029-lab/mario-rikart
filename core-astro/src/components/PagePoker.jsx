@@ -6,8 +6,16 @@ import { socket } from '../socket';
 // --- SYNTHÉTISEUR AUDIO BROWSER ---
 let audioCtx = null;
 const initAudio = () => {
-  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  if (audioCtx.state === 'suspended') audioCtx.resume();
+    try {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+    } catch(e) {
+        console.warn("AudioContext init failed", e);
+    }
 };
 
 const playTone = (frequency, duration, type = 'sine', vol = 0.05) => {
@@ -109,6 +117,21 @@ export default function PagePoker() {
          setRaiseAmount(pokerState.minRaise);
      }
   }, [pokerState?.minRaise]);
+
+  // Global Audio Unlocker for iOS
+  useEffect(() => {
+      const unlockAudio = () => {
+          initAudio();
+          document.removeEventListener('pointerdown', unlockAudio);
+          document.removeEventListener('touchstart', unlockAudio);
+      };
+      document.addEventListener('pointerdown', unlockAudio);
+      document.addEventListener('touchstart', unlockAudio);
+      return () => {
+          document.removeEventListener('pointerdown', unlockAudio);
+          document.removeEventListener('touchstart', unlockAudio);
+      };
+  }, []);
 
   // Sons automatiques
   const potRef = React.useRef(0);

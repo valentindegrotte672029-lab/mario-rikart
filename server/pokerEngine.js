@@ -346,7 +346,10 @@ class PokerEngine {
             nextIdx = (nextIdx + 1) % this.state.players.length;
             loops++;
             if (loops > this.state.players.length + 1) return currentIdx; // safety: no valid player found
-        } while (this.state.players[nextIdx].folded || this.state.players[nextIdx].allIn || this.state.players[nextIdx].chips <= 0);
+        } while (
+            (this.state.players[nextIdx].folded || this.state.players[nextIdx].allIn || this.state.players[nextIdx].chips <= 0) 
+            && loops <= this.state.players.length + 1
+        );
         return nextIdx;
     }
 
@@ -423,9 +426,16 @@ class PokerEngine {
             // Add a delay before showing next phase for readability
             setTimeout(() => this.nextPhase(), 1200);
         } else {
-            this.state.currentTurnIdx = this.getNextActiveIndex(this.state.currentTurnIdx);
-            this.emitState();
-            this.scheduleBotTurn();
+            // Safety against current player being invalid or unable to bet
+            const nextIdx = this.getNextActiveIndex(this.state.currentTurnIdx);
+            if (nextIdx === this.state.currentTurnIdx && (this.state.players[nextIdx].actedThisRound || this.state.players[nextIdx].folded || this.state.players[nextIdx].allIn)) {
+                // Should not happen, but if we're looping on the same player who already played, force next phase
+                setTimeout(() => this.nextPhase(), 1200);
+            } else {
+                this.state.currentTurnIdx = nextIdx;
+                this.emitState();
+                this.scheduleBotTurn();
+            }
         }
     }
 
@@ -581,7 +591,11 @@ class PokerEngine {
             const delay = 1200 + Math.random() * 1000;
             this.timeoutId = setTimeout(() => {
                 try {
-                    this.executeBotAction(currentPlayer);
+                    // Double check before execution (player could have disconnected)
+                    const stillActive = this.state.players[this.state.currentTurnIdx];
+                    if (stillActive && stillActive.id === currentPlayer.id && !stillActive.folded) {
+                        this.executeBotAction(stillActive);
+                    }
                 } catch (err) {
                     console.error('Bot action error:', err.message);
                     // Fallback: just call

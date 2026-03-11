@@ -9,6 +9,26 @@ export default function PageChrono() {
     const audioCtxRef = useRef(null);
     const oscillatorRef = useRef(null);
 
+    // Global Audio Unlocker for iOS
+    useEffect(() => {
+        const unlockAudio = () => {
+            if (!audioCtxRef.current) {
+                audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtxRef.current.state === 'suspended') {
+                audioCtxRef.current.resume();
+            }
+            document.removeEventListener('pointerdown', unlockAudio);
+            document.removeEventListener('touchstart', unlockAudio);
+        };
+        document.addEventListener('pointerdown', unlockAudio);
+        document.addEventListener('touchstart', unlockAudio);
+        return () => {
+            document.removeEventListener('pointerdown', unlockAudio);
+            document.removeEventListener('touchstart', unlockAudio);
+        };
+    }, []);
+
     const playSiren = () => {
         if (!audioCtxRef.current) {
             audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
