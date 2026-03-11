@@ -427,7 +427,7 @@ class PokerEngine {
         this.addLog(`${winLog} remporte le pot avec ${winnersHand[0].descr}`);
         this.emitState();
 
-        setTimeout(() => this.startNextHand(), 1500); // Ultra fast transition
+        setTimeout(() => this.startNextHand(), 3000); // Give time to read results
     }
 
     scheduleBotTurn() {
@@ -435,8 +435,8 @@ class PokerEngine {
 
         const currentPlayer = this.state.players[this.state.currentTurnIdx];
         if (currentPlayer && currentPlayer.isBot && !currentPlayer.folded && !currentPlayer.allIn) {
-            // Un temps de réflexion HYPER Turbo (bot instictive)
-            const delay = 200 + Math.random() * 400;
+            // Bot takes a beat to think — more natural pace
+            const delay = 800 + Math.random() * 700;
             this.timeoutId = setTimeout(() => {
                 this.executeBotAction(currentPlayer);
             }, delay);

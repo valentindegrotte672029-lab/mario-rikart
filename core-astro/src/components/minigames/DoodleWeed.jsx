@@ -318,12 +318,12 @@ export default function DoodleWeed({ onExit }) {
                     user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
                 }
 
-                .header-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; color: #114411; }
+                .header-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; color: #114411; width: 100%; max-width: 450px; }
                 .back-btn { background: rgba(0,0,0,0.1); border: none; padding: 10px; border-radius: 50%; color: #114411; display: flex; }
                 .score-display { display: flex; align-items: center; justify-content: center; gap: 5px; font-weight: bold; font-variant-numeric: tabular-nums; min-width: 80px; background: rgba(255,255,255,0.8); padding: 5px 15px; border-radius: 20px; border: 2px solid #114411; }
 
                 .game-container {
-                    flex: 1; position: relative;
+                    flex: 1; position: relative; width: 100%; max-width: 450px;
                     background: transparent; border-radius: 20px; border: 4px solid #114411;
                     overflow: hidden; touch-action: none;
                 }

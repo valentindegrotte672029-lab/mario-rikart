@@ -226,6 +226,15 @@ export default function PagePoker() {
         </div>
       ) : (
         <div className="poker-table-container">
+            {/* TOP INFO BAR */}
+            <div className="poker-top-bar">
+                <button className="btn-leave-table" onClick={handleLeave}>✕ Quitter</button>
+                <div className="top-bar-info">
+                    <span className="top-pot">POT: {pokerState.pot} 🟡</span>
+                    {pokerState.prizePool > 0 && <span className="top-prize">Gain: {pokerState.prizePool} 🟡</span>}
+                </div>
+            </div>
+
             {/* Table Tapis Vert */}
             <div className="tapis-vert">
                 <div className="inner-table">
@@ -243,13 +252,8 @@ export default function PagePoker() {
                       </div>
                    ))}
 
-                   {/* Center / Community */}
+                   {/* Center / Community Cards only */}
                    <div className="table-center">
-                       {/* Pot is now strictly inside the center layout */}
-                       <div className="pot-hud">
-                           POT: {pokerState.pot} 🟡<br/>
-                           {pokerState.prizePool > 0 && <span style={{fontSize: '0.7rem', color: '#ffcc00'}}>À GAGNER: {pokerState.prizePool} 🟡</span>}
-                       </div>
                        <div className="community-cards">
                            {pokerState.communityCards.map((c, i) => <PokerCard key={i} card={c} />)}
                        </div>
@@ -273,9 +277,6 @@ export default function PagePoker() {
                    )}
                 </div>
             </div>
-
-            {/* LEAVE BUTTON */}
-            <button className="btn-leave-table" onClick={handleLeave}>QUITTER (Abandon)</button>
 
             {/* Controls */}
             <AnimatePresence>
@@ -649,19 +650,45 @@ export default function PagePoker() {
         .btn-call { background: #4ade80; color: black; }
         .btn-raise { background: #a855f7; color: white; }
 
+        /* TOP INFO BAR */
+        .poker-top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 12px;
+            background: rgba(0,0,0,0.6);
+            border-radius: 12px;
+            margin-bottom: 8px;
+        }
         .btn-leave-table {
-            position: absolute;
-            top: -25px;
-            left: 0px;
-            background: transparent;
-            color: rgba(255,255,255,0.6);
+            background: rgba(255,60,60,0.15);
+            color: #ff6b6b;
             font-size: 0.75rem;
-            text-transform: uppercase;
-            padding: 5px;
-            border: none;
-            z-index: 100;
+            font-weight: 700;
+            padding: 6px 12px;
+            border: 1px solid rgba(255,60,60,0.3);
+            border-radius: 8px;
             cursor: pointer;
-            text-decoration: underline;
+            white-space: nowrap;
+        }
+        .top-bar-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .top-pot {
+            color: #fff;
+            font-weight: 900;
+            font-size: 0.85rem;
+        }
+        .top-prize {
+            color: #ffcc00;
+            font-weight: 700;
+            font-size: 0.75rem;
+            background: rgba(255,204,0,0.1);
+            padding: 3px 8px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,204,0,0.3);
         }
 
         /* WIN SCREEN */
