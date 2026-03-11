@@ -244,12 +244,12 @@ export default function FlappyWeed({ onExit }) {
             box-sizing: border-box;
         }
 
-        .header-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; color: var(--theme-color); }
+        .header-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; color: var(--theme-color); width: 100%; max-width: 450px; }
         .back-btn { background: rgba(255,255,255,0.1); border: none; padding: 10px; border-radius: 50%; color: white; display: flex; }
         .score-display { display: flex; align-items: center; gap: 5px; font-weight: bold; background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; border: 1px solid var(--theme-color); }
 
         .game-area {
-            flex: 1; position: relative; width: 100%; max-height: 500px;
+            flex: 1; position: relative; width: 100%; max-width: 450px; max-height: 500px;
             background: linear-gradient(to bottom, #1a4a1a, #0a1a0a);
             border-radius: 20px; overflow: hidden; border: 2px solid var(--theme-color);
             box-shadow: 0 0 20px rgba(57, 255, 20, 0.3); touch-action: none; cursor: pointer;
