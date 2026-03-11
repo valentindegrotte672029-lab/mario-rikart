@@ -234,6 +234,16 @@ class PokerEngine {
                     this.saveUsers();
                     this.io.emit('bet_resolved');
                 }
+                // Track tournament win in stats
+                if (!this.pokerStats[winner.username]) {
+                    this.pokerStats[winner.username] = { games: 0, wins: 0, totalWinnings: 0 };
+                }
+                this.pokerStats[winner.username].totalWinnings += this.state.prizePool;
+                // Broadcast updated stats
+                const statsArray = Object.entries(this.pokerStats).map(([username, data]) => ({
+                    username, ...data
+                })).sort((a, b) => b.totalWinnings - a.totalWinnings);
+                this.io.emit('poker_history', statsArray);
             }
 
             this.emitState();
@@ -512,7 +522,6 @@ class PokerEngine {
             this.pokerStats[p.username].games++;
             if (winnerNames.includes(p.username)) {
                 this.pokerStats[p.username].wins++;
-                this.pokerStats[p.username].totalWinnings += splitPot;
             }
         });
 
