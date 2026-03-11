@@ -381,22 +381,30 @@ class PokerEngine {
     }
 
     advanceTurn() {
-        const activeCount = this.state.players.filter(p => !p.folded && p.chips > 0).length;
         const unsortFolded = this.state.players.filter(p => !p.folded);
         
         // If everyone folded except one
         if (unsortFolded.length === 1) {
             this.addLog(`${unsortFolded[0].username} gagne le pot de ${this.state.pot}`);
             unsortFolded[0].chips += this.state.pot;
+            this.state.pot = 0;
             setTimeout(() => this.startNextHand(), 3000);
             this.emitState();
             return;
         }
 
+        // Players who can still bet (not folded, not all-in, have chips)
+        const bettingActive = this.state.players.filter(p => !p.folded && !p.allIn && p.chips > 0);
+
+        // If nobody can bet (everyone is all-in or folded), go straight to next phase
+        if (bettingActive.length === 0) {
+            setTimeout(() => this.nextPhase(), 1200);
+            return;
+        }
+
         // Check if betting round is over
-        // Round is over if all non-folded non-allIn players have ACTED and matched the highest bet
-        const bettingActive = this.state.players.filter(p => !p.folded && !p.allIn);
-        const roundOver = bettingActive.length > 0 && bettingActive.every(p => p.actedThisRound && p.currentBet === this.state.highestBet);
+        // Round is over if all betting-active players have ACTED and matched the highest bet
+        const roundOver = bettingActive.every(p => p.actedThisRound && p.currentBet === this.state.highestBet);
 
         if (roundOver) {
             // Add a delay before showing next phase for readability
