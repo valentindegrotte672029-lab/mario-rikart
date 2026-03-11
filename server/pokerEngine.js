@@ -216,8 +216,11 @@ class PokerEngine {
         // Pick one of the two matching segments randomly
         const baseIdx = segmentMap[mult] || 0;
         const segIdx = Math.random() > 0.5 ? baseIdx : baseIdx + 6;
-        // Segment center angle (conic-gradient starts from top)
-        this.state.wheelTargetAngle = 360 * 8 + (segIdx * 30 + 15);
+        // Segment center angle (conic-gradient starts from top, clockwise)
+        // CSS rotate(X) CW means the segment at (360-X)° reaches the pointer
+        // So to land on segment center at (segIdx*30+15)°, rotate by 360-(segIdx*30+15)
+        const segCenter = segIdx * 30 + 15;
+        this.state.wheelTargetAngle = 360 * 8 + (360 - segCenter);
 
         this.addLog(`La roue tourne... Jackpot de ${this.state.prizePool} 🟡 !`);
         
