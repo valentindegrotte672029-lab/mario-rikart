@@ -241,6 +241,13 @@ export default function FlappyWeed({ onExit }) {
             padding: calc(var(--safe-top) + 85px) 15px 15px 15px;
             box-shadow: 0 0 50px rgba(0,0,0,0.9);
         }
+        
+        .flappy-mobile::before {
+            content: "";
+            position: fixed; top: -50%; left: -50%; width: 200%; height: 200%;
+            background-color: #050a05;
+            z-index: -1;
+        }
 
         .header-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; color: var(--theme-color); }
         .back-btn { background: rgba(255,255,255,0.1); border: none; padding: 10px; border-radius: 50%; color: white; display: flex; }

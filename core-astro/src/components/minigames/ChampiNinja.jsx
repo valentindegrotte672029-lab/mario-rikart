@@ -200,6 +200,14 @@ export default function ChampiNinja({ onExit }) {
                     box-shadow: 0 0 50px rgba(0,0,0,0.9);
                 }
 
+                .champininja-mobile::before {
+                    content: ""; position: fixed; top: -50%; left: -50%; width: 200%; height: 200%;
+                    background-color: #110000;
+                    background-image: url('/grain.png'), linear-gradient(135deg, #110000 0%, #330011 100%);
+                    background-blend-mode: overlay;
+                    z-index: -1;
+                }
+
                 .header-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; color: var(--theme-color); }
                 .back-btn { background: rgba(255,255,255,0.1); border: none; padding: 10px; border-radius: 50%; color: white; display: flex; }
                 .score-display { display: flex; align-items: center; gap: 5px; font-weight: bold; background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; border: 1px solid var(--theme-color); color: white; }
