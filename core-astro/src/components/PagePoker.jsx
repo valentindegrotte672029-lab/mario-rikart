@@ -394,18 +394,19 @@ export default function PagePoker() {
 
         .wheel-segment {
           position: absolute;
-          width: 50%; height: 2px;
+          width: 50%; height: 0;
           top: 50%; left: 50%;
           transform-origin: 0% 50%;
         }
         .seg-label {
           position: absolute;
-          left: 55px; top: -10px;
+          left: 60px; top: -8px;
           color: white;
           font-weight: 900;
-          font-size: 0.7rem;
-          text-shadow: 1px 1px 3px black;
+          font-size: 0.65rem;
+          text-shadow: 1px 1px 4px rgba(0,0,0,0.9);
           transform: rotate(15deg);
+          pointer-events: none;
         }
         
         .wheel-center-logo {

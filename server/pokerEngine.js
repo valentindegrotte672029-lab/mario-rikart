@@ -253,11 +253,17 @@ class PokerEngine {
         this.state.winners = [];
 
         this.state.handsPlayed = (this.state.handsPlayed || 0) + 1;
-        if (this.state.handsPlayed > 1 && this.state.handsPlayed % 2 === 0) {
-           this.state.smallBlind *= 2;
-           this.state.bigBlind *= 2;
+        // Progressive blind schedule — gentle ramp-up
+        const blindSchedule = [
+            [10, 20], [15, 30], [20, 40], [30, 60], 
+            [50, 100], [75, 150], [100, 200], [150, 300]
+        ];
+        const level = Math.min(Math.floor(this.state.handsPlayed / 2), blindSchedule.length - 1);
+        if (this.state.handsPlayed > 1 && this.state.handsPlayed % 2 === 0 && level > 0) {
+           this.state.smallBlind = blindSchedule[level][0];
+           this.state.bigBlind = blindSchedule[level][1];
            this.state.minRaise = this.state.bigBlind;
-           this.addLog(`⚡ TURBO ! Blindes: ${this.state.smallBlind}/${this.state.bigBlind}`);
+           this.addLog(`⚡ Blindes: ${this.state.smallBlind}/${this.state.bigBlind}`);
         }
 
         this.state.players.forEach(p => {
