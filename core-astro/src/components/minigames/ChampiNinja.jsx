@@ -190,22 +190,16 @@ export default function ChampiNinja({ onExit }) {
             <style>{`
                 .champininja-mobile {
                     --theme-color: #ff3366;
-                    position: fixed; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 450px;
+                    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+                    width: 100vw; height: 100vh; height: 100dvh;
                     display: flex; flex-direction: column;
+                    align-items: center;
                     background-color: #110000;
                     background-image: url('/grain.png'), linear-gradient(135deg, #110000 0%, #330011 100%);
                     background-blend-mode: overlay;
-                    z-index: 50;
-                    padding: calc(var(--safe-top) + 85px) 15px 15px 15px;
-                    box-shadow: 0 0 50px rgba(0,0,0,0.9);
-                }
-
-                .champininja-mobile::before {
-                    content: ""; position: fixed; top: -50%; left: -50%; width: 200%; height: 200%;
-                    background-color: #110000;
-                    background-image: url('/grain.png'), linear-gradient(135deg, #110000 0%, #330011 100%);
-                    background-blend-mode: overlay;
-                    z-index: -1;
+                    z-index: 9999;
+                    padding: calc(env(safe-area-inset-top, 0px) + 85px) 15px 15px 15px;
+                    box-sizing: border-box;
                 }
 
                 .header-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; color: var(--theme-color); }

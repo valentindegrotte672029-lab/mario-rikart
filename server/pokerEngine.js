@@ -477,36 +477,53 @@ class PokerEngine {
 
         // Pot odds variables already declared at start of method.
 
-        // Hyper-Turbo Traits
-        const isAggro = Math.random() > 0.4; // 60% chance to be aggressive
-        const isBluffing = Math.random() > 0.8; // 20% pure crazy bluff
+        // Hyper-Turbo Traits - ULTRA AGGRESSIVE
+        const isAggro = Math.random() > 0.25; // 75% chance to be aggressive
+        const isBluffing = Math.random() > 0.6; // 40% pure crazy bluff
+        const wantsToTrap = strength > 0.8 && Math.random() > 0.7; // Slow play strong hands sometimes
 
         // Decision Tree
         if (toCall === 0) {
-            // Check or Raise
-            if (strength > 0.7 || (strength > 0.4 && isAggro)) {
-                const raiseTiers = [this.state.minRaise, this.state.pot / 2, this.state.pot, bot.chips];
-                const raiseAmount = raiseTiers[Math.floor(Math.random() * raiseTiers.length)];
-                this.handleAction(bot.id, 'raise', Math.floor(raiseAmount));
-            } else if (isBluffing) {
-                this.handleAction(bot.id, 'raise', this.state.minRaise);
+            // NO ONE HAS BET - Bot should almost ALWAYS bet here
+            if (wantsToTrap) {
+                // Slow play: check with monster hand to trap
+                this.handleAction(bot.id, 'call');
+            } else if (strength > 0.5 || isAggro || isBluffing) {
+                // Bet aggressively - pick a size based on strength
+                let raiseAmount;
+                if (strength > 0.7) {
+                    // Value bet big
+                    raiseAmount = Math.floor(this.state.pot * 0.8 + this.state.minRaise);
+                } else if (isBluffing) {
+                    // Bluff with 2-3x big blind
+                    raiseAmount = this.state.minRaise * (2 + Math.floor(Math.random() * 2));
+                } else {
+                    // Standard bet
+                    raiseAmount = this.state.minRaise + Math.floor(this.state.pot * 0.5);
+                }
+                this.handleAction(bot.id, 'raise', Math.min(raiseAmount, bot.chips));
             } else {
-                this.handleAction(bot.id, 'call'); // Acts as check
+                this.handleAction(bot.id, 'call'); // Check only 10-15% of the time
             }
         } else {
-            // Fold, Call, or Raise
-            if (strength > 0.8 || (strength > 0.5 && isAggro) || isBluffing) {
-                 // Strong raise or re-re-raise
-                 if (bot.chips > toCall * 2 && Math.random() > 0.5) {
-                     this.handleAction(bot.id, 'raise', Math.floor(toCall * 2 + this.state.minRaise));
+            // SOMEONE HAS BET - Fold, Call, or Raise
+            if (strength > 0.7 || (strength > 0.4 && isAggro)) {
+                 // Re-raise with strong+ hands
+                 const reraiseAmount = Math.floor(toCall * 2.5 + this.state.minRaise);
+                 if (bot.chips > reraiseAmount) {
+                     this.handleAction(bot.id, 'raise', reraiseAmount);
                  } else {
-                     this.handleAction(bot.id, 'call');
+                     // All-in
+                     this.handleAction(bot.id, 'raise', bot.chips);
                  }
-            } else if (strength > potOdds || strength > 0.3) {
+            } else if (isBluffing && bot.chips > toCall * 3) {
+                 // Bluff re-raise
+                 this.handleAction(bot.id, 'raise', Math.floor(toCall * 2 + this.state.minRaise));
+            } else if (strength > potOdds || strength > 0.25) {
                  this.handleAction(bot.id, 'call');
             } else {
-                 // Fold unless it's a very cheap call relative to stack
-                 if (toCall < bot.chips * 0.1) this.handleAction(bot.id, 'call');
+                 // Only fold with truly garbage hands facing a big bet
+                 if (toCall < bot.chips * 0.15) this.handleAction(bot.id, 'call');
                  else this.handleAction(bot.id, 'fold');
             }
         }

@@ -306,12 +306,15 @@ export default function DoodleWeed({ onExit }) {
                 __html: `
                 .doodleweed-mobile {
                     --theme-color: #00cc66;
-                    position: fixed; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 450px;
+                    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+                    width: 100vw; height: 100vh; height: 100dvh;
                     display: flex; flex-direction: column;
+                    align-items: center;
                     background: url('/grid-paper.png'), linear-gradient(to bottom, #e0ffe0 0%, #a0cca0 100%);
                     background-size: cover;
-                    z-index: 1000;
-                    padding: calc(var(--safe-top) + 85px) 15px 30px 15px;
+                    z-index: 9999;
+                    padding: calc(env(safe-area-inset-top, 0px) + 85px) 15px 30px 15px;
+                    box-sizing: border-box;
                     user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
                 }
 

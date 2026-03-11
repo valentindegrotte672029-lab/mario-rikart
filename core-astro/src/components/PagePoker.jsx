@@ -193,25 +193,36 @@ export default function PagePoker() {
            <motion.div 
              className="jackpot-wheel"
              initial={{ rotate: 0 }}
-             animate={{ rotate: 360 * 5 + 45 }} // Turn 5 times
-             transition={{ duration: 2.5, ease: 'easeOut' }}
+             animate={{ rotate: 360 * 6 + 30 }}
+             transition={{ duration: 3, ease: [0.17, 0.67, 0.12, 0.99] }}
              onUpdate={(v) => {
-                 // Play ticking sound pseudo randomly
-                 if (Math.random() < 0.15 && v.rotate > 100) playCardSound();
+                 if (Math.random() < 0.12 && v.rotate > 100) playCardSound();
              }}
            >
+              {/* Segments with amounts */}
+              {[200, 300, 400, 600, 1000, 1500, 200, 300, 400, 600, 1000, 1500].map((amt, i) => (
+                <div key={i} className="wheel-segment" style={{
+                  transform: `rotate(${i * 30}deg)`,
+                  '--seg-color': i % 2 === 0 ? '#e53935' : '#1e88e5'
+                }}>
+                  <span className="seg-label">{amt}</span>
+                </div>
+              ))}
               <div className="wheel-center-logo">🎰</div>
            </motion.div>
 
-           <motion.div 
-             className="jackpot-amount"
-             initial={{ scale: 0, opacity: 0 }}
-             animate={{ scale: [1, 1.2, 1], opacity: 1, rotate: [0, 5, -5, 0] }}
-             transition={{ delay: 2.5, duration: 1, type: 'spring' }}
-           >
-              {pokerState.prizePool} 🟡
-           </motion.div>
-           <p style={{ marginTop: 10 }}>(Subvention x{pokerState.multiplier})</p>
+           <AnimatePresence>
+             {pokerState.prizePool > 0 && (
+               <motion.div 
+                 className="jackpot-amount"
+                 initial={{ scale: 0, opacity: 0 }}
+                 animate={{ scale: [1, 1.2, 1], opacity: 1 }}
+                 transition={{ delay: 3, duration: 1, type: 'spring' }}
+               >
+                  {pokerState.prizePool} 🟡
+               </motion.div>
+             )}
+           </AnimatePresence>
         </div>
       ) : (
         <div className="poker-table-container">
@@ -365,8 +376,8 @@ export default function PagePoker() {
         }
 
         .jackpot-wheel {
-          width: 200px; height: 200px; border-radius: 50%;
-          border: 8px solid #333; margin: 30px auto;
+          width: 220px; height: 220px; border-radius: 50%;
+          border: 6px solid #333; margin: 30px auto;
           background: conic-gradient(
              #e53935 0deg 30deg, #1e88e5 30deg 60deg, 
              #43a047 60deg 90deg, #fdd835 90deg 120deg, 
@@ -378,6 +389,22 @@ export default function PagePoker() {
           box-shadow: 0 0 40px #ffcc00, inset 0 0 20px rgba(0,0,0,0.5); 
           position: relative;
           display: flex; align-items: center; justify-content: center;
+        }
+
+        .wheel-segment {
+          position: absolute;
+          width: 50%; height: 2px;
+          top: 50%; left: 50%;
+          transform-origin: 0% 50%;
+        }
+        .seg-label {
+          position: absolute;
+          left: 55px; top: -10px;
+          color: white;
+          font-weight: 900;
+          font-size: 0.7rem;
+          text-shadow: 1px 1px 3px black;
+          transform: rotate(15deg);
         }
         
         .wheel-center-logo {
