@@ -28,7 +28,19 @@ class PokerEngine {
         
         this.resetTable();
         this.timeoutId = null;
+        
+        this.pokerStatsFile = require('path').join(__dirname, 'poker_stats.json');
         this.pokerStats = {}; // { username: { games: 0, wins: 0, totalWinnings: 0 } }
+        
+        const fs = require('fs');
+        if (fs.existsSync(this.pokerStatsFile)) {
+            try { this.pokerStats = JSON.parse(fs.readFileSync(this.pokerStatsFile, 'utf-8')); }
+            catch(e) {}
+        }
+    }
+
+    savePokerStats() {
+        require('fs').writeFileSync(this.pokerStatsFile, JSON.stringify(this.pokerStats, null, 2));
     }
 
     resetTable() {
@@ -252,6 +264,7 @@ class PokerEngine {
                     this.pokerStats[winner.username] = { games: 0, wins: 0, totalWinnings: 0 };
                 }
                 this.pokerStats[winner.username].totalWinnings += this.state.prizePool;
+                this.savePokerStats();
                 // Broadcast updated stats
                 const statsArray = Object.entries(this.pokerStats).map(([username, data]) => ({
                     username, ...data
@@ -545,6 +558,8 @@ class PokerEngine {
                 this.pokerStats[p.username].wins++;
             }
         });
+        
+        this.savePokerStats();
 
         // Auto-broadcast stats to admin
         const statsArray = Object.entries(this.pokerStats).map(([username, data]) => ({
@@ -618,9 +633,9 @@ class PokerEngine {
 
         // Pot odds variables already declared at start of method.
 
-        // Hyper-Turbo Traits - ULTRA AGGRESSIVE
-        const isAggro = Math.random() > 0.25; // 75% chance to be aggressive
-        const isBluffing = Math.random() > 0.6; // 40% pure crazy bluff
+        // Hyper-Turbo Traits - AGGRESSIVE (but less crazy)
+        const isAggro = Math.random() > 0.4; // 60% chance to be aggressive
+        const isBluffing = Math.random() > 0.75; // 25% pure crazy bluff
         const wantsToTrap = strength > 0.8 && Math.random() > 0.7; // Slow play strong hands sometimes
 
         // Decision Tree
@@ -634,13 +649,13 @@ class PokerEngine {
                 let raiseAmount;
                 if (strength > 0.7) {
                     // Value bet big
-                    raiseAmount = Math.floor(this.state.pot * 0.8 + this.state.minRaise);
+                    raiseAmount = Math.floor(this.state.pot * 0.5 + this.state.minRaise);
                 } else if (isBluffing) {
-                    // Bluff with 2-3x big blind
-                    raiseAmount = this.state.minRaise * (2 + Math.floor(Math.random() * 2));
+                    // Bluff with 1-2x big blind
+                    raiseAmount = this.state.minRaise * (1 + Math.floor(Math.random() * 2));
                 } else {
                     // Standard bet
-                    raiseAmount = this.state.minRaise + Math.floor(this.state.pot * 0.5);
+                    raiseAmount = this.state.minRaise + Math.floor(this.state.pot * 0.3);
                 }
                 this.handleAction(bot.id, 'raise', Math.min(raiseAmount, bot.chips));
             } else {
@@ -650,7 +665,7 @@ class PokerEngine {
             // SOMEONE HAS BET - Fold, Call, or Raise
             if (strength > 0.7 || (strength > 0.4 && isAggro)) {
                  // Re-raise with strong+ hands
-                 const reraiseAmount = Math.floor(toCall * 2.5 + this.state.minRaise);
+                 const reraiseAmount = Math.floor(toCall * 1.5 + this.state.minRaise);
                  if (bot.chips > reraiseAmount) {
                      this.handleAction(bot.id, 'raise', reraiseAmount);
                  } else {

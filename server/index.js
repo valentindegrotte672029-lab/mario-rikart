@@ -19,60 +19,40 @@ const io = new Server(server, {
     }
 });
 
-// Stockage en mémoire des joueurs connectés
-// Structure: { socketId: 'Pseudo' }
-const players = {};
-// Stockage de l'historique des commandes (optionnel pour l'instant)
-const ordersQueue = [];
-// Stockage des publications BeReal
-const berealsQueue = [];
-// Stockage de l'historique des massages
-const massagesQueue = [];
+// --- BASE DE DONNÉES / PERSISTANCE ---
+const loadDb = (filename, defaultVal) => {
+    const file = path.join(__dirname, filename);
+    if (fs.existsSync(file)) {
+        try { return JSON.parse(fs.readFileSync(file, 'utf-8')); } 
+        catch (e) { return defaultVal; }
+    }
+    fs.writeFileSync(file, JSON.stringify(defaultVal, null, 2));
+    return defaultVal;
+};
+
+const saveDb = (filename, data) => {
+    fs.writeFileSync(path.join(__dirname, filename), JSON.stringify(data, null, 2));
+};
+
+// Stockage en mémoire des listes (chargées depuis le disque au démarrage)
+let players = {}; // { socketId: 'Pseudo' }
+let ordersQueue = loadDb('orders.json', []);
+let berealsQueue = loadDb('bereals.json', []);
+let massagesQueue = loadDb('massages.json', []);
+let leaderboards = loadDb('leaderboards.json', { FLAPPYWEED: {}, CHAMPININJA: {}, DOODLEWEED: {} });
+let usersDb = loadDb('users.json', {});
+let betsDb = loadDb('bets.json', []);
+
+// Helpers de sauvegarde
+const saveUsers = () => saveDb('users.json', usersDb);
+const saveBets = () => saveDb('bets.json', betsDb);
+const saveOrders = () => saveDb('orders.json', ordersQueue);
+const saveBereals = () => saveDb('bereals.json', berealsQueue);
+const saveMassages = () => saveDb('massages.json', massagesQueue);
+const saveLeaderboards = () => saveDb('leaderboards.json', leaderboards);
 
 const broadcastActiveUsers = () => {
     io.emit('active_users', Object.values(players));
-};
-
-// Stockage des Meilleurs Scores par jeu
-// { FLAPPYWEED: { playerName: { score: number, timestamp: string } }, CHAMPININJA: {}, DOODLEWEED: {} }
-const leaderboards = {
-    FLAPPYWEED: {},
-    CHAMPININJA: {},
-    DOODLEWEED: {}
-};
-
-// Base de données Utilisateurs (Comptes)
-const USERS_FILE = path.join(__dirname, 'users.json');
-let usersDb = {};
-if (fs.existsSync(USERS_FILE)) {
-    try {
-        usersDb = JSON.parse(fs.readFileSync(USERS_FILE, 'utf-8'));
-    } catch (e) {
-        usersDb = {};
-    }
-} else {
-    fs.writeFileSync(USERS_FILE, JSON.stringify({}));
-}
-
-const saveUsers = () => {
-    fs.writeFileSync(USERS_FILE, JSON.stringify(usersDb, null, 2));
-};
-
-// Base de données Paris (PolyMarket)
-const BETS_FILE = path.join(__dirname, 'bets.json');
-let betsDb = [];
-if (fs.existsSync(BETS_FILE)) {
-    try {
-        betsDb = JSON.parse(fs.readFileSync(BETS_FILE, 'utf-8'));
-    } catch (e) {
-        betsDb = [];
-    }
-} else {
-    fs.writeFileSync(BETS_FILE, JSON.stringify([]));
-}
-
-const saveBets = () => {
-    fs.writeFileSync(BETS_FILE, JSON.stringify(betsDb, null, 2));
 };
 
 const pokerEngine = new PokerEngine(io, usersDb, saveUsers);
@@ -189,12 +169,9 @@ io.on('connection', (socket) => {
     socket.on('place_bet', ({ betId, optionIdx, amount, username }) => {
         const bet = betsDb.find(b => b.id === betId);
         const alias = username.toUpperCase();
-        if (bet && bet.status === 'OPEN' && usersDb[alias] && usersDb[alias].balance >= amount) {
-            // Deduct balance instantly to prevent double-spending without client update, though client handles it too
-            // Important: we just record it, the client already deducted its local store, 
-            // but we must be sure to not deduct twice if sync_user_data runs.
-            // Actually, we'll let `sync_user_data` handle the balance deduction from the client.
-            // We just record the bet.
+        // Removed balance check because sync_user_data may have already decremented the server balance,
+        // causing a race condition where the bet is rejected but the client paid.
+        if (bet && bet.status === 'OPEN' && usersDb[alias]) {
             bet.betsPlaced.push({ username: alias, optionIdx, amount });
             saveBets();
             io.emit('sync_bets', betsDb);
@@ -283,6 +260,7 @@ io.on('connection', (socket) => {
         };
         console.log(`🛍️ Nouvelle Commande par ${username} : ${orderData.item}`);
         ordersQueue.push(completeOrder);
+        saveOrders();
 
         // On relaie la commande UNIQUEMENT à l'admin (les autres joueurs s'en fichent)
         io.emit('order_received', completeOrder);
@@ -299,7 +277,14 @@ io.on('connection', (socket) => {
         };
         console.log(`🍑 Nouvelle Commande Massage par ${username} pour ${massageData.recipient}`);
         massagesQueue.push(completeOrder);
+        saveMassages();
         io.emit('massage_order_received', completeOrder);
+    });
+
+    // 2.3 Effacer les commandes d'un joueur
+    socket.on('delete_user_orders', (usernameToDelete) => {
+        ordersQueue = ordersQueue.filter(o => o.username !== usernameToDelete);
+        saveOrders();
     });
 
     // 2.5 Émission d'un BeReal (Mario)
@@ -316,6 +301,7 @@ io.on('connection', (socket) => {
 
         // Garder les 50 derniers max pour la mémoire
         if (berealsQueue.length > 50) berealsQueue.pop();
+        saveBereals();
 
         // Diffuse à tout le monde (Joueurs + Admin)
         io.emit('bereal_broadcast', post);
@@ -327,6 +313,7 @@ io.on('connection', (socket) => {
         if (index !== -1) {
             console.log(`🗑️ BeReal supprimé (ID: ${postId})`);
             berealsQueue.splice(index, 1);
+            saveBereals();
             // On prévient tous les clients de retirer cette image
             io.emit('bereal_deleted', postId);
         }
@@ -352,6 +339,7 @@ io.on('connection', (socket) => {
                 score,
                 timestamp: new Date().toISOString()
             };
+            saveLeaderboards();
             console.log(`🏆 Nouveau record mondial pour ${username} à ${game} : ${score} pts`);
 
             // Broadcast the updated leaderboards to everyone

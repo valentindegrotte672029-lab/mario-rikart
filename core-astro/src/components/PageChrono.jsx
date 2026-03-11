@@ -50,6 +50,22 @@ export default function PageChrono() {
         if (window.navigator?.vibrate) window.navigator.vibrate(50);
         setStatus('running');
 
+        // Unlock AudioContext on iOS right during user interaction
+        if (!audioCtxRef.current) {
+            audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        const ctx = audioCtxRef.current;
+        if (ctx.state === 'suspended') ctx.resume();
+        
+        // Play silent dummy sound to unlock audio
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        gain.gain.value = 0;
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(0);
+        osc.stop(0.1);
+
         // Durée aléatoire entre 5s et 1 minute (Calculée à chaque clic)
         const randomDuration = Math.floor(Math.random() * (60000 - 5000 + 1)) + 5000;
 

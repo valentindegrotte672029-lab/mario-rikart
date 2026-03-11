@@ -6,12 +6,12 @@ import { ArrowLeft, Coins } from 'lucide-react';
 import useStore from '../../store/useStore';
 import { socket } from '../../socket';
 
-const GRAVITY = 0.45;
-const JUMP_FORCE = -14;
-const PLATFORM_WIDTH = 60;
+const GRAVITY = 0.75;
+const JUMP_FORCE = -18;
+const PLATFORM_WIDTH = 40;
 const PLATFORM_HEIGHT = 15;
 // Réduire davantage la largeur pour être certain que Luigi ne touche pas le bord absolu
-const GAME_WIDTH = window.innerWidth - 60;
+const GAME_WIDTH = window.innerWidth - 40;
 export default function DoodleWeed({ onExit }) {
     const [gameState, setGameState] = useState('START'); // START, PLAYING, GAMEOVER
     const [score, setScore] = useState(0);
@@ -28,7 +28,7 @@ export default function DoodleWeed({ onExit }) {
         setGameState('GAMEOVER');
         if (window.navigator?.vibrate) window.navigator.vibrate([200, 100, 200]);
         if (stateRef.current.score > 0) {
-            useStore.setState(state => ({ balance: state.balance + (stateRef.current.score * 1) }));
+            useStore.setState(state => ({ balance: state.balance + Math.floor(stateRef.current.score / 20) }));
             socket.emit('submit_score', { game: 'DOODLEWEED', score: stateRef.current.score });
         }
     };
@@ -133,8 +133,8 @@ export default function DoodleWeed({ onExit }) {
 
                 // Progressive difficulty: medium ramp-up
                 const difficultyMultiplier = Math.min(state.score / 1000, 2.5); // Accrue maximum cap for end game
-                const minDistance = 40 + (35 * difficultyMultiplier);
-                const maxDistanceAdd = 60 + (50 * difficultyMultiplier);
+                const minDistance = 50 + (45 * difficultyMultiplier);
+                const maxDistanceAdd = 70 + (60 * difficultyMultiplier);
 
                 const topPlatY = Math.min(...activePlatforms.map(p => p.y));
                 if (topPlatY > 0) {
@@ -245,7 +245,7 @@ export default function DoodleWeed({ onExit }) {
                 <button className="back-btn" onClick={onExit}><ArrowLeft size={24} /></button>
                 <h2>DOODLE-WEED</h2>
                 <div className="score-display">
-                    <Coins size={16} color="#ffcc00" /> {Math.floor(score / 5)} (Sc: {score})
+                    <Coins size={16} color="#ffcc00" /> {Math.floor(score / 20)} (Sc: {score})
                 </div>
             </div>
 
@@ -263,7 +263,7 @@ export default function DoodleWeed({ onExit }) {
                     <div className="overlay-menu">
                         <h1>CHUTE</h1>
                         <p>Score: {score}</p>
-                        <p>Gains: <strong style={{ color: '#ffcc00' }}>{score * 1} 🟡</strong></p>
+                        <p>Gains: <strong style={{ color: '#ffcc00' }}>{Math.floor(score / 20)} 🟡</strong></p>
                         <button className="start-btn" onClick={startGame}>REJOUER</button>
                     </div>
                 )}

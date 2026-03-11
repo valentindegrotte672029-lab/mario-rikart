@@ -238,7 +238,10 @@ function App() {
                       </ul>
 
                       <button 
-                        onClick={() => setOrders(prev => prev.filter(o => o.username !== user))}
+                        onClick={() => {
+                            setOrders(prev => prev.filter(o => o.username !== user));
+                            socket.emit('delete_user_orders', user);
+                        }}
                         style={{ width: '100%', padding: '12px', borderRadius: '8px', border: 'none', background: '#4CAF50', color: 'white', fontWeight: '900', cursor: 'pointer', transition: 'transform 0.1s' }}
                         onMouseDown={(e) => e.target.style.transform = 'scale(0.97)'}
                         onMouseUp={(e) => e.target.style.transform = 'scale(1)'}
