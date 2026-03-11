@@ -209,6 +209,16 @@ class PokerEngine {
 
         this.state.multiplier = mult;
         this.state.prizePool = mult * this.state.buyIn;
+
+        // Map multiplier to wheel segment index
+        // Wheel segments: [200, 300, 400, 600, 1000, 1500, 200, 300, 400, 600, 1000, 1500]
+        const segmentMap = { 2: 0, 3: 1, 4: 2, 6: 3, 10: 4, 15: 5 };
+        // Pick one of the two matching segments randomly
+        const baseIdx = segmentMap[mult] || 0;
+        const segIdx = Math.random() > 0.5 ? baseIdx : baseIdx + 6;
+        // Segment center angle (conic-gradient starts from top)
+        this.state.wheelTargetAngle = 360 * 8 + (segIdx * 30 + 15);
+
         this.addLog(`La roue tourne... Jackpot de ${this.state.prizePool} 🟡 !`);
         
         this.emitState();

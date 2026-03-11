@@ -186,17 +186,9 @@ export default function PagePoker() {
            )}
         </div>
       ) : pokerState.status === 'SPINNING' ? (() => {
-        // Calculate target rotation so the wheel lands on the correct prize segment
         const SEGMENTS = [200, 300, 400, 600, 1000, 1500, 200, 300, 400, 600, 1000, 1500];
-        const prize = pokerState.prizePool || 200;
-        // Find all matching segment indices
-        const matchingIndices = SEGMENTS.map((v, i) => v === prize ? i : -1).filter(i => i >= 0);
-        // Pick one randomly (seeded by prizePool to be stable across re-renders)
-        const segIdx = matchingIndices.length > 0 ? matchingIndices[prize % matchingIndices.length] : 0;
-        // Segment center in conic-gradient space (from top, clockwise)
-        const targetAngle = segIdx * 30 + 15;
-        // Total rotation: 8 full spins + land on segment
-        const totalRotation = 360 * 8 + targetAngle;
+        // Use server-computed angle for perfect sync
+        const totalRotation = pokerState.wheelTargetAngle || (360 * 8 + 15);
 
         return (
         <div className="poker-spinner">
