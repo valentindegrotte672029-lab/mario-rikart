@@ -193,17 +193,15 @@ export default function PagePoker() {
            <motion.div 
              className="jackpot-wheel"
              initial={{ rotate: 0 }}
-             animate={{ rotate: 360 * 6 + 30 }}
-             transition={{ duration: 3, ease: [0.17, 0.67, 0.12, 0.99] }}
+             animate={{ rotate: 360 * 8 + 45 }}
+             transition={{ duration: 5, ease: [0.15, 0.60, 0.10, 1.00] }}
              onUpdate={(v) => {
-                 if (Math.random() < 0.12 && v.rotate > 100) playCardSound();
+                 if (Math.random() < 0.10 && v.rotate > 100) playCardSound();
              }}
            >
-              {/* Segments with amounts */}
               {[200, 300, 400, 600, 1000, 1500, 200, 300, 400, 600, 1000, 1500].map((amt, i) => (
                 <div key={i} className="wheel-segment" style={{
                   transform: `rotate(${i * 30}deg)`,
-                  '--seg-color': i % 2 === 0 ? '#e53935' : '#1e88e5'
                 }}>
                   <span className="seg-label">{amt}</span>
                 </div>
@@ -214,12 +212,14 @@ export default function PagePoker() {
            <AnimatePresence>
              {pokerState.prizePool > 0 && (
                <motion.div 
-                 className="jackpot-amount"
-                 initial={{ scale: 0, opacity: 0 }}
-                 animate={{ scale: [1, 1.2, 1], opacity: 1 }}
-                 transition={{ delay: 3, duration: 1, type: 'spring' }}
+                 className="jackpot-reveal"
+                 initial={{ scale: 0, opacity: 0, y: 20 }}
+                 animate={{ scale: [0, 1.4, 1], opacity: 1, y: 0 }}
+                 transition={{ delay: 5.2, duration: 1.2, type: 'spring', bounce: 0.5 }}
                >
-                  {pokerState.prizePool} 🟡
+                  <div className="jackpot-label">💰 JACKPOT 💰</div>
+                  <div className="jackpot-amount">{pokerState.prizePool} 🟡</div>
+                  <div className="jackpot-subtitle">à remporter ce round !</div>
                </motion.div>
              )}
            </AnimatePresence>
@@ -415,9 +415,25 @@ export default function PagePoker() {
           z-index: 2;
         }
 
+        .jackpot-reveal {
+          text-align: center; margin-top: 15px;
+        }
+        .jackpot-label {
+          font-size: 1.2rem; font-weight: 900; color: #fff;
+          letter-spacing: 3px; margin-bottom: 5px;
+          text-shadow: 0 0 10px rgba(255,204,0,0.6);
+        }
         .jackpot-amount {
-          font-size: 4.5rem; font-weight: 900; color: #ffeb3b;
-          text-shadow: 0 0 20px #ffcc00; margin-top: -15px;
+          font-size: 4rem; font-weight: 900; color: #ffeb3b;
+          text-shadow: 0 0 30px #ffcc00, 0 0 60px #ff9800;
+          animation: jackpotPulse 0.8s ease-in-out infinite alternate;
+        }
+        .jackpot-subtitle {
+          font-size: 0.85rem; color: #aaa; font-style: italic; margin-top: 5px;
+        }
+        @keyframes jackpotPulse {
+          0% { text-shadow: 0 0 20px #ffcc00; transform: scale(1); }
+          100% { text-shadow: 0 0 40px #ff9800, 0 0 80px #ffcc00; transform: scale(1.05); }
         }
 
         /* TABLE */

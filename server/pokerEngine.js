@@ -212,7 +212,7 @@ class PokerEngine {
 
         setTimeout(() => {
             this.startNextHand();
-        }, 2000);
+        }, 7000);
     }
 
     startNextHand() {
