@@ -332,7 +332,7 @@ class PokerEngine {
         do {
             nextIdx = (nextIdx + 1) % this.state.players.length;
             loops++;
-            if (loops > 10) return nextIdx; // fallback
+            if (loops > this.state.players.length + 1) return currentIdx; // safety: no valid player found
         } while (this.state.players[nextIdx].folded || this.state.players[nextIdx].allIn || this.state.players[nextIdx].chips <= 0);
         return nextIdx;
     }
@@ -553,11 +553,17 @@ class PokerEngine {
         if (this.timeoutId) clearTimeout(this.timeoutId);
 
         const currentPlayer = this.state.players[this.state.currentTurnIdx];
-        if (currentPlayer && currentPlayer.isBot && !currentPlayer.folded && !currentPlayer.allIn) {
+        if (currentPlayer && currentPlayer.isBot && !currentPlayer.folded && !currentPlayer.allIn && currentPlayer.chips > 0) {
             // Bot takes a beat to think — natural pace
             const delay = 1200 + Math.random() * 1000;
             this.timeoutId = setTimeout(() => {
-                this.executeBotAction(currentPlayer);
+                try {
+                    this.executeBotAction(currentPlayer);
+                } catch (err) {
+                    console.error('Bot action error:', err.message);
+                    // Fallback: just call
+                    this.handleAction(currentPlayer.id, 'call');
+                }
             }, delay);
         }
     }
@@ -587,11 +593,19 @@ class PokerEngine {
             if (isPair) strength = ['A','K','Q','J'].includes(bot.cards[0][0]) ? 0.9 : 0.6;
             else if (hasHighCard) strength = 0.5;
             else strength = 0.2;
-        } else {
+        } else if (totalCards.length >= 5) {
             // Evaluated hand rank
-            const currentHand = Hand.solve(totalCards);
-            const rankNum = currentHand.rank; // 1 (High Card) to 9 (Straight Flush)
-            strength = rankNum / 9;
+            try {
+                const currentHand = Hand.solve(totalCards);
+                const rankNum = currentHand.rank; // 1 (High Card) to 9 (Straight Flush)
+                strength = rankNum / 9;
+            } catch (e) {
+                strength = 0.3; // fallback
+            }
+        } else {
+            // Not enough cards for Hand.solve (e.g. 2 hole + < 3 community)
+            const hasHighCard = bot.cards.some(c => ['A', 'K', 'Q', 'J'].includes(c[0]));
+            strength = hasHighCard ? 0.45 : 0.2;
         }
 
         // Pot odds variables already declared at start of method.
