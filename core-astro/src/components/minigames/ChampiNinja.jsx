@@ -190,10 +190,11 @@ export default function ChampiNinja({ onExit }) {
             <style>{`
                 .champininja-mobile {
                     --theme-color: #ff3366;
-                    width: 100%; height: 100%; display: flex; flex-direction: column;
+                    position: fixed; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 450px;
+                    display: flex; flex-direction: column;
                     background: url('/grain.png'), linear-gradient(135deg, #110000 0%, #330011 100%);
                     background-blend-mode: overlay;
-                    z-index: 50; position: absolute; top:0; left:0;
+                    z-index: 50;
                     padding: calc(var(--safe-top) + 85px) 15px 15px 15px;
                 }
 

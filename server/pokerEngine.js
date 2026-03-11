@@ -47,7 +47,8 @@ class PokerEngine {
             smallBlind: 10,
             bigBlind: 20,
             winners: [],
-            lastAction: null // string description for UI
+            lastAction: null, // string description for UI
+            handsPlayed: 0
         };
     }
 
@@ -233,6 +234,13 @@ class PokerEngine {
         this.state.deck = createDeck();
         this.state.winners = [];
 
+        this.state.handsPlayed = (this.state.handsPlayed || 0) + 1;
+        if (this.state.handsPlayed > 1 && this.state.handsPlayed % 3 === 0) {
+           this.state.smallBlind *= 2;
+           this.state.bigBlind *= 2;
+           this.addLog(`⚡ NIVEAU SUIVANT ! Blindes: ${this.state.smallBlind}/${this.state.bigBlind}`);
+        }
+
         this.state.players.forEach(p => {
             p.currentBet = 0;
             if (p.chips > 0) {
@@ -402,7 +410,7 @@ class PokerEngine {
         this.addLog(`${winLog} remporte le pot avec ${winnersHand[0].descr}`);
         this.emitState();
 
-        setTimeout(() => this.startNextHand(), 6000);
+        setTimeout(() => this.startNextHand(), 4000); // Speed up transition
     }
 
     scheduleBotTurn() {
@@ -410,8 +418,8 @@ class PokerEngine {
 
         const currentPlayer = this.state.players[this.state.currentTurnIdx];
         if (currentPlayer && currentPlayer.isBot && !currentPlayer.folded && !currentPlayer.allIn) {
-            // Simuler un délai de réflexion
-            const delay = 1000 + Math.random() * 2000;
+            // Un temps de réflexion très court pour de l'action rapide
+            const delay = 500 + Math.random() * 800;
             this.timeoutId = setTimeout(() => {
                 this.executeBotAction(currentPlayer);
             }, delay);
@@ -419,25 +427,66 @@ class PokerEngine {
     }
 
     executeBotAction(bot) {
-        // Logique Extrêmement Simplifiée (Call station avec petit bluff)
         const toCall = this.state.highestBet - bot.currentBet;
-        const r = Math.random();
+        const potOdds = toCall / (this.state.pot + toCall || 1);
+        
+        let handStrength = 0;
+        
+        if (this.state.communityCards.length === 0) {
+            const ranks = bot.cards.map(c => '23456789TJQKA'.indexOf(c[0]));
+            const isPair = ranks[0] === ranks[1];
+            const isSuited = bot.cards[0][1] === bot.cards[1][1];
+            const maxRank = Math.max(...ranks);
+            const sumRanks = ranks[0] + ranks[1];
+            
+            if (isPair && ranks[0] >= 5) handStrength = 0.9;
+            else if (isPair) handStrength = 0.7;
+            else if (maxRank >= 11) handStrength = 0.6; 
+            else if (sumRanks >= 16) handStrength = 0.5;
+            else if (isSuited) handStrength = 0.4;
+            else handStrength = 0.2;
+        } else {
+            const allCards = bot.cards.concat(this.state.communityCards);
+            const solved = Hand.solve(allCards);
+            const rankIndex = solved.rank; 
+            
+            if (rankIndex === 1) handStrength = 0.2; // High Card
+            else if (rankIndex === 2) handStrength = 0.5; // Pair
+            else if (rankIndex === 3) handStrength = 0.7; // 2 Pair
+            else if (rankIndex >= 4) handStrength = 0.9; // 3 of a kind+
+            
+            // Adjust if the board makes the hand
+            const boardHand = Hand.solve(this.state.communityCards);
+            if (boardHand.rank === solved.rank) {
+                handStrength *= 0.5; // We just play the board, only a kicker
+            }
+        }
+
+        const aggression = Math.random(); 
+        let act = 'fold';
 
         if (toCall === 0) {
-            // Check or Raise
-            if (r < 0.2) this.handleAction(bot.id, 'raise', this.state.minRaise);
-            else this.handleAction(bot.id, 'call');
+            if (handStrength > 0.6 && aggression > 0.4) act = 'raise';
+            else if (handStrength > 0.4 && aggression > 0.8) act = 'raise'; // Bluff
+            else act = 'call'; // Check
         } else {
-            // Fold, Call or Raise
-            if (toCall > bot.chips * 0.5) {
-                // Large bet
-                if (r < 0.1) this.handleAction(bot.id, 'call');
-                else this.handleAction(bot.id, 'fold');
-            } else {
-                if (r < 0.2) this.handleAction(bot.id, 'fold');
-                else if (r < 0.8) this.handleAction(bot.id, 'call');
-                else this.handleAction(bot.id, 'raise', this.state.minRaise);
-            }
+            if (handStrength > 0.7) act = aggression > 0.3 ? 'raise' : 'call';
+            else if (handStrength >= potOdds * 1.5) act = 'call';
+            else if (aggression > 0.9) act = 'raise'; // Crazy bluff
+            else act = 'fold';
+        }
+
+        // Execute
+        if (act === 'raise') {
+            const minR = this.state.minRaise;
+            const betAmount = Math.floor(handStrength > 0.8 ? minR * 2.5 : minR);
+            const finalRaise = Math.max(minR, Math.min(betAmount, bot.chips / 2));
+            this.handleAction(bot.id, 'raise', Math.floor(finalRaise));
+        }
+        else if (act === 'call') {
+            this.handleAction(bot.id, 'call');
+        } else {
+            this.handleAction(bot.id, 'fold');
         }
     }
 }

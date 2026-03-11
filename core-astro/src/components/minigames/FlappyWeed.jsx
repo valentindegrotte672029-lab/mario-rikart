@@ -234,8 +234,9 @@ export default function FlappyWeed({ onExit }) {
         .flappy-mobile {
             --theme-color: #39ff14;
             --sky-color: #87CEEB;
-            width: 100%; height: 100%; display: flex; flex-direction: column;
-            background: rgba(10, 20, 10, 0.95); z-index: 50; position: absolute; top:0; left:0;
+            position: fixed; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 450px;
+            display: flex; flex-direction: column;
+            background: rgba(10, 20, 10, 0.95); z-index: 50;
             padding: calc(var(--safe-top) + 85px) 15px 15px 15px;
         }
 

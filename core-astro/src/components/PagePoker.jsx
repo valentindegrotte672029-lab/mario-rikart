@@ -3,6 +3,45 @@ import { motion, AnimatePresence } from 'framer-motion';
 import useStore from '../store/useStore';
 import { socket } from '../socket';
 
+// --- SYNTHÉTISEUR AUDIO BROWSER ---
+let audioCtx = null;
+const initAudio = () => {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+};
+
+const playTone = (frequency, duration, type = 'sine', vol = 0.05) => {
+  try {
+      if (!audioCtx) return;
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      oscillator.type = type;
+      oscillator.frequency.value = frequency;
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      gainNode.gain.setValueAtTime(vol, audioCtx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+      oscillator.start();
+      oscillator.stop(audioCtx.currentTime + duration);
+  } catch(e) {}
+};
+
+const playChipSound = () => {
+   playTone(400, 0.1, 'triangle', 0.1);
+   setTimeout(() => playTone(600, 0.15, 'triangle', 0.1), 50);
+};
+
+const playCardSound = () => {
+   playTone(150, 0.1, 'square', 0.02);
+};
+
+const playWinSound = () => {
+   playTone(523.25, 0.1, 'sine', 0.1); 
+   setTimeout(() => playTone(659.25, 0.1, 'sine', 0.1), 100); 
+   setTimeout(() => playTone(783.99, 0.2, 'sine', 0.1), 200); 
+   setTimeout(() => playTone(1046.50, 0.4, 'sine', 0.1), 300); 
+};
+
 // --- CARD COMPONENT ---
 const PokerCard = ({ card }) => {
   if (!card) return null;
@@ -42,15 +81,36 @@ export default function PagePoker() {
      }
   }, [pokerState?.minRaise]);
 
+  // Sons automatiques
+  const potRef = React.useRef(0);
+  const cardsRef = React.useRef(0);
+  const statusRef = React.useRef('');
+
+  useEffect(() => {
+     if (!pokerState) return;
+     
+     if (pokerState.pot > potRef.current) playChipSound();
+     if (pokerState.communityCards.length > cardsRef.current) playCardSound();
+     if (pokerState.status === 'SHOWDOWN' && statusRef.current !== 'SHOWDOWN') playWinSound();
+     if (pokerState.status === 'ENDED' && statusRef.current !== 'ENDED') playWinSound();
+
+     potRef.current = pokerState.pot;
+     cardsRef.current = pokerState.communityCards.length;
+     statusRef.current = pokerState.status;
+  }, [pokerState]);
+
   const handleJoin = () => {
+    initAudio();
     socket.emit('poker_join', username);
   };
 
   const handleStartBots = () => {
+    initAudio();
     socket.emit('poker_start_bots');
   };
 
   const handleAction = (action) => {
+    initAudio();
     socket.emit('poker_action', { action, amount: raiseAmount });
   };
 
@@ -88,16 +148,25 @@ export default function PagePoker() {
         </div>
       ) : pokerState.status === 'SPINNING' ? (
         <div className="poker-spinner">
-           <h2>LE JACKPOT EST DE...</h2>
+           <h2>TIRAGE DU MAGOT !</h2>
+           
+           <div className="wheel-pointer">▼</div>
+           <motion.div 
+             className="jackpot-wheel"
+             initial={{ rotate: 0 }}
+             animate={{ rotate: 360 * 5 + 45 }} // Turn 5 times
+             transition={{ duration: 2.5, ease: 'easeOut' }}
+           ></motion.div>
+
            <motion.div 
              className="jackpot-amount"
-             initial={{ scale: 0 }}
-             animate={{ scale: [1, 1.5, 1], rotate: [0, 10, -10, 0] }}
-             transition={{ duration: 2, repeat: Infinity }}
+             initial={{ scale: 0, opacity: 0 }}
+             animate={{ scale: [1, 1.2, 1], opacity: 1, rotate: [0, 5, -5, 0] }}
+             transition={{ delay: 2.5, duration: 1, type: 'spring' }}
            >
               {pokerState.prizePool} 🟡
            </motion.div>
-           <p>(Subvention x{pokerState.multiplier})</p>
+           <p style={{ marginTop: 10 }}>(Subvention x{pokerState.multiplier})</p>
         </div>
       ) : (
         <div className="poker-table-container">
@@ -118,12 +187,14 @@ export default function PagePoker() {
                       </div>
                    ))}
 
+                   {/* Pot (Moved to extreme top edge to avoid overlapping center cards) */}
+                   <div className="pot-hud">
+                       POT: {pokerState.pot} 🟡<br/>
+                       {pokerState.prizePool > 0 && <span style={{fontSize: '0.7rem', color: '#ffcc00'}}>À GAGNER: {pokerState.prizePool} 🟡</span>}
+                   </div>
+
                    {/* Center / Community */}
                    <div className="table-center">
-                       <div className="pot-display">
-                           POT: {pokerState.pot} 🟡<br/>
-                           <span style={{fontSize: '0.7rem', color: '#ffcc00'}}>À GAGNER: {pokerState.prizePool} 🟡</span>
-                       </div>
                        <div className="community-cards">
                            {pokerState.communityCards.map((c, i) => <PokerCard key={i} card={c} />)}
                        </div>
@@ -218,16 +289,30 @@ export default function PagePoker() {
         .lobby-players { margin-top: 10px; font-weight: bold; color: #00ffcc; }
 
         /* SPINNER (Twister) */
-        .poker-spinner {
-          text-align: center;
-          color: white;
+        .poker-spinner { text-align: center; color: white; position: relative; }
+        
+        .wheel-pointer {
+           font-size: 2rem; color: white;
+           position: absolute; top: 40px; left: 50%; transform: translateX(-50%);
+           z-index: 10; text-shadow: 0 0 10px black;
         }
+
+        .jackpot-wheel {
+          width: 150px; height: 150px; border-radius: 50%;
+          border: 4px solid #ffcc00; margin: 30px auto;
+          background: conic-gradient(#ff0000 0% 16%, #00ff00 16% 33%, #0000ff 33% 50%, #ffff00 50% 66%, #ff00ff 66% 83%, #00ffff 83% 100%);
+          box-shadow: 0 0 30px #ffcc00; position: relative;
+        }
+        .jackpot-wheel::after {
+          content: '🎰'; font-size: 2.5rem; position: absolute;
+          top: 50%; left: 50%; transform: translate(-50%, -50%);
+          background: #222; border-radius: 50%; padding: 10px;
+          border: 2px solid #555;
+        }
+
         .jackpot-amount {
-          font-size: 5rem;
-          font-weight: 900;
-          color: #ffcc00;
-          text-shadow: 0 0 20px #ffcc00;
-          margin: 20px 0;
+          font-size: 4rem; font-weight: 900; color: #ffcc00;
+          text-shadow: 0 0 20px #ffcc00; margin-top: -15px;
         }
 
         /* TABLE */
@@ -279,17 +364,17 @@ export default function PagePoker() {
            100% { box-shadow: 0 0 20px #00ff66; }
         }
 
-        .opponent-0 { top: 5%; left: 10%; }
-        .opponent-1 { top: 5%; right: 10%; }
+        .opponent-0 { top: 2%; left: 2%; }
+        .opponent-1 { top: 2%; right: 2%; }
         /* Add more if max players > 3 */
 
-        .my-seat { bottom: 10%; left: 50%; transform: translateX(-50%); }
+        .my-seat { bottom: 2%; left: 50%; transform: translateX(-50%); }
 
         .player-info {
-           background: rgba(0,0,0,0.7);
-           border: 2px solid #555;
-           border-radius: 10px;
-           padding: 5px 15px;
+           background: rgba(0,0,0,0.85);
+           border: 1px solid #555;
+           border-radius: 6px;
+           padding: 4px 10px;
            text-align: center;
            color: white;
            z-index: 2;
@@ -336,65 +421,48 @@ export default function PagePoker() {
         /* CENTER AREA */
         .table-center {
            position: absolute;
-           top: 50%; left: 50%;
+           top: 55%; left: 50%;
            transform: translate(-50%, -50%);
-           display: flex;
-           flex-direction: column;
-           align-items: center;
+           display: flex; flex-direction: column; align-items: center;
         }
 
-        .pot-display {
-           background: rgba(0,0,0,0.6);
-           padding: 5px 15px;
-           border-radius: 15px;
-           color: white;
-           font-weight: 900;
-           font-size: 1.2rem;
-           margin-bottom: 10px;
-           border: 1px solid #ffcc00;
-           text-align: center;
+        .pot-hud {
+           position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+           background: rgba(0,0,0,0.8); padding: 5px 20px; border-radius: 20px;
+           color: white; font-weight: 900; font-size: 1.1rem;
+           border: 1px solid #ffcc00; text-align: center; z-index: 5;
+           white-space: nowrap; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
 
         .community-cards {
            display: flex;
-           gap: 5px;
+           gap: 3px;
         }
 
         .last-action-log {
-           margin-top: 15px;
-           background: rgba(255,255,255,0.1);
-           color: white;
-           padding: 5px 15px;
-           border-radius: 10px;
-           font-size: 0.8rem;
-           font-style: italic;
-           max-width: 250px;
-           text-align: center;
+           position: absolute; top: -35px;
+           background: rgba(0,0,0,0.6); color: white;
+           padding: 3px 15px; border-radius: 10px;
+           font-size: 0.8rem; font-style: italic; white-space: nowrap;
         }
 
         /* CARDS CSS */
         .poker-card {
-           width: 45px;
-           height: 65px;
+           width: 35px;
+           height: 50px;
            background: white;
-           border-radius: 5px;
-           box-shadow: 1px 1px 5px rgba(0,0,0,0.5);
-           display: flex;
-           flex-direction: column;
-           justify-content: space-between;
-           padding: 2px 4px;
-           font-family: 'Courier New', monospace;
-           font-weight: 900;
-           font-size: 0.9rem;
-           position: relative;
-           user-select: none;
+           border-radius: 4px;
+           box-shadow: 1px 1px 4px rgba(0,0,0,0.5);
+           display: flex; flex-direction: column; justify-content: space-between;
+           padding: 2px 3px; font-family: 'Courier New', monospace;
+           font-weight: 900; font-size: 0.75rem; position: relative; user-select: none;
         }
         .poker-card:not(:first-child) {
-           margin-left: -15px;
+           margin-left: -10px;
         }
 
         .community-cards .poker-card {
-           width: 50px; height: 70px; margin-left: 0; font-size: 1rem;
+           width: 45px; height: 65px; margin-left: 0; font-size: 0.8rem;
         }
 
         .card-hidden {
