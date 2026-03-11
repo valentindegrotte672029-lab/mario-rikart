@@ -147,6 +147,12 @@ export default function PagePoker() {
     socket.emit('poker_action', { action, amount: raiseAmount });
   };
 
+  const handleLeave = () => {
+    if (window.confirm("Abandonner la partie ? Tu perdras définitivement ta mise initiale !")) {
+      socket.emit('poker_leave');
+    }
+  };
+
   // Extract me and opponents
   const myPlayer = pokerState?.players?.find(p => p.username === username);
   const opponents = pokerState?.players?.filter(p => p.username !== username) || [];
@@ -244,19 +250,22 @@ export default function PagePoker() {
 
                    {/* My Player */}
                    {myPlayer && (
-                      <div className={`seat my-seat ${isMyTurn ? 'active-turn' : ''} ${myPlayer.folded ? 'folded' : ''}`}>
-                          {myPlayer.currentBet > 0 && <div className="my-bet">{myPlayer.currentBet} 🟡</div>}
-                          <div className="player-cards my-cards">
-                              {myPlayer.cards.map((c, i) => <PokerCard key={i} card={c} />)}
-                          </div>
-                          <div className="player-info local-info">
-                              <span className="player-name">{myPlayer.username}</span>
-                              <span className="player-chips">{myPlayer.chips} 🟡</span>
-                          </div>
-                      </div>
+                        <div className={`seat my-seat active ${myPlayer.folded ? 'folded' : ''}`}>
+                            <div className="player-info">
+                                <span className="player-name">{myPlayer.username}</span>
+                                <span className="player-chips">{myPlayer.chips} 🟡</span>
+                                {myPlayer.currentBet > 0 && <span className="player-bet">Mise: {myPlayer.currentBet}</span>}
+                            </div>
+                            <div className="my-cards">
+                                {myPlayer.cards.map((c, i) => <PokerCard key={i} card={c} />)}
+                            </div>
+                        </div>
                    )}
                 </div>
             </div>
+
+            {/* LEAVE BUTTON */}
+            <button className="btn-leave-table" onClick={handleLeave}>QUITTER (Abandon)</button>
 
             {/* Controls */}
             <AnimatePresence>
@@ -293,6 +302,25 @@ export default function PagePoker() {
                         </div>
                     </motion.div>
                 )}
+            </AnimatePresence>
+
+            {/* WIN SCREEN */}
+            <AnimatePresence>
+               {pokerState.status === 'ENDED' && pokerState.winners.includes(username) && (
+                  <motion.div 
+                     className="poker-win-screen"
+                     initial={{ opacity: 0, scale: 0.5 }}
+                     animate={{ opacity: 1, scale: 1 }}
+                     exit={{ opacity: 0 }}
+                  >
+                     <div className="win-content">
+                        <h1>🏆 VICTOIRE ! 🏆</h1>
+                        <p>Tu remportes le tournoi !</p>
+                        <h2 className="win-amount">+{pokerState.prizePool} 🟡</h2>
+                        <span className="win-note">(Ton compte a été crédité)</span>
+                     </div>
+                  </motion.div>
+               )}
             </AnimatePresence>
         </div>
       )}
@@ -567,6 +595,43 @@ export default function PagePoker() {
         .btn-fold { background: #333; color: white; }
         .btn-call { background: #00ffcc; color: black; }
         .btn-raise { background: #ff00ff; color: white; }
+
+        .btn-leave-table {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,0,0,0.6);
+            border: 1px solid red;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 5px 15px;
+            border-radius: 15px;
+            z-index: 100;
+            cursor: pointer;
+        }
+
+        /* WIN SCREEN */
+        .poker-win-screen {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 200;
+        }
+        .win-content {
+            text-align: center; color: white;
+            animation: bounceIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .win-content h1 { color: #ffeb3b; font-size: 3rem; text-shadow: 0 0 20px #ffeb3b; margin-bottom: 5px; }
+        .win-content p { font-size: 1.2rem; margin-bottom: 20px; }
+        .win-amount { color: #39ff14; font-size: 4rem; font-weight: 900; text-shadow: 0 0 30px #39ff14; margin: 0; }
+        .win-note { font-size: 0.8rem; color: #aaa; font-style: italic; }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
 
       `}</style>
     </motion.div>

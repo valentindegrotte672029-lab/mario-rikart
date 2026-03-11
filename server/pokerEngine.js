@@ -134,11 +134,28 @@ class PokerEngine {
             this.state.players = this.state.players.filter(p => p.id !== socketId);
             this.emitState();
         } else {
-            // Fold and mark as disconnected essentially, or process fold
-            const p = this.state.players.find(p => p.id === socketId);
-            if (p && !p.folded) {
-                this.handleAction(socketId, 'fold');
-                p.id = 'disconnected'; // Avoid further issues
+            const pIndex = this.state.players.findIndex(p => p.id === socketId);
+            if (pIndex !== -1) {
+               const p = this.state.players[pIndex];
+               if (!p.folded) {
+                   // Force a fold action if it was their turn, otherwise just mark folded
+                   if (this.state.currentTurnIdx === pIndex) {
+                       this.handleAction(socketId, 'fold');
+                   } else {
+                       p.folded = true;
+                   }
+               }
+               p.id = 'disconnected'; 
+               p.chips = 0; // Lost their bet
+               
+               // Check if only bots remain
+               const humans = this.state.players.filter(pl => !pl.isBot && pl.id !== 'disconnected');
+               if (humans.length === 0) {
+                   // End game instantly
+                   this.resetTable();
+               } else {
+                   this.emitState();
+               }
             }
         }
     }
@@ -195,7 +212,7 @@ class PokerEngine {
 
         setTimeout(() => {
             this.startNextHand();
-        }, 4000);
+        }, 3000);
     }
 
     startNextHand() {
@@ -222,7 +239,7 @@ class PokerEngine {
             setTimeout(() => {
                 this.resetTable();
                 this.emitState();
-            }, 10000);
+            }, 1000);
             return;
         }
 
@@ -418,75 +435,84 @@ class PokerEngine {
 
         const currentPlayer = this.state.players[this.state.currentTurnIdx];
         if (currentPlayer && currentPlayer.isBot && !currentPlayer.folded && !currentPlayer.allIn) {
-            // Un temps de réflexion très court pour de l'action rapide
-            const delay = 500 + Math.random() * 800;
+            // Un temps de réflexion HYPER Turbo (bot instictive)
+            const delay = 200 + Math.random() * 400;
             this.timeoutId = setTimeout(() => {
                 this.executeBotAction(currentPlayer);
             }, delay);
         }
     }
 
+    // Helper to convert card objects to poker-solver format (e.g., 'As', 'Kh')
+    toPokerSolverFormat(card) {
+        return `${card.value}${card.suit.toLowerCase()}`;
+    }
+
     executeBotAction(bot) {
         const toCall = this.state.highestBet - bot.currentBet;
         const potOdds = toCall / (this.state.pot + toCall || 1);
         
-        let handStrength = 0;
+          // --- AGRESSIVE BOT LOGIC ---
+        // 1. Calculate Hand Strength (0 to 1)
+        // Note: The original instruction had `Hand.solve(bot.cards.map(c => this.toPokerSolverFormat(c)))`
+        // for holeCards, but Hand.solve expects 5-7 cards for a full hand evaluation.
+        // For pre-flop, we'll use a simpler strength calculation.
+        // For post-flop, we'll use Hand.solve on all available cards.
         
+        const totalCards = [...bot.cards, ...this.state.communityCards];
+        let strength = 0;
+        
+        // Base strength on hole cards (pre-flop)
         if (this.state.communityCards.length === 0) {
-            const ranks = bot.cards.map(c => '23456789TJQKA'.indexOf(c[0]));
+            const ranks = bot.cards.map(c => '23456789TJQKA'.indexOf(c.value));
             const isPair = ranks[0] === ranks[1];
-            const isSuited = bot.cards[0][1] === bot.cards[1][1];
-            const maxRank = Math.max(...ranks);
-            const sumRanks = ranks[0] + ranks[1];
+            const hasHighCard = bot.cards.some(c => ['A', 'K', 'Q', 'J'].includes(c.value));
             
-            if (isPair && ranks[0] >= 5) handStrength = 0.9;
-            else if (isPair) handStrength = 0.7;
-            else if (maxRank >= 11) handStrength = 0.6; 
-            else if (sumRanks >= 16) handStrength = 0.5;
-            else if (isSuited) handStrength = 0.4;
-            else handStrength = 0.2;
+            if (isPair) strength = ['A','K','Q','J'].includes(bot.cards[0].value) ? 0.9 : 0.6;
+            else if (hasHighCard) strength = 0.5;
+            else strength = 0.2;
         } else {
-            const allCards = bot.cards.concat(this.state.communityCards);
-            const solved = Hand.solve(allCards);
-            const rankIndex = solved.rank; 
-            
-            if (rankIndex === 1) handStrength = 0.2; // High Card
-            else if (rankIndex === 2) handStrength = 0.5; // Pair
-            else if (rankIndex === 3) handStrength = 0.7; // 2 Pair
-            else if (rankIndex >= 4) handStrength = 0.9; // 3 of a kind+
-            
-            // Adjust if the board makes the hand
-            const boardHand = Hand.solve(this.state.communityCards);
-            if (boardHand.rank === solved.rank) {
-                handStrength *= 0.5; // We just play the board, only a kicker
-            }
+            // Evaluated hand rank
+            const allCardsFormatted = totalCards.map(c => this.toPokerSolverFormat(c));
+            const currentHand = Hand.solve(allCardsFormatted);
+            const rankNum = currentHand.rank; // 1 (High Card) to 9 (Straight Flush)
+            strength = rankNum / 9;
         }
 
-        const aggression = Math.random(); 
-        let act = 'fold';
+        // Pot odds variables already declared at start of method.
 
+        // Hyper-Turbo Traits
+        const isAggro = Math.random() > 0.4; // 60% chance to be aggressive
+        const isBluffing = Math.random() > 0.8; // 20% pure crazy bluff
+
+        // Decision Tree
         if (toCall === 0) {
-            if (handStrength > 0.6 && aggression > 0.4) act = 'raise';
-            else if (handStrength > 0.4 && aggression > 0.8) act = 'raise'; // Bluff
-            else act = 'call'; // Check
+            // Check or Raise
+            if (strength > 0.7 || (strength > 0.4 && isAggro)) {
+                const raiseTiers = [this.state.minRaise, this.state.pot / 2, this.state.pot, bot.chips];
+                const raiseAmount = raiseTiers[Math.floor(Math.random() * raiseTiers.length)];
+                this.handleAction(bot.id, 'raise', Math.floor(raiseAmount));
+            } else if (isBluffing) {
+                this.handleAction(bot.id, 'raise', this.state.minRaise);
+            } else {
+                this.handleAction(bot.id, 'call'); // Acts as check
+            }
         } else {
-            if (handStrength > 0.7) act = aggression > 0.3 ? 'raise' : 'call';
-            else if (handStrength >= potOdds * 1.5) act = 'call';
-            else if (aggression > 0.9) act = 'raise'; // Crazy bluff
-            else act = 'fold';
-        }
-
-        // Execute
-        if (act === 'raise') {
-            const minR = this.state.minRaise;
-            const betAmount = Math.floor(handStrength > 0.8 ? minR * 2.5 : minR);
-            const finalRaise = Math.max(minR, Math.min(betAmount, bot.chips / 2));
-            this.handleAction(bot.id, 'raise', Math.floor(finalRaise));
-        }
-        else if (act === 'call') {
-            this.handleAction(bot.id, 'call');
-        } else {
-            this.handleAction(bot.id, 'fold');
+            // Fold, Call, or Raise
+            if (strength > 0.8 || (strength > 0.5 && isAggro) || isBluffing) {
+                 // Strong raise or re-re-raise
+                 if (bot.chips > toCall * 2 && Math.random() > 0.5) {
+                     this.handleAction(bot.id, 'raise', Math.floor(toCall * 2 + this.state.minRaise));
+                 } else {
+                     this.handleAction(bot.id, 'call');
+                 }
+            } else if (strength > potOdds || strength > 0.3) {
+                 this.handleAction(bot.id, 'call');
+            } else {
+                 // Fold unless it's a very cheap call relative to stack
+                 if (toCall < bot.chips * 0.1) this.handleAction(bot.id, 'call');
+                 else this.handleAction(bot.id, 'fold');
+            }
         }
     }
 }
