@@ -208,7 +208,7 @@ export default function DoodleWeed({ onExit }) {
     const handleTouchStart = (e) => {
         if (gameState !== 'PLAYING') return;
         const touchX = e.touches[0].clientX;
-        stateRef.current.luigi.vx = touchX < window.innerWidth / 2 ? -6 : 6;
+        stateRef.current.luigi.vx = touchX < window.innerWidth / 2 ? -3.5 : 3.5;
     };
     
     const handleTouchMove = (e) => { };
