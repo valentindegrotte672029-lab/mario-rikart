@@ -37,18 +37,18 @@ class PokerEngine {
             buyIn: 100,
             prizePool: 0,
             multiplier: 0,
-            players: [], // { id, username, isBot, chips: 500, currentBet: 0, folded: false, allIn: false, cards: [] }
+            players: [], // { id, username, isBot, chips: 500, ...}
             communityCards: [],
             deck: [],
             pot: 0,
             dealerIdx: 0,
             currentTurnIdx: 0,
             highestBet: 0,
-            minRaise: 50, // Big blind is 50
-            smallBlind: 25,
-            bigBlind: 50,
+            minRaise: 20, // Big blind is 20
+            smallBlind: 10,
+            bigBlind: 20,
             winners: [],
-            lastAction: null, // string description for UI
+            lastAction: null,
             handsPlayed: 0
         };
     }
@@ -254,13 +254,15 @@ class PokerEngine {
 
         this.state.handsPlayed = (this.state.handsPlayed || 0) + 1;
         if (this.state.handsPlayed > 1 && this.state.handsPlayed % 2 === 0) {
-           this.state.smallBlind = Math.floor(this.state.smallBlind * 2.5);
-           this.state.bigBlind = Math.floor(this.state.bigBlind * 2.5);
+           this.state.smallBlind *= 2;
+           this.state.bigBlind *= 2;
+           this.state.minRaise = this.state.bigBlind;
            this.addLog(`⚡ TURBO ! Blindes: ${this.state.smallBlind}/${this.state.bigBlind}`);
         }
 
         this.state.players.forEach(p => {
             p.currentBet = 0;
+            p.actedThisRound = false;
             if (p.chips > 0) {
                 p.folded = false;
                 p.allIn = false;
@@ -321,10 +323,12 @@ class PokerEngine {
 
         if (action === 'fold') {
             currentPlayer.folded = true;
+            currentPlayer.actedThisRound = true;
             this.addLog(`${currentPlayer.username} se couche.`);
         } else if (action === 'call') {
             const toCall = this.state.highestBet - currentPlayer.currentBet;
             this.bet(this.state.currentTurnIdx, toCall);
+            currentPlayer.actedThisRound = true;
             this.addLog(`${currentPlayer.username} suit.`);
         } else if (action === 'raise') {
             const totalBet = this.state.highestBet + amount;
@@ -332,6 +336,13 @@ class PokerEngine {
             this.bet(this.state.currentTurnIdx, toAdd);
             this.state.highestBet = totalBet;
             this.state.minRaise = amount;
+            currentPlayer.actedThisRound = true;
+            // Reset actedThisRound for others (they need to respond to the raise)
+            this.state.players.forEach(p => {
+                if (p.id !== currentPlayer.id && !p.folded && !p.allIn) {
+                    p.actedThisRound = false;
+                }
+            });
             this.addLog(`${currentPlayer.username} relance de ${amount}.`);
         }
 
@@ -352,12 +363,13 @@ class PokerEngine {
         }
 
         // Check if betting round is over
-        // Round is over if all non-folded non-allIn players have bet the highestBet
+        // Round is over if all non-folded non-allIn players have ACTED and matched the highest bet
         const bettingActive = this.state.players.filter(p => !p.folded && !p.allIn);
-        const roundOver = bettingActive.every(p => p.currentBet === this.state.highestBet);
+        const roundOver = bettingActive.length > 0 && bettingActive.every(p => p.actedThisRound && p.currentBet === this.state.highestBet);
 
         if (roundOver) {
-            this.nextPhase();
+            // Add a delay before showing next phase for readability
+            setTimeout(() => this.nextPhase(), 1200);
         } else {
             this.state.currentTurnIdx = this.getNextActiveIndex(this.state.currentTurnIdx);
             this.emitState();
@@ -366,8 +378,11 @@ class PokerEngine {
     }
 
     nextPhase() {
-        // Reset current bets
-        this.state.players.forEach(p => p.currentBet = 0);
+        // Reset current bets and actedThisRound
+        this.state.players.forEach(p => {
+            p.currentBet = 0;
+            p.actedThisRound = false;
+        });
         this.state.highestBet = 0;
         this.state.minRaise = this.state.bigBlind;
 
@@ -495,7 +510,7 @@ class PokerEngine {
 
         this.emitState();
 
-        setTimeout(() => this.startNextHand(), 3000); // Give time to read results
+        setTimeout(() => this.startNextHand(), 4000); // Give time to read results
     }
 
     scheduleBotTurn() {
@@ -503,8 +518,8 @@ class PokerEngine {
 
         const currentPlayer = this.state.players[this.state.currentTurnIdx];
         if (currentPlayer && currentPlayer.isBot && !currentPlayer.folded && !currentPlayer.allIn) {
-            // Bot takes a beat to think — more natural pace
-            const delay = 800 + Math.random() * 700;
+            // Bot takes a beat to think — natural pace
+            const delay = 1200 + Math.random() * 1000;
             this.timeoutId = setTimeout(() => {
                 this.executeBotAction(currentPlayer);
             }, delay);
