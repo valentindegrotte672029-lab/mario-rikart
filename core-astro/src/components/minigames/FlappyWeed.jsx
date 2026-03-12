@@ -50,7 +50,7 @@ export default function FlappyWeed({ onExit }) {
         // Reward calculation : 50 coins per pipe passed
         // Use scoreRef.current to avoid React closure stale state
         if (scoreRef.current > 0) {
-            const reward = scoreRef.current * 60;
+            const reward = scoreRef.current * 40;
             useStore.setState(state => ({ balance: state.balance + reward }));
 
             // Send score to leaderboard

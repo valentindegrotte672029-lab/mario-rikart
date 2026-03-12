@@ -94,7 +94,7 @@ export default function ChampiNinja({ onExit }) {
         setGameState('GAMEOVER');
         setScore(currentScore => {
             if (currentScore > 0) {
-                useStore.setState(state => ({ balance: state.balance + (currentScore * 3) }));
+                useStore.setState(state => ({ balance: state.balance + (currentScore * 2) }));
                 socket.emit('submit_score', { game: 'CHAMPININJA', score: currentScore });
             }
             return currentScore;
@@ -133,7 +133,7 @@ export default function ChampiNinja({ onExit }) {
                 <button className="back-btn" onClick={onExit}><ArrowLeft size={24} /></button>
                 <h2>CHAMPI NINJA</h2>
                 <div className="score-display">
-                    <Coins size={16} color="#ffcc00" /> {score * 3}
+                    <Coins size={16} color="#ffcc00" /> {score * 2}
                 </div>
             </div>
 
@@ -157,7 +157,7 @@ export default function ChampiNinja({ onExit }) {
                 {gameState === 'GAMEOVER' && (
                     <div className="overlay-menu">
                         <h1>TERMINE</h1>
-                        <p>Total récolté : <strong style={{ color: '#ffcc00' }}>{score * 3} 🟡</strong></p>
+                        <p>Total récolté : <strong style={{ color: '#ffcc00' }}>{score * 2} 🟡</strong></p>
                         <button className="start-btn" onClick={startGame}>REJOUER</button>
                     </div>
                 )}

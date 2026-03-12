@@ -28,7 +28,7 @@ export default function DoodleWeed({ onExit }) {
         setGameState('GAMEOVER');
         if (window.navigator?.vibrate) window.navigator.vibrate([200, 100, 200]);
         if (stateRef.current.score > 0) {
-            useStore.setState(state => ({ balance: state.balance + (stateRef.current.score * 1) }));
+            useStore.setState(state => ({ balance: state.balance + Math.floor(stateRef.current.score / 2) }));
             socket.emit('submit_score', { game: 'DOODLEWEED', score: stateRef.current.score });
         }
     };
@@ -245,7 +245,7 @@ export default function DoodleWeed({ onExit }) {
                 <button className="back-btn" onClick={onExit}><ArrowLeft size={24} /></button>
                 <h2>DOODLE-WEED</h2>
                 <div className="score-display">
-                    <Coins size={16} color="#ffcc00" /> {score * 1} (Sc: {score})
+                    <Coins size={16} color="#ffcc00" /> {Math.floor(score / 2)} (Sc: {score})
                 </div>
             </div>
 
@@ -263,7 +263,7 @@ export default function DoodleWeed({ onExit }) {
                     <div className="overlay-menu">
                         <h1>CHUTE</h1>
                         <p>Score: {score}</p>
-                        <p>Gains: <strong style={{ color: '#ffcc00' }}>{score * 1} 🟡</strong></p>
+                        <p>Gains: <strong style={{ color: '#ffcc00' }}>{Math.floor(score / 2)} 🟡</strong></p>
                         <button className="start-btn" onClick={startGame}>REJOUER</button>
                     </div>
                 )}
