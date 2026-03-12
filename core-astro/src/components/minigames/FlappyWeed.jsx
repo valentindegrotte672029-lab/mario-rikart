@@ -161,7 +161,7 @@ export default function FlappyWeed({ onExit }) {
                 <button className="back-btn" onClick={onExit}><ArrowLeft size={24} /></button>
                 <h2>ROULE-TA-FLEUR</h2>
                 <div className="score-display">
-                    <Coins size={16} color="#ffcc00" /> {score * 50}
+                    <Coins size={16} color="#ffcc00" /> {score * 5}
                 </div>
             </div>
 
@@ -186,7 +186,7 @@ export default function FlappyWeed({ onExit }) {
                     <div className="overlay-menu">
                         <h1 style={{ color: '#ff3333' }}>CRASH !</h1>
                         <p>Score : {score} tuyaux</p>
-                        <p>Gains : <strong style={{ color: '#ffcc00' }}>{score * 50} 🟡</strong></p>
+                        <p>Gains : <strong style={{ color: '#ffcc00' }}>{score * 5} 🟡</strong></p>
                         <button className="start-btn" onClick={(e) => { e.stopPropagation(); startGame(); }}>REJOUER</button>
                     </div>
                 )}
