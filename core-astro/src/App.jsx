@@ -299,7 +299,7 @@ export default function App() {
           -webkit-overflow-scrolling: touch;
         }
         .content-area > * { width: 100%; max-width: 450px; }
-        .swipe-page { width: 100%; max-width: 450px; }
+        .swipe-page { width: 100%; max-width: 450px; min-height: 100%; }
 
         .global-error-toast {
           position: fixed;
