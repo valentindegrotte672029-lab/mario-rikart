@@ -4,7 +4,7 @@ const { Server } = require('socket.io');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
-const PokerEngine = require('./pokerEngine');
+const { PokerManager } = require('./pokerEngine');
 
 const app = express();
 app.use(cors());
@@ -55,7 +55,7 @@ const broadcastActiveUsers = () => {
     io.emit('active_users', Object.values(players));
 };
 
-const pokerEngine = new PokerEngine(io, usersDb, saveUsers);
+const pokerManager = new PokerManager(io, usersDb, saveUsers);
 
 io.on('connection', (socket) => {
     console.log(`⚡ Nouvelle connexion : ${socket.id}`);
@@ -354,25 +354,25 @@ io.on('connection', (socket) => {
 
     // 5. Casino Poker (Texas Hold'em Twister)
     socket.on('poker_join', (username) => {
-        const res = pokerEngine.joinTable(socket.id, username);
+        const res = pokerManager.joinTable(socket.id, username);
         if (res && res.error) socket.emit('poker_error', res.error);
     });
 
     socket.on('poker_leave', () => {
-        pokerEngine.leaveTable(socket.id);
+        pokerManager.leaveTable(socket.id);
     });
 
     socket.on('poker_start_bots', () => {
-        pokerEngine.startWithBots();
+        pokerManager.startWithBots(socket.id);
     });
 
     socket.on('poker_action', ({ action, amount }) => {
-        pokerEngine.handleAction(socket.id, action, amount);
+        pokerManager.handleAction(socket.id, action, amount);
     });
 
     // Déconnexion
     socket.on('disconnect', () => {
-        pokerEngine.leaveTable(socket.id);
+        pokerManager.leaveTable(socket.id);
         const username = players[socket.id];
         delete players[socket.id];
         console.log(`❌ Joueur déconnecté : ${username || socket.id}`);

@@ -200,6 +200,7 @@ export default function PagePoker() {
              <button className="btn-join" onClick={handleJoin}>M'asseoir à la table</button>
            ) : (
              <div className="lobby-waiting">
+                {pokerState.tableId && <p className="table-id-tag">🃏 {pokerState.tableId.replace('table_', 'Table #')}</p>}
                 <p>En attente d'autres joueurs... ({pokerState.players.length}/3)</p>
                 <div className="lobby-players">
                    {pokerState.players.map(p => <span key={p.id}>{p.username} </span>)}
@@ -393,6 +394,7 @@ export default function PagePoker() {
 
         .lobby-waiting { color: white; }
         .lobby-players { margin-top: 10px; font-weight: bold; color: #00ffcc; }
+        .table-id-tag { color: #ffcc00; font-size: 0.85rem; margin-bottom: 5px; opacity: 0.7; }
 
         /* SPINNER (Twister) */
         .poker-spinner { text-align: center; color: white; position: relative; }

@@ -21,10 +21,12 @@ function createDeck() {
 const BOT_NAMES = ['Bot_Maverick', 'Bot_Phil', 'Bot_Doyle', 'Bot_Negreanu', 'Bot_Ivey'];
 
 class PokerEngine {
-    constructor(io, usersDb, saveUsers) {
+    constructor(io, usersDb, saveUsers, tableId, manager) {
         this.io = io;
         this.usersDb = usersDb;
         this.saveUsers = saveUsers;
+        this.tableId = tableId || 'default';
+        this.manager = manager || null;
         
         this.resetTable();
         this.timeoutId = null;
@@ -65,44 +67,26 @@ class PokerEngine {
         };
     }
 
-    // Convert poker solving format to readable
     emitState() {
-        // We must hide other players' cards, especially for real players
-        // Actually, since all clients receive the same socket event, we should ideally emit specific states per player,
-        // OR emit a global state where bot cards and other players' cards are hidden unless showdown.
-        const globalState = {
-            ...this.state,
-            deck: [], // Do not send deck
-            players: this.state.players.map(p => ({
-                id: p.id,
-                username: p.username,
-                isBot: p.isBot,
-                chips: p.chips,
-                currentBet: p.currentBet,
-                folded: p.folded,
-                allIn: p.allIn,
-                // Only reveal cards at showdown
-                cards: (this.state.status === 'SHOWDOWN' || !p.isBot) ? p.cards : (p.folded ? [] : ['hidden', 'hidden']) 
-            }))
-        };
-        // Broadcasst global state. 
-        // Note: Real security would send specific cards to specific socket IDs, but since this is local / friends, sending all real players' cards to everyone might lead to cheating.
-        // For Mario Rikart local context, we will send real player cards only to their socket.
-        
-        // Actually to keep it simple and secure enough:
-        this.io.sockets.sockets.forEach((s) => {
+        // Only emit to sockets that are players in THIS table
+        this.state.players.forEach(p => {
+            if (p.isBot || p.id === 'disconnected') return;
+            const s = this.io.sockets.sockets.get(p.id);
+            if (!s) return;
+
             const playerState = {
                 ...this.state,
+                tableId: this.tableId,
                 deck: [],
-                players: this.state.players.map(p => ({
-                    id: p.id,
-                    username: p.username,
-                    isBot: p.isBot,
-                    chips: p.chips,
-                    currentBet: p.currentBet,
-                    folded: p.folded,
-                    allIn: p.allIn,
-                    cards: (this.state.status === 'SHOWDOWN' || p.id === s.id) ? p.cards : (p.folded ? [] : ['hidden', 'hidden'])
+                players: this.state.players.map(pl => ({
+                    id: pl.id,
+                    username: pl.username,
+                    isBot: pl.isBot,
+                    chips: pl.chips,
+                    currentBet: pl.currentBet,
+                    folded: pl.folded,
+                    allIn: pl.allIn,
+                    cards: (this.state.status === 'SHOWDOWN' || pl.id === s.id) ? pl.cards : (pl.folded ? [] : ['hidden', 'hidden'])
                 }))
             };
             s.emit('poker_state', playerState);
@@ -166,8 +150,12 @@ class PokerEngine {
                if (humans.length === 0) {
                    // End game instantly
                    if (this.timeoutId) clearTimeout(this.timeoutId);
-                   this.resetTable();
-                   this.emitState();
+                   if (this.manager) {
+                       this.manager.onTableReset(this.tableId);
+                   } else {
+                       this.resetTable();
+                       this.emitState();
+                   }
                } else {
                    this.emitState();
                }
@@ -274,10 +262,14 @@ class PokerEngine {
 
             this.emitState();
             
-            // Auto reset after 10s
+            // Auto reset after delay — notify manager to clean up table
             setTimeout(() => {
-                this.resetTable();
-                this.emitState();
+                if (this.manager) {
+                    this.manager.onTableReset(this.tableId);
+                } else {
+                    this.resetTable();
+                    this.emitState();
+                }
             }, 1000);
             return;
         }
@@ -700,4 +692,109 @@ class PokerEngine {
     }
 }
 
-module.exports = PokerEngine;
+class PokerManager {
+    constructor(io, usersDb, saveUsers) {
+        this.io = io;
+        this.usersDb = usersDb;
+        this.saveUsers = saveUsers;
+        this.tables = new Map();       // tableId -> PokerEngine
+        this.socketToTable = new Map(); // socketId -> tableId
+        this.nextTableId = 1;
+    }
+
+    joinTable(socketId, username) {
+        // Already at a table?
+        if (this.socketToTable.has(socketId)) {
+            return { error: 'Déjà assis à une table' };
+        }
+
+        // Find a WAITING table with room
+        let targetEngine = null;
+        for (const [, engine] of this.tables) {
+            if (engine.state.status === 'WAITING' && engine.state.players.length < 3) {
+                targetEngine = engine;
+                break;
+            }
+        }
+
+        // Create new table if needed
+        if (!targetEngine) {
+            const tableId = `table_${this.nextTableId++}`;
+            targetEngine = new PokerEngine(this.io, this.usersDb, this.saveUsers, tableId, this);
+            this.tables.set(tableId, targetEngine);
+            console.log(`[POKER] Nouvelle table créée: ${tableId}`);
+        }
+
+        const res = targetEngine.joinTable(socketId, username);
+        if (res && res.success) {
+            this.socketToTable.set(socketId, targetEngine.tableId);
+        }
+        return res;
+    }
+
+    leaveTable(socketId) {
+        const tableId = this.socketToTable.get(socketId);
+        if (!tableId) return;
+
+        const engine = this.tables.get(tableId);
+        if (!engine) {
+            this.socketToTable.delete(socketId);
+            return;
+        }
+
+        engine.leaveTable(socketId);
+        this.socketToTable.delete(socketId);
+
+        // Clean up if no real players left in WAITING
+        if (engine.state.status === 'WAITING') {
+            const realPlayers = engine.state.players.filter(p => !p.isBot && p.id !== 'disconnected');
+            if (realPlayers.length === 0) {
+                this.tables.delete(tableId);
+                console.log(`[POKER] Table ${tableId} supprimée (vide)`);
+            }
+        }
+    }
+
+    startWithBots(socketId) {
+        const tableId = this.socketToTable.get(socketId);
+        if (!tableId) return;
+        const engine = this.tables.get(tableId);
+        if (engine) engine.startWithBots();
+    }
+
+    handleAction(socketId, action, amount) {
+        const tableId = this.socketToTable.get(socketId);
+        if (!tableId) return;
+        const engine = this.tables.get(tableId);
+        if (engine) engine.handleAction(socketId, action, amount);
+    }
+
+    // Called by PokerEngine when a game resets after ENDED or all humans leave
+    onTableReset(tableId) {
+        const engine = this.tables.get(tableId);
+        if (!engine) return;
+
+        if (engine.timeoutId) clearTimeout(engine.timeoutId);
+
+        // Send null state to all former players (back to lobby)
+        for (const [socketId, tId] of this.socketToTable) {
+            if (tId === tableId) {
+                this.socketToTable.delete(socketId);
+                const s = this.io.sockets.sockets.get(socketId);
+                if (s) s.emit('poker_state', null);
+            }
+        }
+
+        this.tables.delete(tableId);
+        console.log(`[POKER] Table ${tableId} terminée et supprimée`);
+    }
+
+    getInfo() {
+        return {
+            activeTables: this.tables.size,
+            totalPlayers: this.socketToTable.size
+        };
+    }
+}
+
+module.exports = { PokerEngine, PokerManager };
