@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, Component } from 'react';
+import React, { useEffect, useRef, useCallback, Component } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -53,21 +53,42 @@ export default function App() {
 
   const SWIPE_PAGES = ['LUIGI', 'TOAD', 'PEACH', 'MARIO', 'WARIO', 'CHRONO', 'PSYCH', 'CASINO', 'POKER'];
   const swipeDir = useRef(1);
+  const touchRef = useRef({ startX: 0, startY: 0, swiping: false });
 
-  const handleSwipe = (e, { offset }) => {
-    const THRESHOLD = 50;
+  const onTouchStart = useCallback((e) => {
+    const t = e.touches[0];
+    touchRef.current = { startX: t.clientX, startY: t.clientY, swiping: false };
+  }, []);
+
+  const onTouchMove = useCallback((e) => {
+    if (touchRef.current.swiping) return;
+    const t = e.touches[0];
+    const dx = Math.abs(t.clientX - touchRef.current.startX);
+    const dy = Math.abs(t.clientY - touchRef.current.startY);
+    // Lock direction after 10px of movement
+    if (dx > 10 || dy > 10) {
+      touchRef.current.swiping = true;
+      touchRef.current.horizontal = dx > dy;
+    }
+  }, []);
+
+  const onTouchEnd = useCallback((e) => {
+    if (!touchRef.current.horizontal) return;
+    const endX = e.changedTouches[0].clientX;
+    const diff = endX - touchRef.current.startX;
+    const THRESHOLD = 60;
     const idx = SWIPE_PAGES.indexOf(currentPage);
     if (idx === -1) return;
-    if (offset.x < -THRESHOLD && idx < SWIPE_PAGES.length - 1) {
+    if (diff < -THRESHOLD && idx < SWIPE_PAGES.length - 1) {
       swipeDir.current = 1;
       setPage(SWIPE_PAGES[idx + 1]);
       setTimeout(() => resetSpeed(), 1200);
-    } else if (offset.x > THRESHOLD && idx > 0) {
+    } else if (diff > THRESHOLD && idx > 0) {
       swipeDir.current = -1;
       setPage(SWIPE_PAGES[idx - 1]);
       setTimeout(() => resetSpeed(), 1200);
     }
-  };
+  }, [currentPage, setPage, resetSpeed]);
 
   // Gestion des WebSockets en temps réel (Remplace le mock)
   useEffect(() => {
@@ -180,20 +201,21 @@ export default function App() {
       <ToadBank />
 
       {/* 3. Contenu Principal défilant (Zone Mobile) — Swipe horizontal */}
-      <main className="content-area">
+      <main
+        className="content-area"
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      >
         <ErrorBoundary>
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={currentPage}
-              drag="x"
-              dragConstraints={{ left: 0, right: 0 }}
-              dragElastic={0.15}
-              onDragEnd={handleSwipe}
+              className="swipe-page"
               initial={{ x: swipeDir.current * 300, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: swipeDir.current * -300, opacity: 0 }}
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              style={{ touchAction: 'pan-y' }}
             >
               {renderPage()}
             </motion.div>
@@ -270,11 +292,14 @@ export default function App() {
         }
 
         .content-area {
-          flex: 1; display: flex; align-items: center; justify-content: center;
+          flex: 1; display: flex; flex-direction: column; align-items: center;
           padding: calc(var(--safe-top) + var(--header-height) + 20px) 20px calc(var(--safe-bottom) + var(--tab-height) + 20px) 20px;
           position: relative; z-index: 10; pointer-events: none;
+          overflow-y: auto; overflow-x: hidden;
+          -webkit-overflow-scrolling: touch;
         }
         .content-area > * { pointer-events: auto; width: 100%; max-width: 450px; }
+        .swipe-page { width: 100%; max-width: 450px; }
 
         .global-error-toast {
           position: fixed;
