@@ -4,8 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Lock, ShieldAlert, X, Crown, ChevronLeft, ChevronRight } from 'lucide-react';
 import useStore from '../store/useStore';
 
-// All 25 photos
-const ALL_PHOTOS = Array.from({ length: 25 }, (_, i) => `/images/peach/peach-${i + 2}.jpg`);
+// All 26 photos
+const ALL_PHOTOS = Array.from({ length: 26 }, (_, i) => `/images/peach/peach-${i + 1}.jpg`);
 
 function shuffleAndPick(arr, count) {
   const shuffled = [...arr].sort(() => Math.random() - 0.5);
@@ -70,7 +70,7 @@ export default function PagePeach() {
             <div className="titles">
               <h1 className="title-mobile peach-title">PEACHASSE</h1>
               <p className="only-fans-tag">💎 Top 0.01% Mushroom Kingdom</p>
-              {peachUnlock === 'vip' && <p className="vip-badge">👑 VIP — 25 photos</p>}
+              {peachUnlock === 'vip' && <p className="vip-badge">👑 VIP — 26 photos</p>}
               {peachUnlock === 'basic' && <p className="basic-badge">🔓 Basic — 10 photos</p>}
             </div>
           </div>
@@ -90,7 +90,7 @@ export default function PagePeach() {
                 <div className="card-bg heavy-blur"></div>
                 <Crown className="lock-icon" size={32} color="#ffaa00" />
                 <span className="unlock-text">👑 VIP Only</span>
-                <span className="unlock-sub">Les 25 photos complètes 💎</span>
+                <span className="unlock-sub">Les 26 photos complètes 💎</span>
                 <span className="price-tag gold">2000 🟡</span>
               </div>
             </div>
@@ -100,7 +100,7 @@ export default function PagePeach() {
           {peachUnlock === 'basic' && (
             <div className="upgrade-banner" onClick={handleUnlockVip}>
               <Crown size={20} color="#ffaa00" />
-              <span>Passer VIP — voir les 25 photos</span>
+              <span>Passer VIP — voir les 26 photos</span>
               <span className="price-tag gold small">2000 🟡</span>
             </div>
           )}
