@@ -1,4 +1,4 @@
-import React, { useEffect, Component } from 'react';
+import React, { useEffect, useRef, Component } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -49,7 +49,25 @@ class ErrorBoundary extends Component {
 }
 
 export default function App() {
-  const { speedBoost, currentPage, happening, triggerHappening, username, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, errorMsg, balance, socialStatus, setBets, setBalance, setPokerState } = useStore();
+  const { speedBoost, currentPage, setPage, resetSpeed, happening, triggerHappening, username, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, errorMsg, balance, socialStatus, setBets, setBalance, setPokerState } = useStore();
+
+  const SWIPE_PAGES = ['LUIGI', 'TOAD', 'PEACH', 'MARIO', 'WARIO'];
+  const swipeDir = useRef(1);
+
+  const handleSwipe = (e, { offset }) => {
+    const THRESHOLD = 50;
+    const idx = SWIPE_PAGES.indexOf(currentPage);
+    if (idx === -1) return;
+    if (offset.x < -THRESHOLD && idx < SWIPE_PAGES.length - 1) {
+      swipeDir.current = 1;
+      setPage(SWIPE_PAGES[idx + 1]);
+      setTimeout(() => resetSpeed(), 1200);
+    } else if (offset.x > THRESHOLD && idx > 0) {
+      swipeDir.current = -1;
+      setPage(SWIPE_PAGES[idx - 1]);
+      setTimeout(() => resetSpeed(), 1200);
+    }
+  };
 
   // Gestion des WebSockets en temps réel (Remplace le mock)
   useEffect(() => {
@@ -161,11 +179,24 @@ export default function App() {
       {/* 2. HUD Haut (Toad Bank) */}
       <ToadBank />
 
-      {/* 3. Contenu Principal défilant (Zone Mobile) */}
+      {/* 3. Contenu Principal défilant (Zone Mobile) — Swipe horizontal */}
       <main className="content-area">
         <ErrorBoundary>
-          <AnimatePresence mode="wait">
-            {renderPage()}
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={currentPage}
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.15}
+              onDragEnd={handleSwipe}
+              initial={{ x: swipeDir.current * 300, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: swipeDir.current * -300, opacity: 0 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              style={{ touchAction: 'pan-y' }}
+            >
+              {renderPage()}
+            </motion.div>
           </AnimatePresence>
         </ErrorBoundary>
       </main>
