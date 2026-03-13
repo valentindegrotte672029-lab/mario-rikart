@@ -16,8 +16,6 @@ export default function PageWario() {
     { id: 'gourd-50', name: 'Gourdasse 50cc', price: 15000, icon: '🥃' },
     { id: 'gourd-100', name: 'Gourdasse 100cc', price: 30000, icon: '🍹' },
     { id: 'gourd-150', name: 'Gourdasse 150cc', price: 60000, icon: '🧉' },
-    { id: 'gourd-200', name: 'Gourdasse 200cc Destructive', price: 100000, icon: '☠️' },
-    { id: 'spacecake', name: 'Space Cake Céleste', price: 250000, icon: '⭐' },
   ];
 
   const handleBuy = (item) => {
