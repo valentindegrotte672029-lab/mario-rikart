@@ -64,6 +64,10 @@ const useStore = create(
     pokerState: null,
     setPokerState: (pokerState) => set({ pokerState }),
 
+    // Peach unlock state: 'none' | 'basic' | 'vip'
+    peachUnlock: 'none',
+    setPeachUnlock: (level) => set({ peachUnlock: level }),
+
     setBalance: (balance) => set({ balance })
     }),
     {
@@ -72,7 +76,8 @@ const useStore = create(
         partialize: (state) => ({ 
             username: state.username, 
             balance: state.balance, 
-            socialStatus: state.socialStatus 
+            socialStatus: state.socialStatus,
+            peachUnlock: state.peachUnlock 
         }),
     }
 ));
