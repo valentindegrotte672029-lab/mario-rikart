@@ -74,6 +74,9 @@ export default function App() {
 
   const onTouchEnd = useCallback((e) => {
     if (!touchRef.current.horizontal) return;
+    // Don't swipe when an input/textarea is focused (e.g. creating a bet)
+    const active = document.activeElement;
+    if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.tagName === 'SELECT')) return;
     const endX = e.changedTouches[0].clientX;
     const diff = endX - touchRef.current.startX;
     const THRESHOLD = 60;

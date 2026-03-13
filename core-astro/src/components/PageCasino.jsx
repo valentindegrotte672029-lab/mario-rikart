@@ -221,6 +221,7 @@ export default function PageCasino() {
         .create-bet-form input {
             background: #111; border: 1px solid #333; color: white;
             padding: 10px; border-radius: 8px; width: 100%;
+            font-size: 16px;
         }
         .form-actions { display: flex; gap: 10px; margin-top: 10px; }
         .btn-add-opt { flex: 1; background: #333; border: none; color: white; border-radius: 8px; font-weight: bold; }
