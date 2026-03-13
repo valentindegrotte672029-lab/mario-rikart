@@ -94,7 +94,7 @@ export default function ChampiNinja({ onExit }) {
         setGameState('GAMEOVER');
         setScore(currentScore => {
             if (currentScore > 0) {
-                useStore.setState(state => ({ balance: state.balance + (currentScore * 2) }));
+                useStore.setState(state => ({ balance: state.balance + Math.floor(currentScore * 1.2) }));
                 socket.emit('submit_score', { game: 'CHAMPININJA', score: currentScore });
             }
             return currentScore;
@@ -111,9 +111,9 @@ export default function ChampiNinja({ onExit }) {
             setScore(prev => Math.max(0, prev - 100)); // Heavy Penality
             // Optional : Flash screen effect ?
         } else if (type === 'golden') {
-            setScore(prev => prev + 50); // Big reward
+            setScore(prev => prev + 35); // Big reward
         } else {
-            setScore(prev => prev + 10); // Normal Reward
+            setScore(prev => prev + 8); // Normal Reward
         }
 
         // Remove item
@@ -133,7 +133,7 @@ export default function ChampiNinja({ onExit }) {
                 <button className="back-btn" onClick={onExit}><ArrowLeft size={24} /></button>
                 <h2>CHAMPI NINJA</h2>
                 <div className="score-display">
-                    <Coins size={16} color="#ffcc00" /> {score * 2}
+                    <Coins size={16} color="#ffcc00" /> {Math.floor(score * 1.2)}
                 </div>
             </div>
 
