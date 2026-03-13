@@ -697,46 +697,62 @@ class PokerManager {
         this.io = io;
         this.usersDb = usersDb;
         this.saveUsers = saveUsers;
-        this.tables = new Map();       // tableId -> PokerEngine
-        this.socketToTable = new Map(); // socketId -> tableId
-        this.nextTableId = 1;
+        this.tables = new Map();       // roomCode -> PokerEngine
+        this.socketToTable = new Map(); // socketId -> roomCode
     }
 
-    joinTable(socketId, username) {
-        // Already at a table?
+    _generateCode() {
+        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        let code;
+        do {
+            code = '';
+            for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
+        } while (this.tables.has(code));
+        return code;
+    }
+
+    createRoom(socketId, username) {
         if (this.socketToTable.has(socketId)) {
             return { error: 'Déjà assis à une table' };
         }
 
-        // Find a WAITING table with room
-        let targetEngine = null;
-        for (const [, engine] of this.tables) {
-            if (engine.state.status === 'WAITING' && engine.state.players.length < 3) {
-                targetEngine = engine;
-                break;
-            }
-        }
+        const code = this._generateCode();
+        const engine = new PokerEngine(this.io, this.usersDb, this.saveUsers, code, this);
+        this.tables.set(code, engine);
+        console.log(`[POKER] Salle ${code} créée par ${username}`);
 
-        // Create new table if needed
-        if (!targetEngine) {
-            const tableId = `table_${this.nextTableId++}`;
-            targetEngine = new PokerEngine(this.io, this.usersDb, this.saveUsers, tableId, this);
-            this.tables.set(tableId, targetEngine);
-            console.log(`[POKER] Nouvelle table créée: ${tableId}`);
-        }
-
-        const res = targetEngine.joinTable(socketId, username);
+        const res = engine.joinTable(socketId, username);
         if (res && res.success) {
-            this.socketToTable.set(socketId, targetEngine.tableId);
+            this.socketToTable.set(socketId, code);
+            this.broadcastRooms();
+        }
+        return { ...res, roomCode: code };
+    }
+
+    joinRoom(socketId, username, roomCode) {
+        if (this.socketToTable.has(socketId)) {
+            return { error: 'Déjà assis à une table' };
+        }
+
+        const code = (roomCode || '').toUpperCase().trim();
+        const engine = this.tables.get(code);
+        if (!engine) return { error: 'Salle introuvable' };
+        if (engine.state.status !== 'WAITING') return { error: 'Partie déjà en cours' };
+        if (engine.state.players.length >= 3) return { error: 'Table pleine' };
+
+        const res = engine.joinTable(socketId, username);
+        if (res && res.success) {
+            this.socketToTable.set(socketId, code);
+            this.broadcastRooms();
         }
         return res;
     }
 
     leaveTable(socketId) {
-        const tableId = this.socketToTable.get(socketId);
-        if (!tableId) return;
+        const code = this.socketToTable.get(socketId);
+        if (!code) return;
 
-        const engine = this.tables.get(tableId);
+        const engine = this.tables.get(code);
         if (!engine) {
             this.socketToTable.delete(socketId);
             return;
@@ -749,23 +765,27 @@ class PokerManager {
         if (engine.state.status === 'WAITING') {
             const realPlayers = engine.state.players.filter(p => !p.isBot && p.id !== 'disconnected');
             if (realPlayers.length === 0) {
-                this.tables.delete(tableId);
-                console.log(`[POKER] Table ${tableId} supprimée (vide)`);
+                this.tables.delete(code);
+                console.log(`[POKER] Salle ${code} supprimée (vide)`);
             }
         }
+        this.broadcastRooms();
     }
 
     startWithBots(socketId) {
-        const tableId = this.socketToTable.get(socketId);
-        if (!tableId) return;
-        const engine = this.tables.get(tableId);
-        if (engine) engine.startWithBots();
+        const code = this.socketToTable.get(socketId);
+        if (!code) return;
+        const engine = this.tables.get(code);
+        if (engine) {
+            engine.startWithBots();
+            this.broadcastRooms();
+        }
     }
 
     handleAction(socketId, action, amount) {
-        const tableId = this.socketToTable.get(socketId);
-        if (!tableId) return;
-        const engine = this.tables.get(tableId);
+        const code = this.socketToTable.get(socketId);
+        if (!code) return;
+        const engine = this.tables.get(code);
         if (engine) engine.handleAction(socketId, action, amount);
     }
 
@@ -786,14 +806,26 @@ class PokerManager {
         }
 
         this.tables.delete(tableId);
-        console.log(`[POKER] Table ${tableId} terminée et supprimée`);
+        console.log(`[POKER] Salle ${tableId} terminée et supprimée`);
+        this.broadcastRooms();
     }
 
-    getInfo() {
-        return {
-            activeTables: this.tables.size,
-            totalPlayers: this.socketToTable.size
-        };
+    listRooms() {
+        const rooms = [];
+        for (const [code, engine] of this.tables) {
+            if (engine.state.status === 'WAITING') {
+                rooms.push({
+                    code,
+                    players: engine.state.players.map(p => p.username),
+                    count: engine.state.players.length
+                });
+            }
+        }
+        return rooms;
+    }
+
+    broadcastRooms() {
+        this.io.emit('poker_rooms', this.listRooms());
     }
 }
 

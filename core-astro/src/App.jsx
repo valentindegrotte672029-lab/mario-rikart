@@ -49,7 +49,7 @@ class ErrorBoundary extends Component {
 }
 
 export default function App() {
-  const { speedBoost, currentPage, setPage, resetSpeed, happening, triggerHappening, username, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, errorMsg, balance, socialStatus, setBets, setBalance, setPokerState } = useStore();
+  const { speedBoost, currentPage, setPage, resetSpeed, happening, triggerHappening, username, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, errorMsg, balance, socialStatus, setBets, setBalance, setPokerState, setPokerRooms } = useStore();
 
   const SWIPE_PAGES = ['LUIGI', 'TOAD', 'PEACH', 'MARIO', 'WARIO', 'CHRONO', 'PSYCH', 'CASINO', 'POKER'];
   const swipeDir = useRef(1);
@@ -125,6 +125,7 @@ export default function App() {
       });
       socket.on('poker_state', (state) => setPokerState(state));
       socket.on('poker_error', (err) => alert("Poker: " + err));
+      socket.on('poker_rooms', (rooms) => setPokerRooms(rooms));
 
       return () => {
         socket.off('connect', onConnect);
@@ -138,10 +139,11 @@ export default function App() {
         socket.off('bet_resolved');
         socket.off('poker_state');
         socket.off('poker_error');
+        socket.off('poker_rooms');
         socket.disconnect();
       };
     }
-  }, [username, triggerHappening, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, setBets, setBalance, setPokerState]);
+  }, [username, triggerHappening, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, setBets, setBalance, setPokerState, setPokerRooms]);
 
   // Synchronisation continue des pièces et du rang vers le serveur
   useEffect(() => {

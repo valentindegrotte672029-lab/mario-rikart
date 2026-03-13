@@ -353,9 +353,18 @@ io.on('connection', (socket) => {
     });
 
     // 5. Casino Poker (Texas Hold'em Twister)
-    socket.on('poker_join', (username) => {
-        const res = pokerManager.joinTable(socket.id, username);
+    socket.on('poker_create', (username) => {
+        const res = pokerManager.createRoom(socket.id, username);
         if (res && res.error) socket.emit('poker_error', res.error);
+    });
+
+    socket.on('poker_join', ({ username, roomCode }) => {
+        const res = pokerManager.joinRoom(socket.id, username, roomCode);
+        if (res && res.error) socket.emit('poker_error', res.error);
+    });
+
+    socket.on('poker_list_rooms', () => {
+        socket.emit('poker_rooms', pokerManager.listRooms());
     });
 
     socket.on('poker_leave', () => {

@@ -108,8 +108,17 @@ const PokerCard = ({ card }) => {
 };
 
 export default function PagePoker() {
-  const { pokerState, username } = useStore();
+  const { pokerState, pokerRooms, username } = useStore();
   const [raiseAmount, setRaiseAmount] = useState(0);
+  const [joinCode, setJoinCode] = useState('');
+  const [lobbyView, setLobbyView] = useState('menu'); // 'menu' | 'join'
+
+  // Ask server for rooms when entering lobby
+  useEffect(() => {
+    if (!pokerState || pokerState.status === 'WAITING') {
+      socket.emit('poker_list_rooms');
+    }
+  }, [pokerState]);
 
   // Sync state actions
   useEffect(() => {
@@ -151,9 +160,22 @@ export default function PagePoker() {
      statusRef.current = pokerState.status;
   }, [pokerState]);
 
-  const handleJoin = () => {
+  const handleCreate = () => {
     initAudio();
-    socket.emit('poker_join', username);
+    socket.emit('poker_create', username);
+  };
+
+  const handleJoinRoom = () => {
+    if (!joinCode.trim()) return;
+    initAudio();
+    socket.emit('poker_join', { username, roomCode: joinCode.trim() });
+    setJoinCode('');
+    setLobbyView('menu');
+  };
+
+  const handleQuickJoin = (code) => {
+    initAudio();
+    socket.emit('poker_join', { username, roomCode: code });
   };
 
   const handleStartBots = () => {
@@ -192,15 +214,57 @@ export default function PagePoker() {
     >
       {!pokerState || pokerState.status === 'WAITING' ? (
         <div className="poker-lobby">
-           <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Poker_Game.svg/1200px-Poker_Game.svg.png" style={{width: 150, opacity: 0.5, marginBottom: 20, filter: 'invert(1)'}}/>
-           <h1>SALOON EXPRESSO</h1>
-           <p>Mise de départ : <b>100 🟡</b></p>
-           
            {!myPlayer ? (
-             <button className="btn-join" onClick={handleJoin}>M'asseoir à la table</button>
+             <>
+               <h1>♠️ SALOON EXPRESSO</h1>
+               <p>Mise de départ : <b>100 🟡</b></p>
+
+               {lobbyView === 'menu' ? (
+                 <div className="lobby-menu">
+                   <button className="btn-create" onClick={handleCreate}>🃏 Créer une partie</button>
+                   <button className="btn-join-code" onClick={() => setLobbyView('join')}>🔑 Rejoindre avec un code</button>
+                   
+                   {pokerRooms && pokerRooms.length > 0 && (
+                     <div className="open-rooms">
+                       <p className="open-rooms-title">Parties ouvertes</p>
+                       {pokerRooms.map(room => (
+                         <button key={room.code} className="room-card" onClick={() => handleQuickJoin(room.code)}>
+                           <span className="room-code">{room.code}</span>
+                           <span className="room-players">{room.players.join(', ')}</span>
+                           <span className="room-count">{room.count}/3</span>
+                         </button>
+                       ))}
+                     </div>
+                   )}
+                 </div>
+               ) : (
+                 <div className="join-form">
+                   <p style={{color:'white', marginBottom: 10}}>Entre le code de la salle :</p>
+                   <input
+                     className="code-input"
+                     type="text"
+                     maxLength={4}
+                     placeholder="ABCD"
+                     value={joinCode}
+                     onChange={e => setJoinCode(e.target.value.toUpperCase())}
+                     autoFocus
+                     style={{ fontSize: 16 }}
+                   />
+                   <div className="join-form-btns">
+                     <button className="btn-back" onClick={() => setLobbyView('menu')}>← Retour</button>
+                     <button className="btn-join" onClick={handleJoinRoom} disabled={joinCode.length < 4}>Rejoindre</button>
+                   </div>
+                 </div>
+               )}
+             </>
            ) : (
              <div className="lobby-waiting">
-                {pokerState.tableId && <p className="table-id-tag">🃏 {pokerState.tableId.replace('table_', 'Table #')}</p>}
+                <h1>♠️ SALOON EXPRESSO</h1>
+                <div className="room-code-display">
+                  <span className="room-code-label">Code de la salle</span>
+                  <span className="room-code-big">{pokerState.tableId}</span>
+                  <span className="room-code-hint">Partage ce code aux autres joueurs</span>
+                </div>
                 <p>En attente d'autres joueurs... ({pokerState.players.length}/3)</p>
                 <div className="lobby-players">
                    {pokerState.players.map(p => <span key={p.id}>{p.username} </span>)}
@@ -379,22 +443,64 @@ export default function PagePoker() {
         .poker-lobby {
           text-align: center;
           background: rgba(0,0,0,0.8);
-          padding: 40px;
+          padding: 30px 25px;
           border-radius: 20px;
           border: 2px solid #00ff66;
           box-shadow: 0 0 50px rgba(0, 255, 102, 0.2);
+          width: 90%;
+          max-width: 340px;
         }
-        .poker-lobby h1 { color: #00ff66; margin-bottom: 5px; font-weight: 900; }
-        .poker-lobby p { color: #aaa; margin-bottom: 25px; }
+        .poker-lobby h1 { color: #00ff66; margin-bottom: 5px; font-weight: 900; font-size: 1.3rem; }
+        .poker-lobby p { color: #aaa; margin-bottom: 15px; }
 
-        .btn-join { background: #00ff66; color: black; font-weight: bold; font-size: 1.2rem; padding: 15px 30px; border: none; border-radius: 10px; cursor: pointer; }
+        .lobby-menu { display: flex; flex-direction: column; gap: 12px; }
+
+        .btn-create { background: #00ff66; color: black; font-weight: bold; font-size: 1.1rem; padding: 14px 20px; border: none; border-radius: 10px; cursor: pointer; }
+        .btn-create:active { transform: scale(0.95); }
+
+        .btn-join-code { background: transparent; color: #00ffcc; font-weight: bold; font-size: 1rem; padding: 12px 20px; border: 2px solid #00ffcc; border-radius: 10px; cursor: pointer; }
+        .btn-join-code:active { transform: scale(0.95); }
+
+        .open-rooms { margin-top: 8px; }
+        .open-rooms-title { color: #888; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
+        .room-card {
+          display: flex; align-items: center; justify-content: space-between;
+          background: rgba(255,255,255,0.05); border: 1px solid rgba(0,255,102,0.3);
+          border-radius: 10px; padding: 10px 14px; width: 100%; cursor: pointer;
+          margin-bottom: 6px; color: white; font-size: 0.9rem;
+        }
+        .room-card:active { background: rgba(0,255,102,0.15); }
+        .room-code { font-weight: 900; color: #ffcc00; font-family: monospace; font-size: 1.1rem; }
+        .room-players { color: #aaa; flex: 1; text-align: center; font-size: 0.8rem; }
+        .room-count { color: #00ff66; font-weight: bold; }
+
+        .join-form { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        .code-input {
+          background: rgba(255,255,255,0.1); border: 2px solid #00ffcc; border-radius: 12px;
+          color: white; font-size: 2rem; font-weight: 900; font-family: monospace;
+          text-align: center; padding: 12px; width: 160px; letter-spacing: 8px;
+          outline: none;
+        }
+        .code-input::placeholder { color: rgba(255,255,255,0.2); letter-spacing: 4px; }
+        .join-form-btns { display: flex; gap: 10px; }
+        .btn-back { background: transparent; color: #aaa; border: 1px solid #555; border-radius: 8px; padding: 10px 16px; cursor: pointer; font-weight: bold; }
+        .btn-join { background: #00ff66; color: black; font-weight: bold; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; }
+        .btn-join:disabled { opacity: 0.4; }
         .btn-join:active { transform: scale(0.95); }
 
-        .btn-bots { background: #ffcc00; color: black; font-weight: bold; padding: 10px 20px; border: none; border-radius: 8px; margin-top: 20px; cursor: pointer; }
+        .btn-bots { background: #ffcc00; color: black; font-weight: bold; padding: 10px 20px; border: none; border-radius: 8px; margin-top: 15px; cursor: pointer; }
 
         .lobby-waiting { color: white; }
         .lobby-players { margin-top: 10px; font-weight: bold; color: #00ffcc; }
-        .table-id-tag { color: #ffcc00; font-size: 0.85rem; margin-bottom: 5px; opacity: 0.7; }
+
+        .room-code-display {
+          display: flex; flex-direction: column; align-items: center;
+          background: rgba(255,204,0,0.1); border: 2px dashed #ffcc00;
+          border-radius: 14px; padding: 15px; margin: 15px 0;
+        }
+        .room-code-label { color: #888; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; }
+        .room-code-big { font-size: 2.5rem; font-weight: 900; font-family: monospace; color: #ffcc00; letter-spacing: 10px; margin: 5px 0; }
+        .room-code-hint { color: #aaa; font-size: 0.75rem; }
 
         /* SPINNER (Twister) */
         .poker-spinner { text-align: center; color: white; position: relative; }

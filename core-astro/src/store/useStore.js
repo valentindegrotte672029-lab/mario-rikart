@@ -63,6 +63,8 @@ const useStore = create(
     // Poker State
     pokerState: null,
     setPokerState: (pokerState) => set({ pokerState }),
+    pokerRooms: [],
+    setPokerRooms: (pokerRooms) => set({ pokerRooms }),
 
     // Peach unlock state: 'none' | 'basic' | 'vip'
     peachUnlock: 'none',
