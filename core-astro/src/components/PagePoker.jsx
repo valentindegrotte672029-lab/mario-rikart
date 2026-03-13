@@ -216,6 +216,7 @@ export default function PagePoker() {
         <div className="poker-lobby">
            {!myPlayer ? (
              <>
+               <img src="/images/poker-saloon.jpg" alt="Poker" style={{width: '100%', maxWidth: 280, borderRadius: 14, marginBottom: 15, opacity: 0.9}} />
                <h1>♠️ SALOON EXPRESSO</h1>
                <p>Mise de départ : <b>100 🟡</b></p>
 
