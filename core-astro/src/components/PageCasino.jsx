@@ -216,7 +216,6 @@ export default function PageCasino() {
             display: flex;
             flex-direction: column;
             gap: 10px;
-            overflow: hidden;
         }
         .create-bet-form h3 { color: #00ffcc; margin-bottom: 5px; }
         .create-bet-form input {
