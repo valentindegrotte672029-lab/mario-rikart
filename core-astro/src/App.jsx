@@ -57,7 +57,10 @@ export default function App() {
 
   const onTouchStart = useCallback((e) => {
     const t = e.touches[0];
-    touchRef.current = { startX: t.clientX, startY: t.clientY, swiping: false };
+    const tag = e.target.tagName;
+    const type = e.target.type;
+    const isInteractive = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || type === 'range';
+    touchRef.current = { startX: t.clientX, startY: t.clientY, swiping: false, blocked: isInteractive };
   }, []);
 
   const onTouchMove = useCallback((e) => {
@@ -73,10 +76,7 @@ export default function App() {
   }, []);
 
   const onTouchEnd = useCallback((e) => {
-    if (!touchRef.current.horizontal) return;
-    // Don't swipe when an input/textarea is focused (e.g. creating a bet)
-    const active = document.activeElement;
-    if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.tagName === 'SELECT')) return;
+    if (!touchRef.current.horizontal || touchRef.current.blocked) return;
     const endX = e.changedTouches[0].clientX;
     const diff = endX - touchRef.current.startX;
     const THRESHOLD = 60;
