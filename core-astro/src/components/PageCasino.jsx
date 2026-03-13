@@ -177,9 +177,10 @@ export default function PageCasino() {
           display: flex;
           flex-direction: column;
           gap: 20px;
-          height: 100%;
+          max-height: calc(100vh - 120px);
           overflow-y: auto;
-          padding-bottom: 20px;
+          -webkit-overflow-scrolling: touch;
+          padding: 20px 15px 100px 15px;
         }
 
         .casino-header {

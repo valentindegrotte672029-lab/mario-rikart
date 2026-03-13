@@ -32,7 +32,18 @@ export default function ToadBankMobile() {
           </AnimatePresence>
 
           <div className="bank-info">
-            <span className="bank-title">TOAD BANK</span>
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={currentPage}
+                className="bank-title"
+                initial={{ opacity: 0, y: -6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 6 }}
+                transition={{ duration: 0.2 }}
+              >
+                {currentPage === 'HOME' ? 'TOAD BANK' : currentPage}
+              </motion.span>
+            </AnimatePresence>
             <span className="bank-balance">{balance.toLocaleString('fr-FR')} 🟡</span>
           </div>
         </div>

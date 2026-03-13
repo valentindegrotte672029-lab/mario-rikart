@@ -51,7 +51,7 @@ class ErrorBoundary extends Component {
 export default function App() {
   const { speedBoost, currentPage, setPage, resetSpeed, happening, triggerHappening, username, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, errorMsg, balance, socialStatus, setBets, setBalance, setPokerState } = useStore();
 
-  const SWIPE_PAGES = ['LUIGI', 'TOAD', 'PEACH', 'MARIO', 'WARIO'];
+  const SWIPE_PAGES = ['LUIGI', 'TOAD', 'PEACH', 'MARIO', 'WARIO', 'CHRONO', 'PSYCH', 'CASINO', 'POKER'];
   const swipeDir = useRef(1);
 
   const handleSwipe = (e, { offset }) => {
