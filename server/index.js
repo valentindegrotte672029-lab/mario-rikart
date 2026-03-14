@@ -408,10 +408,10 @@ io.on('connection', (socket) => {
     });
 
     // 5. Casino Poker (Texas Hold'em Twister)
-    socket.on('poker_create', (username) => {
-        const res = pokerManager.createRoom(socket.id, username);
+    socket.on('poker_create', ({ username, roomName }) => {
+        const res = pokerManager.createRoom(socket.id, username, roomName);
         if (res && res.error) socket.emit('poker_error', res.error);
-        else addNotification('POKER', `${username} a créé la salle ${res.roomCode}`, { roomCode: res.roomCode });
+        else addNotification('POKER', `${username} a créé la salle "${roomName || 'Sans nom'}"`, { roomCode: res.roomCode });
     });
 
     socket.on('poker_join', ({ username, roomCode }) => {

@@ -77,6 +77,7 @@ class PokerEngine {
             const playerState = {
                 ...this.state,
                 tableId: this.tableId,
+                roomName: this.roomName || null,
                 deck: [],
                 players: this.state.players.map(pl => ({
                     id: pl.id,
@@ -713,7 +714,7 @@ class PokerManager {
         return code;
     }
 
-    createRoom(socketId, username) {
+    createRoom(socketId, username, roomName) {
         if (this.socketToTable.has(socketId)) {
             return { error: 'Déjà assis à une table' };
         }
@@ -721,6 +722,7 @@ class PokerManager {
         const code = this._generateCode();
         const engine = new PokerEngine(this.io, this.usersDb, this.saveUsers, code, this);
         engine.creator = username;
+        engine.roomName = roomName || `Salle de ${username}`;
         this.tables.set(code, engine);
         this.joinRequests.set(code, []);
         console.log(`[POKER] Salle ${code} créée par ${username}`);
@@ -861,6 +863,10 @@ class PokerManager {
         engine.leaveTable(socketId);
         this.socketToTable.delete(socketId);
 
+        // Send null state to the leaving player so they return to lobby
+        const s = this.io.sockets.sockets.get(socketId);
+        if (s) s.emit('poker_state', null);
+
         // Clean up if no real players left in WAITING
         if (engine.state.status === 'WAITING') {
             const realPlayers = engine.state.players.filter(p => !p.isBot && p.id !== 'disconnected');
@@ -929,6 +935,7 @@ class PokerManager {
                 const pending = this.joinRequests.get(code) || [];
                 rooms.push({
                     code,
+                    name: engine.roomName || `Salle de ${engine.creator}`,
                     creator: engine.creator || engine.state.players[0]?.username || '?',
                     players: engine.state.players.map(p => p.username),
                     count: engine.state.players.length,

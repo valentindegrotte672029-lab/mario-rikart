@@ -112,7 +112,8 @@ export default function PagePoker() {
   const [raiseAmount, setRaiseAmount] = useState(0);
   const [inQueue, setInQueue] = useState(false);
   const [joinCode, setJoinCode] = useState('');
-  const [lobbyView, setLobbyView] = useState('menu'); // 'menu' | 'join' | 'queue'
+  const [roomName, setRoomName] = useState('');
+  const [lobbyView, setLobbyView] = useState('menu'); // 'menu' | 'join' | 'queue' | 'create'
   const [actionSent, setActionSent] = useState(false);
 
   // Reset queue state when entering a game
@@ -190,7 +191,9 @@ export default function PagePoker() {
 
   const handleCreate = () => {
     initAudio();
-    socket.emit('poker_create', username);
+    socket.emit('poker_create', { username, roomName: roomName.trim() || `Salle de ${username}` });
+    setRoomName('');
+    setLobbyView('menu');
   };
 
   const handleJoinRoom = () => {
@@ -234,6 +237,8 @@ export default function PagePoker() {
   const handleLeave = () => {
     if (window.confirm("Abandonner la partie ? Tu perdras définitivement ta mise initiale !")) {
       socket.emit('poker_leave');
+      // Reset local state immediately for responsiveness
+      useStore.getState().setPokerState(null);
     }
   };
 
@@ -282,10 +287,28 @@ export default function PagePoker() {
                      <button className="btn-join" onClick={handleJoinRoom} disabled={joinCode.length < 4}>Rejoindre</button>
                    </div>
                  </div>
+               ) : lobbyView === 'create' ? (
+                 <div className="join-form">
+                   <p style={{color:'white', marginBottom: 10}}>Nom de la partie :</p>
+                   <input
+                     className="code-input"
+                     type="text"
+                     maxLength={20}
+                     placeholder="Ma partie"
+                     value={roomName}
+                     onChange={e => setRoomName(e.target.value)}
+                     autoFocus
+                     style={{ fontSize: 16 }}
+                   />
+                   <div className="join-form-btns">
+                     <button className="btn-back" onClick={() => setLobbyView('menu')}>← Retour</button>
+                     <button className="btn-join" onClick={handleCreate} disabled={roomName.trim().length === 0}>Créer</button>
+                   </div>
+                 </div>
                ) : !inQueue ? (
                  <div className="lobby-menu">
                    <button className="btn-create" onClick={handleQuickMatch}>🃏 Jouer au Poker</button>
-                   <button className="btn-join-code" onClick={handleCreate}>🃏 Créer une partie</button>
+                   <button className="btn-join-code" onClick={() => setLobbyView('create')}>🃏 Créer une partie</button>
                    <button className="btn-join-code" onClick={() => setLobbyView('join')}>🔑 Rejoindre une partie</button>
 
                    {pendingJoinRequest && (
@@ -301,7 +324,7 @@ export default function PagePoker() {
                        <p className="open-rooms-title">Parties ouvertes</p>
                        {pokerRooms.map(room => (
                          <button key={room.code} className="room-card" onClick={() => handleQuickJoin(room.code)}>
-                           <span className="room-code">{room.code}</span>
+                           <span className="room-code">{room.name || 'Partie'}</span>
                            <span className="room-players">{room.players.join(', ')}</span>
                            <span className="room-count">{room.count}/3</span>
                          </button>
@@ -337,6 +360,9 @@ export default function PagePoker() {
            ) : (
              <div className="lobby-waiting">
                 <h1>♠️ SALOON EXPRESSO</h1>
+                {pokerState.roomName && (
+                  <p style={{color: '#ffcc00', fontSize: '1.2rem', fontWeight: 'bold', margin: '5px 0'}}>{pokerState.roomName}</p>
+                )}
                 <div className="room-code-display">
                   <span className="room-code-label">Code de la salle</span>
                   <span className="room-code-big">{pokerState.tableId}</span>
