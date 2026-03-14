@@ -3,15 +3,15 @@ import { motion } from 'framer-motion';
 import useStore from '../store/useStore';
 
 const PAGES = [
-    { id: 'LUIGI',  icon: '🎮', label: 'Arcade',  color: '#39ff14' },
+    { id: 'WARIO',  icon: '🍺', label: 'Bar',      color: '#ffcc00' },
     { id: 'TOAD',   icon: '🏦', label: 'Bank',     color: '#9933ff' },
     { id: 'PEACH',  icon: '🔥', label: 'Peach',    color: '#ff66b2' },
-    { id: 'WARIO',  icon: '🍺', label: 'Bar',      color: '#ffcc00' },
+    { id: 'LUIGI',  icon: '🎮', label: 'Arcade',  color: '#39ff14' },
     { id: 'MARIO',  icon: '📸', label: 'BeMario',  color: '#ff3333' },
     { id: 'CHRONO', icon: '⏱️', label: 'Poppy',    color: '#ff9900' },
-    { id: 'PSYCH',  icon: '🧠', label: 'Test',     color: '#00ffff' },
-    { id: 'CASINO', icon: '💎', label: 'Paris',    color: '#ff00ff' },
     { id: 'POKER',  icon: '♠️', label: 'Poker',    color: '#00ff66' },
+    { id: 'CASINO', icon: '💎', label: 'Paris',    color: '#ff00ff' },
+    { id: 'PSYCH',  icon: '🧠', label: 'Test',     color: '#00ffff' },
 ];
 
 export default function Navigation() {

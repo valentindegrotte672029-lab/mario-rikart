@@ -52,7 +52,7 @@ class ErrorBoundary extends Component {
 export default function App() {
   const { speedBoost, currentPage, setPage, resetSpeed, happening, triggerHappening, username, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, errorMsg, balance, socialStatus, setBets, setBalance, setPokerState, setPokerRooms } = useStore();
 
-  const SWIPE_PAGES = ['LUIGI', 'TOAD', 'PEACH', 'WARIO', 'MARIO', 'CHRONO', 'PSYCH', 'CASINO', 'POKER'];
+  const SWIPE_PAGES = ['WARIO', 'TOAD', 'PEACH', 'LUIGI', 'MARIO', 'CHRONO', 'POKER', 'CASINO', 'PSYCH'];
   const swipeDir = useRef(1);
   const touchRef = useRef({ startX: 0, startY: 0, swiping: false });
 
