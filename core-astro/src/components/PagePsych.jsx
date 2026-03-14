@@ -124,6 +124,24 @@ const QUESTIONS = [
     }
 ];
 
+const RESULTS = [
+    ['Transpalette', 'Palette'],
+    ['Rien', 'Tout'],
+    ['Sac de plâtre', 'Moule'],
+    ['Mimi Mathy', 'Michael Jordan'],
+    ['François Cluzet dans Intouchable', 'Freddi Highmore dans Good Doctor'],
+    ['Adaptateur USB-C', 'Câble HDMI'],
+    ['Miaous dans Pokémon', 'Boustiflor'],
+    ['Ecocup cassé', 'Mousse de Tuborg'],
+    ['La PC', 'Le discours RDA'],
+    ['Sully crk maria popa 67', 'Le Tage Mage'],
+    ['Pince à linge', 'Séchoir'],
+    ['Ongle incarcéré', 'Corne de pied'],
+    ['Un loup très méchant', 'Une brebis sans défense'],
+    ['Le prof de Python', 'Yakoubi'],
+    ['Un paillasson', 'Une chaussure sale'],
+];
+
 export default function PagePsych() {
     const [pageView, setPageView] = useState('test'); // 'test' | 'horoscope'
     const [expandedSign, setExpandedSign] = useState(null);
@@ -131,6 +149,7 @@ export default function PagePsych() {
     const [answers, setAnswers] = useState({});
     const [isFinished, setIsFinished] = useState(false);
     const [isCalculating, setIsCalculating] = useState(false);
+    const [result, setResult] = useState(null);
 
     const handleAnswer = (value) => {
         if (window.navigator?.vibrate) window.navigator.vibrate(20);
@@ -147,9 +166,11 @@ export default function PagePsych() {
         } else {
             setIsCalculating(true);
             setTimeout(() => {
+                const pair = RESULTS[Math.floor(Math.random() * RESULTS.length)];
+                setResult(pair[Math.floor(Math.random() * 2)]);
                 setIsCalculating(false);
                 setIsFinished(true);
-            }, 2000); // Faux chargement de 2 secondes
+            }, 2000);
         }
     };
 
@@ -158,6 +179,7 @@ export default function PagePsych() {
         setAnswers({});
         setIsFinished(false);
         setIsCalculating(false);
+        setResult(null);
     };
 
     const currentQ = QUESTIONS[currentQuestionIndex];
@@ -256,8 +278,9 @@ export default function PagePsych() {
                         animate={{ opacity: 1, y: 0 }}
                     >
                         <h2 style={{ color: '#00ffff', marginBottom: '15px' }}>TEST TERMINÉ !</h2>
-                        <p style={{ color: '#white', marginBottom: '20px' }}>
-                            Les résultats seront bientôt disponibles lors de la prochaine mise à jour de l'administration.
+                        <p style={{ color: '#888', fontSize: '0.85rem', marginBottom: '8px' }}>Tu es :</p>
+                        <p style={{ color: '#00ffff', fontSize: '1.6rem', fontWeight: '900', marginBottom: '20px', textShadow: '0 0 15px rgba(0,255,255,0.4)' }}>
+                            {result}
                         </p>
                         <button className="btn-secondary" onClick={restartTest}>
                             <RotateCcw size={20} style={{ marginRight: '10px' }} />
