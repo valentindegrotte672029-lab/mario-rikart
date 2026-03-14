@@ -108,17 +108,25 @@ const PokerCard = ({ card }) => {
 };
 
 export default function PagePoker() {
-  const { pokerState, pokerQueue, username, joinRequests, removeJoinRequest, setPokerQueue } = useStore();
+  const { pokerState, pokerQueue, pokerRooms, username, joinRequests, removeJoinRequest, setPokerQueue, setPendingJoinRequest, pendingJoinRequest } = useStore();
   const [raiseAmount, setRaiseAmount] = useState(0);
   const [inQueue, setInQueue] = useState(false);
+  const [joinCode, setJoinCode] = useState('');
+  const [lobbyView, setLobbyView] = useState('menu'); // 'menu' | 'join' | 'queue'
 
   // Reset queue state when entering a game
   useEffect(() => {
     if (pokerState && pokerState.status !== 'WAITING') {
       setInQueue(false);
+      setLobbyView('menu');
     }
     if (!pokerState) {
       setInQueue(false);
+      setLobbyView('menu');
+      socket.emit('poker_list_rooms');
+      setPendingJoinRequest(false);
+    }
+  }, [pokerState]);
     }
   }, [pokerState]);
 
@@ -166,17 +174,37 @@ export default function PagePoker() {
     initAudio();
     socket.emit('poker_quickmatch', username);
     setInQueue(true);
+    setLobbyView('queue');
   };
 
   const handleLeaveQueue = () => {
     socket.emit('poker_leave_queue');
     setInQueue(false);
     setPokerQueue(null);
+    setLobbyView('menu');
   };
 
   const handleQueueStartBots = () => {
     initAudio();
     socket.emit('poker_queue_start_bots');
+  };
+
+  const handleCreate = () => {
+    initAudio();
+    socket.emit('poker_create', username);
+  };
+
+  const handleJoinRoom = () => {
+    if (!joinCode.trim()) return;
+    initAudio();
+    socket.emit('poker_join', { username, roomCode: joinCode.trim() });
+    setJoinCode('');
+    setLobbyView('menu');
+  };
+
+  const handleQuickJoin = (code) => {
+    initAudio();
+    socket.emit('poker_request_join', { username, roomCode: code });
   };
 
   const handleApproveJoin = (req) => {
@@ -231,10 +259,50 @@ export default function PagePoker() {
                <h1>♠️ SALOON EXPRESSO</h1>
                <p>Mise de départ : <b>100 🟡</b></p>
 
-               {!inQueue ? (
+               {lobbyView === 'join' ? (
+                 <div className="join-form">
+                   <p style={{color:'white', marginBottom: 10}}>Entre le code de la salle :</p>
+                   <input
+                     className="code-input"
+                     type="text"
+                     maxLength={4}
+                     placeholder="ABCD"
+                     value={joinCode}
+                     onChange={e => setJoinCode(e.target.value.toUpperCase())}
+                     autoFocus
+                     style={{ fontSize: 16 }}
+                   />
+                   <div className="join-form-btns">
+                     <button className="btn-back" onClick={() => setLobbyView('menu')}>← Retour</button>
+                     <button className="btn-join" onClick={handleJoinRoom} disabled={joinCode.length < 4}>Rejoindre</button>
+                   </div>
+                 </div>
+               ) : !inQueue ? (
                  <div className="lobby-menu">
                    <button className="btn-create" onClick={handleQuickMatch}>🃏 Jouer au Poker</button>
-                   <p style={{color: '#888', fontSize: '0.75rem', marginTop: 5}}>3 joueurs = partie auto • sinon, joue avec l'IA</p>
+                   <button className="btn-join-code" onClick={handleCreate}>🃏 Créer une partie</button>
+                   <button className="btn-join-code" onClick={() => setLobbyView('join')}>🔑 Rejoindre une partie</button>
+
+                   {pendingJoinRequest && (
+                     <div className="pending-request">
+                       <div className="pending-spinner"></div>
+                       <p style={{color: '#ffcc00', fontWeight: 'bold', marginTop: 10}}>En attente d'approbation...</p>
+                       <button className="btn-back" onClick={() => setPendingJoinRequest(false)} style={{marginTop: 8}}>Annuler</button>
+                     </div>
+                   )}
+
+                   {pokerRooms && pokerRooms.length > 0 && (
+                     <div className="open-rooms">
+                       <p className="open-rooms-title">Parties ouvertes</p>
+                       {pokerRooms.map(room => (
+                         <button key={room.code} className="room-card" onClick={() => handleQuickJoin(room.code)}>
+                           <span className="room-code">{room.code}</span>
+                           <span className="room-players">{room.players.join(', ')}</span>
+                           <span className="room-count">{room.count}/3</span>
+                         </button>
+                       ))}
+                     </div>
+                   )}
                  </div>
                ) : (
                  <div className="queue-waiting">
