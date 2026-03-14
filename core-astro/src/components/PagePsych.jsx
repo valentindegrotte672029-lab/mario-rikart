@@ -142,41 +142,41 @@ const RESULTS = [
     ['Un paillasson', 'Une chaussure sale'],
 ];
 
-// --- MOTS FLECHES DATA ---
-// Compact grid: 12 cols × 7 rows
-// All cells are either: clue (definition+arrow), letter, or blocked (dark)
-const MF_WORDS = [
-    { word: 'RAVON', clue: 'Sport nocturne', dir: 'right', startR: 0, startC: 1, clueR: 0, clueC: 0 },
-    { word: 'SETE', clue: 'Ville du sud', dir: 'right', startR: 0, startC: 8, clueR: 0, clueC: 7 },
-    { word: 'POPPY', clue: 'Fleur anglaise', dir: 'right', startR: 1, startC: 1, clueR: 1, clueC: 0 },
-    { word: 'BO', clue: 'Quel style', dir: 'right', startR: 1, startC: 7, clueR: 1, clueC: 6 },
-    { word: 'PC', clue: 'Secours', dir: 'right', startR: 1, startC: 10, clueR: 1, clueC: 9 },
-    { word: 'KRONEMBOURG', clue: 'Bière', dir: 'right', startR: 2, startC: 1, clueR: 2, clueC: 0 },
-    { word: 'ECOCUP', clue: 'Gobelet soirée', dir: 'right', startR: 3, startC: 1, clueR: 3, clueC: 0 },
-    { word: 'NAVETTE', clue: 'Transport', dir: 'right', startR: 4, startC: 1, clueR: 4, clueC: 0 },
-    { word: 'RIVIERE', clue: "Cours d'eau", dir: 'right', startR: 5, startC: 1, clueR: 5, clueC: 0 },
-    { word: 'GOURDASSE', clue: 'Récipient XXL', dir: 'right', startR: 6, startC: 1, clueR: 6, clueC: 0 },
+// --- MOTS MELES DATA ---
+const WS_GRID = [
+    ['K','R','O','N','E','M','B','O','U','R','G','F'],
+    ['L','X','W','H','I','D','J','Q','Z','T','A','M'],
+    ['N','P','G','R','A','V','O','N','Y','B','K','R'],
+    ['A','U','W','F','L','P','C','X','H','D','Q','I'],
+    ['V','J','B','T','M','G','S','W','Z','F','X','V'],
+    ['E','H','D','E','C','O','C','U','P','Y','G','I'],
+    ['T','W','K','M','N','F','L','J','Q','A','X','E'],
+    ['T','S','Z','H','D','W','G','F','X','B','O','R'],
+    ['E','E','J','C','K','L','Q','A','M','R','W','E'],
+    ['X','T','U','P','O','P','P','Y','Z','V','H','D'],
+    ['G','E','B','N','W','F','K','L','Q','J','M','S'],
+    ['H','A','G','O','U','R','D','A','S','S','E','W'],
 ];
-const MF_COLS = 12;
-const MF_ROWS = 7;
-
-function buildMFGrid() {
-    const grid = Array.from({ length: MF_ROWS }, () =>
-        Array.from({ length: MF_COLS }, () => ({ type: 'blocked' }))
-    );
-    MF_WORDS.forEach(w => {
-        grid[w.clueR][w.clueC] = { type: 'clue', text: w.clue, dir: w.dir };
-        for (let i = 0; i < w.word.length; i++) {
-            const r = w.dir === 'down' ? w.startR + i : w.startR;
-            const c = w.dir === 'right' ? w.startC + i : w.startC;
-            if (!grid[r][c] || grid[r][c].type !== 'letter') {
-                grid[r][c] = { type: 'letter', letter: w.word[i] };
-            }
-        }
-    });
-    return grid;
-}
-const MF_GRID = buildMFGrid();
+const WS_ROWS = 12;
+const WS_COLS = 12;
+const WS_WORDS = [
+    { word: 'KRONEMBOURG', startR: 0, startC: 0, endR: 0, endC: 10 },
+    { word: 'GOURDASSE', startR: 11, startC: 2, endR: 11, endC: 10 },
+    { word: 'NAVETTE', startR: 2, startC: 0, endR: 8, endC: 0 },
+    { word: 'RIVIERE', startR: 2, startC: 11, endR: 8, endC: 11 },
+    { word: 'ECOCUP', startR: 5, startC: 3, endR: 5, endC: 8 },
+    { word: 'RAVON', startR: 2, startC: 3, endR: 2, endC: 7 },
+    { word: 'POPPY', startR: 9, startC: 3, endR: 9, endC: 7 },
+    { word: 'SETE', startR: 7, startC: 1, endR: 10, endC: 1 },
+    { word: 'PC', startR: 3, startC: 5, endR: 3, endC: 6 },
+    { word: 'BO', startR: 7, startC: 9, endR: 7, endC: 10 },
+];
+const WS_COLORS = [
+    'rgba(255,80,80,0.4)','rgba(80,255,80,0.4)','rgba(80,80,255,0.4)',
+    'rgba(255,255,80,0.4)','rgba(255,80,255,0.4)','rgba(80,255,255,0.4)',
+    'rgba(255,160,80,0.4)','rgba(160,80,255,0.4)','rgba(80,255,160,0.4)',
+    'rgba(255,180,180,0.4)',
+];
 
 export default function PagePsych() {
     const [pageView, setPageView] = useState('test'); // 'test' | 'horoscope' | 'crossword'
@@ -187,97 +187,46 @@ export default function PagePsych() {
     const [isCalculating, setIsCalculating] = useState(false);
     const [result, setResult] = useState(null);
 
-    // Mots fléchés state
-    const [mfInput, setMfInput] = useState(() =>
-        Array.from({ length: MF_ROWS }, () => Array.from({ length: MF_COLS }, () => ''))
-    );
-    const [mfSelected, setMfSelected] = useState(null);
-    const [mfDir, setMfDir] = useState('right');
-    const [mfChecked, setMfChecked] = useState(false);
-    const [mfSolved, setMfSolved] = useState(false);
+    // Mots mêlés state
+    const [wsStartCell, setWsStartCell] = useState(null);
+    const [wsFoundWords, setWsFoundWords] = useState(new Set());
 
-    const mfHighlightedCells = useMemo(() => {
-        if (!mfSelected) return new Set();
-        const { row, col } = mfSelected;
-        const cells = new Set();
-        const tryDir = (d) => {
-            for (const w of MF_WORDS) {
-                if (w.dir !== d) continue;
-                for (let i = 0; i < w.word.length; i++) {
-                    const wr = w.dir === 'down' ? w.startR + i : w.startR;
-                    const wc = w.dir === 'right' ? w.startC + i : w.startC;
-                    if (wr === row && wc === col) {
-                        for (let j = 0; j < w.word.length; j++) {
-                            const hr = w.dir === 'down' ? w.startR + j : w.startR;
-                            const hc = w.dir === 'right' ? w.startC + j : w.startC;
-                            cells.add(`${hr}-${hc}`);
-                        }
-                        return true;
-                    }
-                }
+    const wsFoundCellColors = useMemo(() => {
+        const map = {};
+        wsFoundWords.forEach(idx => {
+            const w = WS_WORDS[idx];
+            const color = WS_COLORS[idx % WS_COLORS.length];
+            const dr = Math.sign(w.endR - w.startR);
+            const dc = Math.sign(w.endC - w.startC);
+            let r = w.startR, c = w.startC;
+            for (let i = 0; i < w.word.length; i++) {
+                map[`${r}-${c}`] = color;
+                r += dr; c += dc;
             }
-            return false;
-        };
-        if (!tryDir(mfDir)) tryDir(mfDir === 'right' ? 'down' : 'right');
-        return cells;
-    }, [mfSelected, mfDir]);
+        });
+        return map;
+    }, [wsFoundWords]);
 
-    const handleMfCellClick = (row, col) => {
-        const cell = MF_GRID[row][col];
-        if (!cell || cell.type !== 'letter') return;
-        if (mfSelected && mfSelected.row === row && mfSelected.col === col) {
-            setMfDir(d => d === 'right' ? 'down' : 'right');
+    const handleWsCellTap = (r, c) => {
+        if (!wsStartCell) {
+            setWsStartCell({ r, c });
         } else {
-            setMfSelected({ row, col });
-        }
-        setMfChecked(false);
-    };
-
-    const handleMfLetter = (letter) => {
-        if (!mfSelected) return;
-        const { row, col } = mfSelected;
-        const newInput = mfInput.map(r => [...r]);
-        newInput[row][col] = letter;
-        setMfInput(newInput);
-        setMfChecked(false);
-        const nr = mfDir === 'down' ? row + 1 : row;
-        const nc = mfDir === 'right' ? col + 1 : col;
-        if (nr < MF_ROWS && nc < MF_COLS && MF_GRID[nr]?.[nc]?.type === 'letter') {
-            setMfSelected({ row: nr, col: nc });
-        }
-    };
-
-    const handleMfDelete = () => {
-        if (!mfSelected) return;
-        const { row, col } = mfSelected;
-        const newInput = mfInput.map(r => [...r]);
-        if (newInput[row][col]) {
-            newInput[row][col] = '';
-        } else {
-            const pr = mfDir === 'down' ? row - 1 : row;
-            const pc = mfDir === 'right' ? col - 1 : col;
-            if (pr >= 0 && pc >= 0 && MF_GRID[pr]?.[pc]?.type === 'letter') {
-                newInput[pr][pc] = '';
-                setMfSelected({ row: pr, col: pc });
+            const matched = WS_WORDS.findIndex((w, i) => {
+                if (wsFoundWords.has(i)) return false;
+                return (
+                    (w.startR === wsStartCell.r && w.startC === wsStartCell.c && w.endR === r && w.endC === c) ||
+                    (w.endR === wsStartCell.r && w.endC === wsStartCell.c && w.startR === r && w.startC === c)
+                );
+            });
+            if (matched !== -1) {
+                if (window.navigator?.vibrate) window.navigator.vibrate(30);
+                setWsFoundWords(prev => new Set([...prev, matched]));
             }
+            setWsStartCell(null);
         }
-        setMfInput(newInput);
-        setMfChecked(false);
     };
 
-    const handleMfCheck = () => {
-        setMfChecked(true);
-        let allCorrect = true;
-        for (let r = 0; r < MF_ROWS; r++) {
-            for (let c = 0; c < MF_COLS; c++) {
-                const cell = MF_GRID[r][c];
-                if (cell && cell.type === 'letter' && mfInput[r][c] !== cell.letter) {
-                    allCorrect = false;
-                }
-            }
-        }
-        setMfSolved(allCorrect);
-    };
+    const wsAllFound = wsFoundWords.size === WS_WORDS.length;
 
     const handleAnswer = (value) => {
         if (window.navigator?.vibrate) window.navigator.vibrate(20);
@@ -330,7 +279,7 @@ export default function PagePsych() {
                     <Star size={18} /> Horoscope
                 </button>
                 <button className={`psych-tab ${pageView === 'crossword' ? 'active' : ''}`} onClick={() => setPageView('crossword')}>
-                    💰 Mots Fléchés
+                    💰 Mots Mêlés
                 </button>
             </div>
 
@@ -387,11 +336,11 @@ export default function PagePsych() {
                 >
                     <div className="cw-scam-banner">
                         <p className="cw-scam-title">💰 GAGNEZ 10 000€ 💰</p>
-                        <p className="cw-scam-sub">Résolvez ces mots fléchés EPSCI et remportez le jackpot !</p>
+                        <p className="cw-scam-sub">Trouvez tous les mots cachés et remportez le jackpot !</p>
                         <p className="cw-scam-author">— Posté par Waluigi 😈</p>
                     </div>
 
-                    {mfSolved ? (
+                    {wsAllFound ? (
                         <motion.div className="cw-scam-result" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
                             <p style={{ fontSize: '3rem', marginBottom: 10 }}>😈</p>
                             <h2 style={{ color: '#ff4444', marginBottom: 10 }}>ARNAQUE !</h2>
@@ -403,52 +352,38 @@ export default function PagePsych() {
                         </motion.div>
                     ) : (
                         <>
-                            <div className="mf-grid" style={{ gridTemplateColumns: `repeat(${MF_COLS}, 1fr)` }}>
-                                {Array.from({ length: MF_ROWS }).map((_, r) =>
-                                    Array.from({ length: MF_COLS }).map((_, c) => {
-                                        const cell = MF_GRID[r][c];
-                                        if (cell.type === 'blocked') return <div key={`${r}-${c}`} className="mf-cell-blocked" />;
-                                        if (cell.type === 'clue') {
-                                            return (
-                                                <div key={`${r}-${c}`} className="mf-cell-clue">
-                                                    <span className="mf-clue-text">{cell.text}</span>
-                                                    <span className="mf-clue-arrow">→</span>
-                                                </div>
-                                            );
-                                        }
-                                        const isSelected = mfSelected && mfSelected.row === r && mfSelected.col === c;
-                                        const isHighlighted = mfHighlightedCells.has(`${r}-${c}`);
-                                        const isCorrect = mfChecked && mfInput[r][c] === cell.letter;
-                                        const isWrong = mfChecked && mfInput[r][c] && mfInput[r][c] !== cell.letter;
+                            <p style={{ color: '#888', fontSize: '0.8rem', textAlign: 'center', marginBottom: 8 }}>
+                                Tape la 1ère lettre puis la dernière du mot
+                            </p>
+                            <div className="ws-grid" style={{ gridTemplateColumns: `repeat(${WS_COLS}, 1fr)` }}>
+                                {WS_GRID.map((row, r) =>
+                                    row.map((letter, c) => {
+                                        const foundColor = wsFoundCellColors[`${r}-${c}`];
+                                        const isStart = wsStartCell && wsStartCell.r === r && wsStartCell.c === c;
                                         return (
                                             <div
                                                 key={`${r}-${c}`}
-                                                className={`cw-cell ${isSelected ? 'selected' : ''} ${isHighlighted ? 'highlighted' : ''} ${isCorrect ? 'correct' : ''} ${isWrong ? 'wrong' : ''}`}
-                                                onClick={() => handleMfCellClick(r, c)}
+                                                className={`ws-cell ${isStart ? 'ws-start' : ''}`}
+                                                style={foundColor ? { background: foundColor } : {}}
+                                                onClick={() => handleWsCellTap(r, c)}
                                             >
-                                                <span className="cw-cell-letter">{mfInput[r][c]}</span>
+                                                {letter}
                                             </div>
                                         );
                                     })
                                 )}
                             </div>
 
-                            <div className="cw-keyboard">
-                                {'AZERTYUIOP'.split('').map(l => (
-                                    <button key={l} className="cw-key" onClick={() => handleMfLetter(l)}>{l}</button>
+                            <div className="ws-word-list">
+                                {WS_WORDS.map((w, i) => (
+                                    <span
+                                        key={i}
+                                        className={`ws-word-tag ${wsFoundWords.has(i) ? 'found' : ''}`}
+                                    >
+                                        {w.word}
+                                    </span>
                                 ))}
-                                {'QSDFGHJKLM'.split('').map(l => (
-                                    <button key={l} className="cw-key" onClick={() => handleMfLetter(l)}>{l}</button>
-                                ))}
-                                <div className="cw-key-row-bottom">
-                                    {'WXCVBN'.split('').map(l => (
-                                        <button key={l} className="cw-key" onClick={() => handleMfLetter(l)}>{l}</button>
-                                    ))}
-                                    <button className="cw-key cw-key-del" onClick={handleMfDelete}>⌫</button>
-                                </div>
                             </div>
-
-                            <button className="cw-check-btn" onClick={handleMfCheck}>Vérifier</button>
                         </>
                     )}
                 </motion.div>
@@ -736,7 +671,7 @@ export default function PagePsych() {
                     overflow: hidden;
                 }
 
-                /* Mots Fléchés */
+                /* Mots Mêlés */
                 .cw-scam-banner {
                     text-align: center;
                     background: linear-gradient(135deg, rgba(255,68,0,0.15), rgba(255,204,0,0.15));
@@ -774,132 +709,64 @@ export default function PagePsych() {
                     border: 2px solid rgba(255,68,68,0.3);
                     border-radius: 20px;
                 }
-                .mf-grid {
+                .ws-grid {
                     display: grid;
                     gap: 2px;
                     margin: 0 auto 14px;
-                    max-width: 370px;
-                    background: #333;
-                    padding: 2px;
-                    border-radius: 6px;
-                }
-                .mf-cell-blocked {
-                    aspect-ratio: 1;
+                    max-width: 360px;
                     background: #1a1a2e;
-                    border-radius: 2px;
+                    padding: 3px;
+                    border-radius: 8px;
+                    border: 2px solid rgba(255,255,255,0.1);
                 }
-                .mf-cell-clue {
+                .ws-cell {
                     aspect-ratio: 1;
-                    background: #2a1a00;
-                    border: 1.5px solid rgba(255,140,0,0.4);
+                    background: rgba(255,255,255,0.08);
+                    border: 1px solid rgba(255,255,255,0.12);
                     border-radius: 3px;
                     display: flex;
-                    flex-direction: column;
                     align-items: center;
                     justify-content: center;
-                    padding: 1px;
-                    overflow: hidden;
-                }
-                .mf-clue-text {
-                    font-size: 5.5px;
-                    color: #ffcc00;
-                    text-align: center;
-                    line-height: 1.15;
-                    font-weight: 600;
-                    word-break: break-word;
-                }
-                .mf-clue-arrow {
-                    font-size: 8px;
-                    color: #ff8800;
+                    font-size: 13px;
                     font-weight: 900;
-                    margin-top: 1px;
-                }
-                .cw-cell {
-                    aspect-ratio: 1;
-                    background: rgba(255,255,255,0.12);
-                    border: 1.5px solid rgba(255,255,255,0.25);
-                    border-radius: 3px;
-                    position: relative;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
+                    color: white;
                     cursor: pointer;
                     transition: all 0.15s;
+                    user-select: none;
+                    -webkit-user-select: none;
                 }
-                .cw-cell.highlighted {
-                    background: rgba(0,255,255,0.08);
-                    border-color: rgba(0,255,255,0.3);
+                .ws-cell:active {
+                    transform: scale(0.9);
                 }
-                .cw-cell.selected {
-                    background: rgba(0,255,255,0.2);
+                .ws-cell.ws-start {
+                    background: rgba(0,255,255,0.25);
                     border-color: #00ffff;
-                    box-shadow: 0 0 8px rgba(0,255,255,0.4);
+                    box-shadow: 0 0 8px rgba(0,255,255,0.5);
                 }
-                .cw-cell.correct {
-                    background: rgba(0,255,100,0.15);
-                    border-color: rgba(0,255,100,0.5);
-                }
-                .cw-cell.wrong {
-                    background: rgba(255,68,68,0.2);
-                    border-color: rgba(255,68,68,0.5);
-                }
-                .cw-cell-letter {
-                    font-size: 14px;
-                    font-weight: 900;
-                    color: white;
-                }
-                .cw-keyboard {
+                .ws-word-list {
                     display: flex;
                     flex-wrap: wrap;
+                    gap: 8px;
                     justify-content: center;
-                    gap: 4px;
-                    margin-bottom: 12px;
-                    max-width: 340px;
-                    margin-left: auto;
-                    margin-right: auto;
+                    margin-top: 12px;
+                    padding-bottom: 20px;
                 }
-                .cw-key-row-bottom {
-                    display: flex;
-                    gap: 4px;
-                    justify-content: center;
-                    width: 100%;
-                }
-                .cw-key {
-                    width: 30px;
-                    height: 36px;
-                    border-radius: 6px;
-                    border: 1px solid rgba(255,255,255,0.15);
+                .ws-word-tag {
+                    padding: 6px 12px;
+                    border-radius: 10px;
                     background: rgba(255,255,255,0.08);
+                    border: 1px solid rgba(255,255,255,0.2);
                     color: white;
-                    font-size: 13px;
+                    font-size: 0.82rem;
                     font-weight: bold;
-                    cursor: pointer;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
+                    transition: all 0.3s;
                 }
-                .cw-key:active {
-                    background: rgba(0,255,255,0.2);
-                }
-                .cw-key-del {
-                    width: 48px;
-                    background: rgba(255,68,68,0.12);
-                    border-color: rgba(255,68,68,0.3);
-                }
-                .cw-check-btn {
-                    display: block;
-                    margin: 0 auto 16px;
-                    padding: 10px 30px;
-                    border-radius: 14px;
-                    border: 2px solid #00ffff;
-                    background: rgba(0,255,255,0.1);
-                    color: #00ffff;
-                    font-size: 1rem;
-                    font-weight: bold;
-                    cursor: pointer;
-                }
-                .cw-check-btn:active {
-                    background: rgba(0,255,255,0.25);
+                .ws-word-tag.found {
+                    text-decoration: line-through;
+                    opacity: 0.4;
+                    background: rgba(0,255,100,0.1);
+                    border-color: rgba(0,255,100,0.3);
+                    color: #88ff88;
                 }
             `}</style>
         </motion.div>
