@@ -143,36 +143,33 @@ const RESULTS = [
 ];
 
 // --- MOTS FLECHES DATA ---
-// Grid: 12 cols × 10 rows
-// Clue cells have { type:'clue', text, dir:'right'|'down' }
-// Letter cells have { type:'letter', letter }
-// Empty cells are null
+// Compact grid: 12 cols × 7 rows
+// All cells are either: clue (definition+arrow), letter, or blocked (dark)
 const MF_WORDS = [
-    { word: 'POPPY', clue: 'Fleur anglaise', dir: 'down', clueR: 0, clueC: 1, startR: 1, startC: 1 },
-    { word: 'SETE', clue: 'Ville du sud →', dir: 'right', clueR: 0, clueC: 2, startR: 0, startC: 3 },
-    { word: 'PC', clue: 'Secours →', dir: 'right', clueR: 0, clueC: 7, startR: 0, startC: 8 },
-    { word: 'RIVIERE', clue: "Cours d'eau ↓", dir: 'down', clueR: 0, clueC: 10, startR: 1, startC: 10 },
-    { word: 'RAVON', clue: 'Sport nocturne ↓', dir: 'down', clueR: 1, clueC: 4, startR: 2, startC: 4 },
-    { word: 'ECOCUP', clue: 'Gobelet éco ↓', dir: 'down', clueR: 1, clueC: 9, startR: 2, startC: 9 },
-    { word: 'BO', clue: 'Style ↓', dir: 'down', clueR: 5, clueC: 7, startR: 6, startC: 7 },
-    { word: 'KRONEMBOURG', clue: 'Bière →', dir: 'right', clueR: 6, clueC: 0, startR: 6, startC: 1 },
-    { word: 'NAVETTE', clue: 'Transport →', dir: 'right', clueR: 8, clueC: 0, startR: 8, startC: 1 },
-    { word: 'GOURDASSE', clue: 'Récipient →', dir: 'right', clueR: 9, clueC: 0, startR: 9, startC: 1 },
+    { word: 'RAVON', clue: 'Sport nocturne', dir: 'right', startR: 0, startC: 1, clueR: 0, clueC: 0 },
+    { word: 'SETE', clue: 'Ville du sud', dir: 'right', startR: 0, startC: 8, clueR: 0, clueC: 7 },
+    { word: 'POPPY', clue: 'Fleur anglaise', dir: 'right', startR: 1, startC: 1, clueR: 1, clueC: 0 },
+    { word: 'BO', clue: 'Quel style', dir: 'right', startR: 1, startC: 7, clueR: 1, clueC: 6 },
+    { word: 'PC', clue: 'Secours', dir: 'right', startR: 1, startC: 10, clueR: 1, clueC: 9 },
+    { word: 'KRONEMBOURG', clue: 'Bière', dir: 'right', startR: 2, startC: 1, clueR: 2, clueC: 0 },
+    { word: 'ECOCUP', clue: 'Gobelet soirée', dir: 'right', startR: 3, startC: 1, clueR: 3, clueC: 0 },
+    { word: 'NAVETTE', clue: 'Transport', dir: 'right', startR: 4, startC: 1, clueR: 4, clueC: 0 },
+    { word: 'RIVIERE', clue: "Cours d'eau", dir: 'right', startR: 5, startC: 1, clueR: 5, clueC: 0 },
+    { word: 'GOURDASSE', clue: 'Récipient XXL', dir: 'right', startR: 6, startC: 1, clueR: 6, clueC: 0 },
 ];
 const MF_COLS = 12;
-const MF_ROWS = 10;
+const MF_ROWS = 7;
 
 function buildMFGrid() {
-    // grid[row][col] = null | { type:'clue', text, dir } | { type:'letter', letter }
-    const grid = Array.from({ length: MF_ROWS }, () => Array.from({ length: MF_COLS }, () => null));
+    const grid = Array.from({ length: MF_ROWS }, () =>
+        Array.from({ length: MF_COLS }, () => ({ type: 'blocked' }))
+    );
     MF_WORDS.forEach(w => {
         grid[w.clueR][w.clueC] = { type: 'clue', text: w.clue, dir: w.dir };
         for (let i = 0; i < w.word.length; i++) {
             const r = w.dir === 'down' ? w.startR + i : w.startR;
             const c = w.dir === 'right' ? w.startC + i : w.startC;
-            if (grid[r][c] && grid[r][c].type === 'letter') {
-                // intersection - already placed, just verify
-            } else {
+            if (!grid[r][c] || grid[r][c].type !== 'letter') {
                 grid[r][c] = { type: 'letter', letter: w.word[i] };
             }
         }
@@ -410,13 +407,12 @@ export default function PagePsych() {
                                 {Array.from({ length: MF_ROWS }).map((_, r) =>
                                     Array.from({ length: MF_COLS }).map((_, c) => {
                                         const cell = MF_GRID[r][c];
-                                        if (!cell) return <div key={`${r}-${c}`} className="mf-cell-empty" />;
+                                        if (cell.type === 'blocked') return <div key={`${r}-${c}`} className="mf-cell-blocked" />;
                                         if (cell.type === 'clue') {
-                                            const arrow = cell.dir === 'right' ? '→' : '↓';
                                             return (
                                                 <div key={`${r}-${c}`} className="mf-cell-clue">
                                                     <span className="mf-clue-text">{cell.text}</span>
-                                                    <span className="mf-clue-arrow">{arrow}</span>
+                                                    <span className="mf-clue-arrow">→</span>
                                                 </div>
                                             );
                                         }
@@ -783,15 +779,19 @@ export default function PagePsych() {
                     gap: 2px;
                     margin: 0 auto 14px;
                     max-width: 370px;
+                    background: #333;
+                    padding: 2px;
+                    border-radius: 6px;
                 }
-                .mf-cell-empty {
+                .mf-cell-blocked {
                     aspect-ratio: 1;
-                    background: transparent;
+                    background: #1a1a2e;
+                    border-radius: 2px;
                 }
                 .mf-cell-clue {
                     aspect-ratio: 1;
-                    background: rgba(100, 50, 0, 0.5);
-                    border: 1.5px solid rgba(255,140,0,0.3);
+                    background: #2a1a00;
+                    border: 1.5px solid rgba(255,140,0,0.4);
                     border-radius: 3px;
                     display: flex;
                     flex-direction: column;
@@ -816,8 +816,8 @@ export default function PagePsych() {
                 }
                 .cw-cell {
                     aspect-ratio: 1;
-                    background: rgba(255,255,255,0.08);
-                    border: 1.5px solid rgba(255,255,255,0.15);
+                    background: rgba(255,255,255,0.12);
+                    border: 1.5px solid rgba(255,255,255,0.25);
                     border-radius: 3px;
                     position: relative;
                     display: flex;
