@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import { Lock, ShieldAlert, X, Crown, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -8,10 +8,8 @@ import { socket } from '../socket';
 // All 26 photos
 const ALL_PHOTOS = Array.from({ length: 26 }, (_, i) => `/images/peach/peach-${i + 1}.jpg`);
 
-function shuffleAndPick(arr, count) {
-  const shuffled = [...arr].sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, count);
-}
+// The 10 photos included in the basic pack (fixed set for everyone)
+const BASIC_PHOTOS = [1, 3, 5, 7, 9, 11, 14, 17, 20, 23].map(n => `/images/peach/peach-${n}.jpg`);
 
 export default function PagePeach() {
   const { spendCoins, peachUnlock, setPeachUnlock } = useStore();
@@ -19,10 +17,7 @@ export default function PagePeach() {
   const [bblClicks, setBblClicks] = useState(0);
   const [viewerIndex, setViewerIndex] = useState(null);
 
-  // Pick 10 random photos for basic unlock (stable per session)
-  const basicPhotos = useMemo(() => shuffleAndPick(ALL_PHOTOS, 10), []);
-
-  const visiblePhotos = peachUnlock === 'vip' ? ALL_PHOTOS : peachUnlock === 'basic' ? basicPhotos : [];
+  const visiblePhotos = peachUnlock === 'vip' ? ALL_PHOTOS : peachUnlock === 'basic' ? BASIC_PHOTOS : [];
 
   React.useEffect(() => {
     const timer = setTimeout(() => setBblAlert(true), 4000);
