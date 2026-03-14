@@ -65,6 +65,12 @@ const useStore = create(
     setPokerState: (pokerState) => set({ pokerState }),
     pokerRooms: [],
     setPokerRooms: (pokerRooms) => set({ pokerRooms }),
+    pendingJoinRequest: false,
+    setPendingJoinRequest: (v) => set({ pendingJoinRequest: v }),
+    joinRequests: [],
+    addJoinRequest: (req) => set(s => ({ joinRequests: [...s.joinRequests, req] })),
+    removeJoinRequest: (socketId) => set(s => ({ joinRequests: s.joinRequests.filter(r => r.socketId !== socketId) })),
+    clearJoinRequests: () => set({ joinRequests: [] }),
 
     // Peach unlock state: 'none' | 'basic' | 'vip'
     peachUnlock: 'none',

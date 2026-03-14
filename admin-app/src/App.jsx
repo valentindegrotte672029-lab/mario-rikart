@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
-import { Activity, ShieldAlert, Swords, Zap, XCircle, ShoppingBag, Users, Camera } from 'lucide-react';
+import { Activity, ShieldAlert, Swords, Zap, XCircle, ShoppingBag, Users, Camera, Bell, Trash2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Connexion au serveur Node (Environnement dynamique)
@@ -18,6 +18,9 @@ function App() {
   const [bets, setBets] = useState([]);
   const [pokerLive, setPokerLive] = useState(null);
   const [pokerHistory, setPokerHistory] = useState([]);
+  const [pokerTables, setPokerTables] = useState([]);
+  const [notifications, setNotifications] = useState([]);
+  const [showNotifPanel, setShowNotifPanel] = useState(false);
   const [activeHappening, setActiveHappening] = useState(null);
   const [activeTab, setActiveTab] = useState('WARIO'); // 'WARIO', 'BEREAL', 'ARCADE', 'USERS', 'BETS', 'POKER'
 
@@ -52,13 +55,21 @@ function App() {
 
     // Réception Liste Joueurs
     socket.on('users_data', (data) => setUsersData(data));
+    socket.on('user_updated', ({ username, balance, socialStatus, peachUnlock }) => {
+      setUsersData(prev => prev.map(u => u.username === username ? { ...u, balance, socialStatus, peachUnlock } : u));
+    });
 
     // Réception des Paris
     socket.on('sync_bets', (data) => setBets(data));
 
-    // Poker Live
+    // Poker
     socket.on('poker_state', (state) => setPokerLive(state));
     socket.on('poker_history', (history) => setPokerHistory(history));
+    socket.on('poker_admin_tables', (tables) => setPokerTables(tables));
+
+    // Notifications
+    socket.on('admin_notification', (notif) => setNotifications(prev => [notif, ...prev]));
+    socket.on('admin_notifications_history', (history) => setNotifications(history));
 
     return () => {
       socket.off('connect');
@@ -72,9 +83,13 @@ function App() {
       socket.off('bereal_deleted');
       socket.off('leaderboards_update');
       socket.off('users_data');
+      socket.off('user_updated');
       socket.off('sync_bets');
       socket.off('poker_state');
       socket.off('poker_history');
+      socket.off('poker_admin_tables');
+      socket.off('admin_notification');
+      socket.off('admin_notifications_history');
     };
   }, []);
 
@@ -96,8 +111,56 @@ function App() {
     setActiveHappening(null);
   };
 
+  const unreadCount = notifications.filter(n => !n.read).length;
+
   return (
     <div className="admin-layout">
+      {/* NOTIFICATION BELL (floating) */}
+      <div style={{ position: 'fixed', top: 15, right: 20, zIndex: 9999, display: 'flex', gap: '10px', alignItems: 'center' }}>
+        <div style={{ position: 'relative', cursor: 'pointer' }} onClick={() => setShowNotifPanel(!showNotifPanel)}>
+          <Bell size={28} color={unreadCount > 0 ? '#ffcc00' : '#888'} />
+          {unreadCount > 0 && (
+            <div style={{ position: 'absolute', top: -5, right: -5, background: '#ff3333', color: 'white', borderRadius: '50%', width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 900 }}>{unreadCount}</div>
+          )}
+        </div>
+      </div>
+
+      {/* NOTIFICATION PANEL */}
+      <AnimatePresence>
+        {showNotifPanel && (
+          <motion.div
+            initial={{ opacity: 0, x: 300 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 300 }}
+            style={{ position: 'fixed', top: 55, right: 15, width: 380, maxHeight: '70vh', background: '#1a1a1a', border: '1px solid #333', borderRadius: '15px', zIndex: 9998, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px', borderBottom: '1px solid #333' }}>
+              <h3 style={{ margin: 0, color: 'white' }}>🔔 Notifications</h3>
+              <button onClick={() => { socket.emit('clear_notifications'); setNotifications([]); }} style={{ background: '#333', color: '#888', border: 'none', padding: '5px 10px', borderRadius: '5px', cursor: 'pointer', fontSize: '0.8rem' }}>Tout effacer</button>
+            </div>
+            <div style={{ flex: 1, overflowY: 'auto', padding: '10px' }}>
+              {notifications.length === 0 ? (
+                <p style={{ color: '#888', textAlign: 'center', padding: '20px' }}>Aucune notification</p>
+              ) : (
+                notifications.map(n => (
+                  <div key={n.id} style={{ padding: '10px', background: n.read ? '#111' : '#1a2a1a', border: n.read ? '1px solid #222' : '1px solid #4ade80', borderRadius: '8px', marginBottom: '8px', cursor: 'pointer' }}
+                    onClick={() => {
+                      socket.emit('mark_notification_read', n.id);
+                      setNotifications(prev => prev.map(x => x.id === n.id ? { ...x, read: true } : x));
+                    }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
+                      <span style={{ color: n.type === 'PEACH' ? '#ff69b4' : n.type === 'POKER' ? '#4ade80' : '#ffcc00', fontWeight: 'bold', fontSize: '0.8rem' }}>{n.type}</span>
+                      <span style={{ color: '#888', fontSize: '0.7rem' }}>{new Date(n.timestamp).toLocaleTimeString()}</span>
+                    </div>
+                    <p style={{ color: 'white', margin: 0, fontSize: '0.9rem' }}>{n.message}</p>
+                  </div>
+                ))
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* SIDEBAR : CONTROLES ADMIN */}
       <div className="sidebar">
         <div className="panel">
@@ -188,10 +251,10 @@ function App() {
           </button>
 
           <button
-            onClick={() => { setActiveTab('POKER'); socket.emit('request_poker_stats'); }}
+            onClick={() => { setActiveTab('POKER'); socket.emit('request_poker_stats'); socket.emit('poker_admin_list'); }}
             style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '10px', fontWeight: 'bold', border: 'none', cursor: 'pointer', background: activeTab === 'POKER' ? '#4ade80' : '#222', color: activeTab === 'POKER' ? '#000' : '#aaa' }}
           >
-             🃁 POKER LIVE
+             🃁 POKER ({pokerTables.length})
           </button>
         </div>
 
@@ -367,6 +430,9 @@ function App() {
                       <th style={{ padding: '15px', borderBottom: '1px solid #333' }}>Alias</th>
                       <th style={{ padding: '15px', borderBottom: '1px solid #333' }}>Mot de Passe</th>
                       <th style={{ padding: '15px', borderBottom: '1px solid #333' }}>Inscription</th>
+                      <th style={{ padding: '15px', borderBottom: '1px solid #333', textAlign: 'center', color: '#ffcc00' }}>Solde</th>
+                      <th style={{ padding: '15px', borderBottom: '1px solid #333', textAlign: 'center', color: '#ff69b4' }}>Peach</th>
+                      <th style={{ padding: '15px', borderBottom: '1px solid #333', textAlign: 'center' }}>Statut Social</th>
                       <th style={{ padding: '15px', borderBottom: '1px solid #333', textAlign: 'center', color: '#aaffaa' }}>Roule-Ta-Fleur</th>
                       <th style={{ padding: '15px', borderBottom: '1px solid #333', textAlign: 'center', color: '#aaffaa' }}>Ninja</th>
                       <th style={{ padding: '15px', borderBottom: '1px solid #333', textAlign: 'center', color: '#aaffaa' }}>Doodle</th>
@@ -375,7 +441,7 @@ function App() {
                   <tbody>
                     {usersData.length === 0 ? (
                       <tr>
-                        <td colSpan="6" style={{ padding: '20px', textAlign: 'center', color: '#888' }}>Aucun compte trouvé</td>
+                        <td colSpan="9" style={{ padding: '20px', textAlign: 'center', color: '#888' }}>Aucun compte trouvé</td>
                       </tr>
                     ) : (
                       usersData.map((user, idx) => (
@@ -385,9 +451,12 @@ function App() {
                           <td style={{ padding: '15px', borderBottom: '1px solid #333', color: '#aaa', fontSize: '0.9rem' }}>
                             {user.createdAt ? new Date(user.createdAt).toLocaleString() : 'Inconnu'}
                           </td>
-                          <td style={{ padding: '15px', borderBottom: '1px solid #333', textAlign: 'center', fontWeight: 'bold', color: '#39ff14' }}>{user.scores.FLAPPYWEED}</td>
-                          <td style={{ padding: '15px', borderBottom: '1px solid #333', textAlign: 'center', fontWeight: 'bold', color: '#39ff14' }}>{user.scores.CHAMPININJA}</td>
-                          <td style={{ padding: '15px', borderBottom: '1px solid #333', textAlign: 'center', fontWeight: 'bold', color: '#39ff14' }}>{user.scores.DOODLEWEED}</td>
+                          <td style={{ padding: '15px', borderBottom: '1px solid #333', textAlign: 'center', fontWeight: 'bold', color: '#ffcc00' }}>{user.balance ?? '---'} 🟡</td>
+                          <td style={{ padding: '15px', borderBottom: '1px solid #333', textAlign: 'center', fontWeight: 'bold', color: user.peachUnlock === 'vip' ? '#ff69b4' : user.peachUnlock === 'basic' ? '#ffaa88' : '#888' }}>{user.peachUnlock || 'none'}</td>
+                          <td style={{ padding: '15px', borderBottom: '1px solid #333', textAlign: 'center', color: '#aaa' }}>{user.socialStatus || '---'}</td>
+                          <td style={{ padding: '15px', borderBottom: '1px solid #333', textAlign: 'center', fontWeight: 'bold', color: '#39ff14' }}>{user.scores?.FLAPPYWEED ?? 0}</td>
+                          <td style={{ padding: '15px', borderBottom: '1px solid #333', textAlign: 'center', fontWeight: 'bold', color: '#39ff14' }}>{user.scores?.CHAMPININJA ?? 0}</td>
+                          <td style={{ padding: '15px', borderBottom: '1px solid #333', textAlign: 'center', fontWeight: 'bold', color: '#39ff14' }}>{user.scores?.DOODLEWEED ?? 0}</td>
                         </tr>
                       ))
                     )}
@@ -521,77 +590,70 @@ function App() {
           {activeTab === 'POKER' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
-              {/* LIVE TABLE */}
+              {/* ALL TABLES MANAGEMENT */}
               <div style={{ padding: '20px', background: '#0a1f0a', borderRadius: '15px', border: '1px solid #4ade80' }}>
-                <h2 style={{ color: '#4ade80', margin: '0 0 15px 0' }}>🟢 Table en Direct</h2>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+                  <h2 style={{ color: '#4ade80', margin: 0 }}>🃏 Toutes les Tables ({pokerTables.length})</h2>
+                  <button onClick={() => socket.emit('poker_admin_list')} style={{ background: '#222', color: '#4ade80', border: '1px solid #4ade80', padding: '6px 12px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.8rem' }}>Rafraîchir</button>
+                </div>
 
-                {!pokerLive || pokerLive.status === 'WAITING' ? (
+                {pokerTables.length === 0 ? (
                   <div style={{ textAlign: 'center', padding: '40px', color: '#888' }}>
-                    <p style={{ fontSize: '1.2rem' }}>Aucune partie en cours</p>
-                    <p style={{ fontSize: '0.9rem' }}>En attente qu'un joueur s'assoie...</p>
+                    <p style={{ fontSize: '1.2rem' }}>Aucune table créée</p>
                   </div>
                 ) : (
-                  <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px', padding: '10px', background: '#111', borderRadius: '10px' }}>
-                      <span style={{ color: '#4ade80', fontWeight: 900 }}>Phase: {pokerLive.status}</span>
-                      <span style={{ color: '#ffcc00', fontWeight: 900 }}>POT: {pokerLive.pot} 🟡</span>
-                      <span style={{ color: '#aaa' }}>Gain: {pokerLive.prizePool} 🟡</span>
-                      <span style={{ color: '#888', fontSize: '0.8rem' }}>Main #{pokerLive.handsPlayed || 1}</span>
-                    </div>
-
-                    {/* Community Cards */}
-                    {pokerLive.communityCards && pokerLive.communityCards.length > 0 && (
-                      <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '15px' }}>
-                        {pokerLive.communityCards.map((c, i) => (
-                          <div key={i} style={{ background: 'white', color: ['h','d'].includes(c[1]) ? 'red' : 'black', padding: '8px 6px', borderRadius: '6px', fontWeight: 900, fontFamily: 'monospace', fontSize: '1rem', minWidth: '35px', textAlign: 'center', boxShadow: '0 2px 6px rgba(0,0,0,0.4)' }}>
-                            {c}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '15px' }}>
+                    {pokerTables.map(table => (
+                      <div key={table.roomCode} style={{ background: '#111', borderRadius: '12px', padding: '15px', border: table.status !== 'WAITING' ? '2px solid #4ade80' : '1px solid #333' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                          <div>
+                            <span style={{ color: '#ffcc00', fontWeight: 900, fontFamily: 'monospace', fontSize: '1.3rem', letterSpacing: '3px' }}>{table.roomCode}</span>
+                            <span style={{ color: '#888', marginLeft: '10px', fontSize: '0.8rem' }}>par {table.creator}</span>
                           </div>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Players */}
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '10px' }}>
-                      {pokerLive.players && pokerLive.players.map((p, i) => (
-                        <div key={i} style={{
-                          background: pokerLive.currentTurnIdx === i ? '#143314' : '#1a1a1a',
-                          border: pokerLive.currentTurnIdx === i ? '2px solid #4ade80' : '1px solid #333',
-                          borderRadius: '10px', padding: '12px',
-                          opacity: p.folded ? 0.4 : 1
-                        }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
-                            <span style={{ color: 'white', fontWeight: 'bold' }}>{p.username} {p.isBot ? '🤖' : '👤'}</span>
-                            <span style={{ color: '#ffcc00', fontWeight: 'bold' }}>{p.chips} 🟡</span>
+                          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                            <span style={{ background: table.status !== 'WAITING' ? '#4ade80' : '#888', color: '#000', padding: '3px 8px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 'bold' }}>
+                              {table.status === 'WAITING' ? 'EN ATTENTE' : 'EN JEU'}
+                            </span>
+                            <button
+                              onClick={() => { if(window.confirm(`Supprimer la table ${table.roomCode} ?`)) socket.emit('poker_admin_delete', table.roomCode); }}
+                              style={{ background: '#ff3333', color: 'white', border: 'none', padding: '5px 8px', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+                            >
+                              <Trash2 size={14} />
+                            </button>
                           </div>
-                          <div style={{ display: 'flex', gap: '5px' }}>
-                            {p.cards && p.cards.map((c, ci) => (
-                              <span key={ci} style={{
-                                background: c === 'hidden' ? '#cc0000' : 'white',
-                                color: c !== 'hidden' && ['h','d'].includes(c[1]) ? 'red' : 'black',
-                                padding: '3px 5px', borderRadius: '3px', fontFamily: 'monospace', fontWeight: 900, fontSize: '0.8rem'
-                              }}>
-                                {c === 'hidden' ? '?' : c}
-                              </span>
+                        </div>
+
+                        {/* Players list */}
+                        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '8px' }}>
+                          {table.players.map((p, i) => (
+                            <div key={i} style={{ background: '#222', padding: '6px 10px', borderRadius: '8px', fontSize: '0.85rem', border: p.folded ? '1px solid #ff6b6b' : '1px solid #333', opacity: p.folded ? 0.5 : 1 }}>
+                              <span style={{ color: 'white', fontWeight: 'bold' }}>{p.username}</span>
+                              {p.isBot && ' 🤖'}
+                              <span style={{ color: '#ffcc00', marginLeft: '6px' }}>{p.chips}🟡</span>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Game info */}
+                        {table.status !== 'WAITING' && (
+                          <div style={{ display: 'flex', gap: '15px', color: '#aaa', fontSize: '0.8rem' }}>
+                            <span>POT: <b style={{ color: '#ffcc00' }}>{table.pot}🟡</b></span>
+                            <span>Gain: <b style={{ color: '#4ade80' }}>{table.prizePool}🟡</b></span>
+                            <span>Main #{table.handsPlayed || 1}</span>
+                          </div>
+                        )}
+
+                        {/* Pending join requests */}
+                        {table.pendingRequests && table.pendingRequests.length > 0 && (
+                          <div style={{ marginTop: '8px', padding: '8px', background: '#2a1a00', borderRadius: '8px', border: '1px solid #ffcc00' }}>
+                            <span style={{ color: '#ffcc00', fontSize: '0.8rem', fontWeight: 'bold' }}>⏳ Demandes en attente:</span>
+                            {table.pendingRequests.map((r, i) => (
+                              <span key={i} style={{ color: 'white', marginLeft: '8px', fontSize: '0.85rem' }}>{r.username}</span>
                             ))}
                           </div>
-                          {p.currentBet > 0 && <div style={{ color: '#4ade80', fontSize: '0.8rem', marginTop: '5px' }}>Mise: {p.currentBet}</div>}
-                          {p.folded && <div style={{ color: '#ff6b6b', fontSize: '0.8rem', marginTop: '3px' }}>COUCHÉ</div>}
-                          {p.allIn && <div style={{ color: '#ffcc00', fontSize: '0.8rem', marginTop: '3px', fontWeight: 900 }}>ALL-IN!</div>}
-                        </div>
-                      ))}
-                    </div>
-
-                    {pokerLive.lastAction && (
-                      <div style={{ marginTop: '15px', textAlign: 'center', color: '#aaa', fontStyle: 'italic', background: '#111', padding: '8px', borderRadius: '8px' }}>
-                        {pokerLive.lastAction}
+                        )}
                       </div>
-                    )}
-
-                    {pokerLive.winners && pokerLive.winners.length > 0 && (
-                      <div style={{ marginTop: '15px', textAlign: 'center', color: '#ffcc00', fontWeight: 900, fontSize: '1.2rem', background: 'rgba(255,204,0,0.1)', padding: '15px', borderRadius: '10px', border: '1px solid #ffcc00' }}>
-                        🏆 Gagnant(s): {pokerLive.winners.join(', ')}
-                      </div>
-                    )}
+                    ))}
                   </div>
                 )}
               </div>

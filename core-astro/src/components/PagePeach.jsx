@@ -3,6 +3,7 @@ import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Lock, ShieldAlert, X, Crown, ChevronLeft, ChevronRight } from 'lucide-react';
 import useStore from '../store/useStore';
+import { socket } from '../socket';
 
 // All 26 photos
 const ALL_PHOTOS = Array.from({ length: 26 }, (_, i) => `/images/peach/peach-${i + 1}.jpg`);
@@ -41,12 +42,18 @@ export default function PagePeach() {
   const handleUnlockBasic = () => {
     if (peachUnlock !== 'none') return;
     const success = spendCoins(500, 'LEAK PRIVÉ PEACH');
-    if (success) setPeachUnlock('basic');
+    if (success) {
+      setPeachUnlock('basic');
+      socket.emit('peach_purchase', { username: useStore.getState().username, level: 'basic' });
+    }
   };
 
   const handleUnlockVip = () => {
     const success = spendCoins(2000, 'LEAK VIP PEACH');
-    if (success) setPeachUnlock('vip');
+    if (success) {
+      setPeachUnlock('vip');
+      socket.emit('peach_purchase', { username: useStore.getState().username, level: 'vip' });
+    }
   };
 
   const openViewer = (idx) => setViewerIndex(idx);

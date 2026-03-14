@@ -105,7 +105,8 @@ export default function App() {
          socket.emit('sync_user_data', { 
              username: state.username, 
              balance: state.balance, 
-             socialStatus: state.socialStatus 
+             socialStatus: state.socialStatus,
+             peachUnlock: state.peachUnlock
          });
       };
       socket.on('connect', onConnect);
@@ -126,6 +127,16 @@ export default function App() {
       socket.on('poker_state', (state) => setPokerState(state));
       socket.on('poker_error', (err) => alert("Poker: " + err));
       socket.on('poker_rooms', (rooms) => setPokerRooms(rooms));
+      socket.on('poker_join_request', (data) => {
+        useStore.getState().addJoinRequest(data);
+      });
+      socket.on('poker_request_sent', () => {
+        useStore.getState().setPendingJoinRequest(true);
+      });
+      socket.on('poker_join_denied', () => {
+        useStore.getState().setPendingJoinRequest(false);
+        alert('Ta demande a été refusée.');
+      });
 
       return () => {
         socket.off('connect', onConnect);
@@ -140,17 +151,21 @@ export default function App() {
         socket.off('poker_state');
         socket.off('poker_error');
         socket.off('poker_rooms');
+        socket.off('poker_join_request');
+        socket.off('poker_request_sent');
+        socket.off('poker_join_denied');
         socket.disconnect();
       };
     }
   }, [username, triggerHappening, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, setBets, setBalance, setPokerState, setPokerRooms]);
 
-  // Synchronisation continue des pièces et du rang vers le serveur
+  // Synchronisation continue des pièces, rang et peachUnlock vers le serveur
+  const peachUnlock = useStore(s => s.peachUnlock);
   useEffect(() => {
     if (username && socket.connected) {
-      socket.emit('sync_user_data', { username, balance, socialStatus });
+      socket.emit('sync_user_data', { username, balance, socialStatus, peachUnlock });
     }
-  }, [balance, socialStatus, username]);
+  }, [balance, socialStatus, peachUnlock, username]);
 
   // Couleurs dynamiques selon la page pour l'ambiance globale
   const getThemeColor = (page) => {

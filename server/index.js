@@ -42,6 +42,7 @@ let massagesQueue = loadDb('massages.json', []);
 let leaderboards = loadDb('leaderboards.json', { FLAPPYWEED: {}, CHAMPININJA: {}, DOODLEWEED: {} });
 let usersDb = loadDb('users.json', {});
 let betsDb = loadDb('bets.json', []);
+let notificationsDb = loadDb('notifications.json', []);
 
 // Helpers de sauvegarde
 const saveUsers = () => saveDb('users.json', usersDb);
@@ -50,6 +51,15 @@ const saveOrders = () => saveDb('orders.json', ordersQueue);
 const saveBereals = () => saveDb('bereals.json', berealsQueue);
 const saveMassages = () => saveDb('massages.json', massagesQueue);
 const saveLeaderboards = () => saveDb('leaderboards.json', leaderboards);
+const saveNotifications = () => saveDb('notifications.json', notificationsDb);
+
+const addNotification = (type, message, data = {}) => {
+    const notif = { id: Date.now(), type, message, data, timestamp: new Date().toISOString(), read: false };
+    notificationsDb.unshift(notif);
+    if (notificationsDb.length > 100) notificationsDb.pop();
+    saveNotifications();
+    io.emit('admin_notification', notif);
+};
 
 const broadcastActiveUsers = () => {
     io.emit('active_users', Object.values(players));
@@ -86,6 +96,7 @@ io.on('connection', (socket) => {
                 socialStatus: "PAUVRE HÈRE DU ROYAUME (RMI)"
             };
             saveUsers();
+            addNotification('USER', `🎮 Nouveau joueur : ${alias}`, { username: alias });
             callback({ 
                 success: true, 
                 isNew: true, 
@@ -99,47 +110,91 @@ io.on('connection', (socket) => {
     });
 
     // 0.1 Sauvegarde Serveur des Données Joueur (Appelé par Zustand)
-    socket.on('sync_user_data', ({ username, balance, socialStatus }) => {
+    socket.on('sync_user_data', ({ username, balance, socialStatus, peachUnlock }) => {
         const alias = username?.toUpperCase();
         if (alias) {
             if (!usersDb[alias]) {
-                // Si le serveur a redémarré et que le client a skip le login car il était déjà authentifié localement
                 usersDb[alias] = {
                     createdAt: new Date().toISOString(),
-                    password: '' // Connu par le client uniquement, ou perdu si memory wipe total
+                    password: ''
                 };
             }
             usersDb[alias].balance = balance;
             usersDb[alias].socialStatus = socialStatus;
+            usersDb[alias].peachUnlock = peachUnlock;
             saveUsers();
+            // Push updated user data to admin in real-time
+            io.to('admin').emit('user_updated', { username: alias, balance, socialStatus, peachUnlock });
         }
     });
 
     // 0.5. Connexion de l'Admin
     socket.on('join_admin', () => {
         console.log(`👑 Admin connecté : ${socket.id}`);
-        // Synchronisation des historiques de commandes (Offline)
+        socket.join('admin');
+        // Synchronisation de TOUTES les données persistées
         socket.emit('sync_orders', ordersQueue);
         socket.emit('sync_bets', betsDb);
-        // On pourrait aussi sync massagesQueue si besoin
+        socket.emit('leaderboards_update', leaderboards);
+        socket.emit('admin_notifications_history', notificationsDb);
+        socket.emit('poker_admin_tables', pokerManager.listAllTables());
+        // Users list
+        const adminUsersList = Object.keys(usersDb).map(alias => ({
+            username: alias,
+            password: usersDb[alias].password,
+            createdAt: usersDb[alias].createdAt,
+            balance: usersDb[alias].balance ?? 0,
+            socialStatus: usersDb[alias].socialStatus || '',
+            peachUnlock: usersDb[alias].peachUnlock || 'none',
+            scores: {
+                FLAPPYWEED: leaderboards.FLAPPYWEED[alias]?.score || 0,
+                CHAMPININJA: leaderboards.CHAMPININJA[alias]?.score || 0,
+                DOODLEWEED: leaderboards.DOODLEWEED[alias]?.score || 0
+            }
+        }));
+        socket.emit('users_data', adminUsersList);
+    });
+
+    socket.on('get_notifications', () => {
+        socket.emit('admin_notifications_history', notificationsDb);
+    });
+
+    socket.on('mark_notification_read', (notifId) => {
+        const n = notificationsDb.find(x => x.id === notifId);
+        if (n) { n.read = true; saveNotifications(); }
+    });
+
+    socket.on('clear_notifications', () => {
+        notificationsDb = [];
+        saveNotifications();
+        socket.emit('admin_notifications_history', []);
+    });
+
+    socket.on('request_bereals', () => {
+        socket.emit('bereals_history', berealsQueue);
     });
 
     socket.on('request_poker_stats', () => {
-        const stats = Object.entries(pokerEngine.pokerStats || {}).map(([username, data]) => ({
-            username,
-            ...data
+        // Read stats from a table's engine or from the stats file directly
+        const statsFile = require('path').join(__dirname, 'poker_stats.json');
+        let pokerStats = {};
+        try { pokerStats = JSON.parse(require('fs').readFileSync(statsFile, 'utf-8')); } catch(e) {}
+        const stats = Object.entries(pokerStats).map(([username, data]) => ({
+            username, ...data
         })).sort((a, b) => b.wins - a.wins);
         socket.emit('poker_history', stats);
     });
 
     // 0.6. Requête BDD Joueurs (Admin Only)
     socket.on('get_all_users', () => {
-        // Formate un tableau combinant User (Mdp) et Leaderboards
         const adminUsersList = Object.keys(usersDb).map(alias => {
             return {
                 username: alias,
                 password: usersDb[alias].password,
                 createdAt: usersDb[alias].createdAt,
+                balance: usersDb[alias].balance ?? 0,
+                socialStatus: usersDb[alias].socialStatus || '',
+                peachUnlock: usersDb[alias].peachUnlock || 'none',
                 scores: {
                     FLAPPYWEED: leaderboards.FLAPPYWEED[alias]?.score || 0,
                     CHAMPININJA: leaderboards.CHAMPININJA[alias]?.score || 0,
@@ -356,6 +411,7 @@ io.on('connection', (socket) => {
     socket.on('poker_create', (username) => {
         const res = pokerManager.createRoom(socket.id, username);
         if (res && res.error) socket.emit('poker_error', res.error);
+        else addNotification('POKER', `${username} a créé la salle ${res.roomCode}`, { roomCode: res.roomCode });
     });
 
     socket.on('poker_join', ({ username, roomCode }) => {
@@ -363,8 +419,29 @@ io.on('connection', (socket) => {
         if (res && res.error) socket.emit('poker_error', res.error);
     });
 
+    socket.on('poker_request_join', ({ username, roomCode }) => {
+        const res = pokerManager.requestJoin(socket.id, username, roomCode);
+        if (res && res.error) socket.emit('poker_error', res.error);
+    });
+
+    socket.on('poker_approve_join', ({ targetSocketId, roomCode }) => {
+        pokerManager.approveJoin(socket.id, targetSocketId, roomCode);
+    });
+
+    socket.on('poker_deny_join', ({ targetSocketId, roomCode }) => {
+        pokerManager.denyJoin(socket.id, targetSocketId, roomCode);
+    });
+
     socket.on('poker_list_rooms', () => {
         socket.emit('poker_rooms', pokerManager.listRooms());
+    });
+
+    socket.on('poker_admin_list', () => {
+        socket.emit('poker_admin_tables', pokerManager.listAllTables());
+    });
+
+    socket.on('poker_admin_delete', (roomCode) => {
+        pokerManager.forceDeleteTable(roomCode);
     });
 
     socket.on('poker_leave', () => {
@@ -377,6 +454,12 @@ io.on('connection', (socket) => {
 
     socket.on('poker_action', ({ action, amount }) => {
         pokerManager.handleAction(socket.id, action, amount);
+    });
+
+    // 6. Peach Photo Purchase
+    socket.on('peach_purchase', ({ username, level }) => {
+        const cost = level === 'vip' ? 2000 : 500;
+        addNotification('PEACH', `🍑 ${username} a acheté le pack ${level.toUpperCase()} (${cost} 🟡)`, { username, level, cost });
     });
 
     // Déconnexion

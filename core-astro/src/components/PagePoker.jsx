@@ -108,7 +108,7 @@ const PokerCard = ({ card }) => {
 };
 
 export default function PagePoker() {
-  const { pokerState, pokerRooms, username } = useStore();
+  const { pokerState, pokerRooms, username, pendingJoinRequest, joinRequests, removeJoinRequest, setPendingJoinRequest, clearJoinRequests } = useStore();
   const [raiseAmount, setRaiseAmount] = useState(0);
   const [joinCode, setJoinCode] = useState('');
   const [lobbyView, setLobbyView] = useState('menu'); // 'menu' | 'join'
@@ -117,6 +117,7 @@ export default function PagePoker() {
   useEffect(() => {
     if (!pokerState || pokerState.status === 'WAITING') {
       socket.emit('poker_list_rooms');
+      setPendingJoinRequest(false);
     }
   }, [pokerState]);
 
@@ -175,7 +176,17 @@ export default function PagePoker() {
 
   const handleQuickJoin = (code) => {
     initAudio();
-    socket.emit('poker_join', { username, roomCode: code });
+    socket.emit('poker_request_join', { username, roomCode: code });
+  };
+
+  const handleApproveJoin = (req) => {
+    socket.emit('poker_approve_join', { targetSocketId: req.socketId, roomCode: pokerState?.tableId });
+    removeJoinRequest(req.socketId);
+  };
+
+  const handleDenyJoin = (req) => {
+    socket.emit('poker_deny_join', { targetSocketId: req.socketId, roomCode: pokerState?.tableId });
+    removeJoinRequest(req.socketId);
   };
 
   const handleStartBots = () => {
@@ -220,7 +231,14 @@ export default function PagePoker() {
                <h1>♠️ SALOON EXPRESSO</h1>
                <p>Mise de départ : <b>100 🟡</b></p>
 
-               {lobbyView === 'menu' ? (
+               {pendingJoinRequest ? (
+                 <div className="pending-request">
+                   <div className="pending-spinner"></div>
+                   <p style={{color: '#ffcc00', fontWeight: 'bold', marginTop: 10}}>En attente d'approbation...</p>
+                   <p style={{color: '#888', fontSize: '0.8rem'}}>Le créateur doit accepter ta demande</p>
+                   <button className="btn-back" onClick={() => setPendingJoinRequest(false)} style={{marginTop: 10}}>Annuler</button>
+                 </div>
+               ) : lobbyView === 'menu' ? (
                  <div className="lobby-menu">
                    <button className="btn-create" onClick={handleCreate}>🃏 Créer une partie</button>
                    <button className="btn-join-code" onClick={() => setLobbyView('join')}>🔑 Rejoindre avec un code</button>
@@ -232,7 +250,7 @@ export default function PagePoker() {
                          <button key={room.code} className="room-card" onClick={() => handleQuickJoin(room.code)}>
                            <span className="room-code">{room.code}</span>
                            <span className="room-players">{room.players.join(', ')}</span>
-                           <span className="room-count">{room.count}/3</span>
+                           <span className="room-count">{room.count}/3 🔒</span>
                          </button>
                        ))}
                      </div>
@@ -270,6 +288,26 @@ export default function PagePoker() {
                 <div className="lobby-players">
                    {pokerState.players.map(p => <span key={p.id}>{p.username} </span>)}
                 </div>
+
+                {/* Join Requests */}
+                <AnimatePresence>
+                  {joinRequests.map(req => (
+                    <motion.div
+                      key={req.socketId}
+                      className="join-request-card"
+                      initial={{ opacity: 0, y: -20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                    >
+                      <span className="join-req-name">🖐️ <b>{req.username}</b> veut rejoindre</span>
+                      <div className="join-req-btns">
+                        <button className="btn-approve" onClick={() => handleApproveJoin(req)}>✓</button>
+                        <button className="btn-deny" onClick={() => handleDenyJoin(req)}>✕</button>
+                      </div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+
                 <button className="btn-bots" onClick={handleStartBots}>Lancer avec des IA</button>
              </div>
            )}

@@ -699,6 +699,7 @@ class PokerManager {
         this.saveUsers = saveUsers;
         this.tables = new Map();       // roomCode -> PokerEngine
         this.socketToTable = new Map(); // socketId -> roomCode
+        this.joinRequests = new Map(); // roomCode -> [{ socketId, username }]
     }
 
     _generateCode() {
@@ -718,15 +719,112 @@ class PokerManager {
 
         const code = this._generateCode();
         const engine = new PokerEngine(this.io, this.usersDb, this.saveUsers, code, this);
+        engine.creator = username;
         this.tables.set(code, engine);
+        this.joinRequests.set(code, []);
         console.log(`[POKER] Salle ${code} créée par ${username}`);
 
         const res = engine.joinTable(socketId, username);
         if (res && res.success) {
             this.socketToTable.set(socketId, code);
             this.broadcastRooms();
+            this.broadcastAdminRooms();
         }
         return { ...res, roomCode: code };
+    }
+
+    requestJoin(socketId, username, roomCode) {
+        if (this.socketToTable.has(socketId)) {
+            return { error: 'Déjà assis à une table' };
+        }
+
+        const code = (roomCode || '').toUpperCase().trim();
+        const engine = this.tables.get(code);
+        if (!engine) return { error: 'Salle introuvable' };
+        if (engine.state.status !== 'WAITING') return { error: 'Partie déjà en cours' };
+        if (engine.state.players.length >= 3) return { error: 'Table pleine' };
+
+        // Check balance before requesting
+        const alias = username.toUpperCase();
+        const playerBal = this.usersDb[alias] ? (this.usersDb[alias].balance || 0) : 0;
+        if (!this.usersDb[alias] || playerBal < 100) {
+            return { error: `Fonds insuffisants (${playerBal} 🟡 / 100)` };
+        }
+
+        // Check if already requested
+        const pending = this.joinRequests.get(code) || [];
+        if (pending.find(r => r.socketId === socketId)) {
+            return { error: 'Demande déjà envoyée' };
+        }
+
+        pending.push({ socketId, username });
+        this.joinRequests.set(code, pending);
+
+        // Notify the creator
+        const creatorPlayer = engine.state.players[0]; // First player = creator
+        if (creatorPlayer && !creatorPlayer.isBot) {
+            const s = this.io.sockets.sockets.get(creatorPlayer.id);
+            if (s) {
+                s.emit('poker_join_request', { roomCode: code, username, socketId });
+            }
+        }
+
+        // Notify the requester
+        const requester = this.io.sockets.sockets.get(socketId);
+        if (requester) requester.emit('poker_request_sent', { roomCode: code });
+
+        this.broadcastRooms();
+        return { success: true, pending: true };
+    }
+
+    approveJoin(creatorSocketId, targetSocketId, roomCode) {
+        const code = (roomCode || '').toUpperCase().trim();
+        const engine = this.tables.get(code);
+        if (!engine) return;
+
+        // Verify creator
+        const creatorCode = this.socketToTable.get(creatorSocketId);
+        if (creatorCode !== code) return;
+
+        const pending = this.joinRequests.get(code) || [];
+        const request = pending.find(r => r.socketId === targetSocketId);
+        if (!request) return;
+
+        // Remove from pending
+        this.joinRequests.set(code, pending.filter(r => r.socketId !== targetSocketId));
+
+        // Actually join
+        if (engine.state.players.length >= 3 || engine.state.status !== 'WAITING') {
+            const s = this.io.sockets.sockets.get(targetSocketId);
+            if (s) s.emit('poker_error', 'Table pleine ou partie déjà lancée');
+            return;
+        }
+
+        const res = engine.joinTable(targetSocketId, request.username);
+        if (res && res.success) {
+            this.socketToTable.set(targetSocketId, code);
+        } else {
+            const s = this.io.sockets.sockets.get(targetSocketId);
+            if (s) s.emit('poker_error', res?.error || 'Erreur');
+        }
+        this.broadcastRooms();
+        this.broadcastAdminRooms();
+    }
+
+    denyJoin(creatorSocketId, targetSocketId, roomCode) {
+        const code = (roomCode || '').toUpperCase().trim();
+
+        // Verify creator
+        const creatorCode = this.socketToTable.get(creatorSocketId);
+        if (creatorCode !== code) return;
+
+        const pending = this.joinRequests.get(code) || [];
+        this.joinRequests.set(code, pending.filter(r => r.socketId !== targetSocketId));
+
+        const s = this.io.sockets.sockets.get(targetSocketId);
+        if (s) s.emit('poker_join_denied', { roomCode: code });
+
+        this.broadcastRooms();
     }
 
     joinRoom(socketId, username, roomCode) {
@@ -744,6 +842,7 @@ class PokerManager {
         if (res && res.success) {
             this.socketToTable.set(socketId, code);
             this.broadcastRooms();
+            this.broadcastAdminRooms();
         }
         return res;
     }
@@ -766,10 +865,12 @@ class PokerManager {
             const realPlayers = engine.state.players.filter(p => !p.isBot && p.id !== 'disconnected');
             if (realPlayers.length === 0) {
                 this.tables.delete(code);
+                this.joinRequests.delete(code);
                 console.log(`[POKER] Salle ${code} supprimée (vide)`);
             }
         }
         this.broadcastRooms();
+        this.broadcastAdminRooms();
     }
 
     startWithBots(socketId) {
@@ -779,6 +880,7 @@ class PokerManager {
         if (engine) {
             engine.startWithBots();
             this.broadcastRooms();
+            this.broadcastAdminRooms();
         }
     }
 
@@ -805,27 +907,93 @@ class PokerManager {
             }
         }
 
+        // Also notify any pending requesters
+        const pending = this.joinRequests.get(tableId) || [];
+        pending.forEach(r => {
+            const s = this.io.sockets.sockets.get(r.socketId);
+            if (s) s.emit('poker_join_denied', { roomCode: tableId });
+        });
+
         this.tables.delete(tableId);
+        this.joinRequests.delete(tableId);
         console.log(`[POKER] Salle ${tableId} terminée et supprimée`);
         this.broadcastRooms();
+        this.broadcastAdminRooms();
     }
 
     listRooms() {
         const rooms = [];
         for (const [code, engine] of this.tables) {
             if (engine.state.status === 'WAITING') {
+                const pending = this.joinRequests.get(code) || [];
                 rooms.push({
                     code,
+                    creator: engine.creator || engine.state.players[0]?.username || '?',
                     players: engine.state.players.map(p => p.username),
-                    count: engine.state.players.length
+                    count: engine.state.players.length,
+                    pendingRequests: pending.length
                 });
             }
         }
         return rooms;
     }
 
+    listAllTables() {
+        const tables = [];
+        for (const [code, engine] of this.tables) {
+            const pending = this.joinRequests.get(code) || [];
+            tables.push({
+                code,
+                creator: engine.creator || engine.state.players[0]?.username || '?',
+                status: engine.state.status,
+                players: engine.state.players.map(p => ({
+                    username: p.username,
+                    isBot: p.isBot,
+                    chips: p.chips,
+                    folded: p.folded
+                })),
+                count: engine.state.players.length,
+                pot: engine.state.pot,
+                prizePool: engine.state.prizePool,
+                handsPlayed: engine.state.handsPlayed || 0,
+                pendingRequests: pending.map(r => r.username)
+            });
+        }
+        return tables;
+    }
+
+    forceDeleteTable(roomCode) {
+        const code = (roomCode || '').toUpperCase().trim();
+        const engine = this.tables.get(code);
+        if (!engine) return;
+        if (engine.timeoutId) clearTimeout(engine.timeoutId);
+
+        for (const [socketId, tId] of this.socketToTable) {
+            if (tId === code) {
+                this.socketToTable.delete(socketId);
+                const s = this.io.sockets.sockets.get(socketId);
+                if (s) s.emit('poker_state', null);
+            }
+        }
+        const pending = this.joinRequests.get(code) || [];
+        pending.forEach(r => {
+            const s = this.io.sockets.sockets.get(r.socketId);
+            if (s) s.emit('poker_join_denied', { roomCode: code });
+        });
+
+        this.tables.delete(code);
+        this.joinRequests.delete(code);
+        console.log(`[POKER] Admin a supprimé la salle ${code}`);
+        this.broadcastRooms();
+        this.broadcastAdminRooms();
+    }
+
     broadcastRooms() {
         this.io.emit('poker_rooms', this.listRooms());
+    }
+
+    broadcastAdminRooms() {
+        this.io.emit('poker_admin_tables', this.listAllTables());
     }
 }
 
