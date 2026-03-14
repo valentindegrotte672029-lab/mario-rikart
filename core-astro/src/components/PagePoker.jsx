@@ -127,8 +127,6 @@ export default function PagePoker() {
       setPendingJoinRequest(false);
     }
   }, [pokerState]);
-    }
-  }, [pokerState]);
 
   // Sync state actions
   useEffect(() => {
