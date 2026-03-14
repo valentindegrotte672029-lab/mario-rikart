@@ -470,12 +470,11 @@ export default function PagePoker() {
 
       <style>{`
         .page-poker {
-          height: 100%;
           display: flex;
           flex-direction: column;
           align-items: center;
-          justify-content: center;
-          overflow: hidden;
+          gap: 20px;
+          padding: 0 0 40px 0;
         }
 
         /* LOBBY */
