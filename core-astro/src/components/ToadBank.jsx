@@ -17,19 +17,7 @@ export default function ToadBankMobile() {
       <div className="glass-panel header-container">
 
         <div className="left-group">
-          <AnimatePresence>
-            {currentPage !== 'HOME' && (
-              <motion.button
-                className="header-home-btn"
-                initial={{ scale: 0, opacity: 0, width: 0, marginRight: 0 }}
-                animate={{ scale: 1, opacity: 1, width: '35px', marginRight: 10 }}
-                exit={{ scale: 0, opacity: 0, width: 0, marginRight: 0 }}
-                onClick={() => setPage('HOME')}
-              >
-                🏠
-              </motion.button>
-            )}
-          </AnimatePresence>
+
 
           <div className="bank-info">
             <AnimatePresence mode="wait">
@@ -41,7 +29,7 @@ export default function ToadBankMobile() {
                 exit={{ opacity: 0, y: 6 }}
                 transition={{ duration: 0.2 }}
               >
-                {currentPage === 'HOME' ? 'TOAD BANK' : currentPage}
+                {currentPage}
               </motion.span>
             </AnimatePresence>
             <span className="bank-balance">{balance.toLocaleString('fr-FR')} 🟡</span>
