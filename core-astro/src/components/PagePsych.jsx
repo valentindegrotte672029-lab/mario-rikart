@@ -23,7 +23,7 @@ const HOROSCOPE_SIGNS = [
     },
     {
         id: 'PRK',
-        emoji: '�',
+        emoji: '🐵',
         name: 'PRK',
         text: `Il est possible que vous soyez dans une situation délicate sur le plan légal / piscine / administratif / palmier ou que vous imaginez que votre situation va évoluer de manière à ce que le monkey bde (bi di i) reprenne du service. Mais vous êtes de ceux à qui on ne la fait pas, vous êtes méfiants de nature et vous savez très bien que les promesses n'engagent que ceux qui y croient. La nouvelle pyramide lunaire du 27, avant le second tour des élections municipales annonce cependant un renouveau dans vos vies, plein de découvertes et de nouvelles aventures.`
     },
@@ -35,7 +35,7 @@ const HOROSCOPE_SIGNS = [
     },
     {
         id: 'DKR',
-        emoji: '�‍�🔥',
+        emoji: '🔥',
         name: 'DKR',
         text: `Ce mois-ci, le 27, une éclipse a lieu, c'est le phoenix et l'epsci qui se rencontrent. Pour la première fois? Certainement pas. En cette période l'epsci revit, après tout, c'est pas au vieux singe qu'on apprend à faire la grimace. Votre ambition et votre envie de réussir ne connaissent plus de limite, vous êtes inarrêtables. Cependant vous avez tendance à vous disperser, (2e et 3e décan), tout doucement le matin, inarrêtables le soir... En effet quand le soleil se couche, votre plein potentiel est de sortie (rien à voir avec le ftor). Mais attention, n'oubliez jamais que le sheitan se cache dans les détails et qu'ils se vengeront si vous les négligez. Ne chassez pas vos vieux démons, ce sont des vieux goat mais n'oubliez pas d'accueillir le monde qui s'ouvre à vous à bras ouverts.`
     }
@@ -187,7 +187,7 @@ export default function PagePsych() {
     const [isCalculating, setIsCalculating] = useState(false);
     const [result, setResult] = useState(null);
 
-    // Mots mêlés state
+    // Mot Karté state
     const [wsStartCell, setWsStartCell] = useState(null);
     const [wsFoundWords, setWsFoundWords] = useState(new Set());
 
@@ -279,7 +279,7 @@ export default function PagePsych() {
                     <Star size={18} /> Horoscope
                 </button>
                 <button className={`psych-tab ${pageView === 'crossword' ? 'active' : ''}`} onClick={() => setPageView('crossword')}>
-                    💰 Mots Mêlés
+                    💰 Mot Karté
                 </button>
             </div>
 
@@ -671,7 +671,7 @@ export default function PagePsych() {
                     overflow: hidden;
                 }
 
-                /* Mots Mêlés */
+                /* Mot Karté */
                 .cw-scam-banner {
                     text-align: center;
                     background: linear-gradient(135deg, rgba(255,68,0,0.15), rgba(255,204,0,0.15));
