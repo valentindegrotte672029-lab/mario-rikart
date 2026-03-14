@@ -245,7 +245,7 @@ export default function App() {
       </main>
 
       {/* 4. Navigation Bottom Tab Bar (Snapchat-style) */}
-      {username && currentPage !== 'HOME' && <Navigation />}
+      {username && <Navigation />}
 
       {/* 5. Alertes Happenings & Erreurs (Economie) */}
       <AnimatePresence>
