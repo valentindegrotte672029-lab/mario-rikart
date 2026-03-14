@@ -142,53 +142,44 @@ const RESULTS = [
     ['Un paillasson', 'Une chaussure sale'],
 ];
 
-// --- CROSSWORD DATA ---
-const CROSSWORD_WORDS = [
-    { word: 'KRONEMBOURG', clue: 'Bière légendaire du patio', x: 0, y: 4, dir: 'across' },
-    { word: 'PC', clue: 'Planète maîtresse de secours', x: 2, y: 3, dir: 'across' },
-    { word: 'SETE', clue: 'Ville du sud, zone de destruction', x: 1, y: 9, dir: 'across' },
-    { word: 'ECOCUP', clue: 'Gobelet éco-responsable des soirées', x: 8, y: 0, dir: 'down' },
-    { word: 'POPPY', clue: 'Fleur anglaise des champs', x: 2, y: 3, dir: 'down' },
-    { word: 'RAVON', clue: 'Sport nocturne de certains', x: 1, y: 4, dir: 'down' },
-    { word: 'NAVETTE', clue: 'Transport stellaire ou scolaire', x: 3, y: 4, dir: 'down' },
-    { word: 'BO', clue: 'Deux lettres, mais quel style', x: 6, y: 4, dir: 'down' },
-    { word: 'RIVIERE', clue: "Cours d'eau qui serpente", x: 9, y: 4, dir: 'down' },
-    { word: 'GOURDASSE', clue: 'Récipient XXL bien rempli', x: 10, y: 4, dir: 'down' },
+// --- MOTS FLECHES DATA ---
+// Grid: 12 cols × 10 rows
+// Clue cells have { type:'clue', text, dir:'right'|'down' }
+// Letter cells have { type:'letter', letter }
+// Empty cells are null
+const MF_WORDS = [
+    { word: 'POPPY', clue: 'Fleur anglaise', dir: 'down', clueR: 0, clueC: 1, startR: 1, startC: 1 },
+    { word: 'SETE', clue: 'Ville du sud →', dir: 'right', clueR: 0, clueC: 2, startR: 0, startC: 3 },
+    { word: 'PC', clue: 'Secours →', dir: 'right', clueR: 0, clueC: 7, startR: 0, startC: 8 },
+    { word: 'RIVIERE', clue: "Cours d'eau ↓", dir: 'down', clueR: 0, clueC: 10, startR: 1, startC: 10 },
+    { word: 'RAVON', clue: 'Sport nocturne ↓', dir: 'down', clueR: 1, clueC: 4, startR: 2, startC: 4 },
+    { word: 'ECOCUP', clue: 'Gobelet éco ↓', dir: 'down', clueR: 1, clueC: 9, startR: 2, startC: 9 },
+    { word: 'BO', clue: 'Style ↓', dir: 'down', clueR: 5, clueC: 7, startR: 6, startC: 7 },
+    { word: 'KRONEMBOURG', clue: 'Bière →', dir: 'right', clueR: 6, clueC: 0, startR: 6, startC: 1 },
+    { word: 'NAVETTE', clue: 'Transport →', dir: 'right', clueR: 8, clueC: 0, startR: 8, startC: 1 },
+    { word: 'GOURDASSE', clue: 'Récipient →', dir: 'right', clueR: 9, clueC: 0, startR: 9, startC: 1 },
 ];
-const CW_COLS = 11;
-const CW_ROWS = 13;
+const MF_COLS = 12;
+const MF_ROWS = 10;
 
-function buildCrosswordGrid() {
-    const grid = Array.from({ length: CW_ROWS }, () =>
-        Array.from({ length: CW_COLS }, () => ({ active: false, letter: '' }))
-    );
-    CROSSWORD_WORDS.forEach(w => {
+function buildMFGrid() {
+    // grid[row][col] = null | { type:'clue', text, dir } | { type:'letter', letter }
+    const grid = Array.from({ length: MF_ROWS }, () => Array.from({ length: MF_COLS }, () => null));
+    MF_WORDS.forEach(w => {
+        grid[w.clueR][w.clueC] = { type: 'clue', text: w.clue, dir: w.dir };
         for (let i = 0; i < w.word.length; i++) {
-            const col = w.dir === 'across' ? w.x + i : w.x;
-            const row = w.dir === 'down' ? w.y + i : w.y;
-            grid[row][col].active = true;
-            grid[row][col].letter = w.word[i];
+            const r = w.dir === 'down' ? w.startR + i : w.startR;
+            const c = w.dir === 'right' ? w.startC + i : w.startC;
+            if (grid[r][c] && grid[r][c].type === 'letter') {
+                // intersection - already placed, just verify
+            } else {
+                grid[r][c] = { type: 'letter', letter: w.word[i] };
+            }
         }
     });
-    const startMap = {};
-    CROSSWORD_WORDS.forEach(w => {
-        const key = `${w.y}-${w.x}`;
-        if (!startMap[key]) startMap[key] = { row: w.y, col: w.x };
-    });
-    const starts = Object.values(startMap).sort((a, b) => a.row - b.row || a.col - b.col);
-    const numbers = {};
-    starts.forEach((s, i) => { numbers[`${s.row}-${s.col}`] = i + 1; });
-    return { grid, numbers };
+    return grid;
 }
-const { grid: SOLUTION_GRID, numbers: CELL_NUMBERS } = buildCrosswordGrid();
-
-// Build clue lists
-const ACROSS_CLUES = CROSSWORD_WORDS.filter(w => w.dir === 'across').map(w => ({
-    num: CELL_NUMBERS[`${w.y}-${w.x}`], clue: w.clue
-})).sort((a, b) => a.num - b.num);
-const DOWN_CLUES = CROSSWORD_WORDS.filter(w => w.dir === 'down').map(w => ({
-    num: CELL_NUMBERS[`${w.y}-${w.x}`], clue: w.clue
-})).sort((a, b) => a.num - b.num);
+const MF_GRID = buildMFGrid();
 
 export default function PagePsych() {
     const [pageView, setPageView] = useState('test'); // 'test' | 'horoscope' | 'crossword'
@@ -199,29 +190,29 @@ export default function PagePsych() {
     const [isCalculating, setIsCalculating] = useState(false);
     const [result, setResult] = useState(null);
 
-    // Crossword state
-    const [cwInput, setCwInput] = useState(() =>
-        Array.from({ length: CW_ROWS }, () => Array.from({ length: CW_COLS }, () => ''))
+    // Mots fléchés state
+    const [mfInput, setMfInput] = useState(() =>
+        Array.from({ length: MF_ROWS }, () => Array.from({ length: MF_COLS }, () => ''))
     );
-    const [cwSelected, setCwSelected] = useState(null);
-    const [cwDir, setCwDir] = useState('across');
-    const [cwChecked, setCwChecked] = useState(false);
-    const [cwSolved, setCwSolved] = useState(false);
+    const [mfSelected, setMfSelected] = useState(null);
+    const [mfDir, setMfDir] = useState('right');
+    const [mfChecked, setMfChecked] = useState(false);
+    const [mfSolved, setMfSolved] = useState(false);
 
-    const highlightedCells = useMemo(() => {
-        if (!cwSelected) return new Set();
-        const { row, col } = cwSelected;
+    const mfHighlightedCells = useMemo(() => {
+        if (!mfSelected) return new Set();
+        const { row, col } = mfSelected;
         const cells = new Set();
         const tryDir = (d) => {
-            for (const w of CROSSWORD_WORDS) {
+            for (const w of MF_WORDS) {
                 if (w.dir !== d) continue;
                 for (let i = 0; i < w.word.length; i++) {
-                    const wc = w.dir === 'across' ? w.x + i : w.x;
-                    const wr = w.dir === 'down' ? w.y + i : w.y;
+                    const wr = w.dir === 'down' ? w.startR + i : w.startR;
+                    const wc = w.dir === 'right' ? w.startC + i : w.startC;
                     if (wr === row && wc === col) {
                         for (let j = 0; j < w.word.length; j++) {
-                            const hc = w.dir === 'across' ? w.x + j : w.x;
-                            const hr = w.dir === 'down' ? w.y + j : w.y;
+                            const hr = w.dir === 'down' ? w.startR + j : w.startR;
+                            const hc = w.dir === 'right' ? w.startC + j : w.startC;
                             cells.add(`${hr}-${hc}`);
                         }
                         return true;
@@ -230,63 +221,65 @@ export default function PagePsych() {
             }
             return false;
         };
-        if (!tryDir(cwDir)) tryDir(cwDir === 'across' ? 'down' : 'across');
+        if (!tryDir(mfDir)) tryDir(mfDir === 'right' ? 'down' : 'right');
         return cells;
-    }, [cwSelected, cwDir]);
+    }, [mfSelected, mfDir]);
 
-    const handleCwCellClick = (row, col) => {
-        if (!SOLUTION_GRID[row][col].active) return;
-        if (cwSelected && cwSelected.row === row && cwSelected.col === col) {
-            setCwDir(d => d === 'across' ? 'down' : 'across');
+    const handleMfCellClick = (row, col) => {
+        const cell = MF_GRID[row][col];
+        if (!cell || cell.type !== 'letter') return;
+        if (mfSelected && mfSelected.row === row && mfSelected.col === col) {
+            setMfDir(d => d === 'right' ? 'down' : 'right');
         } else {
-            setCwSelected({ row, col });
+            setMfSelected({ row, col });
         }
-        setCwChecked(false);
+        setMfChecked(false);
     };
 
-    const handleCwLetter = (letter) => {
-        if (!cwSelected) return;
-        const { row, col } = cwSelected;
-        const newInput = cwInput.map(r => [...r]);
+    const handleMfLetter = (letter) => {
+        if (!mfSelected) return;
+        const { row, col } = mfSelected;
+        const newInput = mfInput.map(r => [...r]);
         newInput[row][col] = letter;
-        setCwInput(newInput);
-        setCwChecked(false);
-        const nr = cwDir === 'down' ? row + 1 : row;
-        const nc = cwDir === 'across' ? col + 1 : col;
-        if (nr < CW_ROWS && nc < CW_COLS && SOLUTION_GRID[nr][nc].active) {
-            setCwSelected({ row: nr, col: nc });
+        setMfInput(newInput);
+        setMfChecked(false);
+        const nr = mfDir === 'down' ? row + 1 : row;
+        const nc = mfDir === 'right' ? col + 1 : col;
+        if (nr < MF_ROWS && nc < MF_COLS && MF_GRID[nr]?.[nc]?.type === 'letter') {
+            setMfSelected({ row: nr, col: nc });
         }
     };
 
-    const handleCwDelete = () => {
-        if (!cwSelected) return;
-        const { row, col } = cwSelected;
-        const newInput = cwInput.map(r => [...r]);
+    const handleMfDelete = () => {
+        if (!mfSelected) return;
+        const { row, col } = mfSelected;
+        const newInput = mfInput.map(r => [...r]);
         if (newInput[row][col]) {
             newInput[row][col] = '';
         } else {
-            const pr = cwDir === 'down' ? row - 1 : row;
-            const pc = cwDir === 'across' ? col - 1 : col;
-            if (pr >= 0 && pc >= 0 && SOLUTION_GRID[pr]?.[pc]?.active) {
+            const pr = mfDir === 'down' ? row - 1 : row;
+            const pc = mfDir === 'right' ? col - 1 : col;
+            if (pr >= 0 && pc >= 0 && MF_GRID[pr]?.[pc]?.type === 'letter') {
                 newInput[pr][pc] = '';
-                setCwSelected({ row: pr, col: pc });
+                setMfSelected({ row: pr, col: pc });
             }
         }
-        setCwInput(newInput);
-        setCwChecked(false);
+        setMfInput(newInput);
+        setMfChecked(false);
     };
 
-    const handleCwCheck = () => {
-        setCwChecked(true);
+    const handleMfCheck = () => {
+        setMfChecked(true);
         let allCorrect = true;
-        for (let r = 0; r < CW_ROWS; r++) {
-            for (let c = 0; c < CW_COLS; c++) {
-                if (SOLUTION_GRID[r][c].active && cwInput[r][c] !== SOLUTION_GRID[r][c].letter) {
+        for (let r = 0; r < MF_ROWS; r++) {
+            for (let c = 0; c < MF_COLS; c++) {
+                const cell = MF_GRID[r][c];
+                if (cell && cell.type === 'letter' && mfInput[r][c] !== cell.letter) {
                     allCorrect = false;
                 }
             }
         }
-        setCwSolved(allCorrect);
+        setMfSolved(allCorrect);
     };
 
     const handleAnswer = (value) => {
@@ -340,7 +333,7 @@ export default function PagePsych() {
                     <Star size={18} /> Horoscope
                 </button>
                 <button className={`psych-tab ${pageView === 'crossword' ? 'active' : ''}`} onClick={() => setPageView('crossword')}>
-                    💰 Mots Croisés
+                    💰 Mots Fléchés
                 </button>
             </div>
 
@@ -397,11 +390,11 @@ export default function PagePsych() {
                 >
                     <div className="cw-scam-banner">
                         <p className="cw-scam-title">💰 GAGNEZ 10 000€ 💰</p>
-                        <p className="cw-scam-sub">Résolvez ce mot croisé EPSCI et remportez le jackpot !</p>
+                        <p className="cw-scam-sub">Résolvez ces mots fléchés EPSCI et remportez le jackpot !</p>
                         <p className="cw-scam-author">— Posté par Waluigi 😈</p>
                     </div>
 
-                    {cwSolved ? (
+                    {mfSolved ? (
                         <motion.div className="cw-scam-result" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
                             <p style={{ fontSize: '3rem', marginBottom: 10 }}>😈</p>
                             <h2 style={{ color: '#ff4444', marginBottom: 10 }}>ARNAQUE !</h2>
@@ -413,24 +406,31 @@ export default function PagePsych() {
                         </motion.div>
                     ) : (
                         <>
-                            <div className="cw-grid" style={{ gridTemplateColumns: `repeat(${CW_COLS}, 1fr)` }}>
-                                {Array.from({ length: CW_ROWS }).map((_, r) =>
-                                    Array.from({ length: CW_COLS }).map((_, c) => {
-                                        const cell = SOLUTION_GRID[r][c];
-                                        if (!cell.active) return <div key={`${r}-${c}`} className="cw-cell-empty" />;
-                                        const num = CELL_NUMBERS[`${r}-${c}`];
-                                        const isSelected = cwSelected && cwSelected.row === r && cwSelected.col === c;
-                                        const isHighlighted = highlightedCells.has(`${r}-${c}`);
-                                        const isCorrect = cwChecked && cwInput[r][c] === cell.letter;
-                                        const isWrong = cwChecked && cwInput[r][c] && cwInput[r][c] !== cell.letter;
+                            <div className="mf-grid" style={{ gridTemplateColumns: `repeat(${MF_COLS}, 1fr)` }}>
+                                {Array.from({ length: MF_ROWS }).map((_, r) =>
+                                    Array.from({ length: MF_COLS }).map((_, c) => {
+                                        const cell = MF_GRID[r][c];
+                                        if (!cell) return <div key={`${r}-${c}`} className="mf-cell-empty" />;
+                                        if (cell.type === 'clue') {
+                                            const arrow = cell.dir === 'right' ? '→' : '↓';
+                                            return (
+                                                <div key={`${r}-${c}`} className="mf-cell-clue">
+                                                    <span className="mf-clue-text">{cell.text}</span>
+                                                    <span className="mf-clue-arrow">{arrow}</span>
+                                                </div>
+                                            );
+                                        }
+                                        const isSelected = mfSelected && mfSelected.row === r && mfSelected.col === c;
+                                        const isHighlighted = mfHighlightedCells.has(`${r}-${c}`);
+                                        const isCorrect = mfChecked && mfInput[r][c] === cell.letter;
+                                        const isWrong = mfChecked && mfInput[r][c] && mfInput[r][c] !== cell.letter;
                                         return (
                                             <div
                                                 key={`${r}-${c}`}
                                                 className={`cw-cell ${isSelected ? 'selected' : ''} ${isHighlighted ? 'highlighted' : ''} ${isCorrect ? 'correct' : ''} ${isWrong ? 'wrong' : ''}`}
-                                                onClick={() => handleCwCellClick(r, c)}
+                                                onClick={() => handleMfCellClick(r, c)}
                                             >
-                                                {num && <span className="cw-cell-num">{num}</span>}
-                                                <span className="cw-cell-letter">{cwInput[r][c]}</span>
+                                                <span className="cw-cell-letter">{mfInput[r][c]}</span>
                                             </div>
                                         );
                                     })
@@ -439,31 +439,20 @@ export default function PagePsych() {
 
                             <div className="cw-keyboard">
                                 {'AZERTYUIOP'.split('').map(l => (
-                                    <button key={l} className="cw-key" onClick={() => handleCwLetter(l)}>{l}</button>
+                                    <button key={l} className="cw-key" onClick={() => handleMfLetter(l)}>{l}</button>
                                 ))}
                                 {'QSDFGHJKLM'.split('').map(l => (
-                                    <button key={l} className="cw-key" onClick={() => handleCwLetter(l)}>{l}</button>
+                                    <button key={l} className="cw-key" onClick={() => handleMfLetter(l)}>{l}</button>
                                 ))}
                                 <div className="cw-key-row-bottom">
                                     {'WXCVBN'.split('').map(l => (
-                                        <button key={l} className="cw-key" onClick={() => handleCwLetter(l)}>{l}</button>
+                                        <button key={l} className="cw-key" onClick={() => handleMfLetter(l)}>{l}</button>
                                     ))}
-                                    <button className="cw-key cw-key-del" onClick={handleCwDelete}>⌫</button>
+                                    <button className="cw-key cw-key-del" onClick={handleMfDelete}>⌫</button>
                                 </div>
                             </div>
 
-                            <button className="cw-check-btn" onClick={handleCwCheck}>Vérifier</button>
-
-                            <div className="cw-clues">
-                                <div className="cw-clue-section">
-                                    <h3 className="cw-clue-title">→ Horizontal</h3>
-                                    {ACROSS_CLUES.map(c => <p key={c.num} className="cw-clue"><b>{c.num}.</b> {c.clue}</p>)}
-                                </div>
-                                <div className="cw-clue-section">
-                                    <h3 className="cw-clue-title">↓ Vertical</h3>
-                                    {DOWN_CLUES.map(c => <p key={c.num} className="cw-clue"><b>{c.num}.</b> {c.clue}</p>)}
-                                </div>
-                            </div>
+                            <button className="cw-check-btn" onClick={handleMfCheck}>Vérifier</button>
                         </>
                     )}
                 </motion.div>
@@ -751,7 +740,7 @@ export default function PagePsych() {
                     overflow: hidden;
                 }
 
-                /* Crossword */
+                /* Mots Fléchés */
                 .cw-scam-banner {
                     text-align: center;
                     background: linear-gradient(135deg, rgba(255,68,0,0.15), rgba(255,204,0,0.15));
@@ -789,15 +778,41 @@ export default function PagePsych() {
                     border: 2px solid rgba(255,68,68,0.3);
                     border-radius: 20px;
                 }
-                .cw-grid {
+                .mf-grid {
                     display: grid;
                     gap: 2px;
                     margin: 0 auto 14px;
-                    max-width: 340px;
+                    max-width: 370px;
                 }
-                .cw-cell-empty {
+                .mf-cell-empty {
                     aspect-ratio: 1;
                     background: transparent;
+                }
+                .mf-cell-clue {
+                    aspect-ratio: 1;
+                    background: rgba(100, 50, 0, 0.5);
+                    border: 1.5px solid rgba(255,140,0,0.3);
+                    border-radius: 3px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 1px;
+                    overflow: hidden;
+                }
+                .mf-clue-text {
+                    font-size: 5.5px;
+                    color: #ffcc00;
+                    text-align: center;
+                    line-height: 1.15;
+                    font-weight: 600;
+                    word-break: break-word;
+                }
+                .mf-clue-arrow {
+                    font-size: 8px;
+                    color: #ff8800;
+                    font-weight: 900;
+                    margin-top: 1px;
                 }
                 .cw-cell {
                     aspect-ratio: 1;
@@ -827,15 +842,6 @@ export default function PagePsych() {
                 .cw-cell.wrong {
                     background: rgba(255,68,68,0.2);
                     border-color: rgba(255,68,68,0.5);
-                }
-                .cw-cell-num {
-                    position: absolute;
-                    top: 1px;
-                    left: 2px;
-                    font-size: 7px;
-                    color: #888;
-                    line-height: 1;
-                    font-weight: bold;
                 }
                 .cw-cell-letter {
                     font-size: 14px;
@@ -894,24 +900,6 @@ export default function PagePsych() {
                 }
                 .cw-check-btn:active {
                     background: rgba(0,255,255,0.25);
-                }
-                .cw-clues {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 14px;
-                    padding-bottom: 30px;
-                }
-                .cw-clue-section {}
-                .cw-clue-title {
-                    color: #00ffff;
-                    font-size: 0.95rem;
-                    margin-bottom: 6px;
-                }
-                .cw-clue {
-                    color: #bbb;
-                    font-size: 0.82rem;
-                    line-height: 1.5;
-                    margin-bottom: 2px;
                 }
             `}</style>
         </motion.div>
