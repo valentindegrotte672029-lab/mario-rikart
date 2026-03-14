@@ -128,6 +128,9 @@ export default function App() {
       socket.on('poker_state', (state) => setPokerState(state));
       socket.on('poker_error', (err) => alert("Poker: " + err));
       socket.on('poker_rooms', (rooms) => setPokerRooms(rooms));
+      socket.on('poker_queue_update', (data) => {
+        useStore.getState().setPokerQueue(data);
+      });
       socket.on('poker_join_request', (data) => {
         useStore.getState().addJoinRequest(data);
       });
@@ -152,6 +155,7 @@ export default function App() {
         socket.off('poker_state');
         socket.off('poker_error');
         socket.off('poker_rooms');
+        socket.off('poker_queue_update');
         socket.off('poker_join_request');
         socket.off('poker_request_sent');
         socket.off('poker_join_denied');

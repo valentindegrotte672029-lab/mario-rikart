@@ -65,6 +65,8 @@ const useStore = create(
     setPokerState: (pokerState) => set({ pokerState }),
     pokerRooms: [],
     setPokerRooms: (pokerRooms) => set({ pokerRooms }),
+    pokerQueue: null,
+    setPokerQueue: (pokerQueue) => set({ pokerQueue }),
     pendingJoinRequest: false,
     setPendingJoinRequest: (v) => set({ pendingJoinRequest: v }),
     joinRequests: [],

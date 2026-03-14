@@ -108,16 +108,17 @@ const PokerCard = ({ card }) => {
 };
 
 export default function PagePoker() {
-  const { pokerState, pokerRooms, username, pendingJoinRequest, joinRequests, removeJoinRequest, setPendingJoinRequest, clearJoinRequests } = useStore();
+  const { pokerState, pokerQueue, username, joinRequests, removeJoinRequest, setPokerQueue } = useStore();
   const [raiseAmount, setRaiseAmount] = useState(0);
-  const [joinCode, setJoinCode] = useState('');
-  const [lobbyView, setLobbyView] = useState('menu'); // 'menu' | 'join'
+  const [inQueue, setInQueue] = useState(false);
 
-  // Ask server for rooms when entering lobby
+  // Reset queue state when entering a game
   useEffect(() => {
-    if (!pokerState || pokerState.status === 'WAITING') {
-      socket.emit('poker_list_rooms');
-      setPendingJoinRequest(false);
+    if (pokerState && pokerState.status !== 'WAITING') {
+      setInQueue(false);
+    }
+    if (!pokerState) {
+      setInQueue(false);
     }
   }, [pokerState]);
 
@@ -161,22 +162,21 @@ export default function PagePoker() {
      statusRef.current = pokerState.status;
   }, [pokerState]);
 
-  const handleCreate = () => {
+  const handleQuickMatch = () => {
     initAudio();
-    socket.emit('poker_create', username);
+    socket.emit('poker_quickmatch', username);
+    setInQueue(true);
   };
 
-  const handleJoinRoom = () => {
-    if (!joinCode.trim()) return;
-    initAudio();
-    socket.emit('poker_join', { username, roomCode: joinCode.trim() });
-    setJoinCode('');
-    setLobbyView('menu');
+  const handleLeaveQueue = () => {
+    socket.emit('poker_leave_queue');
+    setInQueue(false);
+    setPokerQueue(null);
   };
 
-  const handleQuickJoin = (code) => {
+  const handleQueueStartBots = () => {
     initAudio();
-    socket.emit('poker_request_join', { username, roomCode: code });
+    socket.emit('poker_queue_start_bots');
   };
 
   const handleApproveJoin = (req) => {
@@ -231,47 +231,32 @@ export default function PagePoker() {
                <h1>♠️ SALOON EXPRESSO</h1>
                <p>Mise de départ : <b>100 🟡</b></p>
 
-               {pendingJoinRequest ? (
-                 <div className="pending-request">
-                   <div className="pending-spinner"></div>
-                   <p style={{color: '#ffcc00', fontWeight: 'bold', marginTop: 10}}>En attente d'approbation...</p>
-                   <p style={{color: '#888', fontSize: '0.8rem'}}>Le créateur doit accepter ta demande</p>
-                   <button className="btn-back" onClick={() => setPendingJoinRequest(false)} style={{marginTop: 10}}>Annuler</button>
-                 </div>
-               ) : lobbyView === 'menu' ? (
+               {!inQueue ? (
                  <div className="lobby-menu">
-                   <button className="btn-create" onClick={handleCreate}>🃏 Créer une partie</button>
-                   <button className="btn-join-code" onClick={() => setLobbyView('join')}>🔑 Rejoindre avec un code</button>
-                   
-                   {pokerRooms && pokerRooms.length > 0 && (
-                     <div className="open-rooms">
-                       <p className="open-rooms-title">Parties ouvertes</p>
-                       {pokerRooms.map(room => (
-                         <button key={room.code} className="room-card" onClick={() => handleQuickJoin(room.code)}>
-                           <span className="room-code">{room.code}</span>
-                           <span className="room-players">{room.players.join(', ')}</span>
-                           <span className="room-count">{room.count}/3 🔒</span>
-                         </button>
+                   <button className="btn-create" onClick={handleQuickMatch}>🃏 Jouer au Poker</button>
+                   <p style={{color: '#888', fontSize: '0.75rem', marginTop: 5}}>3 joueurs = partie auto • sinon, joue avec l'IA</p>
+                 </div>
+               ) : (
+                 <div className="queue-waiting">
+                   <div className="queue-dots">
+                     <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.5, repeat: Infinity }}>●</motion.span>
+                     <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.5, repeat: Infinity, delay: 0.3 }}>●</motion.span>
+                     <motion.span animate={{ opacity: [0.3, 1, 0.3] }} transition={{ duration: 1.5, repeat: Infinity, delay: 0.6 }}>●</motion.span>
+                   </div>
+                   <p style={{color: '#00ff66', fontWeight: 'bold', fontSize: '1.1rem', margin: '10px 0 5px'}}>
+                     Recherche de joueurs... {pokerQueue ? `${pokerQueue.size}/3` : '1/3'}
+                   </p>
+                   {pokerQueue && pokerQueue.players && pokerQueue.players.length > 0 && (
+                     <div className="queue-players">
+                       {pokerQueue.players.map((name, i) => (
+                         <span key={i} className="queue-player-tag">{name}</span>
                        ))}
                      </div>
                    )}
-                 </div>
-               ) : (
-                 <div className="join-form">
-                   <p style={{color:'white', marginBottom: 10}}>Entre le code de la salle :</p>
-                   <input
-                     className="code-input"
-                     type="text"
-                     maxLength={4}
-                     placeholder="ABCD"
-                     value={joinCode}
-                     onChange={e => setJoinCode(e.target.value.toUpperCase())}
-                     autoFocus
-                     style={{ fontSize: 16 }}
-                   />
-                   <div className="join-form-btns">
-                     <button className="btn-back" onClick={() => setLobbyView('menu')}>← Retour</button>
-                     <button className="btn-join" onClick={handleJoinRoom} disabled={joinCode.length < 4}>Rejoindre</button>
+                   <p style={{color: '#888', fontSize: '0.8rem', margin: '8px 0'}}>Dès que 3 joueurs sont prêts, la partie se lance</p>
+                   <div style={{display: 'flex', gap: 10, justifyContent: 'center', marginTop: 10}}>
+                     <button className="btn-bots" onClick={handleQueueStartBots}>🤖 Jouer avec l'IA</button>
+                     <button className="btn-back" onClick={handleLeaveQueue}>Annuler</button>
                    </div>
                  </div>
                )}
@@ -282,7 +267,6 @@ export default function PagePoker() {
                 <div className="room-code-display">
                   <span className="room-code-label">Code de la salle</span>
                   <span className="room-code-big">{pokerState.tableId}</span>
-                  <span className="room-code-hint">Partage ce code aux autres joueurs</span>
                 </div>
                 <p>En attente d'autres joueurs... ({pokerState.players.length}/3)</p>
                 <div className="lobby-players">
@@ -527,6 +511,15 @@ export default function PagePoker() {
         .btn-join:active { transform: scale(0.95); }
 
         .btn-bots { background: #ffcc00; color: black; font-weight: bold; padding: 10px 20px; border: none; border-radius: 8px; margin-top: 15px; cursor: pointer; }
+        .btn-bots:active { transform: scale(0.95); }
+
+        .queue-waiting { text-align: center; }
+        .queue-dots { display: flex; gap: 8px; justify-content: center; font-size: 1.5rem; color: #00ff66; }
+        .queue-players { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 8px 0; }
+        .queue-player-tag {
+          background: rgba(0,255,102,0.15); border: 1px solid rgba(0,255,102,0.4);
+          color: #00ff66; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold;
+        }
 
         .lobby-waiting { color: white; }
         .lobby-players { margin-top: 10px; font-weight: bold; color: #00ffcc; }

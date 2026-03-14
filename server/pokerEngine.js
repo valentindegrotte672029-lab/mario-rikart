@@ -700,6 +700,7 @@ class PokerManager {
         this.tables = new Map();       // roomCode -> PokerEngine
         this.socketToTable = new Map(); // socketId -> roomCode
         this.joinRequests = new Map(); // roomCode -> [{ socketId, username }]
+        this.matchQueue = [];          // [{ socketId, username }]
     }
 
     _generateCode() {
@@ -986,6 +987,95 @@ class PokerManager {
         console.log(`[POKER] Admin a supprimé la salle ${code}`);
         this.broadcastRooms();
         this.broadcastAdminRooms();
+    }
+
+    // ---- QUICK MATCH (Matchmaking Queue) ----
+    joinQueue(socketId, username) {
+        // Already in a game?
+        if (this.socketToTable.has(socketId)) {
+            return { error: 'Déjà assis à une table' };
+        }
+        // Check balance
+        const alias = username.toUpperCase();
+        const playerBal = this.usersDb[alias] ? (this.usersDb[alias].balance || 0) : 0;
+        if (!this.usersDb[alias] || playerBal < 100) {
+            return { error: `Fonds insuffisants (${playerBal} 🟡 / 100)` };
+        }
+        // Already in queue?
+        if (this.matchQueue.find(q => q.socketId === socketId)) {
+            return { error: 'Déjà en file d\'attente' };
+        }
+        this.matchQueue.push({ socketId, username });
+        console.log(`[POKER] ${username} rejoint la queue (${this.matchQueue.length}/3)`);
+        this.broadcastQueue();
+
+        // If 3 players, create & start a match
+        if (this.matchQueue.length >= 3) {
+            const trio = this.matchQueue.splice(0, 3);
+            this._startMatchFromQueue(trio);
+        }
+        return { success: true, queueSize: this.matchQueue.length };
+    }
+
+    leaveQueue(socketId) {
+        this.matchQueue = this.matchQueue.filter(q => q.socketId !== socketId);
+        this.broadcastQueue();
+    }
+
+    startQueueWithBots(socketId) {
+        // Remove from queue
+        const player = this.matchQueue.find(q => q.socketId === socketId);
+        if (!player) return;
+        this.matchQueue = this.matchQueue.filter(q => q.socketId !== socketId);
+
+        // Create room, join, start with bots
+        const code = this._generateCode();
+        const engine = new PokerEngine(this.io, this.usersDb, this.saveUsers, code, this);
+        engine.creator = player.username;
+        this.tables.set(code, engine);
+        this.joinRequests.set(code, []);
+
+        const res = engine.joinTable(player.socketId, player.username);
+        if (res && res.success) {
+            this.socketToTable.set(player.socketId, code);
+            engine.startWithBots();
+        }
+        this.broadcastQueue();
+        this.broadcastRooms();
+        this.broadcastAdminRooms();
+    }
+
+    _startMatchFromQueue(trio) {
+        const code = this._generateCode();
+        const engine = new PokerEngine(this.io, this.usersDb, this.saveUsers, code, this);
+        engine.creator = trio[0].username;
+        this.tables.set(code, engine);
+        this.joinRequests.set(code, []);
+
+        for (const p of trio) {
+            const res = engine.joinTable(p.socketId, p.username);
+            if (res && res.success) {
+                this.socketToTable.set(p.socketId, code);
+            }
+        }
+
+        console.log(`[POKER] Matchmaking: partie ${code} lancée avec ${trio.map(p => p.username).join(', ')}`);
+        // Auto-start (spin the wheel)
+        engine.startWithBots(); // startWithBots fills bots only if < 3, here we have 3 so no bots added
+        this.broadcastQueue();
+        this.broadcastRooms();
+        this.broadcastAdminRooms();
+    }
+
+    broadcastQueue() {
+        const data = this.matchQueue.map(q => q.username);
+        // Send to each queued player
+        for (const q of this.matchQueue) {
+            const s = this.io.sockets.sockets.get(q.socketId);
+            if (s) s.emit('poker_queue', { players: data, size: data.length });
+        }
+        // Also broadcast to anyone on the poker page
+        this.io.emit('poker_queue_update', { players: data, size: data.length });
     }
 
     broadcastRooms() {

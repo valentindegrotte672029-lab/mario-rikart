@@ -452,6 +452,19 @@ io.on('connection', (socket) => {
         pokerManager.startWithBots(socket.id);
     });
 
+    socket.on('poker_quickmatch', (username) => {
+        const res = pokerManager.joinQueue(socket.id, username);
+        if (res && res.error) socket.emit('poker_error', res.error);
+    });
+
+    socket.on('poker_leave_queue', () => {
+        pokerManager.leaveQueue(socket.id);
+    });
+
+    socket.on('poker_queue_start_bots', () => {
+        pokerManager.startQueueWithBots(socket.id);
+    });
+
     socket.on('poker_action', ({ action, amount }) => {
         pokerManager.handleAction(socket.id, action, amount);
     });
@@ -464,6 +477,7 @@ io.on('connection', (socket) => {
 
     // Déconnexion
     socket.on('disconnect', () => {
+        pokerManager.leaveQueue(socket.id);
         pokerManager.leaveTable(socket.id);
         const username = players[socket.id];
         delete players[socket.id];
