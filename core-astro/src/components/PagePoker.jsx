@@ -888,6 +888,34 @@ export default function PagePoker() {
             100% { transform: scale(1); }
         }
 
+        /* PENDING JOIN REQUEST */
+        .pending-request { text-align: center; padding: 20px 0; }
+        .pending-spinner {
+          width: 40px; height: 40px; margin: 0 auto;
+          border: 3px solid rgba(255,204,0,0.2);
+          border-top-color: #ffcc00;
+          border-radius: 50%;
+          animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* JOIN REQUEST CARDS (creator sees these) */
+        .join-request-card {
+          display: flex; align-items: center; justify-content: space-between;
+          background: rgba(255,204,0,0.1); border: 1px solid #ffcc00;
+          border-radius: 10px; padding: 10px 14px; margin-top: 10px;
+        }
+        .join-req-name { color: white; font-size: 0.9rem; }
+        .join-req-btns { display: flex; gap: 8px; }
+        .btn-approve {
+          background: #00ff66; color: black; font-weight: 900; font-size: 1.1rem;
+          border: none; border-radius: 8px; width: 38px; height: 34px; cursor: pointer;
+        }
+        .btn-deny {
+          background: #ff3333; color: white; font-weight: 900; font-size: 1.1rem;
+          border: none; border-radius: 8px; width: 38px; height: 34px; cursor: pointer;
+        }
+
       `}</style>
     </motion.div>
   );

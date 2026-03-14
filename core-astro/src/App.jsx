@@ -16,6 +16,7 @@ import PageChrono from './components/PageChrono';
 import PagePsych from './components/PagePsych';
 import PageCasino from './components/PageCasino';
 import PagePoker from './components/PagePoker';
+import Navigation from './components/Navigation';
 
 import useStore from './store/useStore';
 import { socket } from './socket';
@@ -242,6 +243,9 @@ export default function App() {
           </AnimatePresence>
         </ErrorBoundary>
       </main>
+
+      {/* 4. Navigation Bottom Tab Bar (Snapchat-style) */}
+      {username && currentPage !== 'HOME' && <Navigation />}
 
       {/* 5. Alertes Happenings & Erreurs (Economie) */}
       <AnimatePresence>

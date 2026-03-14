@@ -8,7 +8,7 @@
   --safe-right: env(safe-area-inset-right, 0px);
 
   --bg-color: #050508;
-  --tab-height: 85px;
+  --tab-height: 60px;
   --header-height: 70px;
   --glass-bg: rgba(20, 20, 25, 0.65);
   --glass-border: rgba(255, 255, 255, 0.08);
