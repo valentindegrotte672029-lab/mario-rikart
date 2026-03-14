@@ -113,6 +113,7 @@ export default function PagePoker() {
   const [inQueue, setInQueue] = useState(false);
   const [joinCode, setJoinCode] = useState('');
   const [lobbyView, setLobbyView] = useState('menu'); // 'menu' | 'join' | 'queue'
+  const [actionSent, setActionSent] = useState(false);
 
   // Reset queue state when entering a game
   useEffect(() => {
@@ -221,6 +222,7 @@ export default function PagePoker() {
   };
 
   const handleAction = (action) => {
+    setActionSent(true);
     initAudio();
     if (action === 'fold') playFoldSound();
     if (action === 'call') playCallSound();
@@ -241,6 +243,11 @@ export default function PagePoker() {
 
   const isMyTurn = pokerState?.players?.[pokerState?.currentTurnIdx]?.username === username;
   const toCall = isMyTurn ? (pokerState.highestBet - (myPlayer?.currentBet || 0)) : 0;
+
+  // Reset actionSent when turn changes
+  useEffect(() => {
+    if (isMyTurn) setActionSent(false);
+  }, [isMyTurn]);
 
   return (
     <motion.div
@@ -462,12 +469,12 @@ export default function PagePoker() {
 
             {/* Controls */}
             <AnimatePresence>
-                {isMyTurn && !myPlayer?.folded && (
+                {isMyTurn && !myPlayer?.folded && !actionSent && (
                     <motion.div 
                         className="poker-controls"
                         initial={{ y: 100 }}
                         animate={{ y: 0 }}
-                        exit={{ y: 100 }}
+                        exit={{ y: 100, transition: { duration: 0.15 } }}
                     >
                         <div className="raise-slider-area">
                            <input 
