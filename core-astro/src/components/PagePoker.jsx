@@ -673,13 +673,13 @@ export default function PagePoker() {
         /* TABLE */
         .poker-table-container {
           width: 100%;
-          height: 100%;
+          height: calc(100vh - var(--safe-top, 0px) - var(--header-height, 60px) - var(--tab-height, 60px) - var(--safe-bottom, 0px) - 40px);
+          min-height: 400px;
           display: flex;
           flex-direction: column;
           position: relative;
           background-color: transparent;
           color: white;
-          min-height: 0;
         }
 
         .tapis-vert {
@@ -695,14 +695,13 @@ export default function PagePoker() {
           justify-content: center;
           position: relative;
           overflow: hidden;
-          min-height: 0;
+          min-height: 250px;
         }
 
         .inner-table {
           width: 100%;
           height: 100%;
           position: relative;
-          min-height: 0;
         }
 
         /* SEATS */
