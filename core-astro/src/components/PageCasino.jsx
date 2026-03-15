@@ -10,7 +10,7 @@ export default function PageCasino() {
   const [newBetQuestion, setNewBetQuestion] = useState('');
   const [newBetOptions, setNewBetOptions] = useState(['', '']);
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [casinoTab, setCasinoTab] = useState('polymario');
+  const [casinoTab, setCasinoTab] = useState('poker');
 
   const handlePlaceBet = (betId, optionIdx, betTitle) => {
     const amountStr = selectedAmounts[`${betId}-${optionIdx}`];
@@ -56,11 +56,11 @@ export default function PageCasino() {
       exit={{ opacity: 0, scale: 0.95 }}
     >
       <div className="casino-tab-bar">
-        <button className={`casino-tab-btn ${casinoTab === 'polymario' ? 'active' : ''}`} onClick={() => setCasinoTab('polymario')}>
-          🎰 Polymario
-        </button>
         <button className={`casino-tab-btn ${casinoTab === 'poker' ? 'active' : ''}`} onClick={() => setCasinoTab('poker')}>
           ♠️ Poker
+        </button>
+        <button className={`casino-tab-btn ${casinoTab === 'polymario' ? 'active' : ''}`} onClick={() => setCasinoTab('polymario')}>
+          🎰 Polymario
         </button>
       </div>
 
