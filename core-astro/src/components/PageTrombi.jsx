@@ -9,7 +9,7 @@ const POLES = [
         description: 'Le pôle Présidence dirige le BDE, coordonne tous les autres pôles et représente les étudiants auprès de l\'administration. Ils sont les capitaines du navire.',
         members: [
             { name: 'Lucas Tribut', role: 'Président', photo: '/images/trombi/faces/lucas_tribut.jpg' },
-            { name: 'Bouillet', role: 'Vice-Présidente', photo: '/images/trombi/faces/bouillet.jpg' },
+            { name: 'Estelle Bouillet', role: 'Vice-Présidente', photo: '/images/trombi/faces/bouillet.jpg' },
         ]
     },
     {
@@ -28,8 +28,8 @@ const POLES = [
         color: '#39ff14',
         description: 'Le pôle Trésorerie gère le budget du BDE, les encaissements, les dépenses et s\'assure que les comptes sont en ordre. Les gardiens du coffre-fort.',
         members: [
-            { name: 'Matéo Cavaloc', role: 'Trésorier', photo: '/images/trombi/faces/mateo_cavaloc.jpg' },
-            { name: 'Kylian Libouban', role: 'Head Trésorier', photo: '/images/trombi/faces/kylian_libouban.jpg' },
+            { name: 'Mateo Cavaloc', role: 'Trésorier', photo: '/images/trombi/faces/mateo_cavaloc.jpg' },
+            { name: 'Kylian Lib', role: 'Head Trésorier', photo: '/images/trombi/faces/kylian_libouban.jpg' },
         ]
     },
     {
@@ -39,7 +39,7 @@ const POLES = [
         description: 'Le pôle Ambassade représente le BDE à l\'extérieur, gère les relations avec les autres écoles et associations. Ce sont les ambassadeurs de l\'EPSCI.',
         members: [
             { name: 'Alexandre Hoffherr', role: 'Ambassadeur', photo: '/images/trombi/faces/alexandre_hoffherr.jpg' },
-            { name: 'Gomes', role: 'Head Ambassadeur', photo: '/images/trombi/faces/gomes.jpg' },
+            { name: 'Emma Gomes', role: 'Head Ambassadeur', photo: '/images/trombi/faces/gomes.jpg' },
         ]
     },
     {
@@ -49,7 +49,7 @@ const POLES = [
         description: 'Le pôle Communication gère les réseaux sociaux, les affiches, les vidéos et toute la visibilité du BDE. Ils font le buzz.',
         members: [
             { name: 'Valentin Degrotte', role: 'Communication', photo: '/images/trombi/faces/valentin_degrotte.jpg' },
-            { name: 'Maxime Blood', role: 'Head Communication', photo: '/images/trombi/faces/maxime_blood.jpg' },
+            { name: 'Maxime Bloud', role: 'Head Communication', photo: '/images/trombi/faces/maxime_blood.jpg' },
         ]
     },
     {
@@ -58,8 +58,8 @@ const POLES = [
         color: '#ff00ff',
         description: 'Le pôle Événementiel organise toutes les soirées, galas, afterworks et événements de la vie étudiante. Les rois de la fête.',
         members: [
-            { name: 'Callels', role: 'Événementiel', photo: '/images/trombi/faces/callels.jpg' },
-            { name: 'Lemoine', role: 'Head Événementiel', photo: '/images/trombi/faces/lemoine.jpg' },
+            { name: 'Victoire Callens', role: 'Événementiel', photo: '/images/trombi/faces/callels.jpg' },
+            { name: 'Hanaé Lemoine', role: 'Head Événementiel', photo: '/images/trombi/faces/lemoine.jpg' },
         ]
     },
     {
@@ -68,9 +68,9 @@ const POLES = [
         color: '#9933ff',
         description: 'Le pôle Animations organise les activités ludiques, tournois, jeux et animations pendant les temps de pause. Fun garantie.',
         members: [
-            { name: 'Édouard Souied', role: 'Animations', photo: '/images/trombi/faces/edouard_souied.jpg' },
+            { name: 'Edouard Souied', role: 'Animations', photo: '/images/trombi/faces/edouard_souied.jpg' },
             { name: 'Radek Roussel', role: 'Animations', photo: '/images/trombi/faces/radek_roussel.jpg' },
-            { name: 'Alyxane Lefèvre-Böhm', role: 'Head Animations', photo: '/images/trombi/faces/alyxane_lefevre.jpg' },
+            { name: 'Alyxane Lefèvre Böhm', role: 'Head Animations', photo: '/images/trombi/faces/alyxane_lefevre.jpg' },
         ]
     },
     {
@@ -80,8 +80,8 @@ const POLES = [
         description: 'Le pôle Partenariats négocie avec les entreprises et sponsors pour financer les événements et obtenir des avantages pour les étudiants.',
         members: [
             { name: 'Baptiste Dubreuil', role: 'Partenariats', photo: '/images/trombi/faces/baptiste_dubreuil.jpg' },
-            { name: 'Aurélien Malige', role: 'Partenariats', photo: '/images/trombi/faces/aurelien_malige.jpg' },
-            { name: 'Salomé Valmorin', role: 'Partenariats', photo: '/images/trombi/faces/salome_valmorin.jpg' },
+            { name: 'Aurelien Malige', role: 'Partenariats', photo: '/images/trombi/faces/aurelien_malige.jpg' },
+            { name: 'Salomé Valmorin', role: 'Head Partenariats', photo: '/images/trombi/faces/salome_valmorin.jpg' },
         ]
     },
     {
