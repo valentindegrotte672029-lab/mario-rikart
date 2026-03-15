@@ -153,20 +153,18 @@ export default function PageTrombi() {
                                     onClick={() => !isRevealed && handleTapBlack(pi, mi)}
                                 >
                                     <div className="trombi-photo-area">
-                                        {isRevealed ? (
-                                            <motion.img
-                                                src={member.photo}
-                                                alt={member.name}
-                                                className="trombi-photo"
-                                                initial={{ opacity: 0 }}
-                                                animate={{ opacity: 1 }}
-                                                transition={{ duration: 0.5 }}
-                                            />
-                                        ) : (
-                                            <div className="trombi-black-rect">
+                                        <img
+                                            src={member.photo}
+                                            alt={member.name}
+                                            className="trombi-photo"
+                                        />
+                                        {!isRevealed && (
+                                            <motion.div
+                                                className="trombi-black-rect"
+                                                exit={{ opacity: 0, scale: 0.5 }}
+                                            >
                                                 <span className="trombi-classified">CLASSIFIÉ</span>
-                                                <span className="trombi-tap-hint">APPUYER</span>
-                                            </div>
+                                            </motion.div>
                                         )}
                                     </div>
                                     {isRevealed && (
@@ -303,32 +301,29 @@ export default function PageTrombi() {
                     object-fit: cover;
                 }
                 .trombi-black-rect {
-                    width: 100%;
-                    height: 100%;
+                    position: absolute;
+                    top: 10%;
+                    left: 15%;
+                    width: 70%;
+                    height: 50%;
                     background: #000;
                     display: flex;
-                    flex-direction: column;
                     align-items: center;
                     justify-content: center;
-                    gap: 8px;
-                    border: 3px solid #333;
+                    border: 2px solid #222;
+                    cursor: pointer;
                 }
                 .trombi-classified {
                     color: #ff3333;
                     font-weight: 900;
-                    font-size: 0.85rem;
-                    letter-spacing: 4px;
+                    font-size: 0.65rem;
+                    letter-spacing: 3px;
                     text-shadow: 0 0 6px rgba(255,50,50,0.5);
                     animation: trombiBlink 1.5s infinite alternate;
                 }
                 @keyframes trombiBlink {
                     from { opacity: 1; }
                     to { opacity: 0.4; }
-                }
-                .trombi-tap-hint {
-                    color: #555;
-                    font-size: 0.65rem;
-                    letter-spacing: 2px;
                 }
                 .trombi-name-area {
                     padding: 8px;
