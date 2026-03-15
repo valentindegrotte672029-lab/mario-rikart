@@ -1,109 +1,120 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+// Each pole = one group photo (full PDF page) with face positions as percentages
 const POLES = [
     {
         name: 'Présidence',
         emoji: '👑',
         color: '#ffcc00',
-        description: 'Le pôle Présidence dirige le BDE, coordonne tous les autres pôles et représente les étudiants auprès de l\'administration. Ils sont les capitaines du navire.',
+        photo: '/images/trombi/page_1.jpg',
+        description: 'Le pôle Présidence dirige le BDE, coordonne tous les autres pôles et représente les étudiants auprès de l\'administration.',
         members: [
-            { name: 'Lucas Tribut', role: 'Président', photo: '/images/trombi/faces/lucas_tribut.jpg' },
-            { name: 'Estelle Bouillet', role: 'Vice-Présidente', photo: '/images/trombi/faces/bouillet.jpg' },
+            { name: 'Lucas Tribut', role: 'Président', x: 22, y: 43, w: 22, h: 16 },
+            { name: 'Estelle Bouillet', role: 'Vice-Présidente', x: 57, y: 55, w: 18, h: 13 },
         ]
     },
     {
         name: 'Secrétariat',
         emoji: '📋',
         color: '#00ccff',
-        description: 'Le pôle Secrétariat gère toute la paperasse, les comptes-rendus, la communication interne et les procès-verbaux. Sans eux, c\'est le chaos administratif.',
+        photo: '/images/trombi/page_2.jpg',
+        description: 'Le pôle Secrétariat gère toute la paperasse, les comptes-rendus, la communication interne et les procès-verbaux.',
         members: [
-            { name: 'Inès Ennadif', role: 'Secrétaire', photo: '/images/trombi/faces/ines_ennadif.jpg' },
-            { name: 'Thomas Dubuc', role: 'Head Secrétaire', photo: '/images/trombi/faces/thomas_dubuc.jpg' },
+            { name: 'Inès Ennadif', role: 'Secrétaire', x: 18, y: 35, w: 25, h: 18 },
+            { name: 'Thomas Dubuc', role: 'Head Secrétaire', x: 56, y: 34, w: 25, h: 18 },
         ]
     },
     {
         name: 'Trésorerie',
         emoji: '💰',
         color: '#39ff14',
-        description: 'Le pôle Trésorerie gère le budget du BDE, les encaissements, les dépenses et s\'assure que les comptes sont en ordre. Les gardiens du coffre-fort.',
+        photo: '/images/trombi/page_3.jpg',
+        description: 'Le pôle Trésorerie gère le budget du BDE, les encaissements, les dépenses et s\'assure que les comptes sont en ordre.',
         members: [
-            { name: 'Mateo Cavaloc', role: 'Trésorier', photo: '/images/trombi/faces/mateo_cavaloc.jpg' },
-            { name: 'Kylian Lib', role: 'Head Trésorier', photo: '/images/trombi/faces/kylian_libouban.jpg' },
+            { name: 'Mateo Cavaloc', role: 'Trésorier', x: 18, y: 53, w: 20, h: 14 },
+            { name: 'Kylian Lib', role: 'Head Trésorier', x: 56, y: 50, w: 20, h: 14 },
         ]
     },
     {
         name: 'Ambassade',
         emoji: '🌍',
         color: '#ff66b2',
-        description: 'Le pôle Ambassade représente le BDE à l\'extérieur, gère les relations avec les autres écoles et associations. Ce sont les ambassadeurs de l\'EPSCI.',
+        photo: '/images/trombi/page_4.jpg',
+        description: 'Le pôle Ambassade représente le BDE à l\'extérieur, gère les relations avec les autres écoles et associations.',
         members: [
-            { name: 'Alexandre Hoffherr', role: 'Ambassadeur', photo: '/images/trombi/faces/alexandre_hoffherr.jpg' },
-            { name: 'Emma Gomes', role: 'Head Ambassadeur', photo: '/images/trombi/faces/gomes.jpg' },
+            { name: 'Alexandre Hoffherr', role: 'Ambassadeur', x: 18, y: 33, w: 22, h: 15 },
+            { name: 'Emma Gomes', role: 'Head Ambassadeur', x: 55, y: 42, w: 22, h: 15 },
         ]
     },
     {
         name: 'Communication',
         emoji: '📢',
         color: '#ff4400',
-        description: 'Le pôle Communication gère les réseaux sociaux, les affiches, les vidéos et toute la visibilité du BDE. Ils font le buzz.',
+        photo: '/images/trombi/page_5.jpg',
+        description: 'Le pôle Communication gère les réseaux sociaux, les affiches, les vidéos et toute la visibilité du BDE.',
         members: [
-            { name: 'Valentin Degrotte', role: 'Communication', photo: '/images/trombi/faces/valentin_degrotte.jpg' },
-            { name: 'Maxime Bloud', role: 'Head Communication', photo: '/images/trombi/faces/maxime_blood.jpg' },
+            { name: 'Valentin Degrotte', role: 'Communication', x: 13, y: 57, w: 22, h: 15 },
+            { name: 'Maxime Bloud', role: 'Head Communication', x: 54, y: 57, w: 24, h: 17 },
         ]
     },
     {
         name: 'Événementiel',
         emoji: '🎉',
         color: '#ff00ff',
-        description: 'Le pôle Événementiel organise toutes les soirées, galas, afterworks et événements de la vie étudiante. Les rois de la fête.',
+        photo: '/images/trombi/page_6.jpg',
+        description: 'Le pôle Événementiel organise toutes les soirées, galas, afterworks et événements de la vie étudiante.',
         members: [
-            { name: 'Victoire Callens', role: 'Événementiel', photo: '/images/trombi/faces/callels.jpg' },
-            { name: 'Hanaé Lemoine', role: 'Head Événementiel', photo: '/images/trombi/faces/lemoine.jpg' },
+            { name: 'Victoire Callens', role: 'Événementiel', x: 14, y: 46, w: 22, h: 14 },
+            { name: 'Hanaé Lemoine', role: 'Head Événementiel', x: 60, y: 44, w: 20, h: 14 },
         ]
     },
     {
         name: 'Animations',
         emoji: '🎮',
         color: '#9933ff',
-        description: 'Le pôle Animations organise les activités ludiques, tournois, jeux et animations pendant les temps de pause. Fun garantie.',
+        photo: '/images/trombi/page_7.jpg',
+        description: 'Le pôle Animations organise les activités ludiques, tournois, jeux et animations pendant les temps de pause.',
         members: [
-            { name: 'Edouard Souied', role: 'Animations', photo: '/images/trombi/faces/edouard_souied.jpg' },
-            { name: 'Radek Roussel', role: 'Animations', photo: '/images/trombi/faces/radek_roussel.jpg' },
-            { name: 'Alyxane Lefèvre Böhm', role: 'Head Animations', photo: '/images/trombi/faces/alyxane_lefevre.jpg' },
+            { name: 'Edouard Souied', role: 'Animations', x: 6, y: 62, w: 18, h: 14 },
+            { name: 'Radek Roussel', role: 'Animations', x: 72, y: 62, w: 18, h: 14 },
+            { name: 'Alyxane Lefèvre Böhm', role: 'Head Animations', x: 38, y: 75, w: 18, h: 14 },
         ]
     },
     {
         name: 'Partenariats',
         emoji: '🤝',
         color: '#00ff88',
+        photo: '/images/trombi/page_8.jpg',
         description: 'Le pôle Partenariats négocie avec les entreprises et sponsors pour financer les événements et obtenir des avantages pour les étudiants.',
         members: [
-            { name: 'Baptiste Dubreuil', role: 'Partenariats', photo: '/images/trombi/faces/baptiste_dubreuil.jpg' },
-            { name: 'Aurelien Malige', role: 'Partenariats', photo: '/images/trombi/faces/aurelien_malige.jpg' },
-            { name: 'Salomé Valmorin', role: 'Head Partenariats', photo: '/images/trombi/faces/salome_valmorin.jpg' },
+            { name: 'Baptiste Dubreuil', role: 'Partenariats', x: 15, y: 44, w: 18, h: 12 },
+            { name: 'Aurelien Malige', role: 'Partenariats', x: 64, y: 40, w: 18, h: 12 },
+            { name: 'Salomé Valmorin', role: 'Head Partenariats', x: 44, y: 49, w: 16, h: 10 },
         ]
     },
     {
         name: 'Travel',
         emoji: '✈️',
         color: '#00ccff',
+        photo: '/images/trombi/page_9.jpg',
         description: 'Le pôle Travel organise les voyages étudiants, week-ends d\'intégration et escapades. Direction : l\'aventure.',
         members: [
-            { name: 'Salomé Nathan', role: 'Head Travel', photo: '/images/trombi/faces/salome_nathan.jpg' },
+            { name: 'Salomé Nathan', role: 'Head Travel', x: 40, y: 43, w: 18, h: 13 },
         ]
     },
 ];
 
 export default function PageTrombi() {
     const [revealed, setRevealed] = useState(new Set());
-    const [showInfo, setShowInfo] = useState(null); // { poleIdx, memberIdx }
+    const [showInfo, setShowInfo] = useState(null);
 
     const memberKey = (pi, mi) => `${pi}-${mi}`;
     const totalMembers = POLES.reduce((acc, p) => acc + p.members.length, 0);
     const allRevealed = revealed.size === totalMembers;
 
-    const handleTapBlack = (poleIdx, memberIdx) => {
+    const handleTapRect = (e, poleIdx, memberIdx) => {
+        e.stopPropagation();
         setShowInfo({ poleIdx, memberIdx });
     };
 
@@ -141,50 +152,47 @@ export default function PageTrombi() {
                         <span>{pole.emoji}</span>
                         <span style={{ color: pole.color }}>{pole.name}</span>
                     </div>
-                    <div className="trombi-members-grid">
+                    <div className="trombi-photo-container">
+                        <img src={pole.photo} alt={pole.name} className="trombi-group-photo" />
                         {pole.members.map((member, mi) => {
                             const key = memberKey(pi, mi);
                             const isRevealed = revealed.has(key);
                             return (
-                                <motion.div
-                                    key={key}
-                                    className="trombi-card"
-                                    whileTap={{ scale: 0.95 }}
-                                    onClick={() => !isRevealed && handleTapBlack(pi, mi)}
-                                >
-                                    <div className="trombi-photo-area">
-                                        <img
-                                            src={member.photo}
-                                            alt={member.name}
-                                            className="trombi-photo"
+                                <React.Fragment key={key}>
+                                    {!isRevealed ? (
+                                        <motion.div
+                                            className="trombi-face-rect"
+                                            style={{
+                                                left: `${member.x}%`,
+                                                top: `${member.y}%`,
+                                                width: `${member.w}%`,
+                                                height: `${member.h}%`,
+                                            }}
+                                            whileTap={{ scale: 0.92 }}
+                                            onClick={(e) => handleTapRect(e, pi, mi)}
                                         />
-                                        {!isRevealed && (
-                                            <motion.div
-                                                className="trombi-black-rect"
-                                                exit={{ opacity: 0, scale: 0.5 }}
-                                            >
-                                                <span className="trombi-classified">CLASSIFIÉ</span>
-                                            </motion.div>
-                                        )}
-                                    </div>
-                                    {isRevealed && (
-                                        <motion.div 
-                                            className="trombi-name-area"
-                                            initial={{ opacity: 0, y: 8 }}
+                                    ) : (
+                                        <motion.div
+                                            className="trombi-face-label"
+                                            style={{
+                                                left: `${member.x}%`,
+                                                top: `${member.y + member.h}%`,
+                                                width: `${Math.max(member.w, 20)}%`,
+                                            }}
+                                            initial={{ opacity: 0, y: -5 }}
                                             animate={{ opacity: 1, y: 0 }}
                                         >
-                                            <p className="trombi-member-name">{member.name}</p>
-                                            <p className="trombi-member-role" style={{ color: pole.color }}>{member.role}</p>
+                                            <span className="trombi-label-name">{member.name}</span>
+                                            <span className="trombi-label-role" style={{ color: pole.color }}>{member.role}</span>
                                         </motion.div>
                                     )}
-                                </motion.div>
+                                </React.Fragment>
                             );
                         })}
                     </div>
                 </div>
             ))}
 
-            {/* Info Modal */}
             <AnimatePresence>
                 {showInfo && (
                     <motion.div
@@ -263,7 +271,7 @@ export default function PageTrombi() {
                     border-radius: 16px;
                 }
                 .trombi-pole-section {
-                    margin-bottom: 4px;
+                    margin-bottom: 8px;
                 }
                 .trombi-pole-header {
                     display: flex;
@@ -273,72 +281,52 @@ export default function PageTrombi() {
                     border-left: 4px solid;
                     font-weight: 900;
                     font-size: 1.1rem;
-                    margin-bottom: 10px;
+                    margin-bottom: 8px;
                 }
-                .trombi-members-grid {
-                    display: grid;
-                    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-                    gap: 12px;
-                }
-                .trombi-card {
-                    background: rgba(0,0,0,0.5);
-                    border: 2px solid rgba(255,255,255,0.1);
+                .trombi-photo-container {
+                    position: relative;
+                    width: 100%;
                     border-radius: 12px;
                     overflow: hidden;
-                    cursor: pointer;
-                    user-select: none;
-                    -webkit-user-select: none;
-                }
-                .trombi-photo-area {
-                    width: 100%;
-                    aspect-ratio: 3/4;
-                    position: relative;
-                    overflow: hidden;
-                }
-                .trombi-photo {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                }
-                .trombi-black-rect {
-                    position: absolute;
-                    top: 10%;
-                    left: 15%;
-                    width: 70%;
-                    height: 50%;
+                    border: 2px solid rgba(255,255,255,0.1);
                     background: #000;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    border: 2px solid #222;
+                }
+                .trombi-group-photo {
+                    display: block;
+                    width: 100%;
+                    height: auto;
+                }
+                .trombi-face-rect {
+                    position: absolute;
+                    background: #000;
                     cursor: pointer;
+                    border: 2px solid #333;
+                    z-index: 2;
                 }
-                .trombi-classified {
-                    color: #ff3333;
-                    font-weight: 900;
-                    font-size: 0.65rem;
-                    letter-spacing: 3px;
-                    text-shadow: 0 0 6px rgba(255,50,50,0.5);
-                    animation: trombiBlink 1.5s infinite alternate;
+                .trombi-face-label {
+                    position: absolute;
+                    z-index: 2;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    pointer-events: none;
                 }
-                @keyframes trombiBlink {
-                    from { opacity: 1; }
-                    to { opacity: 0.4; }
-                }
-                .trombi-name-area {
-                    padding: 8px;
-                    text-align: center;
-                }
-                .trombi-member-name {
+                .trombi-label-name {
+                    background: rgba(0,0,0,0.8);
                     color: white;
                     font-weight: 900;
-                    font-size: 0.85rem;
-                    margin: 0;
+                    font-size: 0.55rem;
+                    padding: 2px 5px;
+                    border-radius: 3px;
+                    white-space: nowrap;
                 }
-                .trombi-member-role {
-                    font-size: 0.7rem;
+                .trombi-label-role {
+                    font-size: 0.45rem;
                     font-weight: bold;
-                    margin: 2px 0 0;
+                    background: rgba(0,0,0,0.6);
+                    padding: 1px 4px;
+                    border-radius: 2px;
+                    white-space: nowrap;
                 }
                 .trombi-modal-overlay {
                     position: fixed;
