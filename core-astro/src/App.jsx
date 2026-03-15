@@ -15,7 +15,7 @@ import PageWario from './components/PageWario';
 import PageChrono from './components/PageChrono';
 import PagePsych from './components/PagePsych';
 import PageCasino from './components/PageCasino';
-import PagePoker from './components/PagePoker';
+import PageTrombi from './components/PageTrombi';
 import Navigation from './components/Navigation';
 
 import useStore from './store/useStore';
@@ -52,7 +52,7 @@ class ErrorBoundary extends Component {
 export default function App() {
   const { speedBoost, currentPage, setPage, resetSpeed, happening, triggerHappening, username, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, errorMsg, balance, socialStatus, setBets, setBalance, setPokerState, setPokerRooms } = useStore();
 
-  const SWIPE_PAGES = ['WARIO', 'TOAD', 'PEACH', 'LUIGI', 'MARIO', 'CHRONO', 'POKER', 'CASINO', 'PSYCH'];
+  const SWIPE_PAGES = ['WARIO', 'TOAD', 'PEACH', 'LUIGI', 'MARIO', 'CHRONO', 'CASINO', 'TROMBI', 'PSYCH'];
   const swipeDir = useRef(1);
   const touchRef = useRef({ startX: 0, startY: 0, swiping: false });
 
@@ -183,7 +183,7 @@ export default function App() {
       case 'CHRONO': return 'rgba(255, 153, 0, 0.2)'; // Orange feu
       case 'PSYCH': return 'rgba(0, 255, 255, 0.2)'; // Cyan fluo
       case 'CASINO': return 'rgba(255, 0, 255, 0.2)'; // Magenta fluo
-      case 'POKER': return 'rgba(0, 150, 0, 0.2)'; // Vert Tapis
+      case 'TROMBI': return 'rgba(255, 100, 50, 0.2)'; // Orange
       default: return 'rgba(0, 255, 204, 0.2)'; // Cyan par défaut
     }
   };
@@ -198,7 +198,7 @@ export default function App() {
       case 'CHRONO': return <PageChrono key="chrono" />;
       case 'PSYCH': return <PagePsych key="psych" />;
       case 'CASINO': return <PageCasino key="casino" />;
-      case 'POKER': return <PagePoker key="poker" />;
+      case 'TROMBI': return <PageTrombi key="trombi" />;
       default: return <PageMario key="mario" />;
     }
   };

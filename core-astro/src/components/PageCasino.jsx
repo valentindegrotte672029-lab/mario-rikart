@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import useStore from '../store/useStore';
 import { socket } from '../socket';
+import PagePoker from './PagePoker';
 
 export default function PageCasino() {
   const { bets, username, spendCoins } = useStore();
@@ -9,6 +10,7 @@ export default function PageCasino() {
   const [newBetQuestion, setNewBetQuestion] = useState('');
   const [newBetOptions, setNewBetOptions] = useState(['', '']);
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [casinoTab, setCasinoTab] = useState('polymario');
 
   const handlePlaceBet = (betId, optionIdx, betTitle) => {
     const amountStr = selectedAmounts[`${betId}-${optionIdx}`];
@@ -53,8 +55,21 @@ export default function PageCasino() {
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
     >
+      <div className="casino-tab-bar">
+        <button className={`casino-tab-btn ${casinoTab === 'polymario' ? 'active' : ''}`} onClick={() => setCasinoTab('polymario')}>
+          🎰 Polymario
+        </button>
+        <button className={`casino-tab-btn ${casinoTab === 'poker' ? 'active' : ''}`} onClick={() => setCasinoTab('poker')}>
+          ♠️ Poker
+        </button>
+      </div>
+
+      {casinoTab === 'poker' ? (
+        <PagePoker />
+      ) : (
+      <>
       <div className="casino-header">
-        <h1 className="casino-title">🎰 CASINO </h1>
+        <h1 className="casino-title">🎰 POLYMARIO</h1>
         <p className="casino-subtitle">Dévoilez vos pronostics.</p>
         <button className="btn-create-toggle" onClick={() => setShowCreateForm(!showCreateForm)}>
           {showCreateForm ? 'Fermer' : 'Créer un Pari / Sondage'}
@@ -171,6 +186,8 @@ export default function PageCasino() {
           </AnimatePresence>
         )}
       </div>
+      </>
+      )}
 
       <style>{`
         .page-casino {
@@ -178,6 +195,31 @@ export default function PageCasino() {
           flex-direction: column;
           gap: 20px;
           padding: 0 0 40px 0;
+        }
+
+        .casino-tab-bar {
+          display: flex;
+          gap: 8px;
+          justify-content: center;
+          margin-bottom: 8px;
+        }
+        .casino-tab-btn {
+          flex: 1;
+          padding: 10px;
+          border-radius: 12px;
+          border: 2px solid rgba(255,0,255,0.3);
+          background: rgba(255,0,255,0.05);
+          color: #ccc;
+          font-weight: bold;
+          font-size: 0.95rem;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+        .casino-tab-btn.active {
+          background: rgba(255,0,255,0.2);
+          border-color: #ff00ff;
+          color: #ff00ff;
+          box-shadow: 0 0 12px rgba(255,0,255,0.3);
         }
 
         .casino-header {

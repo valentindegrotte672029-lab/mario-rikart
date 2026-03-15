@@ -9,8 +9,8 @@ const PAGES = [
     { id: 'LUIGI',  icon: '🎮', label: 'Arcade',  color: '#39ff14' },
     { id: 'MARIO',  icon: '📸', label: 'BeMario',  color: '#ff3333' },
     { id: 'CHRONO', icon: '⏱️', label: 'Poppy',    color: '#ff9900' },
-    { id: 'POKER',  icon: '♠️', label: 'Poker',    color: '#00ff66' },
-    { id: 'CASINO', icon: '💎', label: 'Paris',    color: '#ff00ff' },
+    { id: 'CASINO', icon: '🎰', label: 'Casino',   color: '#ff00ff' },
+    { id: 'TROMBI', icon: '📰', label: 'Trombi',   color: '#ff6633' },
     { id: 'PSYCH',  icon: '🧠', label: 'Test',     color: '#00ffff' },
 ];
 
