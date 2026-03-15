@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// Each pole = one group photo (full PDF page) with face positions as percentages
+// Each pole = one group photo with face rects + name text rects (all in % of image)
+// Coordinates from rendered reference PDF with precise black rectangle positions
 const POLES = [
     {
         name: 'Présidence',
@@ -10,8 +11,8 @@ const POLES = [
         photo: '/images/trombi/page_1.jpg',
         description: 'Le pôle Présidence dirige le BDE, coordonne tous les autres pôles et représente les étudiants auprès de l\'administration.',
         members: [
-            { name: 'Lucas Tribut', role: 'Président', x: 22, y: 43, w: 22, h: 16 },
-            { name: 'Estelle Bouillet', role: 'Vice-Présidente', x: 57, y: 55, w: 18, h: 13 },
+            { name: 'Lucas Tribut', role: 'Président', face: { x: 20.4, y: 43.1, w: 20.7, h: 18.2 }, text: { x: 2.3, y: 67.9, w: 30.3, h: 3.4 } },
+            { name: 'Estelle Bouillet', role: 'Vice-Présidente', face: { x: 57.5, y: 56.6, w: 20.7, h: 14 }, text: { x: 57.5, y: 73.5, w: 37.2, h: 3.3 } },
         ]
     },
     {
@@ -21,8 +22,8 @@ const POLES = [
         photo: '/images/trombi/page_2.jpg',
         description: 'Le pôle Secrétariat gère toute la paperasse, les comptes-rendus, la communication interne et les procès-verbaux.',
         members: [
-            { name: 'Inès Ennadif', role: 'Secrétaire', x: 18, y: 35, w: 25, h: 18 },
-            { name: 'Thomas Dubuc', role: 'Head Secrétaire', x: 56, y: 34, w: 25, h: 18 },
+            { name: 'Inès Ennadif', role: 'Secrétaire', face: { x: 17.9, y: 34.6, w: 22.8, h: 20.7 }, text: { x: 7.2, y: 77.8, w: 33.6, h: 3.2 } },
+            { name: 'Thomas Dubuc', role: 'Head Secrétaire', face: { x: 52.6, y: 31.8, w: 32.1, h: 20.7 }, text: { x: 58.3, y: 78.2, w: 33.6, h: 3.2 } },
         ]
     },
     {
@@ -32,8 +33,8 @@ const POLES = [
         photo: '/images/trombi/page_3.jpg',
         description: 'Le pôle Trésorerie gère le budget du BDE, les encaissements, les dépenses et s\'assure que les comptes sont en ordre.',
         members: [
-            { name: 'Mateo Cavaloc', role: 'Trésorier', x: 18, y: 53, w: 20, h: 14 },
-            { name: 'Kylian Lib', role: 'Head Trésorier', x: 56, y: 50, w: 20, h: 14 },
+            { name: 'Mateo Cavaloc', role: 'Trésorier', face: { x: 16.8, y: 51.2, w: 27.4, h: 18.5 }, text: { x: 14.2, y: 88.4, w: 21.4, h: 1.8 } },
+            { name: 'Kylian Libouban', role: 'Head Trésorier', face: { x: 55.6, y: 50, w: 26.3, h: 17.5 }, text: { x: 57.8, y: 84, w: 23.2, h: 2.4 } },
         ]
     },
     {
@@ -43,8 +44,8 @@ const POLES = [
         photo: '/images/trombi/page_4.jpg',
         description: 'Le pôle Ambassade représente le BDE à l\'extérieur, gère les relations avec les autres écoles et associations.',
         members: [
-            { name: 'Alexandre Hoffherr', role: 'Ambassadeur', x: 18, y: 33, w: 22, h: 15 },
-            { name: 'Emma Gomes', role: 'Head Ambassadeur', x: 55, y: 42, w: 22, h: 15 },
+            { name: 'Alexandre Hofherr', role: 'Ambassadeur', face: { x: 27.1, y: 32.6, w: 21.2, h: 11.6 }, text: { x: 18.8, y: 70, w: 27, h: 9.9 } },
+            { name: 'Emma Gomes', role: 'Head Ambassadrice', face: { x: 69, y: 47.2, w: 20.9, h: 12.2 }, text: { x: 63.3, y: 73.7, w: 19.7, h: 10.5 } },
         ]
     },
     {
@@ -54,8 +55,8 @@ const POLES = [
         photo: '/images/trombi/page_5.jpg',
         description: 'Le pôle Communication gère les réseaux sociaux, les affiches, les vidéos et toute la visibilité du BDE.',
         members: [
-            { name: 'Valentin Degrotte', role: 'Communication', x: 13, y: 57, w: 22, h: 15 },
-            { name: 'Maxime Bloud', role: 'Head Communication', x: 54, y: 57, w: 24, h: 17 },
+            { name: 'Valentin Degrotte', role: 'Communication', face: { x: 14, y: 61.2, w: 23.5, h: 13.3 }, text: { x: 3.6, y: 94.5, w: 33.9, h: 2 } },
+            { name: 'Maxime Blood', role: 'Head Communication', face: { x: 56, y: 58, w: 24.3, h: 17.6 }, text: { x: 36.9, y: 89.6, w: 25, h: 1.9 } },
         ]
     },
     {
@@ -65,8 +66,8 @@ const POLES = [
         photo: '/images/trombi/page_6.jpg',
         description: 'Le pôle Événementiel organise toutes les soirées, galas, afterworks et événements de la vie étudiante.',
         members: [
-            { name: 'Victoire Callens', role: 'Événementiel', x: 14, y: 46, w: 22, h: 14 },
-            { name: 'Hanaé Lemoine', role: 'Head Événementiel', x: 60, y: 44, w: 20, h: 14 },
+            { name: 'Victoire Callens', role: 'Head Événementiel', face: { x: 14.3, y: 45.9, w: 23.8, h: 16.4 }, text: { x: 12.6, y: 78.6, w: 27.2, h: 13.1 } },
+            { name: 'Hanaé Lemoine', role: 'Événementiel', face: { x: 59.5, y: 44.7, w: 19.2, h: 16.5 }, text: { x: 55.8, y: 77.9, w: 27.6, h: 13.1 } },
         ]
     },
     {
@@ -76,21 +77,21 @@ const POLES = [
         photo: '/images/trombi/page_7.jpg',
         description: 'Le pôle Animations organise les activités ludiques, tournois, jeux et animations pendant les temps de pause.',
         members: [
-            { name: 'Edouard Souied', role: 'Animations', x: 6, y: 62, w: 18, h: 14 },
-            { name: 'Radek Roussel', role: 'Animations', x: 72, y: 62, w: 18, h: 14 },
-            { name: 'Alyxane Lefèvre Böhm', role: 'Head Animations', x: 38, y: 75, w: 18, h: 14 },
+            { name: 'Edouard Souied', role: 'Animations', face: { x: 22.5, y: 58.2, w: 21.2, h: 14.4 }, text: { x: 7.4, y: 88.5, w: 19.4, h: 1.7 } },
+            { name: 'Adek Roussel', role: 'Animations', face: { x: 66.4, y: 62.7, w: 15.4, h: 11.2 }, text: { x: 72.1, y: 88.5, w: 19.4, h: 1.9 } },
+            { name: 'Alyxane Lefèvre-Böhm', role: 'Head Animations', face: { x: 49, y: 65.3, w: 15.4, h: 11.3 }, text: { x: 38.1, y: 92.9, w: 21.7, h: 3.1 } },
         ]
     },
     {
-        name: 'Partenariats',
+        name: 'Logistique',
         emoji: '🤝',
         color: '#00ff88',
         photo: '/images/trombi/page_8.jpg',
-        description: 'Le pôle Partenariats négocie avec les entreprises et sponsors pour financer les événements et obtenir des avantages pour les étudiants.',
+        description: 'Le pôle Logistique gère l\'organisation matérielle des événements, la logistique et les approvisionnements.',
         members: [
-            { name: 'Baptiste Dubreuil', role: 'Partenariats', x: 15, y: 44, w: 18, h: 12 },
-            { name: 'Aurelien Malige', role: 'Partenariats', x: 64, y: 40, w: 18, h: 12 },
-            { name: 'Salomé Valmorin', role: 'Head Partenariats', x: 44, y: 49, w: 16, h: 10 },
+            { name: 'Baptiste Dubreuil', role: 'Head Logistique', face: { x: 21.5, y: 44.5, w: 10.9, h: 11.2 }, text: { x: 19.8, y: 61.7, w: 9, h: 2.4 } },
+            { name: 'Aurélien Malige', role: 'Logistique', face: { x: 69.9, y: 43.1, w: 9.4, h: 8 }, text: { x: 72.4, y: 60, w: 7.3, h: 2.4 } },
+            { name: 'Salomé Valmorin', role: 'Logistique', face: { x: 48.5, y: 50.8, w: 9, h: 8 }, text: { x: 48.6, y: 65.8, w: 7.7, h: 2.4 } },
         ]
     },
     {
@@ -100,7 +101,7 @@ const POLES = [
         photo: '/images/trombi/page_9.jpg',
         description: 'Le pôle Travel organise les voyages étudiants, week-ends d\'intégration et escapades. Direction : l\'aventure.',
         members: [
-            { name: 'Salomé Nathan', role: 'Head Travel', x: 40, y: 43, w: 18, h: 13 },
+            { name: 'Salomé Nathan', role: 'Head Travel', face: { x: 46, y: 46.3, w: 7.9, h: 9.3 }, text: { x: 40.8, y: 81.9, w: 27.6, h: 3.3 } },
         ]
     },
 ];
@@ -124,6 +125,20 @@ export default function PageTrombi() {
             setShowInfo(null);
         }
     };
+
+    const renderRect = (rect, pi, mi, className) => (
+        <motion.div
+            className={`trombi-black-rect ${className}`}
+            style={{
+                left: `${rect.x}%`,
+                top: `${rect.y}%`,
+                width: `${rect.w}%`,
+                height: `${rect.h}%`,
+            }}
+            whileTap={{ scale: 0.95 }}
+            onClick={(e) => handleTapRect(e, pi, mi)}
+        />
+    );
 
     return (
         <motion.div
@@ -157,35 +172,11 @@ export default function PageTrombi() {
                         {pole.members.map((member, mi) => {
                             const key = memberKey(pi, mi);
                             const isRevealed = revealed.has(key);
+                            if (isRevealed) return null;
                             return (
                                 <React.Fragment key={key}>
-                                    {!isRevealed ? (
-                                        <motion.div
-                                            className="trombi-face-rect"
-                                            style={{
-                                                left: `${member.x}%`,
-                                                top: `${member.y}%`,
-                                                width: `${member.w}%`,
-                                                height: `${member.h}%`,
-                                            }}
-                                            whileTap={{ scale: 0.92 }}
-                                            onClick={(e) => handleTapRect(e, pi, mi)}
-                                        />
-                                    ) : (
-                                        <motion.div
-                                            className="trombi-face-label"
-                                            style={{
-                                                left: `${member.x}%`,
-                                                top: `${member.y + member.h}%`,
-                                                width: `${Math.max(member.w, 20)}%`,
-                                            }}
-                                            initial={{ opacity: 0, y: -5 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                        >
-                                            <span className="trombi-label-name">{member.name}</span>
-                                            <span className="trombi-label-role" style={{ color: pole.color }}>{member.role}</span>
-                                        </motion.div>
-                                    )}
+                                    {renderRect(member.face, pi, mi, 'trombi-face-rect')}
+                                    {renderRect(member.text, pi, mi, 'trombi-text-rect')}
                                 </React.Fragment>
                             );
                         })}
@@ -296,37 +287,17 @@ export default function PageTrombi() {
                     width: 100%;
                     height: auto;
                 }
-                .trombi-face-rect {
+                .trombi-black-rect {
                     position: absolute;
                     background: #000;
                     cursor: pointer;
-                    border: 2px solid #333;
                     z-index: 2;
                 }
-                .trombi-face-label {
-                    position: absolute;
-                    z-index: 2;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    pointer-events: none;
+                .trombi-face-rect {
+                    border: 1px solid #222;
                 }
-                .trombi-label-name {
-                    background: rgba(0,0,0,0.8);
-                    color: white;
-                    font-weight: 900;
-                    font-size: 0.55rem;
-                    padding: 2px 5px;
-                    border-radius: 3px;
-                    white-space: nowrap;
-                }
-                .trombi-label-role {
-                    font-size: 0.45rem;
-                    font-weight: bold;
-                    background: rgba(0,0,0,0.6);
-                    padding: 1px 4px;
-                    border-radius: 2px;
-                    white-space: nowrap;
+                .trombi-text-rect {
+                    border: none;
                 }
                 .trombi-modal-overlay {
                     position: fixed;
