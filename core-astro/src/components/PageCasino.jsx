@@ -19,7 +19,7 @@ const CASINO_VIEW_THEME = {
 };
 
 export default function PageCasino() {
-  const { bets, username, spendCoins } = useStore();
+  const { bets, username, spendCoins, setBgOverride, clearBgOverride } = useStore();
   const [selectedAmounts, setSelectedAmounts] = useState({});
   const [newBetQuestion, setNewBetQuestion] = useState('');
   const [newBetOptions, setNewBetOptions] = useState(['', '']);
@@ -28,18 +28,8 @@ export default function PageCasino() {
   const viewTheme = CASINO_VIEW_THEME[casinoTab] || CASINO_VIEW_THEME.poker;
 
   useEffect(() => {
-    const root = document.getElementById('app-root');
-    if (!root) return undefined;
-
-    root.style.setProperty('--page-bg-override', viewTheme.bg);
-    root.style.setProperty('--theme-glow-override', viewTheme.glow);
-    root.style.setProperty('--theme-glow-soft-override', viewTheme.glowSoft);
-
-    return () => {
-      root.style.removeProperty('--page-bg-override');
-      root.style.removeProperty('--theme-glow-override');
-      root.style.removeProperty('--theme-glow-soft-override');
-    };
+    setBgOverride(viewTheme);
+    return () => clearBgOverride();
   }, [viewTheme]);
 
   const handlePlaceBet = (betId, optionIdx, betTitle) => {

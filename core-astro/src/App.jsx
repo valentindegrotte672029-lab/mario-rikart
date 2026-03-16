@@ -48,7 +48,7 @@ class ErrorBoundary extends Component {
 }
 
 export default function App() {
-  const { currentPage, setPage, resetSpeed, happening, triggerHappening, username, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, errorMsg, balance, socialStatus, setBets, setBalance, setPokerState, setPokerRooms } = useStore();
+  const { currentPage, setPage, resetSpeed, happening, triggerHappening, username, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, errorMsg, balance, socialStatus, setBets, setBalance, setPokerState, setPokerRooms, bgOverride } = useStore();
 
   const SWIPE_PAGES = ['WARIO', 'TOAD', 'PEACH', 'LUIGI', 'MARIO', 'CHRONO', 'CASINO', 'TROMBI', 'PSYCH'];
   const swipeDir = useRef(1);
@@ -224,6 +224,7 @@ export default function App() {
     glowSoft: 'rgba(0, 255, 204, 0.30)',
     bg: "linear-gradient(145deg, rgba(0,255,204,0.22), rgba(5,8,12,0.95))",
   };
+  const effectiveTheme = bgOverride || activeTheme;
 
   const renderPage = () => {
     switch (currentPage) {
@@ -248,13 +249,21 @@ export default function App() {
         {!username && <SplashScreen key="splash" />}
       </AnimatePresence>
 
-      {/* 1. Moteur Visuel : Fond CSS + Route 3D */}
-      <div
-        className="background-layer"
-        style={{ '--theme-glow': activeTheme.glow, '--theme-glow-soft': activeTheme.glowSoft, '--page-bg': activeTheme.bg }}
-      >
-        <div className="bg-overlay-dark" />
-        <div className="stars-css theme-tint"></div>
+      {/* 1. Moteur Visuel : crossfade entre fonds d'écran */}
+      <div className="bg-scene">
+        <AnimatePresence initial={false}>
+          <motion.div
+            key={effectiveTheme.bg}
+            className="background-layer"
+            style={{ backgroundImage: effectiveTheme.bg }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.65, ease: [0.4, 0, 0.2, 1] }}
+          />
+        </AnimatePresence>
+        <div className="bg-overlay-dark" style={{ '--theme-glow-soft': effectiveTheme.glowSoft }} />
+        <div className="stars-css theme-tint" style={{ '--theme-glow': effectiveTheme.glow }} />
       </div>
 
       {/* 2. HUD Haut (Toad Bank) */}
@@ -331,36 +340,37 @@ export default function App() {
 
       <style>{`
         #app-root { width: 100%; height: 100%; display: flex; flex-direction: column; }
-        .background-layer {
+        .bg-scene {
           position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
+          top: 0; left: 0; right: 0; bottom: 0;
           z-index: -1;
-          background-image: var(--page-bg-override, var(--page-bg));
+          overflow: hidden;
+        }
+        .background-layer {
+          position: absolute;
+          inset: 0;
           background-position: center;
           background-size: cover;
           background-repeat: no-repeat;
           background-attachment: fixed;
-          transition: background 0.5s ease-in-out;
         }
 
         .bg-overlay-dark {
           position: absolute;
           inset: 0;
           background:
-            radial-gradient(circle at center, var(--theme-glow-soft-override, var(--theme-glow-soft, rgba(0,255,204,0.3))) 0%, transparent 55%),
+            radial-gradient(circle at center, var(--theme-glow-soft, rgba(0,255,204,0.3)) 0%, transparent 55%),
             rgba(0, 0, 0, 0.6);
-          z-index: 0;
+          z-index: 2;
           pointer-events: none;
+          transition: background 0.65s ease;
         }
 
         .theme-tint {
-          z-index: 1;
-          background-color: var(--theme-glow-override, var(--theme-glow, rgba(0,255,204,0.2)));
+          z-index: 3;
+          background-color: var(--theme-glow, rgba(0,255,204,0.2));
           mix-blend-mode: color;
-          transition: background-color 0.5s ease-in-out;
+          transition: background-color 0.65s ease;
           opacity: 0.35;
         }
         

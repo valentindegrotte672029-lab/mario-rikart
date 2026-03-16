@@ -15,8 +15,13 @@ const useStore = create(
     speedBoost: false,
     activeUsers: [],
     setActiveUsers: (users) => set({ activeUsers: users }),
-    setPage: (page) => set({ currentPage: page, speedBoost: true }),
+    setPage: (page) => set({ currentPage: page, speedBoost: true, bgOverride: null }),
     resetSpeed: () => set({ speedBoost: false }),
+
+    // Background override (set by subpages like Casino/Psych to crossfade full-screen bg)
+    bgOverride: null,
+    setBgOverride: (theme) => set({ bgOverride: theme }),
+    clearBgOverride: () => set({ bgOverride: null }),
 
     // Toad Bank State
     balance: 100,
