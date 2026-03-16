@@ -1,8 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import useStore from '../store/useStore';
 import { socket } from '../socket';
 import PagePoker from './PagePoker';
+
+const BG_ASSET_VERSION = '20260317a';
+const CASINO_VIEW_THEME = {
+  poker: {
+    glow: '#00FFFF',
+    glowSoft: 'rgba(0, 255, 255, 0.32)',
+    bg: `linear-gradient(145deg, rgba(255,0,255,0.24), rgba(0,30,30,0.92)), url('/images/backgrounds/bg_casino_retrowave_v3.png?v=${BG_ASSET_VERSION}')`,
+  },
+  polymario: {
+    glow: '#E0FFFF',
+    glowSoft: 'rgba(0, 255, 255, 0.30)',
+    bg: `linear-gradient(145deg, rgba(224,255,255,0.16), rgba(0,20,18,0.95)), url('/images/backgrounds/bg_motskartes_matrix_v3.png?v=${BG_ASSET_VERSION}')`,
+  },
+};
 
 export default function PageCasino() {
   const { bets, username, spendCoins } = useStore();
@@ -11,6 +25,22 @@ export default function PageCasino() {
   const [newBetOptions, setNewBetOptions] = useState(['', '']);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [casinoTab, setCasinoTab] = useState('poker');
+  const viewTheme = CASINO_VIEW_THEME[casinoTab] || CASINO_VIEW_THEME.poker;
+
+  useEffect(() => {
+    const root = document.getElementById('app-root');
+    if (!root) return undefined;
+
+    root.style.setProperty('--page-bg-override', viewTheme.bg);
+    root.style.setProperty('--theme-glow-override', viewTheme.glow);
+    root.style.setProperty('--theme-glow-soft-override', viewTheme.glowSoft);
+
+    return () => {
+      root.style.removeProperty('--page-bg-override');
+      root.style.removeProperty('--theme-glow-override');
+      root.style.removeProperty('--theme-glow-soft-override');
+    };
+  }, [viewTheme]);
 
   const handlePlaceBet = (betId, optionIdx, betTitle) => {
     const amountStr = selectedAmounts[`${betId}-${optionIdx}`];

@@ -175,7 +175,7 @@ export default function App() {
     MARIO: {
       glow: '#FF0000',
       glowSoft: 'rgba(255, 0, 0, 0.35)',
-      bg: `linear-gradient(145deg, rgba(255,0,0,0.35), rgba(25,0,0,0.92)), url('/images/backgrounds/bg_bemario_speedlines_v3.png?v=${BG_ASSET_VERSION}')`,
+      bg: `linear-gradient(145deg, rgba(255,0,0,0.35), rgba(25,0,0,0.92)), url('/images/backgrounds/bg_bemario_speedlines_legacy.jpg?v=${BG_ASSET_VERSION}')`,
     },
     LUIGI: {
       glow: '#39FF14',
@@ -338,7 +338,7 @@ export default function App() {
           right: 0;
           bottom: 0;
           z-index: -1;
-          background-image: var(--page-bg);
+          background-image: var(--page-bg-override, var(--page-bg));
           background-position: center;
           background-size: cover;
           background-repeat: no-repeat;
@@ -350,7 +350,7 @@ export default function App() {
           position: absolute;
           inset: 0;
           background:
-            radial-gradient(circle at center, var(--theme-glow-soft, rgba(0,255,204,0.3)) 0%, transparent 55%),
+            radial-gradient(circle at center, var(--theme-glow-soft-override, var(--theme-glow-soft, rgba(0,255,204,0.3))) 0%, transparent 55%),
             rgba(0, 0, 0, 0.6);
           z-index: 0;
           pointer-events: none;
@@ -358,7 +358,7 @@ export default function App() {
 
         .theme-tint {
           z-index: 1;
-          background-color: var(--theme-glow, rgba(0,255,204,0.2));
+          background-color: var(--theme-glow-override, var(--theme-glow, rgba(0,255,204,0.2)));
           mix-blend-mode: color;
           transition: background-color 0.5s ease-in-out;
           opacity: 0.35;

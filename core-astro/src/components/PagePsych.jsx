@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Brain, ArrowRight, RotateCcw, Star } from 'lucide-react';
 
@@ -210,6 +210,21 @@ export default function PagePsych() {
     const [wsStartCell, setWsStartCell] = useState(null);
     const [wsFoundWords, setWsFoundWords] = useState(new Set());
     const viewTheme = PSYCH_VIEW_THEME[pageView] || PSYCH_VIEW_THEME.test;
+
+    useEffect(() => {
+        const root = document.getElementById('app-root');
+        if (!root) return undefined;
+
+        root.style.setProperty('--page-bg-override', viewTheme.bg);
+        root.style.setProperty('--theme-glow-override', viewTheme.accent);
+        root.style.setProperty('--theme-glow-soft-override', viewTheme.glow);
+
+        return () => {
+            root.style.removeProperty('--page-bg-override');
+            root.style.removeProperty('--theme-glow-override');
+            root.style.removeProperty('--theme-glow-soft-override');
+        };
+    }, [viewTheme]);
 
     const wsFoundCellColors = useMemo(() => {
         const map = {};
