@@ -172,20 +172,58 @@ export default function App() {
     }
   }, [balance, socialStatus, peachUnlock, username]);
 
-  // Couleurs dynamiques selon la page pour l'ambiance globale
-  const getThemeColor = (page) => {
-    switch (page) {
-      case 'LUIGI': return 'rgba(0, 255, 0, 0.2)'; // Vert toxique
-      case 'TOAD': return 'rgba(150, 0, 255, 0.2)'; // Violet néon
-      case 'PEACH': return 'rgba(255, 0, 255, 0.2)'; // Rose chaud
-      case 'MARIO': return 'rgba(255, 0, 0, 0.2)'; // Rouge sombre
-      case 'WARIO': return 'rgba(255, 200, 0, 0.2)'; // Or/Jaune
-      case 'CHRONO': return 'rgba(255, 153, 0, 0.2)'; // Orange feu
-      case 'PSYCH': return 'rgba(0, 255, 255, 0.2)'; // Cyan fluo
-      case 'CASINO': return 'rgba(255, 0, 255, 0.2)'; // Magenta fluo
-      case 'TROMBI': return 'rgba(255, 100, 50, 0.2)'; // Orange
-      default: return 'rgba(0, 255, 204, 0.2)'; // Cyan par défaut
-    }
+  const THEME_BY_PAGE = {
+    MARIO: {
+      glow: '#FF0000',
+      glowSoft: 'rgba(255, 0, 0, 0.35)',
+      bg: "linear-gradient(145deg, rgba(255,0,0,0.35), rgba(25,0,0,0.92)), url('/images/backgrounds/bg_bemario_speedlines.jpg')",
+    },
+    LUIGI: {
+      glow: '#39FF14',
+      glowSoft: 'rgba(57, 255, 20, 0.35)',
+      bg: "linear-gradient(145deg, rgba(57,255,20,0.30), rgba(0,20,0,0.94)), url('/images/backgrounds/bg_luiweed_mist.jpg')",
+    },
+    PEACH: {
+      glow: '#FF00FF',
+      glowSoft: 'rgba(255, 0, 255, 0.32)',
+      bg: "linear-gradient(145deg, rgba(255,0,255,0.28), rgba(35,0,35,0.92)), url('/images/backgrounds/bg_peachasse_silk.jpg')",
+    },
+    TOAD: {
+      glow: '#4B0082',
+      glowSoft: 'rgba(75, 0, 130, 0.35)',
+      bg: "linear-gradient(145deg, rgba(75,0,130,0.34), rgba(15,0,30,0.95)), url('/images/backgrounds/bg_toadxique_potions.jpg')",
+    },
+    WARIO: {
+      glow: '#FFD700',
+      glowSoft: 'rgba(255, 215, 0, 0.30)',
+      bg: "linear-gradient(145deg, rgba(255,215,0,0.22), rgba(32,20,0,0.92)), url('/images/backgrounds/bg_wario_gold.jpg')",
+    },
+    CHRONO: {
+      glow: '#FF8C00',
+      glowSoft: 'rgba(255, 140, 0, 0.32)',
+      bg: "linear-gradient(145deg, rgba(255,140,0,0.25), rgba(25,8,0,0.95)), url('/images/backgrounds/bg_chrono_ripples.jpg')",
+    },
+    CASINO: {
+      glow: '#00FFFF',
+      glowSoft: 'rgba(0, 255, 255, 0.32)',
+      bg: "linear-gradient(145deg, rgba(255,0,255,0.24), rgba(0,30,30,0.92)), url('/images/backgrounds/bg_casino_retrowave.jpg')",
+    },
+    TROMBI: {
+      glow: '#704214',
+      glowSoft: 'rgba(112, 66, 20, 0.34)',
+      bg: "linear-gradient(145deg, rgba(112,66,20,0.32), rgba(20,14,10,0.95)), url('/images/backgrounds/bg_trombi_classified.jpg')",
+    },
+    PSYCH: {
+      glow: '#00CED1',
+      glowSoft: 'rgba(0, 206, 209, 0.32)',
+      bg: "linear-gradient(145deg, rgba(0,206,209,0.25), rgba(0,15,20,0.93)), url('/images/backgrounds/bg_psych_neural.jpg')",
+    },
+  };
+
+  const activeTheme = THEME_BY_PAGE[currentPage] || {
+    glow: '#00FFCC',
+    glowSoft: 'rgba(0, 255, 204, 0.30)',
+    bg: "linear-gradient(145deg, rgba(0,255,204,0.22), rgba(5,8,12,0.95))",
   };
 
   const renderPage = () => {
@@ -212,7 +250,11 @@ export default function App() {
       </AnimatePresence>
 
       {/* 1. Moteur Visuel : Fond CSS + Route 3D */}
-      <div className="background-layer" style={{ '--theme-glow': getThemeColor(currentPage) }}>
+      <div
+        className="background-layer"
+        style={{ '--theme-glow': activeTheme.glow, '--theme-glow-soft': activeTheme.glowSoft, '--page-bg': activeTheme.bg }}
+      >
+        <div className="bg-overlay-dark" />
         <div className="stars-css theme-tint"></div>
         <div className="canvas-container">
           <Canvas dpr={[1, 1.5]} camera={{ position: [0, 1.5, 6], fov: 65 }}>
@@ -296,16 +338,37 @@ export default function App() {
 
       <style>{`
         #app-root { width: 100%; height: 100%; display: flex; flex-direction: column; }
-        .background-layer { 
-          position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -10; 
-          background-image: radial-gradient(circle at center 30%, var(--theme-glow, rgba(0,255,204,0.2)) 0%, transparent 80%);
-          transition: background-image 0.5s ease-in-out;
+        .background-layer {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          z-index: -1;
+          background-image: var(--page-bg);
+          background-position: center;
+          background-size: cover;
+          background-repeat: no-repeat;
+          background-attachment: fixed;
+          transition: background 0.5s ease-in-out;
+        }
+
+        .bg-overlay-dark {
+          position: absolute;
+          inset: 0;
+          background:
+            radial-gradient(circle at center, var(--theme-glow-soft, rgba(0,255,204,0.3)) 0%, transparent 55%),
+            rgba(0, 0, 0, 0.6);
+          z-index: 0;
+          pointer-events: none;
         }
 
         .theme-tint {
+          z-index: 1;
           background-color: var(--theme-glow, rgba(0,255,204,0.2));
           mix-blend-mode: color;
           transition: background-color 0.5s ease-in-out;
+          opacity: 0.35;
         }
         
         .stars-css {
@@ -315,6 +378,8 @@ export default function App() {
 
         .canvas-container {
           width: 100%; height: 100%; position: absolute;
+          z-index: 2;
+          opacity: 0.35;
           -webkit-mask-image: linear-gradient(to top, black 30%, transparent 80%);
           mask-image: linear-gradient(to top, black 30%, transparent 80%);
         }
@@ -325,6 +390,29 @@ export default function App() {
           position: relative; z-index: 10;
           overflow-y: auto; overflow-x: hidden;
           -webkit-overflow-scrolling: touch;
+        }
+
+        .content-area .glass-panel,
+        .content-area .mobile-card,
+        .content-area .casino-header,
+        .content-area .create-bet-form,
+        .content-area .bet-card,
+        .content-area .sign-card,
+        .content-area .trombi-header,
+        .content-area .cw-scam-banner,
+        .content-area .trombi-photo-container,
+        .content-area .ws-grid {
+          background: rgba(255, 255, 255, 0.05);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+        }
+
+        .content-area button,
+        .content-area input,
+        .content-area textarea,
+        .content-area select {
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
         }
         .content-area > * { width: 100%; max-width: 450px; }
         .swipe-page { width: 100%; max-width: 450px; min-height: 100%; }

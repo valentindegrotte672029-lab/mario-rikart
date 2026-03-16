@@ -178,6 +178,24 @@ const WS_COLORS = [
     'rgba(255,180,180,0.4)',
 ];
 
+const PSYCH_VIEW_THEME = {
+    test: {
+        accent: '#00CED1',
+        glow: 'rgba(0, 206, 209, 0.35)',
+        bg: "linear-gradient(145deg, rgba(0,206,209,0.24), rgba(0,15,20,0.92)), url('/images/backgrounds/bg_psych_neural.jpg')",
+    },
+    horoscope: {
+        accent: '#4B0082',
+        glow: 'rgba(75, 0, 130, 0.35)',
+        bg: "linear-gradient(145deg, rgba(75,0,130,0.30), rgba(8,8,26,0.94)), url('/images/backgrounds/bg_horoscope_galaxy.jpg')",
+    },
+    crossword: {
+        accent: '#E0FFFF',
+        glow: 'rgba(0, 255, 255, 0.30)',
+        bg: "linear-gradient(145deg, rgba(224,255,255,0.16), rgba(0,20,18,0.95)), url('/images/backgrounds/bg_motskartes_matrix.jpg')",
+    },
+};
+
 export default function PagePsych() {
     const [pageView, setPageView] = useState('test'); // 'test' | 'horoscope' | 'crossword'
     const [expandedSign, setExpandedSign] = useState(null);
@@ -190,6 +208,7 @@ export default function PagePsych() {
     // Mot Karté state
     const [wsStartCell, setWsStartCell] = useState(null);
     const [wsFoundWords, setWsFoundWords] = useState(new Set());
+    const viewTheme = PSYCH_VIEW_THEME[pageView] || PSYCH_VIEW_THEME.test;
 
     const wsFoundCellColors = useMemo(() => {
         const map = {};
@@ -265,6 +284,7 @@ export default function PagePsych() {
     return (
         <motion.div
             className="page-mobile psych-mobile float-subtle"
+            style={{ '--psych-accent': viewTheme.accent, '--psych-glow': viewTheme.glow, '--psych-bg': viewTheme.bg }}
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1.05 }}
@@ -473,7 +493,7 @@ export default function PagePsych() {
 
             <style>{`
                 .psych-mobile {
-                    --theme-color: #00ffff;
+                    --theme-color: var(--psych-accent, #00ffff);
                     width: 100%;
                     height: 100%;
                     display: flex;
@@ -482,6 +502,30 @@ export default function PagePsych() {
                     position: relative;
                     overflow-y: auto;
                     padding: 15px;
+                    background-image: var(--psych-bg);
+                    background-position: center;
+                    background-size: cover;
+                    background-repeat: no-repeat;
+                    background-attachment: fixed;
+                    border-radius: 24px;
+                    transition: background 0.5s ease-in-out;
+                }
+
+                .psych-mobile::before {
+                    content: '';
+                    position: absolute;
+                    inset: 0;
+                    background:
+                      radial-gradient(circle at center, var(--psych-glow, rgba(0,206,209,0.35)) 0%, transparent 58%),
+                      rgba(0,0,0,0.6);
+                    z-index: 0;
+                    pointer-events: none;
+                    border-radius: 24px;
+                }
+
+                .psych-mobile > * {
+                    position: relative;
+                    z-index: 1;
                 }
 
                 .main-psych-card {
