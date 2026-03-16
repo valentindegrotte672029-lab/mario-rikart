@@ -170,47 +170,47 @@ export default function App() {
     }
   }, [balance, socialStatus, peachUnlock, username]);
 
-  const BG_ASSET_VERSION = '20260316b';
+  const BG_ASSET_VERSION = '20260317a';
   const THEME_BY_PAGE = {
     MARIO: {
       glow: '#FF0000',
       glowSoft: 'rgba(255, 0, 0, 0.35)',
-      bg: `linear-gradient(145deg, rgba(255,0,0,0.35), rgba(25,0,0,0.92)), url('/images/backgrounds/bg_bemario_speedlines_v2.jpg?v=${BG_ASSET_VERSION}')`,
+      bg: `linear-gradient(145deg, rgba(255,0,0,0.35), rgba(25,0,0,0.92)), url('/images/backgrounds/bg_bemario_speedlines_v3.png?v=${BG_ASSET_VERSION}')`,
     },
     LUIGI: {
       glow: '#39FF14',
       glowSoft: 'rgba(57, 255, 20, 0.35)',
-      bg: `linear-gradient(145deg, rgba(57,255,20,0.30), rgba(0,20,0,0.94)), url('/images/backgrounds/bg_luiweed_mist_v2.jpg?v=${BG_ASSET_VERSION}')`,
+      bg: `linear-gradient(145deg, rgba(57,255,20,0.30), rgba(0,20,0,0.94)), url('/images/backgrounds/bg_luiweed_mist_v3.png?v=${BG_ASSET_VERSION}')`,
     },
     PEACH: {
       glow: '#FF00FF',
       glowSoft: 'rgba(255, 0, 255, 0.32)',
-      bg: `linear-gradient(145deg, rgba(255,0,255,0.28), rgba(35,0,35,0.92)), url('/images/backgrounds/bg_peachasse_silk_v2.jpg?v=${BG_ASSET_VERSION}')`,
+      bg: `linear-gradient(145deg, rgba(255,0,255,0.28), rgba(35,0,35,0.92)), url('/images/backgrounds/bg_peachasse_silk_v3.png?v=${BG_ASSET_VERSION}')`,
     },
     TOAD: {
       glow: '#4B0082',
       glowSoft: 'rgba(75, 0, 130, 0.35)',
-      bg: `linear-gradient(145deg, rgba(75,0,130,0.34), rgba(15,0,30,0.95)), url('/images/backgrounds/bg_toadxique_potions_v2.jpg?v=${BG_ASSET_VERSION}')`,
+      bg: `linear-gradient(145deg, rgba(75,0,130,0.34), rgba(15,0,30,0.95)), url('/images/backgrounds/bg_toadxique_potions_v3.png?v=${BG_ASSET_VERSION}')`,
     },
     WARIO: {
       glow: '#FFD700',
       glowSoft: 'rgba(255, 215, 0, 0.30)',
-      bg: `linear-gradient(145deg, rgba(255,215,0,0.22), rgba(32,20,0,0.92)), url('/images/backgrounds/bg_wario_gold_v2.jpg?v=${BG_ASSET_VERSION}')`,
+      bg: `linear-gradient(145deg, rgba(255,215,0,0.22), rgba(32,20,0,0.92)), url('/images/backgrounds/bg_wario_gold_v3.png?v=${BG_ASSET_VERSION}')`,
     },
     CHRONO: {
       glow: '#FF8C00',
       glowSoft: 'rgba(255, 140, 0, 0.32)',
-      bg: `linear-gradient(145deg, rgba(255,140,0,0.25), rgba(25,8,0,0.95)), url('/images/backgrounds/bg_chrono_ripples_v2.jpg?v=${BG_ASSET_VERSION}')`,
+      bg: `linear-gradient(145deg, rgba(255,140,0,0.25), rgba(25,8,0,0.95)), url('/images/backgrounds/bg_chrono_ripples_v3.png?v=${BG_ASSET_VERSION}')`,
     },
     CASINO: {
       glow: '#00FFFF',
       glowSoft: 'rgba(0, 255, 255, 0.32)',
-      bg: `linear-gradient(145deg, rgba(255,0,255,0.24), rgba(0,30,30,0.92)), url('/images/backgrounds/bg_casino_retrowave_v2.jpg?v=${BG_ASSET_VERSION}')`,
+      bg: `linear-gradient(145deg, rgba(255,0,255,0.24), rgba(0,30,30,0.92)), url('/images/backgrounds/bg_casino_retrowave_v3.png?v=${BG_ASSET_VERSION}')`,
     },
     TROMBI: {
       glow: '#704214',
       glowSoft: 'rgba(112, 66, 20, 0.34)',
-      bg: `linear-gradient(145deg, rgba(112,66,20,0.32), rgba(20,14,10,0.95)), url('/images/backgrounds/bg_trombi_classified_v2.jpg?v=${BG_ASSET_VERSION}')`,
+      bg: `linear-gradient(145deg, rgba(112,66,20,0.32), rgba(20,14,10,0.95)), url('/images/backgrounds/bg_trombi_classified_v3.jpg?v=${BG_ASSET_VERSION}')`,
     },
     PSYCH: {
       glow: '#00CED1',

@@ -178,7 +178,7 @@ const WS_COLORS = [
     'rgba(255,180,180,0.4)',
 ];
 
-const BG_ASSET_VERSION = '20260316b';
+const BG_ASSET_VERSION = '20260317a';
 const PSYCH_VIEW_THEME = {
     test: {
         accent: '#00CED1',
@@ -188,12 +188,12 @@ const PSYCH_VIEW_THEME = {
     horoscope: {
         accent: '#4B0082',
         glow: 'rgba(75, 0, 130, 0.35)',
-        bg: `linear-gradient(145deg, rgba(75,0,130,0.30), rgba(8,8,26,0.94)), url('/images/backgrounds/bg_horoscope_galaxy_v2.jpg?v=${BG_ASSET_VERSION}')`,
+        bg: `linear-gradient(145deg, rgba(75,0,130,0.30), rgba(8,8,26,0.94)), url('/images/backgrounds/bg_horoscope_galaxy_v3.png?v=${BG_ASSET_VERSION}')`,
     },
     crossword: {
         accent: '#E0FFFF',
         glow: 'rgba(0, 255, 255, 0.30)',
-        bg: `linear-gradient(145deg, rgba(224,255,255,0.16), rgba(0,20,18,0.95)), url('/images/backgrounds/bg_motskartes_matrix_v2.jpg?v=${BG_ASSET_VERSION}')`,
+        bg: `linear-gradient(145deg, rgba(224,255,255,0.16), rgba(0,20,18,0.95)), url('/images/backgrounds/bg_motskartes_matrix_v3.png?v=${BG_ASSET_VERSION}')`,
     },
 };
 
