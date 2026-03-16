@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useCallback, Component } from 'react';
-import { Canvas } from '@react-three/fiber';
 import { motion, AnimatePresence } from 'framer-motion';
 
-import RainbowRoad from './components/RainbowRoad';
 import ToadBank from './components/ToadBank';
 import SplashScreen from './components/SplashScreen';
 import PageHome from './components/PageHome';
@@ -50,7 +48,7 @@ class ErrorBoundary extends Component {
 }
 
 export default function App() {
-  const { speedBoost, currentPage, setPage, resetSpeed, happening, triggerHappening, username, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, errorMsg, balance, socialStatus, setBets, setBalance, setPokerState, setPokerRooms } = useStore();
+  const { currentPage, setPage, resetSpeed, happening, triggerHappening, username, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, errorMsg, balance, socialStatus, setBets, setBalance, setPokerState, setPokerRooms } = useStore();
 
   const SWIPE_PAGES = ['WARIO', 'TOAD', 'PEACH', 'LUIGI', 'MARIO', 'CHRONO', 'CASINO', 'TROMBI', 'PSYCH'];
   const swipeDir = useRef(1);
@@ -172,51 +170,52 @@ export default function App() {
     }
   }, [balance, socialStatus, peachUnlock, username]);
 
+  const BG_ASSET_VERSION = '20260316b';
   const THEME_BY_PAGE = {
     MARIO: {
       glow: '#FF0000',
       glowSoft: 'rgba(255, 0, 0, 0.35)',
-      bg: "linear-gradient(145deg, rgba(255,0,0,0.35), rgba(25,0,0,0.92)), url('/images/backgrounds/bg_bemario_speedlines.jpg')",
+      bg: `linear-gradient(145deg, rgba(255,0,0,0.35), rgba(25,0,0,0.92)), url('/images/backgrounds/bg_bemario_speedlines_v2.jpg?v=${BG_ASSET_VERSION}')`,
     },
     LUIGI: {
       glow: '#39FF14',
       glowSoft: 'rgba(57, 255, 20, 0.35)',
-      bg: "linear-gradient(145deg, rgba(57,255,20,0.30), rgba(0,20,0,0.94)), url('/images/backgrounds/bg_luiweed_mist.jpg')",
+      bg: `linear-gradient(145deg, rgba(57,255,20,0.30), rgba(0,20,0,0.94)), url('/images/backgrounds/bg_luiweed_mist_v2.jpg?v=${BG_ASSET_VERSION}')`,
     },
     PEACH: {
       glow: '#FF00FF',
       glowSoft: 'rgba(255, 0, 255, 0.32)',
-      bg: "linear-gradient(145deg, rgba(255,0,255,0.28), rgba(35,0,35,0.92)), url('/images/backgrounds/bg_peachasse_silk.jpg')",
+      bg: `linear-gradient(145deg, rgba(255,0,255,0.28), rgba(35,0,35,0.92)), url('/images/backgrounds/bg_peachasse_silk_v2.jpg?v=${BG_ASSET_VERSION}')`,
     },
     TOAD: {
       glow: '#4B0082',
       glowSoft: 'rgba(75, 0, 130, 0.35)',
-      bg: "linear-gradient(145deg, rgba(75,0,130,0.34), rgba(15,0,30,0.95)), url('/images/backgrounds/bg_toadxique_potions.jpg')",
+      bg: `linear-gradient(145deg, rgba(75,0,130,0.34), rgba(15,0,30,0.95)), url('/images/backgrounds/bg_toadxique_potions_v2.jpg?v=${BG_ASSET_VERSION}')`,
     },
     WARIO: {
       glow: '#FFD700',
       glowSoft: 'rgba(255, 215, 0, 0.30)',
-      bg: "linear-gradient(145deg, rgba(255,215,0,0.22), rgba(32,20,0,0.92)), url('/images/backgrounds/bg_wario_gold.jpg')",
+      bg: `linear-gradient(145deg, rgba(255,215,0,0.22), rgba(32,20,0,0.92)), url('/images/backgrounds/bg_wario_gold_v2.jpg?v=${BG_ASSET_VERSION}')`,
     },
     CHRONO: {
       glow: '#FF8C00',
       glowSoft: 'rgba(255, 140, 0, 0.32)',
-      bg: "linear-gradient(145deg, rgba(255,140,0,0.25), rgba(25,8,0,0.95)), url('/images/backgrounds/bg_chrono_ripples.jpg')",
+      bg: `linear-gradient(145deg, rgba(255,140,0,0.25), rgba(25,8,0,0.95)), url('/images/backgrounds/bg_chrono_ripples_v2.jpg?v=${BG_ASSET_VERSION}')`,
     },
     CASINO: {
       glow: '#00FFFF',
       glowSoft: 'rgba(0, 255, 255, 0.32)',
-      bg: "linear-gradient(145deg, rgba(255,0,255,0.24), rgba(0,30,30,0.92)), url('/images/backgrounds/bg_casino_retrowave.jpg')",
+      bg: `linear-gradient(145deg, rgba(255,0,255,0.24), rgba(0,30,30,0.92)), url('/images/backgrounds/bg_casino_retrowave_v2.jpg?v=${BG_ASSET_VERSION}')`,
     },
     TROMBI: {
       glow: '#704214',
       glowSoft: 'rgba(112, 66, 20, 0.34)',
-      bg: "linear-gradient(145deg, rgba(112,66,20,0.32), rgba(20,14,10,0.95)), url('/images/backgrounds/bg_trombi_classified.jpg')",
+      bg: `linear-gradient(145deg, rgba(112,66,20,0.32), rgba(20,14,10,0.95)), url('/images/backgrounds/bg_trombi_classified_v2.jpg?v=${BG_ASSET_VERSION}')`,
     },
     PSYCH: {
       glow: '#00CED1',
       glowSoft: 'rgba(0, 206, 209, 0.32)',
-      bg: "linear-gradient(145deg, rgba(0,206,209,0.25), rgba(0,15,20,0.93)), url('/images/backgrounds/bg_psych_neural.jpg')",
+      bg: `linear-gradient(145deg, rgba(0,206,209,0.25), rgba(0,15,20,0.93)), url('/images/backgrounds/bg_psych_neural_v2.jpg?v=${BG_ASSET_VERSION}')`,
     },
   };
 
@@ -256,12 +255,6 @@ export default function App() {
       >
         <div className="bg-overlay-dark" />
         <div className="stars-css theme-tint"></div>
-        <div className="canvas-container">
-          <Canvas dpr={[1, 1.5]} camera={{ position: [0, 1.5, 6], fov: 65 }}>
-            <ambientLight intensity={0.5} />
-            <RainbowRoad speed={speedBoost ? 18 : 0.8} />
-          </Canvas>
-        </div>
       </div>
 
       {/* 2. HUD Haut (Toad Bank) */}
@@ -374,14 +367,6 @@ export default function App() {
         .stars-css {
           position: absolute; top: 0; left: 0; right: 0; bottom: 0;
           background-image: radial-gradient(1px 1px at 20px 30px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 40px 70px, rgba(255,255,255,0.8), rgba(0,0,0,0));
-        }
-
-        .canvas-container {
-          width: 100%; height: 100%; position: absolute;
-          z-index: 2;
-          opacity: 0.35;
-          -webkit-mask-image: linear-gradient(to top, black 30%, transparent 80%);
-          mask-image: linear-gradient(to top, black 30%, transparent 80%);
         }
 
         .content-area {
