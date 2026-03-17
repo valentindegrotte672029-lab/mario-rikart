@@ -56,7 +56,7 @@ const POLES = [
     {
         name: 'Communication',
         emoji: null,
-        icon: 'brain-maze',
+        icon: 'trombi-com',
         color: '#ff4400',
         photo: '/images/trombi/page_5.jpg',
         description: 'Le pôle Communication gère les réseaux sociaux, les affiches, les vidéos et toute la visibilité du BDE.',
@@ -68,7 +68,7 @@ const POLES = [
     {
         name: 'Événementiel',
         emoji: null,
-        icon: 'star-purple',
+        icon: 'trombi-event',
         color: '#ff00ff',
         photo: '/images/trombi/page_6.jpg',
         description: 'Le pôle Événementiel organise toutes les soirées, galas, afterworks et événements de la vie étudiante.',
@@ -106,7 +106,7 @@ const POLES = [
     {
         name: 'Travel',
         emoji: null,
-        icon: 'chrono-stopwatch',
+        icon: 'trombi-travel',
         color: '#00ccff',
         photo: '/images/trombi/page_9.jpg',
         description: 'Le pôle Travel organise les voyages étudiants, week-ends d\'intégration et escapades. Direction : l\'aventure.',

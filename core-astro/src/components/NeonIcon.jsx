@@ -1,8 +1,11 @@
 import React from 'react';
 
-const ICON_V = '6';
+const ICON_V = '7';
 
-export default function NeonIcon({ name, size = 20, className = '', style = {} }) {
+export default function NeonIcon({ name, size = 20, glow, className = '', style = {} }) {
+  const glowStyle = glow
+    ? { filter: `drop-shadow(0 0 ${Math.max(3, size * 0.15)}px ${glow})` }
+    : {};
   return (
     <span
       className={`neon-icon ${className}`}
@@ -14,6 +17,7 @@ export default function NeonIcon({ name, size = 20, className = '', style = {} }
         width: size,
         height: size,
         flexShrink: 0,
+        ...glowStyle,
         ...style,
       }}
     >

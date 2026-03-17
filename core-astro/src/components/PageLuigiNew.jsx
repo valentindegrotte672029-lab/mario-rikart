@@ -52,7 +52,7 @@ export default function PageLuigiNew() {
           </button>
 
           <button className="arcade-btn champininja-btn" onClick={() => setActiveGame('CHAMPININJA')}>
-            <span className="game-icon"><NeonIcon name="red-mushroom-spotted" size={32} /></span>
+            <span className="game-icon"><NeonIcon name="champi-ninja" size={32} glow="#ff3232" /></span>
             <div className="game-info">
               <h3>CHAMPI NINJA</h3>
               <p>Taille les champis, évite les bombes.</p>
@@ -61,7 +61,7 @@ export default function PageLuigiNew() {
           </button>
 
           <button className="arcade-btn doodleweed-btn" onClick={() => setActiveGame('DOODLEWEED')}>
-            <span className="game-icon"><NeonIcon name="star-purple" size={32} /></span>
+            <span className="game-icon"><NeonIcon name="doodle-weed" size={32} glow="#39ff14" /></span>
             <div className="game-info">
               <h3>DOODLE-WEED</h3>
               <p>Monte le plus haut possible !</p>
