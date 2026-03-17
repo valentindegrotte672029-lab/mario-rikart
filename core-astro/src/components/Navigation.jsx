@@ -3,15 +3,15 @@ import { motion } from 'framer-motion';
 import useStore from '../store/useStore';
 
 const PAGES = [
-    { id: 'WARIO',  iconSrc: '/images/icons/nav/wario-icon-extracted.png',  label: 'Bar',      color: '#ffcc00' },
-    { id: 'TOAD',   iconSrc: '/images/icons/nav/toad-icon-extracted.png',   label: 'Bank',     color: '#9933ff' },
-    { id: 'PEACH',  iconSrc: '/images/icons/nav/peach-icon-extracted.png',  label: 'Peach',    color: '#ff66b2' },
-    { id: 'LUIGI',  iconSrc: '/images/icons/nav/luidgi-icon-extracted.png', label: 'Arcade',   color: '#39ff14' },
-    { id: 'MARIO',  iconSrc: '/images/icons/nav/mario-icon-extracted.png',  label: 'BeMario',  color: '#ff3333' },
-    { id: 'CHRONO', iconSrc: '/images/icons/nav/poppy-icon-extracted.png',  label: 'Poppy',    color: '#ff9900' },
-    { id: 'CASINO', iconSrc: '/images/icons/nav/poker-icon-extracted.png',  label: 'Casino',   color: '#ff00ff' },
-    { id: 'TROMBI', iconSrc: '/images/icons/nav/trombi-icon-extracted.png', label: 'Trombi',   color: '#ff6633' },
-    { id: 'PSYCH',  iconSrc: '/images/icons/nav/test-icon-extracted.png',   label: 'Test',     color: '#00ffff' },
+    { id: 'WARIO',  iconSrc: '/images/icons/nav/wario-icon.png',  label: 'Bar',      color: '#ffcc00' },
+    { id: 'TOAD',   iconSrc: '/images/icons/nav/toad-icon.png',   label: 'Bank',     color: '#9933ff' },
+    { id: 'PEACH',  iconSrc: '/images/icons/nav/peach-icon.png',  label: 'Peach',    color: '#ff66b2' },
+    { id: 'LUIGI',  iconSrc: '/images/icons/nav/luidgi-icon.png', label: 'Arcade',   color: '#39ff14' },
+    { id: 'MARIO',  iconSrc: '/images/icons/nav/mario-icon.png',  label: 'BeMario',  color: '#ff3333' },
+    { id: 'CHRONO', iconSrc: '/images/icons/nav/poppy-icon.png',  label: 'Poppy',    color: '#ff9900' },
+    { id: 'CASINO', iconSrc: '/images/icons/nav/poker-icon.png',  label: 'Casino',   color: '#ff00ff' },
+    { id: 'TROMBI', iconSrc: '/images/icons/nav/trombi-icon.png', label: 'Trombi',   color: '#ff6633' },
+    { id: 'PSYCH',  iconSrc: '/images/icons/nav/test-icon.png',   label: 'Test',     color: '#00ffff' },
 ];
 
 export default function Navigation() {
