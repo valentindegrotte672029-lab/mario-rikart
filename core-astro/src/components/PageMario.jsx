@@ -570,9 +570,12 @@ export default function PageMario() {
           background: transparent;
           border: none;
           font-size: 1.8rem;
-          padding: 10px;
+          padding: 8px;
           border-radius: 12px;
           transition: background 0.2s;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
         .sticker-picker-btn:active { background: rgba(255,255,255,0.1); }

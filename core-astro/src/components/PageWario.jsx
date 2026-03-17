@@ -153,7 +153,7 @@ export default function PageWario() {
         }
 
         .item-icon-circle {
-          width: 45px; height: 45px;
+          width: 65px; height: 65px;
           background: transparent;
           border-radius: 0;
           display: flex; align-items: center; justify-content: center;
@@ -161,6 +161,7 @@ export default function PageWario() {
           margin-right: 15px;
           border: none;
           box-shadow: none;
+          flex-shrink: 0;
         }
 
         .item-details { flex: 1; }

@@ -357,8 +357,8 @@ export default function DoodleWeed({ onExit }) {
                 .platform.breaking { background: #aa7733; border-bottom: 4px solid #663300; opacity: 0.8; }
                 .platform.spring { background: #33aa33; }
                 
-                .spring-prop { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); font-size: 1.2rem; }
-                .break-prop { position: absolute; top: -5px; left: 50%; transform: translateX(-50%); font-size: 1.2rem; opacity: 0.5; }
+                .spring-prop { position: absolute; top: -25px; left: 50%; transform: translateX(-50%); font-size: 1.2rem; }
+                .break-prop { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); font-size: 1.2rem; opacity: 0.5; }
 
             `}} />
         </motion.div>

@@ -630,6 +630,10 @@ export default function PagePsych() {
                     transition: all 0.2s;
                     text-align: center;
                     line-height: 1.3;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 8px;
                 }
 
                 .option-btn:active {

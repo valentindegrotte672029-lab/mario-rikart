@@ -53,19 +53,11 @@
   -webkit-text-fill-color: initial;
   -webkit-background-clip: initial;
   background: none;
-  /* +125% visual size for immersive neon presence */
-  transform: scale(2.25);
-  transform-origin: center;
 }
 
 .neon-icon img {
   filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.6))
           drop-shadow(0 0 14px rgba(255, 255, 255, 0.3));
-}
-
-/* Nav bar icons stay at original size */
-.snap-bottom-nav .neon-icon {
-  transform: scale(1);
 }
 
 /* Buttons & flex parents: auto-align icons + text */
@@ -75,23 +67,52 @@ button .neon-icon,
 .btn-join-code .neon-icon,
 .btn-back .neon-icon,
 .casino-tab-btn .neon-icon {
-  vertical-align: -0.1em;
-  margin-right: 2px;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
+/* Ensure buttons flex-align with large icons */
+.btn-create,
+.btn-join-code,
+.btn-bots,
+.btn-back,
+.casino-tab-btn,
+.option-btn,
+.start-btn {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
 }
 
 /* Headings with icons */
 h1 .neon-icon,
 h2 .neon-icon,
 h3 .neon-icon {
-  vertical-align: -0.12em;
-  margin-right: 4px;
+  vertical-align: middle;
+  margin-right: 6px;
 }
 
 /* Inline text: price tags, chip counts, bets */
 span .neon-icon,
 p .neon-icon,
 div .neon-icon {
-  vertical-align: -0.15em;
+  vertical-align: middle;
+}
+
+/* Price tags, chip counts — flex for proper alignment */
+.price-tag,
+.wario-price-tag,
+.bank-balance,
+.player-chips,
+.player-bet,
+.top-pot,
+.top-prize,
+.jackpot-amount,
+.win-amount {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 4px;
 }
 
 /* Sign cards (horoscope) – center large icon in header */
@@ -109,7 +130,7 @@ div .neon-icon {
 
 /* Bank balance row */
 .bank-balance .neon-icon {
-  vertical-align: -0.1em;
+  vertical-align: middle;
 }
 
 /* Poker player info rows */

@@ -437,6 +437,9 @@ export default function PageCasino() {
           color: #888;
           text-align: left;
           margin-bottom: 10px;
+          display: flex;
+          align-items: center;
+          gap: 4px;
         }
 
         .place-bet-controls {

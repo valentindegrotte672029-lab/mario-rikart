@@ -233,7 +233,7 @@ export default function ChampiNinja({ onExit }) {
                 }
 
                 .ninja-item {
-                    position: absolute; width: 60px; height: 60px;
+                    position: absolute; width: 70px; height: 70px;
                     border: none; background: transparent;
                     font-size: 3rem; display: flex; justify-content: center; align-items: center;
                     cursor: pointer; user-select: none;

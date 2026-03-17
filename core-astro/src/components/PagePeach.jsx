@@ -217,7 +217,7 @@ export default function PagePeach() {
           font-size: 3.5rem;
           background: transparent;
           border-radius: 0;
-          width: 80px; height: 80px;
+          width: 120px; height: 120px;
           display: flex; justify-content: center; align-items: center;
           box-shadow: none;
           filter: drop-shadow(0 0 12px rgba(255, 0, 255, 0.6)) drop-shadow(0 0 25px rgba(255, 170, 0, 0.3));
@@ -259,6 +259,9 @@ export default function PagePeach() {
           font-size: 0.8rem;
           font-weight: 700;
           margin-top: 4px;
+          display: flex;
+          align-items: center;
+          gap: 3px;
         }
 
         /* Unlock cards scroll */
@@ -303,7 +306,7 @@ export default function PagePeach() {
         }
 
         .lock-icon { z-index: 1; }
-        .unlock-text { z-index: 1; font-weight: bold; font-size: 1.1rem; }
+        .unlock-text { z-index: 1; font-weight: bold; font-size: 1.1rem; display: inline-flex; align-items: center; gap: 4px; }
         .unlock-sub { z-index: 1; font-size: 0.8rem; color: #ccc; display: inline-flex; align-items: center; gap: 3px; }
 
         .price-tag.gold {
