@@ -264,7 +264,7 @@ export default function DoodleWeed({ onExit }) {
                     <div className="overlay-menu">
                         <h1>CHUTE</h1>
                         <p>Score: {score}</p>
-                        <p>Gains: <strong style={{ color: '#ffcc00' }}>{Math.floor(score * 0.1)} <NeonIcon name="coin-gold" size={16} /></strong></p>
+                        <p>Gains: <strong style={{ color: '#ffcc00' }}>{Math.floor(score * 0.1)} <NeonIcon name="coin-gold" size={22} /></strong></p>
                         <button className="start-btn" onClick={startGame}>REJOUER</button>
                     </div>
                 )}

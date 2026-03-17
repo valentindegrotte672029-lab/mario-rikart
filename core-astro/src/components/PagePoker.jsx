@@ -268,7 +268,7 @@ export default function PagePoker() {
              <>
                <img src="/images/poker-saloon.jpg" alt="Poker" style={{width: '100%', maxWidth: 280, borderRadius: 14, marginBottom: 15, opacity: 0.9}} />
                <h1><NeonIcon name="poker-card" size={24} /> SALOON EXPRESSO</h1>
-               <p>Mise de départ : <b>100 <NeonIcon name="coin-gold" size={16} /></b></p>
+               <p>Mise de départ : <b>100 <NeonIcon name="coin-gold" size={22} /></b></p>
 
                {lobbyView === 'join' ? (
                  <div className="join-form">
@@ -433,8 +433,8 @@ export default function PagePoker() {
                  animate={{ scale: [0, 1.4, 1], opacity: 1, y: 0 }}
                  transition={{ delay: 5.2, duration: 1.2, type: 'spring', bounce: 0.5 }}
                >
-                  <div className="jackpot-label"><NeonIcon name="coins-stack" size={22} /> JACKPOT <NeonIcon name="coins-stack" size={22} /></div>
-                  <div className="jackpot-amount">{pokerState.prizePool} <NeonIcon name="coin-gold" size={20} /></div>
+                  <div className="jackpot-label"><NeonIcon name="coins-stack" size={28} /> JACKPOT <NeonIcon name="coins-stack" size={28} /></div>
+                  <div className="jackpot-amount">{pokerState.prizePool} <NeonIcon name="coin-gold" size={26} /></div>
                   <div className="jackpot-subtitle">à remporter ce round !</div>
                </motion.div>
              )}
@@ -446,8 +446,8 @@ export default function PagePoker() {
             <div className="poker-top-bar">
                 <button className="btn-leave-table" onClick={handleLeave}>✕ Quitter</button>
                 <div className="top-bar-info">
-                    <span className="top-pot">POT: {pokerState.pot} <NeonIcon name="coin-gold" size={14} /></span>
-                    {pokerState.prizePool > 0 && <span className="top-prize">Gain: {pokerState.prizePool} <NeonIcon name="coin-gold" size={14} /></span>}
+                    <span className="top-pot">POT: {pokerState.pot} <NeonIcon name="coin-gold" size={18} /></span>
+                    {pokerState.prizePool > 0 && <span className="top-prize">Gain: {pokerState.prizePool} <NeonIcon name="coin-gold" size={18} /></span>}
                 </div>
             </div>
 
@@ -459,12 +459,12 @@ export default function PagePoker() {
                       <div key={opp.id} className={`seat opponent opponent-${idx} ${pokerState.currentTurnIdx === pokerState.players.findIndex(p => p.username === opp.username) ? 'active-turn' : ''} ${opp.folded ? 'folded' : ''}`}>
                           <div className="player-info">
                               <span className="player-name">{opp.username} {opp.isBot ? <NeonIcon name="robot-ia-poker" size={14} /> : ''}</span>
-                              <span className="player-chips">{opp.chips} <NeonIcon name="coin-gold" size={14} /></span>
+                              <span className="player-chips">{opp.chips} <NeonIcon name="coin-gold" size={18} /></span>
                           </div>
                           <div className="player-cards">
                               {opp.cards.map((c, i) => <PokerCard key={i} card={c} />)}
                           </div>
-                          {opp.currentBet > 0 && <div className="player-bet">{opp.currentBet} <NeonIcon name="coin-gold" size={14} /></div>}
+                          {opp.currentBet > 0 && <div className="player-bet">{opp.currentBet} <NeonIcon name="coin-gold" size={18} /></div>}
                       </div>
                    ))}
 
@@ -483,7 +483,7 @@ export default function PagePoker() {
                         <div className={`seat my-seat active ${myPlayer.folded ? 'folded' : ''}`}>
                             <div className="player-info">
                                 <span className="player-name">{myPlayer.username}</span>
-                                <span className="player-chips">{myPlayer.chips} <NeonIcon name="coin-gold" size={14} /></span>
+                                <span className="player-chips">{myPlayer.chips} <NeonIcon name="coin-gold" size={18} /></span>
                                 {myPlayer.currentBet > 0 && <span className="player-bet">Mise: {myPlayer.currentBet}</span>}
                             </div>
                             <div className="my-cards">
@@ -512,7 +512,7 @@ export default function PagePoker() {
                               onChange={(e) => setRaiseAmount(Number(e.target.value))}
                               disabled={myPlayer.chips <= pokerState.minRaise}
                            />
-                           <span>Relance : {raiseAmount} <NeonIcon name="coin-gold" size={14} /></span>
+                           <span>Relance : {raiseAmount} <NeonIcon name="coin-gold" size={18} /></span>
                         </div>
                         <div className="action-buttons">
                            <button className="btn-fold" onClick={() => handleAction('fold')}>Coucher</button>
@@ -543,7 +543,7 @@ export default function PagePoker() {
                      <div className="win-content">
                         <h1><NeonIcon name="treasure-chest" size={28} /> VICTOIRE ! <NeonIcon name="treasure-chest" size={28} /></h1>
                         <p>Tu remportes le tournoi !</p>
-                        <h2 className="win-amount">+{pokerState.prizePool} <NeonIcon name="coin-gold" size={22} /></h2>
+                        <h2 className="win-amount">+{pokerState.prizePool} <NeonIcon name="coin-gold" size={28} /></h2>
                         <span className="win-note">(Ton compte a été crédité)</span>
                      </div>
                   </motion.div>
