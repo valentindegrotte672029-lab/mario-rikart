@@ -341,7 +341,7 @@ export default function PagePsych() {
                                         layout
                                     >
                                         <div className="sign-header">
-                                            <span className="sign-emoji"><NeonIcon name={sign.icon} size={32} /></span>
+                                            <span className="sign-emoji"><NeonIcon name={sign.icon} size={24} /></span>
                                             <span className="sign-name">{sign.name}</span>
                                             <span className="sign-chevron">{expandedSign === sign.id ? '▲' : '▼'}</span>
                                         </div>
@@ -381,12 +381,12 @@ export default function PagePsych() {
                             <div className="cw-scam-banner">
                                 <p className="cw-scam-title"><NeonIcon name="coins-stack" size={28} /> GAGNEZ 10 000€ <NeonIcon name="coins-stack" size={28} /></p>
                                 <p className="cw-scam-sub">Trouvez tous les mots cachés et remportez le jackpot !</p>
-                                <p className="cw-scam-author">— Posté par Waluigi <NeonIcon name="devil-neon" size={18} glow="#ff4444" /></p>
+                                <p className="cw-scam-author">— Posté par Waluigi <NeonIcon name="devil-neon" size={28} glow="#ff4444" /></p>
                             </div>
 
                             {wsAllFound ? (
                                 <motion.div className="cw-scam-result" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
-                                    <p style={{ fontSize: '3rem', marginBottom: 10 }}><NeonIcon name="devil-neon" size={56} glow="#ff4444" /></p>
+                                    <p style={{ fontSize: '3rem', marginBottom: 10 }}><NeonIcon name="devil-neon" size={80} glow="#ff4444" /></p>
                                     <h2 style={{ color: '#ff4444', marginBottom: 10 }}>ARNAQUE !</h2>
                                     <p style={{ color: '#ccc', fontSize: '0.95rem', lineHeight: 1.5 }}>
                                         Bravo, tu as tout trouvé... mais tu ne gagnes <b style={{ color: '#ff4444' }}>RIEN DU TOUT</b> !
@@ -504,7 +504,7 @@ export default function PagePsych() {
                                             className="option-btn"
                                             onClick={() => handleAnswer(opt.value)}
                                         >
-                                            {opt.text} {opt.icon && <NeonIcon name={opt.icon} size={18} />}
+                                            {opt.text} {opt.icon && <NeonIcon name={opt.icon} size={28} />}
                                         </button>
                                     ))}
                                 </div>
