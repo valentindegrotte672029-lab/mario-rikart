@@ -36,7 +36,7 @@ class ErrorBoundary extends Component {
     if (this.state.hasError) {
       return (
         <div style={{ zIndex: 99999, position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: '#990000', color: 'white', padding: '20px', overflow: 'auto', WebkitOverflowScrolling: 'touch' }}>
-          <h1 style={{ fontSize: '2rem', marginBottom: '10px' }}>💥 CRASH FATAL 💥</h1>
+          <h1 style={{ fontSize: '2rem', marginBottom: '10px' }}><NeonIcon name="fire-red" size={28} /> CRASH FATAL <NeonIcon name="fire-red" size={28} /></h1>
           <p style={{ fontWeight: 'bold', fontSize: '1.2rem', marginBottom: '10px' }}>{this.state.error && this.state.error.toString()}</p>
           <pre style={{ fontSize: '0.8rem', whiteSpace: 'pre-wrap', background: 'rgba(0,0,0,0.5)', padding: '10px' }}>
             {this.state.errorInfo && this.state.errorInfo.componentStack}
@@ -321,7 +321,7 @@ export default function App() {
         )}
         {happening === 'BRAZZERS' && (
           <div className="happening-modal brazzers">
-            <h1>🚨 ALERTE BRAZZERS 🚨</h1>
+            <h1><NeonIcon name="warning-triangle-2" size={28} /> ALERTE BRAZZERS <NeonIcon name="warning-triangle-2" size={28} /></h1>
             <p>Bowser a kidnappé Peach !</p>
           </div>
         )}

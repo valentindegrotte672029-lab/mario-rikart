@@ -48,80 +48,80 @@ const QUESTIONS = [
         id: 1,
         text: "Tu préfères :",
         options: [
-            { text: "Les araignées bananes 🕷️🍌", value: "araignees_bananes" },
-            { text: "Le petit Spirou 📖", value: "petit_spirou" }
+            { text: "Les araignées bananes", value: "araignees_bananes", icon: "banana-peel-cyan" },
+            { text: "Le petit Spirou", value: "petit_spirou", icon: "classified-envelope" }
         ]
     },
     {
         id: 2,
         text: "T'es plutôt bête ou tuborg :",
         options: [
-            { text: "Despé 🍋", value: "despe" },
-            { text: "Appi 🍏", value: "appi" }
+            { text: "Despé", value: "despe", icon: "flask-green-erlenmeyer" },
+            { text: "Appi", value: "appi", icon: "flask-green-erlenmeyer" }
         ]
     },
     {
         id: 3,
         text: "L'EPSCI est-il mort ?",
         options: [
-            { text: "Oui, c'est l'hécatombe ☠️", value: "oui" },
-            { text: "Non, toujours vivant comme dirait Renaud 🎸", value: "non" }
+            { text: "Oui, c'est l'hécatombe", value: "oui", icon: "mushroom-red-poison" },
+            { text: "Non, toujours vivant comme dirait Renaud", value: "non", icon: "fire-flower-pixel" }
         ]
     },
     {
         id: 4,
         text: "Tu préfères :",
         options: [
-            { text: "Spot 👮‍♂️", value: "spot" },
-            { text: "Le dyslexique qui livre des dwichs 🚲", value: "dyslexique" }
+            { text: "Spot", value: "spot", icon: "warning-triangle" },
+            { text: "Le dyslexique qui livre des dwichs", value: "dyslexique", icon: "shell-spiked-green" }
         ]
     },
     {
         id: 5,
         text: "Tu te décris plutôt comme un être social ou un loup solitaire :",
         options: [
-            { text: "Je suis le MVP du patio 👑", value: "social" },
-            { text: "Je connais le Learning Lab comme ma poche 📚", value: "loup" }
+            { text: "Je suis le MVP du patio", value: "social", icon: "peach-crown" },
+            { text: "Je connais le Learning Lab comme ma poche", value: "loup", icon: "classified-folder" }
         ]
     },
     {
         id: 6,
         text: "Quel moyen de transport utilises-tu le plus :",
         options: [
-            { text: "Pédalo 🛶", value: "pedalo" },
-            { text: "Tricycle 🚲", value: "tricycle" }
+            { text: "Pédalo", value: "pedalo", icon: "banana-peel-teal" },
+            { text: "Tricycle", value: "tricycle", icon: "shell-spiked-green" }
         ]
     },
     {
         id: 7,
         text: "Tu préfères :",
         options: [
-            { text: "Lécher le couloir des assos 👅", value: "couloir" },
-            { text: "Le chef cuisto du Massala Bar 🇮🇳", value: "massala" }
+            { text: "Lécher le couloir des assos", value: "couloir", icon: "heart-purple" },
+            { text: "Le chef cuisto du Massala Bar", value: "massala", icon: "fire-red" }
         ]
     },
     {
         id: 8,
         text: "Tu préfères :",
         options: [
-            { text: "Ton père 👨", value: "pere" },
-            { text: "Ta mère 👩", value: "mere" }
+            { text: "Ton père", value: "pere", icon: "mario-face-small" },
+            { text: "Ta mère", value: "mere", icon: "peach-crown" }
         ]
     },
     {
         id: 9,
         text: "T'es plutôt :",
         options: [
-            { text: "La PC 🚑", value: "pc" },
-            { text: "Le discours RDA 👑", value: "rda" }
+            { text: "La PC", value: "pc", icon: "warning-triangle-2" },
+            { text: "Le discours RDA", value: "rda", icon: "peach-crown" }
         ]
     },
     {
         id: 10,
         text: "T'es plutôt :",
         options: [
-            { text: "Je me lave les mains après le moindre pipi 🧼", value: "propre" },
-            { text: "J'aime avoir de la matière fécale sous les ongles 💩", value: "sale" }
+            { text: "Je me lave les mains après le moindre pipi", value: "propre", icon: "potion-vial-cyan" },
+            { text: "J'aime avoir de la matière fécale sous les ongles", value: "sale", icon: "mushroom-red-poison" }
         ]
     }
 ];
@@ -381,12 +381,12 @@ export default function PagePsych() {
                             <div className="cw-scam-banner">
                                 <p className="cw-scam-title"><NeonIcon name="coins-stack" size={18} /> GAGNEZ 10 000€ <NeonIcon name="coins-stack" size={18} /></p>
                                 <p className="cw-scam-sub">Trouvez tous les mots cachés et remportez le jackpot !</p>
-                                <p className="cw-scam-author">— Posté par Waluigi 😈</p>
+                                <p className="cw-scam-author">— Posté par Waluigi <NeonIcon name="wario-face-small" size={18} glow="#ff4444" /></p>
                             </div>
 
                             {wsAllFound ? (
                                 <motion.div className="cw-scam-result" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
-                                    <p style={{ fontSize: '3rem', marginBottom: 10 }}>😈</p>
+                                    <p style={{ fontSize: '3rem', marginBottom: 10 }}><NeonIcon name="wario-face-small" size={56} glow="#ff4444" /></p>
                                     <h2 style={{ color: '#ff4444', marginBottom: 10 }}>ARNAQUE !</h2>
                                     <p style={{ color: '#ccc', fontSize: '0.95rem', lineHeight: 1.5 }}>
                                         Bravo, tu as tout trouvé... mais tu ne gagnes <b style={{ color: '#ff4444' }}>RIEN DU TOUT</b> !
@@ -504,7 +504,7 @@ export default function PagePsych() {
                                             className="option-btn"
                                             onClick={() => handleAnswer(opt.value)}
                                         >
-                                            {opt.text}
+                                            {opt.text} {opt.icon && <NeonIcon name={opt.icon} size={18} />}
                                         </button>
                                     ))}
                                 </div>

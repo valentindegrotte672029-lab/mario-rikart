@@ -41,11 +41,11 @@ export default function PageCasino() {
     const amount = parseInt(amountStr, 10);
 
     if (!amount || amount <= 0) {
-      alert("Il faut miser une somme valide (plus de 0 🟡) !");
+      alert("Il faut miser une somme valide (plus de 0 pièces) !");
       return;
     }
 
-    if (window.confirm(`Miser ${amount} 🟡 sur "${betTitle}" ?`)) {
+    if (window.confirm(`Miser ${amount} pièces sur "${betTitle}" ?`)) {
       const success = spendCoins(amount, "PARI POLYMARKET");
       if (success) {
         socket.emit('place_bet', { betId, optionIdx, amount, username });

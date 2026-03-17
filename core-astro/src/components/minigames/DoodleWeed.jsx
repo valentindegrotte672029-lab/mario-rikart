@@ -284,7 +284,7 @@ export default function DoodleWeed({ onExit }) {
                             }}
                         >
                             {plat.type === 'spring' && <span className="spring-prop"><NeonIcon name="red-mushroom-spotted" size={20} /></span>}
-                            {plat.type === 'breaking' && <span className="break-prop">🪵</span>}
+                            {plat.type === 'breaking' && <span className="break-prop"><NeonIcon name="banana-peel-cyan" size={20} /></span>}
                         </div>
                     ))}
 

@@ -8,11 +8,11 @@ import { socket } from '../socket';
 import NeonIcon from './NeonIcon';
 
 const INGREDIENTS = [
-  { id: 'vodka', name: 'Vodka', emoji: '🍾', icon: 'flask-purple-atomic' },
-  { id: 'lait', name: 'Lait tiède', emoji: '🥛', icon: 'flask-blue-beaker' },
-  { id: 'piment', name: 'Piment pur', emoji: '🌶️', icon: 'flask-orange-distill' },
-  { id: 'tabasco', name: 'Tabasco', emoji: '🔥', icon: 'fire-flower-pixel' },
-  { id: 'cornichon', name: 'Jus de cornichon', emoji: '🥒', icon: 'flask-green-erlenmeyer' },
+  { id: 'vodka', name: 'Vodka', icon: 'flask-purple-atomic' },
+  { id: 'lait', name: 'Lait tiède', icon: 'flask-blue-beaker' },
+  { id: 'piment', name: 'Piment pur', icon: 'flask-orange-distill' },
+  { id: 'tabasco', name: 'Tabasco', icon: 'fire-flower-pixel' },
+  { id: 'cornichon', name: 'Jus de cornichon', icon: 'flask-green-erlenmeyer' },
 ];
 
 const LISTEUX = [
@@ -44,12 +44,12 @@ export default function PageToad() {
     setIsSending(true);
     if (window.navigator?.vibrate) window.navigator.vibrate([50, 100, 50]);
 
-    const mixName = "Mélange " + selectedIngredients.map(id => INGREDIENTS.find(i => i.id === id).emoji).join('');
+    const mixName = "Mélange " + selectedIngredients.map(id => INGREDIENTS.find(i => i.id === id).name).join(' + ');
 
     // Envoi de la commande spéciale au Master
     socket.emit('new_order', {
       username: username || "Anonyme",
-      item: `🧪 ${mixName} pour ${selectedVictim} (Atroce)`
+      item: `${mixName} pour ${selectedVictim} (Atroce)`
     });
 
     setTimeout(() => {

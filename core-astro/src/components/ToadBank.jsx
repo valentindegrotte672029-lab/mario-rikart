@@ -8,7 +8,7 @@ export default function ToadBankMobile() {
   const { balance, lastGlitchPurchase, username, currentPage, setPage, logout } = useStore();
 
   const handleLogout = () => {
-    if (window.confirm("🔴 Veux-tu vraiment te déconnecter de ton profil ?")) {
+    if (window.confirm("Veux-tu vraiment te déconnecter de ton profil ?")) {
       logout();
     }
   };

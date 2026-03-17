@@ -310,7 +310,7 @@ export default function PagePoker() {
                  <div className="lobby-menu">
                    <button className="btn-create" onClick={handleQuickMatch}><NeonIcon name="poker-card" size={18} /> Jouer au Poker</button>
                    <button className="btn-join-code" onClick={() => setLobbyView('create')}><NeonIcon name="poker-card" size={18} /> Créer une partie</button>
-                   <button className="btn-join-code" onClick={() => setLobbyView('join')}>🔑 Rejoindre une partie</button>
+                   <button className="btn-join-code" onClick={() => setLobbyView('join')}><NeonIcon name="classified-gear" size={16} /> Rejoindre une partie</button>
 
                    {pendingJoinRequest && (
                      <div className="pending-request">

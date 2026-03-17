@@ -135,7 +135,7 @@ export default function PageMario() {
 
       <div className="glass-panel mobile-card mario-card">
         <h1 className="title-mobile mario-title">BeMARIO</h1>
-        <p className="subtitle sad-subtitle">Capturez vos B.O. en temps réel 📸</p>
+        <p className="subtitle sad-subtitle">Capturez vos B.O. en temps réel <NeonIcon name="dev-filmstrip" size={18} /></p>
 
         {step === 'FEED' && (
           <div className="feed-section">
@@ -191,7 +191,7 @@ export default function PageMario() {
 
         {step === 'CAPTURE_FRONT' && (
           <div className="capture-section">
-            <h3 style={{ color: 'white', marginBottom: '10px' }}>📸 Décor capturé !</h3>
+              <h3 style={{ color: 'white', marginBottom: '10px' }}><NeonIcon name="dev-filmstrip" size={20} /> Décor capturé !</h3>
             <input
               type="file"
               accept="image/*"

@@ -74,7 +74,7 @@ export default function PagePeach() {
               <h1 className="title-mobile peach-title">PEACHASSE</h1>
               <p className="only-fans-tag"><NeonIcon name="star-mushroom-indigo" size={16} /> Top 0.01% Mushroom Kingdom</p>
               {peachUnlock === 'vip' && <p className="vip-badge"><NeonIcon name="peach-crown" size={14} /> VIP — 26 photos</p>}
-              {peachUnlock === 'basic' && <p className="basic-badge">🔓 Basic — 10 photos</p>}
+              {peachUnlock === 'basic' && <p className="basic-badge"><NeonIcon name="classified-folder" size={14} /> Basic — 10 photos</p>}
             </div>
           </div>
 

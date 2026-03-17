@@ -158,7 +158,7 @@ export default function PageTrombi() {
             exit={{ opacity: 0, scale: 0.95 }}
         >
             <div className="trombi-header">
-                <h1 className="trombi-title">📰 EPSTEIN FILES</h1>
+                <h1 className="trombi-title"><NeonIcon name="classified-envelope" size={24} /> EPSTEIN FILES</h1>
                 <p className="trombi-subtitle">LISTE TRIBUT-BOUILLET — CLASSIFIÉ</p>
                 <p className="trombi-counter">{revealed.size}/{totalMembers} identités révélées</p>
             </div>
@@ -221,7 +221,7 @@ export default function PageTrombi() {
                                 </b>
                             </p>
                             <button className="trombi-modal-close" onClick={handleCloseInfo}>
-                                DÉCLASSIFIER 🔓
+                                DÉCLASSIFIER <NeonIcon name="classified-folder" size={18} />
                             </button>
                         </motion.div>
                     </motion.div>
