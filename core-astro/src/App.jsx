@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useCallback, Component } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 import ToadBank from './components/ToadBank';
 import SplashScreen from './components/SplashScreen';
@@ -457,6 +458,7 @@ export default function App() {
         @keyframes cameraShake { 0% { transform: translate(5px, 5px) rotate(0deg); } 100% { transform: translate(-5px, -3px) rotate(1deg); } }
         @keyframes strobe { 0% { background: #ffaa00; } 100% { background: #ff0000; color: white; } }
       `}</style>
+      <SpeedInsights />
     </div >
   );
 }
