@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ICON_V = '10';
+const ICON_V = '11';
 
 export default function NeonIcon({ name, size = 20, glow, className = '', style = {} }) {
   const glowFilter = glow
@@ -29,7 +29,6 @@ export default function NeonIcon({ name, size = 20, glow, className = '', style 
           height: '100%',
           objectFit: 'contain',
           display: 'block',
-          mixBlendMode: 'screen',
         }}
       />
     </span>
