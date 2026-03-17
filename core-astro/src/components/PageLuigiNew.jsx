@@ -207,14 +207,15 @@ export default function PageLuigiNew() {
         .arcade-grid { display: flex; flex-direction: column; gap: 8px; margin-top: 5px; } /* Tighter gap */
         
         .arcade-btn {
-          display: flex; align-items: center; background: rgba(0,0,0,0.6);
-          border: 1px solid rgba(57, 255, 20, 0.3); border-radius: 16px; /* Smaller radius */
-          padding: 10px 12px 10px 10px; color: white; text-align: left; cursor: pointer; /* Tighter padding */
-          transition: transform 0.1s, box-shadow 0.2s; position: relative; overflow: hidden;
+          display: flex; align-items: center; background: transparent;
+          border: none; border-radius: 0;
+          padding: 10px 12px 10px 10px; color: white; text-align: left; cursor: pointer;
+          transition: transform 0.1s; position: relative; overflow: hidden;
+          border-bottom: 1px solid rgba(57, 255, 20, 0.12);
         }
         .arcade-btn:active { transform: scale(0.97); }
         
-        .pacweed-btn { background: linear-gradient(90deg, rgba(0,20,0,1) 0%, rgba(10,50,10,1) 100%); border-color: var(--theme-color); box-shadow: 0 4px 15px rgba(57,255,20,0.2); }
+        .pacweed-btn { background: transparent; border-bottom-color: var(--theme-color); box-shadow: none; }
         
         .game-icon { font-size: 2rem; margin-right: 12px; filter: drop-shadow(0 0 5px var(--theme-color)); flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
         .game-info { flex: 1; display: flex; flex-direction: column; justify-content: center; min-width: 0; padding-right: 65px; }

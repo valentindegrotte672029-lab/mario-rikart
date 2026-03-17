@@ -134,10 +134,11 @@ export default function ToadBankMobile() {
         .profile-pic {
           width: 45px;
           height: 45px;
-          background: linear-gradient(135deg, #ff0055, #ffcc00);
-          border-radius: 50%;
-          border: 2px solid white;
-          box-shadow: 0 0 10px rgba(0,0,0,0.5);
+          background: transparent;
+          border-radius: 0;
+          border: none;
+          box-shadow: none;
+          filter: drop-shadow(0 0 8px rgba(255, 0, 85, 0.5)) drop-shadow(0 0 18px rgba(255, 204, 0, 0.3));
           display: flex;
           align-items: center;
           justify-content: center;

@@ -60,8 +60,9 @@
 
 .neon-icon img {
   mix-blend-mode: screen;
-  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.55))
-          drop-shadow(0 0 14px rgba(255, 255, 255, 0.25));
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.7))
+          drop-shadow(0 0 18px rgba(255, 255, 255, 0.35))
+          drop-shadow(0 0 30px rgba(255, 255, 255, 0.15));
 }
 
 /* Nav bar icons stay at original size */

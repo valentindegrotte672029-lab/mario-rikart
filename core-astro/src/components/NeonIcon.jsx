@@ -4,8 +4,8 @@ const ICON_V = '10';
 
 export default function NeonIcon({ name, size = 20, glow, className = '', style = {} }) {
   const glowFilter = glow
-    ? `drop-shadow(0 0 ${Math.max(4, size * 0.18)}px ${glow}) drop-shadow(0 0 ${Math.max(8, size * 0.35)}px ${glow})`
-    : '';
+    ? `drop-shadow(0 0 ${Math.max(6, size * 0.22)}px ${glow}) drop-shadow(0 0 ${Math.max(12, size * 0.4)}px ${glow}80)`
+    : `drop-shadow(0 0 ${Math.max(4, size * 0.15)}px rgba(255,255,255,0.6)) drop-shadow(0 0 ${Math.max(8, size * 0.3)}px rgba(255,255,255,0.25))`;
   return (
     <span
       className={`neon-icon ${className}`}

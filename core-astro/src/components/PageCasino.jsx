@@ -230,10 +230,11 @@ export default function PageCasino() {
         .casino-tab-btn {
           flex: 1;
           padding: 10px;
-          border-radius: 12px;
-          border: 2px solid rgba(255,0,255,0.3);
-          background: rgba(255,0,255,0.05);
-          color: #ccc;
+          border-radius: 0;
+          border: none;
+          border-bottom: 2px solid transparent;
+          background: transparent;
+          color: #888;
           font-weight: bold;
           font-size: 0.95rem;
           cursor: pointer;
@@ -244,19 +245,19 @@ export default function PageCasino() {
           gap: 4px;
         }
         .casino-tab-btn.active {
-          background: rgba(255,0,255,0.2);
-          border-color: #ff00ff;
+          background: transparent;
+          border-bottom-color: #ff00ff;
           color: #ff00ff;
-          box-shadow: 0 0 12px rgba(255,0,255,0.3);
+          box-shadow: none;
+          filter: drop-shadow(0 0 8px rgba(255,0,255,0.4));
         }
 
         .casino-header {
           text-align: center;
           padding: 20px;
-          background: rgba(255, 0, 255, 0.1);
-          border: 1px solid rgba(255, 0, 255, 0.3);
-          border-radius: 15px;
-          backdrop-filter: blur(10px);
+          background: transparent;
+          border: none;
+          border-radius: 0;
         }
 
         .casino-title {

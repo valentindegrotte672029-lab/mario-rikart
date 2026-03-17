@@ -215,11 +215,12 @@ export default function PagePeach() {
 
         .avatar.glow-avatar {
           font-size: 3.5rem;
-          background: linear-gradient(135deg, #ff00ff, #ffaa00);
-          border-radius: 50%;
+          background: transparent;
+          border-radius: 0;
           width: 80px; height: 80px;
           display: flex; justify-content: center; align-items: center;
-          box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
+          box-shadow: none;
+          filter: drop-shadow(0 0 12px rgba(255, 0, 255, 0.6)) drop-shadow(0 0 25px rgba(255, 170, 0, 0.3));
           flex-shrink: 0;
         }
 
