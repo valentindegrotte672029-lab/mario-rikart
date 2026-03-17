@@ -619,9 +619,10 @@ export default function PagePsych() {
 
                 .option-btn {
                     padding: 20px 15px;
-                    background: rgba(0, 255, 255, 0.05);
-                    border: 2px solid rgba(0, 255, 255, 0.2);
-                    border-radius: 16px;
+                    background: transparent;
+                    border: none;
+                    border-bottom: 1px solid rgba(0, 255, 255, 0.15);
+                    border-radius: 0;
                     color: white;
                     font-size: 1.1rem;
                     font-weight: bold;
@@ -633,7 +634,8 @@ export default function PagePsych() {
 
                 .option-btn:active {
                     transform: scale(0.97);
-                    background: rgba(0, 255, 255, 0.2);
+                    background: transparent;
+                    filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.4));
                 }
 
                 .calculating-view, .result-view {

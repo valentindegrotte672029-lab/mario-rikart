@@ -170,12 +170,13 @@ export default function PageWario() {
           display: inline-flex;
           align-items: center;
           gap: 3px;
-          background: rgba(255, 204, 0, 0.15);
-          border: 1px solid rgba(255, 204, 0, 0.5);
+          background: transparent;
+          border: none;
           color: var(--theme-color); font-weight: 900;
-          padding: 3px 10px; border-radius: 12px;
+          padding: 3px 0; border-radius: 0;
           font-size: 0.9rem;
-          text-shadow: 0 0 5px rgba(255, 204, 0, 0.5);
+          text-shadow: 0 0 8px rgba(255, 204, 0, 0.6);
+          filter: drop-shadow(0 0 6px rgba(255, 204, 0, 0.3));
           margin-top: 4px;
         }
 
