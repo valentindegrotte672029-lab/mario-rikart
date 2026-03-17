@@ -53,12 +53,20 @@
   -webkit-text-fill-color: initial;
   -webkit-background-clip: initial;
   background: none;
+  /* +40% visual size for immersive neon presence */
+  transform: scale(1.4);
+  transform-origin: center;
 }
 
 .neon-icon img {
   mix-blend-mode: screen;
-  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.5))
-          drop-shadow(0 0 14px rgba(255, 255, 255, 0.2));
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.55))
+          drop-shadow(0 0 14px rgba(255, 255, 255, 0.25));
+}
+
+/* Nav bar icons stay at original size */
+.snap-bottom-nav .neon-icon {
+  transform: scale(1);
 }
 
 /* Buttons & flex parents: auto-align icons + text */
