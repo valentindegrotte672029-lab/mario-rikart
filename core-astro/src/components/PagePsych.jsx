@@ -310,7 +310,7 @@ export default function PagePsych() {
                     <Star size={18} /> Horoscope
                 </button>
                 <button className={`psych-tab ${pageView === 'crossword' ? 'active' : ''}`} onClick={() => setPageView('crossword')}>
-                    💰 Mot Karté
+                    Mot Karté
                 </button>
             </div>
 

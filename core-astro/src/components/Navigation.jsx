@@ -3,15 +3,15 @@ import { motion } from 'framer-motion';
 import useStore from '../store/useStore';
 
 const PAGES = [
-    { id: 'WARIO',  icon: '🍺', label: 'Bar',      color: '#ffcc00' },
-    { id: 'TOAD',   icon: '🏦', label: 'Bank',     color: '#9933ff' },
-    { id: 'PEACH',  icon: '🔥', label: 'Peach',    color: '#ff66b2' },
-    { id: 'LUIGI',  icon: '🎮', label: 'Arcade',  color: '#39ff14' },
-    { id: 'MARIO',  icon: '📸', label: 'BeMario',  color: '#ff3333' },
-    { id: 'CHRONO', icon: '⏱️', label: 'Poppy',    color: '#ff9900' },
-    { id: 'CASINO', icon: '🎰', label: 'Casino',   color: '#ff00ff' },
-    { id: 'TROMBI', icon: '📰', label: 'Trombi',   color: '#ff6633' },
-    { id: 'PSYCH',  icon: '🧠', label: 'Test',     color: '#00ffff' },
+    { id: 'WARIO',  iconSrc: '/images/icons/nav/wario-icon.png',  label: 'Bar',      color: '#ffcc00' },
+    { id: 'TOAD',   iconSrc: '/images/icons/nav/toad-icon.png',   label: 'Bank',     color: '#9933ff' },
+    { id: 'PEACH',  iconSrc: '/images/icons/nav/peach-icon.png',  label: 'Peach',    color: '#ff66b2' },
+    { id: 'LUIGI',  iconSrc: '/images/icons/nav/luidgi-icon.png', label: 'Arcade',   color: '#39ff14' },
+    { id: 'MARIO',  iconSrc: '/images/icons/nav/mario-icon.png',  label: 'BeMario',  color: '#ff3333' },
+    { id: 'CHRONO', iconSrc: '/images/icons/nav/poppy-icon.png',  label: 'Poppy',    color: '#ff9900' },
+    { id: 'CASINO', iconSrc: '/images/icons/nav/poker-icon.png',  label: 'Casino',   color: '#ff00ff' },
+    { id: 'TROMBI', iconSrc: '/images/icons/nav/trombi-icon.png', label: 'Trombi',   color: '#ff6633' },
+    { id: 'PSYCH',  iconSrc: '/images/icons/nav/test-icon.png',   label: 'Test',     color: '#00ffff' },
 ];
 
 export default function Navigation() {
@@ -26,7 +26,7 @@ export default function Navigation() {
     return (
         <>
             <nav className="snap-bottom-nav">
-                {PAGES.map(({ id, icon, label, color }) => {
+                {PAGES.map(({ id, iconSrc, label, color }) => {
                     const isActive = currentPage === id;
                     return (
                         <motion.button
@@ -35,7 +35,9 @@ export default function Navigation() {
                             className={`snap-nav-item ${isActive ? 'active' : ''}`}
                             whileTap={{ scale: 0.85 }}
                         >
-                            <span className="snap-nav-icon" style={isActive ? { filter: 'none', transform: 'scale(1.15)' } : {}}>{icon}</span>
+                            <span className={`snap-nav-icon ${isActive ? 'active' : ''}`}>
+                                <img src={iconSrc} alt={label} className="snap-nav-icon-img" />
+                            </span>
                             {isActive && (
                                 <motion.span
                                     className="snap-nav-label"
@@ -98,13 +100,22 @@ export default function Navigation() {
                 }
 
                 .snap-nav-icon {
-                    font-size: 1.35rem;
+                    width: 24px;
+                    height: 24px;
                     filter: grayscale(0.8) brightness(0.5);
                     transition: all 0.2s ease;
                     line-height: 1;
+                    transform: scale(1);
+                }
+                .snap-nav-icon-img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: contain;
+                    display: block;
                 }
                 .snap-nav-item.active .snap-nav-icon {
                     filter: none;
+                    transform: scale(1.15);
                 }
 
                 .snap-nav-label {
