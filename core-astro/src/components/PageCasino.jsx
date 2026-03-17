@@ -238,6 +238,10 @@ export default function PageCasino() {
           font-size: 0.95rem;
           cursor: pointer;
           transition: all 0.2s;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 4px;
         }
         .casino-tab-btn.active {
           background: rgba(255,0,255,0.2);
@@ -261,6 +265,10 @@ export default function PageCasino() {
           color: #ff00ff;
           margin: 0;
           text-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
         }
 
         .btn-create-toggle {
@@ -343,6 +351,9 @@ export default function PageCasino() {
           font-size: 0.8rem;
           font-weight: bold;
           border-bottom-left-radius: 10px;
+          display: flex;
+          align-items: center;
+          gap: 4px;
         }
 
         .bet-card.resolved .bet-status {
@@ -366,6 +377,9 @@ export default function PageCasino() {
           color: #ffcc00;
           font-weight: bold;
           font-size: 1.1rem;
+          display: inline-flex;
+          align-items: center;
+          gap: 3px;
         }
 
         .bet-options {
@@ -462,6 +476,10 @@ export default function PageCasino() {
           font-size: 1rem;
           margin-top: 10px;
           animation: pulse 1s infinite alternate;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 4px;
         }
 
         @keyframes pulse {

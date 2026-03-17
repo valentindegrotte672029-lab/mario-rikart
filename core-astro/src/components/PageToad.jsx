@@ -70,10 +70,10 @@ export default function PageToad() {
       <div className="glass-panel mobile-card toad-card">
         <h1 className="title-mobile toad-title">TOAD-XIQUE</h1>
         <p className="subtitle" style={{ textAlign: 'center', color: '#ffbbcc', marginBottom: '5px', fontStyle: 'italic', fontSize: '0.9rem' }}>
-          "Créer un mélange atroce qu'un listeux va devoir raout" 🤮
+          "Créer un mélange atroce qu'un listeux va devoir raout" <NeonIcon name="toad-vomit" size={20} />
         </p>
         <p className="subtitle" style={{ textAlign: 'center', color: '#ff3366', marginBottom: '15px', fontWeight: 'bold', fontSize: '0.8rem' }}>
-          ⚠️ MAX 3 INGRÉDIENTS ⚠️
+          <NeonIcon name="warning-triangle" size={16} /> MAX 3 INGRÉDIENTS <NeonIcon name="warning-triangle" size={16} />
         </p>
 
         {/* Section Ingrédients */}
@@ -207,6 +207,9 @@ export default function PageToad() {
 
         .ingredient-btn .emoji {
           font-size: 1.6rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
         .ingredient-btn .name {

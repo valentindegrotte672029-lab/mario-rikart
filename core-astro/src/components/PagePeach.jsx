@@ -174,7 +174,7 @@ export default function PagePeach() {
               <ShieldAlert size={48} color="white" />
               <h2>ALERTE BBL BALLOON</h2>
               <p>Maintient Peach en sécurité !<br />Tapote vite ({bblClicks}/5)</p>
-              <div className="balloons-anim">🎈 🍑 🎈</div>
+              <div className="balloons-anim"><NeonIcon name="bbl-popup" size={48} /></div>
             </motion.div>
           </motion.div>
         )}
@@ -236,6 +236,10 @@ export default function PagePeach() {
           color: #ffbbee;
           font-size: 0.85rem;
           font-weight: 600;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 4px;
         }
 
         .vip-badge {
@@ -243,6 +247,10 @@ export default function PagePeach() {
           font-size: 0.8rem;
           font-weight: 700;
           margin-top: 4px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 3px;
         }
 
         .basic-badge {
@@ -295,7 +303,7 @@ export default function PagePeach() {
 
         .lock-icon { z-index: 1; }
         .unlock-text { z-index: 1; font-weight: bold; font-size: 1.1rem; }
-        .unlock-sub { z-index: 1; font-size: 0.8rem; color: #ccc; }
+        .unlock-sub { z-index: 1; font-size: 0.8rem; color: #ccc; display: inline-flex; align-items: center; gap: 3px; }
 
         .price-tag.gold {
           z-index: 1;
@@ -304,6 +312,9 @@ export default function PagePeach() {
           padding: 5px 15px;
           border-radius: 12px;
           border: 1px solid rgba(255, 170, 0, 0.5);
+          display: inline-flex;
+          align-items: center;
+          gap: 3px;
         }
         .price-tag.gold.small { padding: 3px 10px; font-size: 0.85rem; }
 
@@ -432,7 +443,7 @@ export default function PagePeach() {
         }
         
         .bbl-popup h2 { font-size: 1.5rem; margin-top: 15px; }
-        .balloons-anim { font-size: 3rem; margin-top: 20px; animation: bounce 0.5s infinite alternate; }
+        .balloons-anim { font-size: 3rem; margin-top: 20px; animation: bounce 0.5s infinite alternate; display: flex; align-items: center; justify-content: center; }
 
         @keyframes bounce {
           from { transform: translateY(0px) scale(0.9); }

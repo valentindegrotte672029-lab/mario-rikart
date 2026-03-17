@@ -216,7 +216,7 @@ export default function PageLuigiNew() {
         
         .pacweed-btn { background: linear-gradient(90deg, rgba(0,20,0,1) 0%, rgba(10,50,10,1) 100%); border-color: var(--theme-color); box-shadow: 0 4px 15px rgba(57,255,20,0.2); }
         
-        .game-icon { font-size: 2rem; margin-right: 12px; filter: drop-shadow(0 0 5px var(--theme-color)); flex-shrink: 0; }
+        .game-icon { font-size: 2rem; margin-right: 12px; filter: drop-shadow(0 0 5px var(--theme-color)); flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
         .game-info { flex: 1; display: flex; flex-direction: column; justify-content: center; min-width: 0; padding-right: 65px; }
         .game-info h3 { font-size: 1rem; font-weight: 900; color: var(--theme-color); margin-bottom: 2px; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
         .game-info p { font-size: 0.7rem; color: #aaa; line-height: 1.2; }
@@ -281,7 +281,7 @@ export default function PageLuigiNew() {
           display: flex; justify-content: space-between; align-items: center;
           padding: 25px 20px 15px 20px; border-bottom: 2px solid #336633;
         }
-        .lb-header-modal h2 { color: #ffcc00; font-size: 1.5rem; font-weight: 900; letter-spacing: 1px;}
+        .lb-header-modal h2 { color: #ffcc00; font-size: 1.5rem; font-weight: 900; letter-spacing: 1px; display: flex; align-items: center; gap: 6px; }
         .lb-close-btn { background: none; border: none; color: white; padding: 5px; cursor: pointer; }
 
         .lb-scroll-content {
@@ -290,7 +290,7 @@ export default function PageLuigiNew() {
         }
 
         .lb-category { background: rgba(0,0,0,0.4); border-radius: 15px; padding: 15px; border: 1px solid rgba(57, 255, 20, 0.2); }
-        .lb-category h3 { color: #aaffaa; font-size: 1.1rem; border-bottom: 1px solid #224422; padding-bottom: 8px; margin-bottom: 12px; }
+        .lb-category h3 { color: #aaffaa; font-size: 1.1rem; border-bottom: 1px solid #224422; padding-bottom: 8px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
         .empty-lb { color: #888; font-style: italic; font-size: 0.9rem; text-align: center; }
 
         .lb-line { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #1a331a; font-size: 1rem; }

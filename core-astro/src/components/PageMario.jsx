@@ -213,7 +213,7 @@ export default function PageMario() {
 
         {step === 'PROCESSING' && (
           <div className="capture-section" style={{ padding: '80px 0' }}>
-            <h3 className="blink-text" style={{ color: '#00ffcc', fontSize: '1.5rem' }}>Développement... 🎞️</h3>
+            <h3 className="blink-text" style={{ color: '#00ffcc', fontSize: '1.5rem' }}>Développement... <NeonIcon name="dev-filmstrip" size={24} /></h3>
           </div>
         )}
 
@@ -446,6 +446,9 @@ export default function PageMario() {
 
         .blink-text {
           animation: blink 1s infinite alternate;
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
         }
 
         @keyframes blink {

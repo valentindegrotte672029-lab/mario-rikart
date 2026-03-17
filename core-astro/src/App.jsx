@@ -13,6 +13,7 @@ import PageWario from './components/PageWario';
 import PageChrono from './components/PageChrono';
 import PagePsych from './components/PagePsych';
 import PageCasino from './components/PageCasino';
+import NeonIcon from './components/NeonIcon';
 import PageTrombi from './components/PageTrombi';
 import Navigation from './components/Navigation';
 
@@ -326,7 +327,7 @@ export default function App() {
         )}
         {happening === 'KIDNAPPING' && (
           <div className="happening-modal kidnapping">
-            <h1>⚠️ ALERTE ENLÈVEMENT ⚠️</h1>
+            <h1><NeonIcon name="warning-triangle" size={28} /> ALERTE ENLÈVEMENT <NeonIcon name="warning-triangle" size={28} /></h1>
             <p>Le Président Toad a disparu avec la recette du mélange.</p>
           </div>
         )}
@@ -451,7 +452,7 @@ export default function App() {
         .brazzers h1 { font-size: 3rem; }
 
         .kidnapping { background: #ffaa00; color: black; animation: strobe 0.5s infinite alternate; border: 15px solid white; }
-        .kidnapping h1 { font-size: 3rem; font-weight: 900; }
+        .kidnapping h1 { font-size: 3rem; font-weight: 900; display: flex; align-items: center; justify-content: center; gap: 8px; }
         
         @keyframes cameraShake { 0% { transform: translate(5px, 5px) rotate(0deg); } 100% { transform: translate(-5px, -3px) rotate(1deg); } }
         @keyframes strobe { 0% { background: #ffaa00; } 100% { background: #ff0000; color: white; } }

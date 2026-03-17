@@ -335,6 +335,10 @@ export default function PageTrombi() {
                     font-size: 1.4rem;
                     font-weight: 900;
                     margin-bottom: 16px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 6px;
                 }
                 .trombi-modal-desc {
                     color: #ccc;

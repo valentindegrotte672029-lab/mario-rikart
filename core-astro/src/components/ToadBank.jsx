@@ -53,7 +53,7 @@ export default function ToadBankMobile() {
             exit={{ opacity: 0, scale: 0.8 }}
             className="glitch-toast glass-panel"
           >
-            ⚠️ {lastGlitchPurchase}
+            <NeonIcon name="warning-triangle" size={16} /> {lastGlitchPurchase}
           </motion.div>
         )}
       </AnimatePresence>
@@ -120,6 +120,9 @@ export default function ToadBankMobile() {
           background: -webkit-linear-gradient(#ffee00, #ffaa00);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
         }
 
         .profile-pic {
@@ -152,6 +155,10 @@ export default function ToadBankMobile() {
           text-align: center;
           border-color: rgba(255, 51, 102, 0.3);
           pointer-events: auto;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 4px;
         }
       `}</style>
     </div>

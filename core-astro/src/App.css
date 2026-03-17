@@ -40,3 +40,112 @@
 .read-the-docs {
   color: #888;
 }
+
+/* ── NeonIcon global alignment ── */
+.neon-icon {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  vertical-align: -0.15em;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* Buttons & flex parents: auto-align icons + text */
+button .neon-icon,
+.btn-create .neon-icon,
+.btn-bots .neon-icon,
+.btn-join-code .neon-icon,
+.btn-back .neon-icon,
+.casino-tab-btn .neon-icon {
+  vertical-align: -0.1em;
+  margin-right: 2px;
+}
+
+/* Headings with icons */
+h1 .neon-icon,
+h2 .neon-icon,
+h3 .neon-icon {
+  vertical-align: -0.12em;
+  margin-right: 4px;
+}
+
+/* Inline text: price tags, chip counts, bets */
+span .neon-icon,
+p .neon-icon,
+div .neon-icon {
+  vertical-align: -0.15em;
+}
+
+/* Sign cards (horoscope) – center large icon in header */
+.sign-emoji {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sign-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Bank balance row */
+.bank-balance .neon-icon {
+  vertical-align: -0.1em;
+}
+
+/* Poker player info rows */
+.player-info,
+.player-bet,
+.join-req-name,
+.jackpot-label,
+.jackpot-amount,
+.top-pot,
+.top-prize,
+.win-amount,
+.winner-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Glitch toast */
+.glitch-toast {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Balloons popup */
+.balloons-anim {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Wario item icon circle */
+.item-icon-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Price tags */
+.price-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.wario-price-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+/* Trombi pole icons */
+.pole-tab span {
+  display: inline-flex;
+  align-items: center;
+}

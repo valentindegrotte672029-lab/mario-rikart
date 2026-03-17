@@ -352,7 +352,7 @@ export default function PagePoker() {
                    )}
                    <p style={{color: '#888', fontSize: '0.8rem', margin: '8px 0'}}>Dès que 3 joueurs sont prêts, la partie se lance</p>
                    <div style={{display: 'flex', gap: 10, justifyContent: 'center', marginTop: 10}}>
-                     <button className="btn-bots" onClick={handleQueueStartBots}>🤖 Jouer avec l'IA</button>
+                     <button className="btn-bots" onClick={handleQueueStartBots}><NeonIcon name="robot-ia-poker" size={18} /> Jouer avec l'IA</button>
                      <button className="btn-back" onClick={handleLeaveQueue}>Annuler</button>
                    </div>
                  </div>
@@ -383,7 +383,7 @@ export default function PagePoker() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -20 }}
                     >
-                      <span className="join-req-name">🖐️ <b>{req.username}</b> veut rejoindre</span>
+                      <span className="join-req-name"><NeonIcon name="join-request" size={18} /> <b>{req.username}</b> veut rejoindre</span>
                       <div className="join-req-btns">
                         <button className="btn-approve" onClick={() => handleApproveJoin(req)}>✓</button>
                         <button className="btn-deny" onClick={() => handleDenyJoin(req)}>✕</button>
@@ -458,7 +458,7 @@ export default function PagePoker() {
                    {opponents.map((opp, idx) => (
                       <div key={opp.id} className={`seat opponent opponent-${idx} ${pokerState.currentTurnIdx === pokerState.players.findIndex(p => p.username === opp.username) ? 'active-turn' : ''} ${opp.folded ? 'folded' : ''}`}>
                           <div className="player-info">
-                              <span className="player-name">{opp.username} {opp.isBot ? '🤖' : ''}</span>
+                              <span className="player-name">{opp.username} {opp.isBot ? <NeonIcon name="robot-ia-poker" size={14} /> : ''}</span>
                               <span className="player-chips">{opp.chips} <NeonIcon name="coin-gold" size={14} /></span>
                           </div>
                           <div className="player-cards">
@@ -572,15 +572,15 @@ export default function PagePoker() {
           width: 90%;
           max-width: 340px;
         }
-        .poker-lobby h1 { color: #00ff66; margin-bottom: 5px; font-weight: 900; font-size: 1.3rem; }
+        .poker-lobby h1 { color: #00ff66; margin-bottom: 5px; font-weight: 900; font-size: 1.3rem; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .poker-lobby p { color: #aaa; margin-bottom: 15px; }
 
         .lobby-menu { display: flex; flex-direction: column; gap: 12px; }
 
-        .btn-create { background: #00ff66; color: black; font-weight: bold; font-size: 1.1rem; padding: 14px 20px; border: none; border-radius: 10px; cursor: pointer; }
+        .btn-create { background: #00ff66; color: black; font-weight: bold; font-size: 1.1rem; padding: 14px 20px; border: none; border-radius: 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; justify-content: center; }
         .btn-create:active { transform: scale(0.95); }
 
-        .btn-join-code { background: transparent; color: #00ffcc; font-weight: bold; font-size: 1rem; padding: 12px 20px; border: 2px solid #00ffcc; border-radius: 10px; cursor: pointer; }
+        .btn-join-code { background: transparent; color: #00ffcc; font-weight: bold; font-size: 1rem; padding: 12px 20px; border: 2px solid #00ffcc; border-radius: 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; justify-content: center; }
         .btn-join-code:active { transform: scale(0.95); }
 
         .open-rooms { margin-top: 8px; }
@@ -610,7 +610,7 @@ export default function PagePoker() {
         .btn-join:disabled { opacity: 0.4; }
         .btn-join:active { transform: scale(0.95); }
 
-        .btn-bots { background: #ffcc00; color: black; font-weight: bold; padding: 10px 20px; border: none; border-radius: 8px; margin-top: 15px; cursor: pointer; }
+        .btn-bots { background: #ffcc00; color: black; font-weight: bold; padding: 10px 20px; border: none; border-radius: 8px; margin-top: 15px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; justify-content: center; }
         .btn-bots:active { transform: scale(0.95); }
 
         .queue-waiting { text-align: center; }
@@ -622,6 +622,7 @@ export default function PagePoker() {
         }
 
         .lobby-waiting { color: white; }
+        .lobby-waiting h1 { display: flex; align-items: center; justify-content: center; gap: 6px; }
         .lobby-players { margin-top: 10px; font-weight: bold; color: #00ffcc; }
 
         .room-code-display {
@@ -690,11 +691,13 @@ export default function PagePoker() {
           font-size: 1.2rem; font-weight: 900; color: #fff;
           letter-spacing: 3px; margin-bottom: 5px;
           text-shadow: 0 0 10px rgba(255,204,0,0.6);
+          display: flex; align-items: center; justify-content: center; gap: 6px;
         }
         .jackpot-amount {
           font-size: 4rem; font-weight: 900; color: #ffeb3b;
           text-shadow: 0 0 30px #ffcc00, 0 0 60px #ff9800;
           animation: jackpotPulse 0.8s ease-in-out infinite alternate;
+          display: flex; align-items: center; justify-content: center; gap: 6px;
         }
         .jackpot-subtitle {
           font-size: 0.85rem; color: #aaa; font-style: italic; margin-top: 5px;
@@ -775,8 +778,8 @@ export default function PagePoker() {
            font-size: 0.8rem;
            white-space: nowrap;
         }
-        .player-name { font-weight: bold; display: block; overflow: hidden; text-overflow: ellipsis; max-width: 80px; }
-        .player-chips { color: #ffeb3b; font-weight: bold; }
+        .player-name { font-weight: bold; display: flex; align-items: center; gap: 3px; overflow: hidden; text-overflow: ellipsis; max-width: 100px; }
+        .player-chips { color: #ffeb3b; font-weight: bold; display: flex; align-items: center; gap: 2px; justify-content: center; }
 
         .player-bet {
            background: rgba(0, 0, 0, 0.6);
@@ -787,6 +790,10 @@ export default function PagePoker() {
            margin-top: 5px;
            font-weight: bold;
            border: 1px solid #4ade80;
+           display: flex;
+           align-items: center;
+           gap: 3px;
+           justify-content: center;
         }
 
         .my-bet {
@@ -946,6 +953,9 @@ export default function PagePoker() {
             color: #fff;
             font-weight: 900;
             font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 3px;
         }
         .top-prize {
             color: #ffcc00;
@@ -955,6 +965,9 @@ export default function PagePoker() {
             padding: 3px 8px;
             border-radius: 8px;
             border: 1px solid rgba(255,204,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 3px;
         }
 
         /* WIN SCREEN */
@@ -968,9 +981,9 @@ export default function PagePoker() {
             text-align: center; color: white;
             animation: bounceIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .win-content h1 { color: #ffeb3b; font-size: 3rem; text-shadow: 0 0 20px #ffeb3b; margin-bottom: 5px; }
+        .win-content h1 { color: #ffeb3b; font-size: 3rem; text-shadow: 0 0 20px #ffeb3b; margin-bottom: 5px; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .win-content p { font-size: 1.2rem; margin-bottom: 20px; }
-        .win-amount { color: #39ff14; font-size: 4rem; font-weight: 900; text-shadow: 0 0 30px #39ff14; margin: 0; }
+        .win-amount { color: #39ff14; font-size: 4rem; font-weight: 900; text-shadow: 0 0 30px #39ff14; margin: 0; display: flex; align-items: center; justify-content: center; gap: 6px; }
         .win-note { font-size: 0.8rem; color: #aaa; font-style: italic; }
 
         @keyframes bounceIn {
@@ -996,7 +1009,7 @@ export default function PagePoker() {
           background: rgba(255,204,0,0.1); border: 1px solid #ffcc00;
           border-radius: 10px; padding: 10px 14px; margin-top: 10px;
         }
-        .join-req-name { color: white; font-size: 0.9rem; }
+        .join-req-name { color: white; font-size: 0.9rem; display: flex; align-items: center; gap: 4px; }
         .join-req-btns { display: flex; gap: 8px; }
         .btn-approve {
           background: #00ff66; color: black; font-weight: 900; font-size: 1.1rem;

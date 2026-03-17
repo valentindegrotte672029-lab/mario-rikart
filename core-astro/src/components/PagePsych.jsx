@@ -720,6 +720,9 @@ export default function PagePsych() {
                 }
                 .sign-emoji {
                     font-size: 1.5rem;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
                 }
                 .sign-name {
                     font-size: 1.2rem;
@@ -756,6 +759,10 @@ export default function PagePsych() {
                     font-weight: 900;
                     text-shadow: 0 0 10px rgba(255,68,0,0.4);
                     animation: cwBlink 1s infinite alternate;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 6px;
                 }
                 @keyframes cwBlink {
                     from { opacity: 1; }

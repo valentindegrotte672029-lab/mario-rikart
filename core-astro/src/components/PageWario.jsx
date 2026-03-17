@@ -167,7 +167,9 @@ export default function PageWario() {
         .item-details h4 { font-size: 0.95rem; color: white; margin-bottom: 3px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
         
         .wario-price-tag {
-          display: inline-block;
+          display: inline-flex;
+          align-items: center;
+          gap: 3px;
           background: rgba(255, 204, 0, 0.15);
           border: 1px solid rgba(255, 204, 0, 0.5);
           color: var(--theme-color); font-weight: 900;
