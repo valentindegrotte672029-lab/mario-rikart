@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ICON_V = '4';
+const ICON_V = '5';
 
 export default function NeonIcon({ name, size = 20, className = '', style = {} }) {
   return (
