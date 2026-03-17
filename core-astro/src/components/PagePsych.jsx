@@ -318,105 +318,119 @@ export default function PagePsych() {
             {pageView === 'horoscope' ? (
                 <motion.div
                     key="horoscope"
-                    className="horoscope-container"
                     initial={{ opacity: 0, x: 40 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -40 }}
                     transition={{ duration: 0.25 }}
+                    style={{ width: '100%' }}
                 >
-                    <h1 className="horoscope-title">🔮 Horoscope de Mars</h1>
-                    <p className="horoscope-subtitle">Signes Astro — Mars 2026</p>
-                    <div className="signs-list">
-                        {HOROSCOPE_SIGNS.map(sign => (
-                            <motion.div
-                                key={sign.id}
-                                className={`sign-card ${expandedSign === sign.id ? 'expanded' : ''}`}
-                                onClick={() => setExpandedSign(expandedSign === sign.id ? null : sign.id)}
-                                layout
-                            >
-                                <div className="sign-header">
-                                    <span className="sign-emoji">{sign.emoji}</span>
-                                    <span className="sign-name">{sign.name}</span>
-                                    <span className="sign-chevron">{expandedSign === sign.id ? '▲' : '▼'}</span>
-                                </div>
-                                <AnimatePresence>
-                                    {expandedSign === sign.id && (
-                                        <motion.p
-                                            className="sign-text"
-                                            initial={{ opacity: 0, height: 0 }}
-                                            animate={{ opacity: 1, height: 'auto' }}
-                                            exit={{ opacity: 0, height: 0 }}
-                                            transition={{ duration: 0.3 }}
-                                        >
-                                            {sign.text}
-                                        </motion.p>
-                                    )}
-                                </AnimatePresence>
-                            </motion.div>
-                        ))}
+                    <div className="glass-panel main-psych-card">
+                        <div className="card-header">
+                            <Star size={48} color="#ffcc00" />
+                            <h1 className="title-mobile">Horoscope de Mars</h1>
+                        </div>
+                        <div className="horoscope-container">
+                            <p className="horoscope-subtitle">Signes Astro — Mars 2026</p>
+                            <div className="signs-list">
+                                {HOROSCOPE_SIGNS.map(sign => (
+                                    <motion.div
+                                        key={sign.id}
+                                        className={`sign-card ${expandedSign === sign.id ? 'expanded' : ''}`}
+                                        onClick={() => setExpandedSign(expandedSign === sign.id ? null : sign.id)}
+                                        layout
+                                    >
+                                        <div className="sign-header">
+                                            <span className="sign-emoji">{sign.emoji}</span>
+                                            <span className="sign-name">{sign.name}</span>
+                                            <span className="sign-chevron">{expandedSign === sign.id ? '▲' : '▼'}</span>
+                                        </div>
+                                        <AnimatePresence>
+                                            {expandedSign === sign.id && (
+                                                <motion.p
+                                                    className="sign-text"
+                                                    initial={{ opacity: 0, height: 0 }}
+                                                    animate={{ opacity: 1, height: 'auto' }}
+                                                    exit={{ opacity: 0, height: 0 }}
+                                                    transition={{ duration: 0.3 }}
+                                                >
+                                                    {sign.text}
+                                                </motion.p>
+                                            )}
+                                        </AnimatePresence>
+                                    </motion.div>
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 </motion.div>
             ) : pageView === 'crossword' ? (
                 <motion.div
                     key="crossword"
-                    className="horoscope-container"
                     initial={{ opacity: 0, x: 40 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -40 }}
                     transition={{ duration: 0.25 }}
+                    style={{ width: '100%' }}
                 >
-                    <div className="cw-scam-banner">
-                        <p className="cw-scam-title">💰 GAGNEZ 10 000€ 💰</p>
-                        <p className="cw-scam-sub">Trouvez tous les mots cachés et remportez le jackpot !</p>
-                        <p className="cw-scam-author">— Posté par Waluigi 😈</p>
-                    </div>
+                    <div className="glass-panel main-psych-card">
+                        <div className="card-header">
+                            <h1 className="title-mobile">Mot Karté</h1>
+                        </div>
+                        <div className="horoscope-container">
+                            <div className="cw-scam-banner">
+                                <p className="cw-scam-title">💰 GAGNEZ 10 000€ 💰</p>
+                                <p className="cw-scam-sub">Trouvez tous les mots cachés et remportez le jackpot !</p>
+                                <p className="cw-scam-author">— Posté par Waluigi 😈</p>
+                            </div>
 
-                    {wsAllFound ? (
-                        <motion.div className="cw-scam-result" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
-                            <p style={{ fontSize: '3rem', marginBottom: 10 }}>😈</p>
-                            <h2 style={{ color: '#ff4444', marginBottom: 10 }}>ARNAQUE !</h2>
-                            <p style={{ color: '#ccc', fontSize: '0.95rem', lineHeight: 1.5 }}>
-                                Bravo, tu as tout trouvé... mais tu ne gagnes <b style={{ color: '#ff4444' }}>RIEN DU TOUT</b> !
-                            </p>
-                            <p style={{ color: '#ffcc00', fontWeight: 'bold', marginTop: 12, fontSize: '1.1rem' }}>WAH HAH HAH !</p>
-                            <p style={{ color: '#888', fontSize: '0.8rem', marginTop: 8 }}>— Waluigi</p>
-                        </motion.div>
-                    ) : (
-                        <>
-                            <p style={{ color: '#888', fontSize: '0.8rem', textAlign: 'center', marginBottom: 8 }}>
-                                Tape la 1ère lettre puis la dernière du mot
-                            </p>
-                            <div className="ws-grid" style={{ gridTemplateColumns: `repeat(${WS_COLS}, 1fr)` }}>
-                                {WS_GRID.map((row, r) =>
-                                    row.map((letter, c) => {
-                                        const foundColor = wsFoundCellColors[`${r}-${c}`];
-                                        const isStart = wsStartCell && wsStartCell.r === r && wsStartCell.c === c;
-                                        return (
-                                            <div
-                                                key={`${r}-${c}`}
-                                                className={`ws-cell ${isStart ? 'ws-start' : ''}`}
-                                                style={foundColor ? { background: foundColor } : {}}
-                                                onClick={() => handleWsCellTap(r, c)}
+                            {wsAllFound ? (
+                                <motion.div className="cw-scam-result" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
+                                    <p style={{ fontSize: '3rem', marginBottom: 10 }}>😈</p>
+                                    <h2 style={{ color: '#ff4444', marginBottom: 10 }}>ARNAQUE !</h2>
+                                    <p style={{ color: '#ccc', fontSize: '0.95rem', lineHeight: 1.5 }}>
+                                        Bravo, tu as tout trouvé... mais tu ne gagnes <b style={{ color: '#ff4444' }}>RIEN DU TOUT</b> !
+                                    </p>
+                                    <p style={{ color: '#ffcc00', fontWeight: 'bold', marginTop: 12, fontSize: '1.1rem' }}>WAH HAH HAH !</p>
+                                    <p style={{ color: '#888', fontSize: '0.8rem', marginTop: 8 }}>— Waluigi</p>
+                                </motion.div>
+                            ) : (
+                                <>
+                                    <p style={{ color: '#888', fontSize: '0.8rem', textAlign: 'center', marginBottom: 8 }}>
+                                        Tape la 1ère lettre puis la dernière du mot
+                                    </p>
+                                    <div className="ws-grid" style={{ gridTemplateColumns: `repeat(${WS_COLS}, 1fr)` }}>
+                                        {WS_GRID.map((row, r) =>
+                                            row.map((letter, c) => {
+                                                const foundColor = wsFoundCellColors[`${r}-${c}`];
+                                                const isStart = wsStartCell && wsStartCell.r === r && wsStartCell.c === c;
+                                                return (
+                                                    <div
+                                                        key={`${r}-${c}`}
+                                                        className={`ws-cell ${isStart ? 'ws-start' : ''}`}
+                                                        style={foundColor ? { background: foundColor } : {}}
+                                                        onClick={() => handleWsCellTap(r, c)}
+                                                    >
+                                                        {letter}
+                                                    </div>
+                                                );
+                                            })
+                                        )}
+                                    </div>
+
+                                    <div className="ws-word-list">
+                                        {WS_WORDS.map((w, i) => (
+                                            <span
+                                                key={i}
+                                                className={`ws-word-tag ${wsFoundWords.has(i) ? 'found' : ''}`}
                                             >
-                                                {letter}
-                                            </div>
-                                        );
-                                    })
-                                )}
-                            </div>
-
-                            <div className="ws-word-list">
-                                {WS_WORDS.map((w, i) => (
-                                    <span
-                                        key={i}
-                                        className={`ws-word-tag ${wsFoundWords.has(i) ? 'found' : ''}`}
-                                    >
-                                        {w.word}
-                                    </span>
-                                ))}
-                            </div>
-                        </>
-                    )}
+                                                {w.word}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    </div>
                 </motion.div>
             ) : (
             <motion.div
@@ -431,7 +445,7 @@ export default function PagePsych() {
                 <div className="card-header">
                     <Brain size={48} color="#00ffff" />
                     <h1 className="title-mobile">Bilan Psychologique</h1>
-                </div>
+                                </div>
 
                 {isCalculating ? (
                     <div className="calculating-view">
