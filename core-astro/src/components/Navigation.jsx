@@ -2,6 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import useStore from '../store/useStore';
 
+const ICON_ASSET_VERSION = '20260317-2';
+
 const PAGES = [
     { id: 'WARIO',  iconSrc: '/images/icons/nav/wario-icon.png',  label: 'Bar',      color: '#ffcc00' },
     { id: 'TOAD',   iconSrc: '/images/icons/nav/toad-icon.png',   label: 'Bank',     color: '#9933ff' },
@@ -36,7 +38,7 @@ export default function Navigation() {
                             whileTap={{ scale: 0.85 }}
                         >
                             <span className={`snap-nav-icon ${isActive ? 'active' : ''}`}>
-                                <img src={iconSrc} alt={label} className="snap-nav-icon-img" />
+                                <img src={`${iconSrc}?v=${ICON_ASSET_VERSION}`} alt={label} className="snap-nav-icon-img" />
                             </span>
                             {isActive && (
                                 <motion.span
