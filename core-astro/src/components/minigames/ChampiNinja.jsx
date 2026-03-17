@@ -149,8 +149,8 @@ export default function ChampiNinja({ onExit }) {
                 {gameState === 'START' && (
                     <div className="overlay-menu">
                         <h1>Slash rapide !</h1>
-                        <p>Tape sur les <NeonIcon name="red-mushroom-spotted" size={18} /> pour scorrer.</p>
-                        <p>Attention aux bombes <NeonIcon name="shell-spiked-green" size={18} /> !</p>
+                        <p>Tape sur les <NeonIcon name="champi-ninja" size={18} /> pour scorrer.</p>
+                        <p>Attention aux bombes <NeonIcon name="bomb-timer" size={18} /> !</p>
                         <button className="start-btn" onClick={startGame}>JOUER (20s)</button>
                     </div>
                 )}
@@ -182,7 +182,7 @@ export default function ChampiNinja({ onExit }) {
                                     handleSlice(item.id, item.type);
                                 }}
                             >
-                                {item.type === 'bomb' ? <NeonIcon name="shell-spiked-green" size={32} /> : (item.type === 'golden' ? <NeonIcon name="star-purple" size={32} /> : <NeonIcon name="red-mushroom-spotted" size={32} />)}
+                                {item.type === 'bomb' ? <NeonIcon name="bomb-timer" size={32} /> : (item.type === 'golden' ? <NeonIcon name="star-purple" size={32} /> : <NeonIcon name="champi-ninja" size={32} />)}
                             </motion.button>
                         ))}
                     </AnimatePresence>
