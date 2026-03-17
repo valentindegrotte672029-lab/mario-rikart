@@ -422,7 +422,7 @@ export default function PagePoker() {
                   <span className="seg-label">{amt}</span>
                 </div>
               ))}
-              <div className="wheel-center-logo"><NeonIcon name="poker-card" size={40} /></div>
+              <div className="wheel-center-logo">🃏</div>
            </motion.div>
 
            <AnimatePresence>
