@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ICON_V = '13';
+const ICON_V = '14';
 // Progressive scaling: small inline icons stay readable, large display icons get much bigger
 const scaleSize = (s) => Math.round(s * Math.min(1.3 + s * 0.02, 2.5));
 
