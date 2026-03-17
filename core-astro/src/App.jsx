@@ -59,7 +59,13 @@ export default function App() {
     const tag = e.target.tagName;
     const type = e.target.type;
     const isInteractive = tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || type === 'range';
-    touchRef.current = { startX: t.clientX, startY: t.clientY, swiping: false, blocked: isInteractive };
+    const inSwipeLockedArea = typeof e.target.closest === 'function' && !!e.target.closest('[data-block-app-swipe="true"]');
+    touchRef.current = {
+      startX: t.clientX,
+      startY: t.clientY,
+      swiping: false,
+      blocked: isInteractive || inSwipeLockedArea,
+    };
   }, []);
 
   const onTouchMove = useCallback((e) => {

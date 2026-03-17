@@ -79,7 +79,7 @@ export default function PagePeach() {
 
           {/* Unlock cards when not yet purchased */}
           {peachUnlock === 'none' && (
-            <div className="leaks-scroll-area">
+            <div className="leaks-scroll-area" data-block-app-swipe="true">
               <div className="leak-card" onClick={handleUnlockBasic}>
                 <div className="card-bg soft-blur"></div>
                 <Lock className="lock-icon" size={32} />
