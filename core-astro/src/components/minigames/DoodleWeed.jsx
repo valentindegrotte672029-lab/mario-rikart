@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Coins } from 'lucide-react';
 import useStore from '../../store/useStore';
 import { socket } from '../../socket';
+import NeonIcon from '../NeonIcon';
 
 const GRAVITY = 0.55;
 const JUMP_FORCE = -15;
@@ -263,7 +264,7 @@ export default function DoodleWeed({ onExit }) {
                     <div className="overlay-menu">
                         <h1>CHUTE</h1>
                         <p>Score: {score}</p>
-                        <p>Gains: <strong style={{ color: '#ffcc00' }}>{Math.floor(score * 0.1)} 🟡</strong></p>
+                        <p>Gains: <strong style={{ color: '#ffcc00' }}>{Math.floor(score * 0.1)} <NeonIcon name="coin-gold" size={16} /></strong></p>
                         <button className="start-btn" onClick={startGame}>REJOUER</button>
                     </div>
                 )}
@@ -282,7 +283,7 @@ export default function DoodleWeed({ onExit }) {
                                 height: `${PLATFORM_HEIGHT}px`
                             }}
                         >
-                            {plat.type === 'spring' && <span className="spring-prop">🍄</span>}
+                            {plat.type === 'spring' && <span className="spring-prop"><NeonIcon name="red-mushroom-spotted" size={20} /></span>}
                             {plat.type === 'breaking' && <span className="break-prop">🪵</span>}
                         </div>
                     ))}

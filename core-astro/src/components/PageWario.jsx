@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, ChevronRight } from 'lucide-react';
 import useStore from '../store/useStore';
 import { socket } from '../socket';
+import NeonIcon from './NeonIcon';
 
 const generateQr = () => `WRO-${Math.random().toString(36).substring(7).toUpperCase()}`;
 
@@ -13,9 +14,9 @@ export default function PageWario() {
   const [orderQr, setOrderQr] = useState(null);
 
   const menu = [
-    { id: 'gourd-50', name: 'Gourdasse 50cc', price: 15000, icon: '🥃' },
-    { id: 'gourd-100', name: 'Gourdasse 100cc', price: 30000, icon: '🍹' },
-    { id: 'gourd-150', name: 'Gourdasse 150cc', price: 60000, icon: '🧉' },
+    { id: 'gourd-50', name: 'Gourdasse 50cc', price: 15000, icon: 'flask-purple-atomic' },
+    { id: 'gourd-100', name: 'Gourdasse 100cc', price: 30000, icon: 'flask-orange-distill' },
+    { id: 'gourd-150', name: 'Gourdasse 150cc', price: 60000, icon: 'flask-green-erlenmeyer' },
   ];
 
   const handleBuy = (item) => {
@@ -48,10 +49,10 @@ export default function PageWario() {
         <div className="ios-list">
           {menu.map((item, index) => (
             <div key={item.id} className="ios-list-item" onClick={() => handleBuy(item)}>
-              <div className="item-icon-circle">{item.icon}</div>
+              <div className="item-icon-circle"><NeonIcon name={item.icon} size={30} /></div>
               <div className="item-details">
                 <h4>{item.name}</h4>
-                <p className="wario-price-tag">{item.price} 🟡</p>
+                <p className="wario-price-tag">{item.price} <NeonIcon name="coin-gold" size={16} /></p>
               </div>
               <ChevronRight size={20} color="#ffcc00" className="chevron" />
               {index !== menu.length - 1 && <div className="ios-separator"></div>}

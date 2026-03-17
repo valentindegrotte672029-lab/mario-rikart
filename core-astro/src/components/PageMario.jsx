@@ -6,8 +6,18 @@ import useStore from '../store/useStore';
 import { socket } from '../socket';
 import { compressImage } from '../utils/imageCompressor';
 import html2canvas from 'html2canvas';
+import NeonIcon from './NeonIcon';
 
-const STICKERS_GALLERY = ['🍄', '⭐️', '🔥', '💩', '💸', '🍷', '🚬', '🤡'];
+const STICKERS_GALLERY = [
+  { id: 'mushroom', icon: 'red-mushroom-spotted' },
+  { id: 'star', icon: 'star-purple' },
+  { id: 'fire', icon: 'fire-flower-pixel' },
+  { id: 'shell', icon: 'shell-spiked-green' },
+  { id: 'coins', icon: 'coins-stack' },
+  { id: 'flask', icon: 'flask-purple-atomic' },
+  { id: 'banana', icon: 'banana-peel-cyan' },
+  { id: 'wario', icon: 'wario-face' },
+];
 
 export default function PageMario() {
   const { username, bereals } = useStore();
@@ -44,10 +54,10 @@ export default function PageMario() {
     }
   };
 
-  const addSticker = (emoji) => {
+  const addSticker = (stickerIcon) => {
     setStickers(prev => [
       ...prev,
-      { id: Date.now(), emoji, x: 0, y: 0 }
+      { id: Date.now(), icon: stickerIcon, x: 0, y: 0 }
     ]);
   };
 
@@ -229,7 +239,7 @@ export default function PageMario() {
                     whileDrag={{ scale: 1.2 }}
                     onClick={() => setStickers(prev => prev.filter(s => s.id !== sticker.id))}
                   >
-                    {sticker.emoji}
+                    <NeonIcon name={sticker.icon} size={36} />
                   </motion.div>
                 ))}
               </div>
@@ -255,9 +265,9 @@ export default function PageMario() {
               </div>
 
               <div className="stickers-gallery">
-                {STICKERS_GALLERY.map(emoji => (
-                  <button key={emoji} className="sticker-picker-btn" onClick={() => addSticker(emoji)}>
-                    {emoji}
+                {STICKERS_GALLERY.map(s => (
+                  <button key={s.id} className="sticker-picker-btn" onClick={() => addSticker(s.icon)}>
+                    <NeonIcon name={s.icon} size={28} />
                   </button>
                 ))}
               </div>

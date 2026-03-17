@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import useStore from '../store/useStore';
 import { Brain, ArrowRight, RotateCcw, Star } from 'lucide-react';
+import NeonIcon from './NeonIcon';
 
 const HOROSCOPE_SIGNS = [
     {
@@ -378,7 +379,7 @@ export default function PagePsych() {
                         </div>
                         <div className="horoscope-container">
                             <div className="cw-scam-banner">
-                                <p className="cw-scam-title">💰 GAGNEZ 10 000€ 💰</p>
+                                <p className="cw-scam-title"><NeonIcon name="coins-stack" size={18} /> GAGNEZ 10 000€ <NeonIcon name="coins-stack" size={18} /></p>
                                 <p className="cw-scam-sub">Trouvez tous les mots cachés et remportez le jackpot !</p>
                                 <p className="cw-scam-author">— Posté par Waluigi 😈</p>
                             </div>

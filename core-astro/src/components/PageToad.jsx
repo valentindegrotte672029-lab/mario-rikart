@@ -5,13 +5,14 @@ import { motion } from 'framer-motion';
 import { FlaskConical, Skull, Send } from 'lucide-react';
 import useStore from '../store/useStore';
 import { socket } from '../socket';
+import NeonIcon from './NeonIcon';
 
 const INGREDIENTS = [
-  { id: 'vodka', name: 'Vodka', emoji: '🍾' },
-  { id: 'lait', name: 'Lait tiède', emoji: '🥛' },
-  { id: 'piment', name: 'Piment pur', emoji: '🌶️' },
-  { id: 'tabasco', name: 'Tabasco', emoji: '🔥' },
-  { id: 'cornichon', name: 'Jus de cornichon', emoji: '🥒' },
+  { id: 'vodka', name: 'Vodka', emoji: '🍾', icon: 'flask-purple-atomic' },
+  { id: 'lait', name: 'Lait tiède', emoji: '🥛', icon: 'flask-blue-beaker' },
+  { id: 'piment', name: 'Piment pur', emoji: '🌶️', icon: 'flask-orange-distill' },
+  { id: 'tabasco', name: 'Tabasco', emoji: '🔥', icon: 'fire-flower-pixel' },
+  { id: 'cornichon', name: 'Jus de cornichon', emoji: '🥒', icon: 'flask-green-erlenmeyer' },
 ];
 
 const LISTEUX = [
@@ -89,7 +90,7 @@ export default function PageToad() {
                 className={`ingredient-btn ${selectedIngredients.includes(ing.id) ? 'selected' : ''}`}
                 onClick={() => toggleIngredient(ing.id)}
               >
-                <span className="emoji">{ing.emoji}</span>
+                <span className="emoji"><NeonIcon name={ing.icon} size={28} /></span>
                 <span className="name">{ing.name}</span>
               </button>
             ))}

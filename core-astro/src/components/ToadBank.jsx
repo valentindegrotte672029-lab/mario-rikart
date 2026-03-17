@@ -2,6 +2,7 @@ import React from 'react';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import useStore from '../store/useStore';
+import NeonIcon from './NeonIcon';
 
 export default function ToadBankMobile() {
   const { balance, lastGlitchPurchase, username, currentPage, setPage, logout } = useStore();
@@ -32,13 +33,13 @@ export default function ToadBankMobile() {
                 {currentPage}
               </motion.span>
             </AnimatePresence>
-            <span className="bank-balance">{balance.toLocaleString('fr-FR')} 🟡</span>
+            <span className="bank-balance">{balance.toLocaleString('fr-FR')} <NeonIcon name="coin-gold" size={16} /></span>
           </div>
         </div>
 
         <div className="profile-pic" onClick={handleLogout} style={{ cursor: 'pointer' }}>
           <span style={{ fontSize: '1rem', fontWeight: 'bold', color: 'white' }}>
-            {username ? username.substring(0, 2) : '🍄'}
+            {username ? username.substring(0, 2) : <NeonIcon name="red-mushroom-spotted" size={18} />}
           </span>
         </div>
 

@@ -9,6 +9,7 @@ import ChampiNinja from './minigames/ChampiNinja';
 import DoodleWeed from './minigames/DoodleWeed';
 
 import useStore from '../store/useStore';
+import NeonIcon from './NeonIcon';
 
 export default function PageLuigiNew() {
   const { username, leaderboards, clearHappening } = useStore();
@@ -42,7 +43,7 @@ export default function PageLuigiNew() {
 
         <div className="arcade-grid">
           <button className="arcade-btn flappyweed-btn" onClick={() => setActiveGame('FLAPPYWEED')}>
-            <span className="game-icon">🪽</span>
+            <span className="game-icon"><NeonIcon name="fire-flower-pixel" size={32} /></span>
             <div className="game-info">
               <h3>ROULE-TA-FLEUR</h3>
               <p>Evite les tuyaux en volant.</p>
@@ -51,7 +52,7 @@ export default function PageLuigiNew() {
           </button>
 
           <button className="arcade-btn champininja-btn" onClick={() => setActiveGame('CHAMPININJA')}>
-            <span className="game-icon">🍄</span>
+            <span className="game-icon"><NeonIcon name="red-mushroom-spotted" size={32} /></span>
             <div className="game-info">
               <h3>CHAMPI NINJA</h3>
               <p>Taille les champis, évite les bombes.</p>
@@ -60,7 +61,7 @@ export default function PageLuigiNew() {
           </button>
 
           <button className="arcade-btn doodleweed-btn" onClick={() => setActiveGame('DOODLEWEED')}>
-            <span className="game-icon">🚀</span>
+            <span className="game-icon"><NeonIcon name="star-purple" size={32} /></span>
             <div className="game-info">
               <h3>DOODLE-WEED</h3>
               <p>Monte le plus haut possible !</p>
@@ -87,14 +88,14 @@ export default function PageLuigiNew() {
             exit={{ opacity: 0, y: 50 }}
           >
             <div className="lb-header-modal">
-              <h2>🏆 HALL OF FAME</h2>
+              <h2><NeonIcon name="treasure-chest" size={22} /> HALL OF FAME</h2>
               <button className="lb-close-btn" onClick={() => setShowLeaderboard(false)}><X size={26} /></button>
             </div>
 
             <div className="lb-scroll-content">
               {/* FlappyWeed */}
               <div className="lb-category">
-                <h3>💨 Roule-Ta-Feuille</h3>
+                <h3><NeonIcon name="fire-flower-pixel" size={18} /> Roule-Ta-Feuille</h3>
                 {Object.keys(leaderboards.FLAPPYWEED || {}).length === 0 ? <p className="empty-lb">Aucun score</p> : (
                   Object.entries(leaderboards.FLAPPYWEED).sort(([,a], [,b]) => b.score - a.score).slice(0, 10).map(([user, data], i) => (
                     <div key={user} className="lb-line">
@@ -107,7 +108,7 @@ export default function PageLuigiNew() {
 
               {/* Champi Ninja */}
               <div className="lb-category">
-                <h3>🍄 Champi Ninja</h3>
+                <h3><NeonIcon name="red-mushroom-spotted" size={18} /> Champi Ninja</h3>
                 {Object.keys(leaderboards.CHAMPININJA || {}).length === 0 ? <p className="empty-lb">Aucun score</p> : (
                   Object.entries(leaderboards.CHAMPININJA).sort(([,a], [,b]) => b.score - a.score).slice(0, 10).map(([user, data], i) => (
                     <div key={user} className="lb-line">
@@ -120,7 +121,7 @@ export default function PageLuigiNew() {
 
               {/* Doodle Weed */}
               <div className="lb-category">
-                <h3>🚀 Doodle-Weed</h3>
+                <h3><NeonIcon name="star-purple" size={18} /> Doodle-Weed</h3>
                 {Object.keys(leaderboards.DOODLEWEED || {}).length === 0 ? <p className="empty-lb">Aucun score</p> : (
                   Object.entries(leaderboards.DOODLEWEED).sort(([,a], [,b]) => b.score - a.score).slice(0, 10).map(([user, data], i) => (
                     <div key={user} className="lb-line">

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import useStore from '../store/useStore';
 import { socket } from '../socket';
 import PagePoker from './PagePoker';
+import NeonIcon from './NeonIcon';
 
 const BG_ASSET_VERSION = '20260317a';
 const CASINO_VIEW_THEME = {
@@ -80,10 +81,10 @@ export default function PageCasino() {
     >
       <div className="casino-tab-bar">
         <button className={`casino-tab-btn ${casinoTab === 'poker' ? 'active' : ''}`} onClick={() => setCasinoTab('poker')}>
-          ♠️ Poker
+          <NeonIcon name="poker-card" size={18} /> Poker
         </button>
         <button className={`casino-tab-btn ${casinoTab === 'polymario' ? 'active' : ''}`} onClick={() => setCasinoTab('polymario')}>
-          🎰 Polymario
+          <NeonIcon name="poker-card" size={18} /> Polymario
         </button>
       </div>
 
@@ -92,7 +93,7 @@ export default function PageCasino() {
       ) : (
       <>
       <div className="casino-header">
-        <h1 className="casino-title">🎰 POLYMARIO</h1>
+        <h1 className="casino-title"><NeonIcon name="poker-card" size={28} /> POLYMARIO</h1>
         <p className="casino-subtitle">Dévoilez vos pronostics.</p>
         <button className="btn-create-toggle" onClick={() => setShowCreateForm(!showCreateForm)}>
           {showCreateForm ? 'Fermer' : 'Créer un Pari / Sondage'}
@@ -148,12 +149,12 @@ export default function PageCasino() {
                   exit={{ opacity: 0, scale: 0.8 }}
                 >
                   <div className="bet-status">
-                    {bet.status === 'OPEN' ? '🔥 EN COURS' : '🔒 RÉSULTAT TOMBÉ'}
+                    {bet.status === 'OPEN' ? <><NeonIcon name="fire-flower-pixel" size={16} /> EN COURS</> : <><NeonIcon name="question-block-crossword" size={16} /> RÉSULTAT TOMBÉ</>}
                   </div>
                   
                   <h3 className="bet-question">{bet.question}</h3>
                   <div className="bet-pot-info">
-                    Cagnotte Globale: <span>{totalPot.toLocaleString()} 🟡</span>
+                    Cagnotte Globale: <span>{totalPot.toLocaleString()} <NeonIcon name="coin-gold" size={16} /></span>
                   </div>
 
                   <div className="bet-options">
@@ -180,7 +181,7 @@ export default function PageCasino() {
                           </div>
                           
                           <div className="option-details">
-                            {optionTotal.toLocaleString()} 🟡 misés
+                            {optionTotal.toLocaleString()} <NeonIcon name="coin-gold" size={14} /> misés
                           </div>
 
                           {bet.status === 'OPEN' && (
@@ -197,7 +198,7 @@ export default function PageCasino() {
                           )}
 
                           {bet.status === 'RESOLVED' && isWinner && (
-                            <div className="winner-badge">🏆 RÉPONSE GAGNANTE</div>
+                            <div className="winner-badge"><NeonIcon name="treasure-chest" size={18} /> RÉPONSE GAGNANTE</div>
                           )}
                         </div>
                       );

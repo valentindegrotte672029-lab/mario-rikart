@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Lock, ShieldAlert, X, Crown, ChevronLeft, ChevronRight } from 'lucide-react';
 import useStore from '../store/useStore';
 import { socket } from '../socket';
+import NeonIcon from './NeonIcon';
 
 // All 26 photos
 const ALL_PHOTOS = Array.from({ length: 26 }, (_, i) => `/images/peach/peach-${i + 1}.jpg`);
@@ -68,11 +69,11 @@ export default function PagePeach() {
 
         <div className="glass-panel mobile-card peach-card">
           <div className="profile-header">
-            <div className="avatar glow-avatar">👑</div>
+            <div className="avatar glow-avatar"><NeonIcon name="peach-crown" size={50} /></div>
             <div className="titles">
               <h1 className="title-mobile peach-title">PEACHASSE</h1>
-              <p className="only-fans-tag">💎 Top 0.01% Mushroom Kingdom</p>
-              {peachUnlock === 'vip' && <p className="vip-badge">👑 VIP — 26 photos</p>}
+              <p className="only-fans-tag"><NeonIcon name="star-mushroom-indigo" size={16} /> Top 0.01% Mushroom Kingdom</p>
+              {peachUnlock === 'vip' && <p className="vip-badge"><NeonIcon name="peach-crown" size={14} /> VIP — 26 photos</p>}
               {peachUnlock === 'basic' && <p className="basic-badge">🔓 Basic — 10 photos</p>}
             </div>
           </div>
@@ -84,16 +85,16 @@ export default function PagePeach() {
                 <div className="card-bg soft-blur"></div>
                 <Lock className="lock-icon" size={32} />
                 <span className="unlock-text">Débloquer Contenu</span>
-                <span className="unlock-sub">10 photos aléatoires 🔥</span>
-                <span className="price-tag gold">500 🟡</span>
+                <span className="unlock-sub">10 photos aléatoires <NeonIcon name="fire-flower-pixel" size={14} /></span>
+                <span className="price-tag gold">500 <NeonIcon name="coin-gold" size={14} /></span>
               </div>
 
               <div className="leak-card vip-card" onClick={handleUnlockVip}>
                 <div className="card-bg heavy-blur"></div>
                 <Crown className="lock-icon" size={32} color="#ffaa00" />
-                <span className="unlock-text">👑 VIP Only</span>
-                <span className="unlock-sub">Les 26 photos complètes 💎</span>
-                <span className="price-tag gold">2000 🟡</span>
+                <span className="unlock-text"><NeonIcon name="peach-crown" size={18} /> VIP Only</span>
+                <span className="unlock-sub">Les 26 photos complètes <NeonIcon name="star-mushroom-indigo" size={14} /></span>
+                <span className="price-tag gold">2000 <NeonIcon name="coin-gold" size={14} /></span>
               </div>
             </div>
           )}
@@ -103,7 +104,7 @@ export default function PagePeach() {
             <div className="upgrade-banner" onClick={handleUnlockVip}>
               <Crown size={20} color="#ffaa00" />
               <span>Passer VIP — voir les 26 photos</span>
-              <span className="price-tag gold small">2000 🟡</span>
+              <span className="price-tag gold small">2000 <NeonIcon name="coin-gold" size={14} /></span>
             </div>
           )}
 

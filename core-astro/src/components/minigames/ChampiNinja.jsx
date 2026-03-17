@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Coins, Timer } from 'lucide-react';
 import useStore from '../../store/useStore';
 import { socket } from '../../socket';
+import NeonIcon from '../NeonIcon';
 
 const GAME_DURATION = 20; // 20 seconds of intense clicking
 const SPAWN_INTERVAL_MS = 300; // Fast Time between spawns
@@ -148,8 +149,8 @@ export default function ChampiNinja({ onExit }) {
                 {gameState === 'START' && (
                     <div className="overlay-menu">
                         <h1>Slash rapide !</h1>
-                        <p>Tape sur les 🍄 pour scorrer.</p>
-                        <p>Attention aux bombes 💣 !</p>
+                        <p>Tape sur les <NeonIcon name="red-mushroom-spotted" size={18} /> pour scorrer.</p>
+                        <p>Attention aux bombes <NeonIcon name="shell-spiked-green" size={18} /> !</p>
                         <button className="start-btn" onClick={startGame}>JOUER (20s)</button>
                     </div>
                 )}
@@ -157,7 +158,7 @@ export default function ChampiNinja({ onExit }) {
                 {gameState === 'GAMEOVER' && (
                     <div className="overlay-menu">
                         <h1>TERMINE</h1>
-                        <p>Total récolté : <strong style={{ color: '#ffcc00' }}>{score * 2} 🟡</strong></p>
+                        <p>Total récolté : <strong style={{ color: '#ffcc00' }}>{score * 2} <NeonIcon name="coin-gold" size={16} /></strong></p>
                         <button className="start-btn" onClick={startGame}>REJOUER</button>
                     </div>
                 )}
@@ -181,7 +182,7 @@ export default function ChampiNinja({ onExit }) {
                                     handleSlice(item.id, item.type);
                                 }}
                             >
-                                {item.type === 'bomb' ? '💣' : (item.type === 'golden' ? '⭐' : '🍄')}
+                                {item.type === 'bomb' ? <NeonIcon name="shell-spiked-green" size={32} /> : (item.type === 'golden' ? <NeonIcon name="star-purple" size={32} /> : <NeonIcon name="red-mushroom-spotted" size={32} />)}
                             </motion.button>
                         ))}
                     </AnimatePresence>

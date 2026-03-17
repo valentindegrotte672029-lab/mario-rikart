@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import NeonIcon from './NeonIcon';
 
 // Each pole = one group photo with face rects + name text rects (all in % of image)
 // Coordinates from rendered reference PDF with precise black rectangle positions
 const POLES = [
     {
         name: 'Présidence',
-        emoji: '👑',
+        emoji: null,
+        icon: 'peach-crown',
         color: '#ffcc00',
         photo: '/images/trombi/page_1.jpg',
         description: 'Le pôle Présidence dirige le BDE, coordonne tous les autres pôles et représente les étudiants auprès de l\'administration.',
@@ -17,7 +19,8 @@ const POLES = [
     },
     {
         name: 'Secrétariat',
-        emoji: '📋',
+        emoji: null,
+        icon: 'classified-folder',
         color: '#00ccff',
         photo: '/images/trombi/page_2.jpg',
         description: 'Le pôle Secrétariat gère toute la paperasse, les comptes-rendus, la communication interne et les procès-verbaux.',
@@ -28,7 +31,8 @@ const POLES = [
     },
     {
         name: 'Trésorerie',
-        emoji: '💰',
+        emoji: null,
+        icon: 'coins-stack',
         color: '#39ff14',
         photo: '/images/trombi/page_3.jpg',
         description: 'Le pôle Trésorerie gère le budget du BDE, les encaissements, les dépenses et s\'assure que les comptes sont en ordre.',
@@ -39,7 +43,8 @@ const POLES = [
     },
     {
         name: 'Ambassade',
-        emoji: '🌍',
+        emoji: null,
+        icon: 'castle-gothic-purple',
         color: '#ff66b2',
         photo: '/images/trombi/page_4.jpg',
         description: 'Le pôle Ambassade représente le BDE à l\'extérieur, gère les relations avec les autres écoles et associations.',
@@ -50,7 +55,8 @@ const POLES = [
     },
     {
         name: 'Communication',
-        emoji: '📢',
+        emoji: null,
+        icon: 'brain-maze',
         color: '#ff4400',
         photo: '/images/trombi/page_5.jpg',
         description: 'Le pôle Communication gère les réseaux sociaux, les affiches, les vidéos et toute la visibilité du BDE.',
@@ -61,7 +67,8 @@ const POLES = [
     },
     {
         name: 'Événementiel',
-        emoji: '🎉',
+        emoji: null,
+        icon: 'star-purple',
         color: '#ff00ff',
         photo: '/images/trombi/page_6.jpg',
         description: 'Le pôle Événementiel organise toutes les soirées, galas, afterworks et événements de la vie étudiante.',
@@ -72,7 +79,8 @@ const POLES = [
     },
     {
         name: 'Animations',
-        emoji: '🎮',
+        emoji: null,
+        icon: 'question-block',
         color: '#9933ff',
         photo: '/images/trombi/page_7.jpg',
         description: 'Le pôle Animations organise les activités ludiques, tournois, jeux et animations pendant les temps de pause.',
@@ -84,7 +92,8 @@ const POLES = [
     },
     {
         name: 'Logistique',
-        emoji: '🤝',
+        emoji: null,
+        icon: 'treasure-chest',
         color: '#00ff88',
         photo: '/images/trombi/page_8.jpg',
         description: 'Le pôle Logistique gère l\'organisation matérielle des événements, la logistique et les approvisionnements.',
@@ -96,7 +105,8 @@ const POLES = [
     },
     {
         name: 'Travel',
-        emoji: '✈️',
+        emoji: null,
+        icon: 'chrono-stopwatch',
         color: '#00ccff',
         photo: '/images/trombi/page_9.jpg',
         description: 'Le pôle Travel organise les voyages étudiants, week-ends d\'intégration et escapades. Direction : l\'aventure.',
@@ -155,7 +165,7 @@ export default function PageTrombi() {
 
             {allRevealed && (
                 <motion.div className="trombi-congrats" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
-                    <p style={{ fontSize: '2.5rem' }}>🕵️</p>
+                    <p style={{ fontSize: '2.5rem' }}><NeonIcon name="classified-folder" size={48} /></p>
                     <h2 style={{ color: '#ffcc00' }}>DOSSIER COMPLET</h2>
                     <p style={{ color: '#aaa', fontSize: '0.9rem' }}>Toutes les identités ont été déclassifiées.</p>
                 </motion.div>
@@ -164,7 +174,7 @@ export default function PageTrombi() {
             {POLES.map((pole, pi) => (
                 <div key={pi} className="trombi-pole-section">
                     <div className="trombi-pole-header" style={{ borderColor: pole.color }}>
-                        <span>{pole.emoji}</span>
+                        <span>{pole.icon ? <NeonIcon name={pole.icon} size={22} /> : pole.emoji}</span>
                         <span style={{ color: pole.color }}>{pole.name}</span>
                     </div>
                     <div className="trombi-photo-container">
@@ -202,7 +212,7 @@ export default function PageTrombi() {
                             onClick={e => e.stopPropagation()}
                         >
                             <div className="trombi-modal-pole" style={{ color: POLES[showInfo.poleIdx].color }}>
-                                {POLES[showInfo.poleIdx].emoji} {POLES[showInfo.poleIdx].name}
+                                {POLES[showInfo.poleIdx].icon ? <NeonIcon name={POLES[showInfo.poleIdx].icon} size={20} /> : POLES[showInfo.poleIdx].emoji} {POLES[showInfo.poleIdx].name}
                             </div>
                             <p className="trombi-modal-desc">{POLES[showInfo.poleIdx].description}</p>
                             <p className="trombi-modal-role">
