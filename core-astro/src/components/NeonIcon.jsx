@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ICON_V = '14';
+const ICON_V = '15';
 // Progressive scaling: small inline icons stay readable, large display icons get much bigger
 const scaleSize = (s) => Math.round(s * Math.min(1.3 + s * 0.02, 2.5));
 
@@ -21,19 +21,33 @@ export default function NeonIcon({ name, size = 20, glow, className = '', style 
         height: scaled,
         flexShrink: 0,
         filter: glowFilter || undefined,
+        overflow: 'hidden', // masque tout débordement
+        borderRadius: '50%', // optionnel pour forcer l'aspect rond
+        background: 'rgba(0,0,0,0)', // fond transparent
         ...style,
       }}
     >
-      <img
-        src={`/images/icons/items/${name}.png?v=${ICON_V}`}
-        alt=""
-        style={{
-          width: '100%',
-          height: '100%',
-          objectFit: 'contain',
-          display: 'block',
-        }}
-      />
+      <div style={{
+        width: '90%',
+        height: '90%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin: 'auto',
+      }}>
+        <img
+          src={`/images/icons/items/${name}.png?v=${ICON_V}`}
+          alt=""
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'contain',
+            display: 'block',
+            pointerEvents: 'none',
+            userSelect: 'none',
+          }}
+        />
+      </div>
     </span>
   );
 }
