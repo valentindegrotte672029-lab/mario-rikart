@@ -3,9 +3,9 @@ import React from 'react';
 const ICON_V = '10';
 
 export default function NeonIcon({ name, size = 20, glow, className = '', style = {} }) {
-  const glowStyle = glow
-    ? { filter: `drop-shadow(0 0 ${Math.max(3, size * 0.15)}px ${glow})` }
-    : {};
+  const glowFilter = glow
+    ? `drop-shadow(0 0 ${Math.max(4, size * 0.18)}px ${glow}) drop-shadow(0 0 ${Math.max(8, size * 0.35)}px ${glow})`
+    : '';
   return (
     <span
       className={`neon-icon ${className}`}
@@ -17,7 +17,7 @@ export default function NeonIcon({ name, size = 20, glow, className = '', style 
         width: size,
         height: size,
         flexShrink: 0,
-        ...glowStyle,
+        filter: glowFilter || undefined,
         ...style,
       }}
     >
@@ -29,6 +29,7 @@ export default function NeonIcon({ name, size = 20, glow, className = '', style 
           height: '100%',
           objectFit: 'contain',
           display: 'block',
+          mixBlendMode: 'screen',
         }}
       />
     </span>

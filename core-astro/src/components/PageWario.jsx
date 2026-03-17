@@ -154,13 +154,13 @@ export default function PageWario() {
 
         .item-icon-circle {
           width: 45px; height: 45px;
-          background: linear-gradient(135deg, rgba(255,204,0,0.2), rgba(153,0,255,0.2));
-          border-radius: 12px;
+          background: transparent;
+          border-radius: 0;
           display: flex; align-items: center; justify-content: center;
           font-size: 1.4rem;
           margin-right: 15px;
-          border: 1px solid rgba(255,204,0,0.3);
-          box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+          border: none;
+          box-shadow: none;
         }
 
         .item-details { flex: 1; }

@@ -56,8 +56,9 @@
 }
 
 .neon-icon img {
-  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.35))
-          drop-shadow(0 0 10px rgba(255, 255, 255, 0.15));
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.5))
+          drop-shadow(0 0 14px rgba(255, 255, 255, 0.2));
 }
 
 /* Buttons & flex parents: auto-align icons + text */

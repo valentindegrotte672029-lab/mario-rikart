@@ -102,8 +102,8 @@ export default function Navigation() {
                 }
 
                 .snap-nav-icon {
-                    width: 26px;
-                    height: 26px;
+                    width: 36px;
+                    height: 36px;
                     filter: grayscale(0.8) brightness(0.5);
                     transition: all 0.2s ease;
                     line-height: 1;
@@ -113,14 +113,15 @@ export default function Navigation() {
                     justify-content: center;
                 }
                 .snap-nav-icon-img {
-                    width: 92%;
-                    height: 92%;
+                    width: 100%;
+                    height: 100%;
                     object-fit: contain;
                     display: block;
+                    mix-blend-mode: screen;
                 }
                 .snap-nav-item.active .snap-nav-icon {
                     filter: none;
-                    transform: scale(1.1);
+                    transform: scale(1.15);
                 }
 
                 .snap-nav-label {
