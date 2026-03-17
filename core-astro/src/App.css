@@ -53,8 +53,8 @@
   -webkit-text-fill-color: initial;
   -webkit-background-clip: initial;
   background: none;
-  /* +55% visual size for immersive neon presence */
-  transform: scale(1.55);
+  /* +65% visual size for immersive neon presence */
+  transform: scale(1.65);
   transform-origin: center;
 }
 

@@ -158,7 +158,7 @@ export default function ChampiNinja({ onExit }) {
                 {gameState === 'GAMEOVER' && (
                     <div className="overlay-menu">
                         <h1>TERMINE</h1>
-                        <p>Total récolté : <strong style={{ color: '#ffcc00' }}>{score * 2} <NeonIcon name="coin-gold" size={22} /></strong></p>
+                        <p>Total récolté : <strong style={{ color: '#ffcc00' }}>{score * 2} <NeonIcon name="coin-gold" size={26} /></strong></p>
                         <button className="start-btn" onClick={startGame}>REJOUER</button>
                     </div>
                 )}

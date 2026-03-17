@@ -52,7 +52,7 @@ export default function PageWario() {
               <div className="item-icon-circle"><NeonIcon name={item.icon} size={30} /></div>
               <div className="item-details">
                 <h4>{item.name}</h4>
-                <p className="wario-price-tag">{item.price} <NeonIcon name="coin-gold" size={22} /></p>
+                <p className="wario-price-tag">{item.price} <NeonIcon name="coin-gold" size={26} /></p>
               </div>
               <ChevronRight size={20} color="#ffcc00" className="chevron" />
               {index !== menu.length - 1 && <div className="ios-separator"></div>}

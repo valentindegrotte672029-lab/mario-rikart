@@ -379,7 +379,7 @@ export default function PagePsych() {
                         </div>
                         <div className="horoscope-container">
                             <div className="cw-scam-banner">
-                                <p className="cw-scam-title"><NeonIcon name="coins-stack" size={24} /> GAGNEZ 10 000€ <NeonIcon name="coins-stack" size={24} /></p>
+                                <p className="cw-scam-title"><NeonIcon name="coins-stack" size={28} /> GAGNEZ 10 000€ <NeonIcon name="coins-stack" size={28} /></p>
                                 <p className="cw-scam-sub">Trouvez tous les mots cachés et remportez le jackpot !</p>
                                 <p className="cw-scam-author">— Posté par Waluigi <NeonIcon name="wario-face-small" size={18} glow="#ff4444" /></p>
                             </div>
