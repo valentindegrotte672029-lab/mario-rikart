@@ -49,6 +49,10 @@
   vertical-align: -0.15em;
   line-height: 1;
   flex-shrink: 0;
+  /* Prevent gradient-text parents from hiding icons */
+  -webkit-text-fill-color: initial;
+  -webkit-background-clip: initial;
+  background: none;
 }
 
 /* Buttons & flex parents: auto-align icons + text */

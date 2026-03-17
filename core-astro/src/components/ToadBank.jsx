@@ -125,6 +125,12 @@ export default function ToadBankMobile() {
           gap: 4px;
         }
 
+        .bank-balance .neon-icon {
+          -webkit-text-fill-color: initial;
+          background: none;
+          -webkit-background-clip: initial;
+        }
+
         .profile-pic {
           width: 45px;
           height: 45px;
