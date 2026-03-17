@@ -55,6 +55,11 @@
   background: none;
 }
 
+.neon-icon img {
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.35))
+          drop-shadow(0 0 10px rgba(255, 255, 255, 0.15));
+}
+
 /* Buttons & flex parents: auto-align icons + text */
 button .neon-icon,
 .btn-create .neon-icon,

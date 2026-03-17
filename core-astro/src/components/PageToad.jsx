@@ -165,11 +165,11 @@ export default function PageToad() {
         }
 
         .toad-section {
-          background: rgba(0, 0, 0, 0.4);
+          background: rgba(0, 0, 0, 0.2);
           border-radius: 20px;
           padding: 15px;
           margin-bottom: 15px;
-          border: 1px solid rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.03);
         }
 
         .section-header {
@@ -193,8 +193,8 @@ export default function PageToad() {
         }
 
         .ingredient-btn {
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: transparent;
+          border: 1px solid rgba(255, 255, 255, 0.06);
           border-radius: 12px;
           padding: 10px;
           display: flex;
@@ -220,9 +220,9 @@ export default function PageToad() {
         }
 
         .ingredient-btn.selected {
-          background: rgba(255, 51, 102, 0.2);
-          border-color: var(--theme-color);
-          box-shadow: 0 0 15px rgba(255, 51, 102, 0.3);
+          background: rgba(255, 51, 102, 0.12);
+          border-color: rgba(255, 51, 102, 0.5);
+          box-shadow: 0 0 18px rgba(255, 51, 102, 0.3), inset 0 0 12px rgba(255, 51, 102, 0.1);
           transform: scale(0.95);
         }
 

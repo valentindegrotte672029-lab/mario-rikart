@@ -264,7 +264,7 @@ export default function PageMario() {
                 />
               </div>
 
-              <div className="stickers-gallery">
+              <div className="stickers-gallery" data-block-app-swipe="true">
                 {STICKERS_GALLERY.map(s => (
                   <button key={s.id} className="sticker-picker-btn" onClick={() => addSticker(s.icon)}>
                     <NeonIcon name={s.icon} size={28} />
@@ -466,6 +466,9 @@ export default function PageMario() {
           overflow: hidden;
           margin-bottom: 15px;
           border: 2px solid rgba(255, 51, 51, 0.3);
+          -webkit-transform: translateZ(0);
+          transform: translateZ(0);
+          isolation: isolate;
         }
 
         .captured-photo {
@@ -502,6 +505,10 @@ export default function PageMario() {
           touch-action: none;
           filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
           z-index: 20;
+          will-change: transform;
+          -webkit-transform: translateZ(0);
+          transform: translateZ(0);
+          backface-visibility: hidden;
         }
 
         .draggable-sticker:active { cursor: grabbing; }
@@ -560,7 +567,7 @@ export default function PageMario() {
         }
 
         .sticker-picker-btn {
-          background: rgba(255,255,255,0.05);
+          background: transparent;
           border: none;
           font-size: 1.8rem;
           padding: 10px;
@@ -568,7 +575,7 @@ export default function PageMario() {
           transition: background 0.2s;
         }
 
-        .sticker-picker-btn:active { background: rgba(255,255,255,0.2); }
+        .sticker-picker-btn:active { background: rgba(255,255,255,0.1); }
 
         .editor-actions { display: flex; gap: 10px; }
 
