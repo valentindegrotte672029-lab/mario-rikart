@@ -215,8 +215,11 @@ export default function PagePsych() {
     const { setBgOverride, clearBgOverride } = useStore();
     useEffect(() => {
         setBgOverride({ bg: viewTheme.bg, glow: viewTheme.accent, glowSoft: viewTheme.glow });
-        return () => clearBgOverride();
     }, [viewTheme]);
+
+    useEffect(() => {
+        return () => clearBgOverride();
+    }, []);
 
     const wsFoundCellColors = useMemo(() => {
         const map = {};

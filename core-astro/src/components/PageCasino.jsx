@@ -29,8 +29,11 @@ export default function PageCasino() {
 
   useEffect(() => {
     setBgOverride(viewTheme);
-    return () => clearBgOverride();
   }, [viewTheme]);
+
+  useEffect(() => {
+    return () => clearBgOverride();
+  }, []);
 
   const handlePlaceBet = (betId, optionIdx, betTitle) => {
     const amountStr = selectedAmounts[`${betId}-${optionIdx}`];
