@@ -310,7 +310,7 @@ export default function PagePoker() {
                  <div className="lobby-menu">
                    <button className="btn-create" onClick={handleQuickMatch}><NeonIcon name="poker-card" size={18} /> Jouer au Poker</button>
                    <button className="btn-join-code" onClick={() => setLobbyView('create')}><NeonIcon name="poker-card" size={18} /> Créer une partie</button>
-                   <button className="btn-join-code" onClick={() => setLobbyView('join')}><NeonIcon name="classified-gear" size={16} /> Rejoindre une partie</button>
+                   <button className="btn-join-code" onClick={() => setLobbyView('join')}><NeonIcon name="key-neon" size={16} /> Rejoindre une partie</button>
 
                    {pendingJoinRequest && (
                      <div className="pending-request">
@@ -541,7 +541,7 @@ export default function PagePoker() {
                      exit={{ opacity: 0 }}
                   >
                      <div className="win-content">
-                        <h1><NeonIcon name="treasure-chest" size={28} /> VICTOIRE ! <NeonIcon name="treasure-chest" size={28} /></h1>
+                        <h1><NeonIcon name="ticket-gold" size={28} /> VICTOIRE ! <NeonIcon name="ticket-gold" size={28} /></h1>
                         <p>Tu remportes le tournoi !</p>
                         <h2 className="win-amount">+{pokerState.prizePool} <NeonIcon name="coin-gold" size={28} /></h2>
                         <span className="win-note">(Ton compte a été crédité)</span>

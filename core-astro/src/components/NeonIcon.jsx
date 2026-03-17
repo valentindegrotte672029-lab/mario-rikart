@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ICON_V = '11';
+const ICON_V = '12';
 
 export default function NeonIcon({ name, size = 20, glow, className = '', style = {} }) {
   const glowFilter = glow

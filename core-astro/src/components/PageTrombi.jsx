@@ -20,7 +20,7 @@ const POLES = [
     {
         name: 'Secrétariat',
         emoji: null,
-        icon: 'classified-folder',
+        icon: 'lock-neon',
         color: '#00ccff',
         photo: '/images/trombi/page_2.jpg',
         description: 'Le pôle Secrétariat gère toute la paperasse, les comptes-rendus, la communication interne et les procès-verbaux.',
@@ -158,14 +158,14 @@ export default function PageTrombi() {
             exit={{ opacity: 0, scale: 0.95 }}
         >
             <div className="trombi-header">
-                <h1 className="trombi-title"><NeonIcon name="classified-envelope" size={24} /> EPSTEIN FILES</h1>
+                <h1 className="trombi-title"><NeonIcon name="newspaper-neon" size={24} /> EPSTEIN FILES</h1>
                 <p className="trombi-subtitle">LISTE TRIBUT-BOUILLET — CLASSIFIÉ</p>
                 <p className="trombi-counter">{revealed.size}/{totalMembers} identités révélées</p>
             </div>
 
             {allRevealed && (
                 <motion.div className="trombi-congrats" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
-                    <p style={{ fontSize: '2.5rem' }}><NeonIcon name="classified-folder" size={48} /></p>
+                    <p style={{ fontSize: '2.5rem' }}><NeonIcon name="lock-neon" size={48} /></p>
                     <h2 style={{ color: '#ffcc00' }}>DOSSIER COMPLET</h2>
                     <p style={{ color: '#aaa', fontSize: '0.9rem' }}>Toutes les identités ont été déclassifiées.</p>
                 </motion.div>
@@ -221,7 +221,7 @@ export default function PageTrombi() {
                                 </b>
                             </p>
                             <button className="trombi-modal-close" onClick={handleCloseInfo}>
-                                DÉCLASSIFIER <NeonIcon name="classified-folder" size={18} />
+                                DÉCLASSIFIER <NeonIcon name="lock-neon" size={18} />
                             </button>
                         </motion.div>
                     </motion.div>

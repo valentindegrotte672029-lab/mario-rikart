@@ -71,7 +71,7 @@ export default function PageWario() {
               onClick={() => setOrderQr(null)}
             >
               <div className="qr-modal-box" onClick={(e) => e.stopPropagation()}>
-                <div style={{ marginBottom: '10px' }}><NeonIcon name="treasure-chest" size={64} glow="#ffcc00" /></div>
+                <div style={{ marginBottom: '10px' }}><NeonIcon name="ticket-gold" size={64} glow="#ffcc00" /></div>
                 <h3>Commande Validée</h3>
                 <div className="qr-code-text">{orderQr}</div>
                 <p>Présente ce code au barman.</p>
