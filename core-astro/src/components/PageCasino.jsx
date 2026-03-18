@@ -84,7 +84,7 @@ export default function PageCasino() {
           <NeonIcon name="poker-card" size={18} /> Poker
         </button>
         <button className={`casino-tab-btn ${casinoTab === 'polymario' ? 'active' : ''}`} onClick={() => setCasinoTab('polymario')}>
-          <NeonIcon name="polymario-icon" size={18} /> Polymario
+          <img src="/images/polymario-icon.png" alt="Polymario" style={{ height: 18, objectFit: 'contain', filter: 'drop-shadow(0 0 8px #ff00ff)' }} /> Polymario
         </button>
       </div>
 
@@ -93,7 +93,10 @@ export default function PageCasino() {
       ) : (
       <>
       <div className="casino-header">
-        <h1 className="casino-title"><NeonIcon name="polymario-icon" size={28} /> POLYMARIO</h1>
+        <h1 className="casino-title">
+          <img src="/images/polymario-icon.png" alt="Polymario" style={{ height: 32, objectFit: 'contain', filter: 'drop-shadow(0 0 12px #ff00ff)', marginRight: 10, verticalAlign: 'middle' }} />
+          POLYMARIO
+        </h1>
         <p className="casino-subtitle">Dévoilez vos pronostics.</p>
         <button className="btn-create-toggle" onClick={() => setShowCreateForm(!showCreateForm)}>
           {showCreateForm ? 'Fermer' : 'Créer un Pari / Sondage'}

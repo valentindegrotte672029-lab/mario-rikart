@@ -267,7 +267,7 @@ export default function PagePoker() {
            {!myPlayer ? (
              <>
                <img src="/images/poker-saloon.jpg" alt="Poker" style={{width: '100%', maxWidth: 280, borderRadius: 14, marginBottom: 15, opacity: 0.9}} />
-               <h1><NeonIcon name="poker-card" size={24} /> SALOON EXPRESSO</h1>
+               <h1><img src="/images/poker-join.png" alt="Poker" style={{ height: 36, objectFit: 'contain', filter: 'drop-shadow(0 0 12px #00ff66)', verticalAlign: 'middle', marginRight: 8 }} /> SALOON EXPRESSO</h1>
                <p>Mise de départ : <b>100 <NeonIcon name="coin-gold" size={26} /></b></p>
 
                {lobbyView === 'join' ? (
@@ -312,7 +312,7 @@ export default function PagePoker() {
                  <div className="lobby-menu">
                    <button className="btn-create" onClick={handleQuickMatch}><NeonIcon name="poker-card" size={18} /> Jouer au Poker</button>
                    <button className="btn-join-code" onClick={() => setLobbyView('create')}><NeonIcon name="poker-card" size={18} /> Créer une partie</button>
-                   <button className="btn-join-code" onClick={() => setLobbyView('join')}><NeonIcon name="poker-join" size={20} /> Rejoindre une partie</button>
+                   <button className="btn-join-code" onClick={() => setLobbyView('join')}><NeonIcon name="key-neon" size={20} /> Rejoindre une partie</button>
 
                    {pendingJoinRequest && (
                      <div className="pending-request">
@@ -362,7 +362,7 @@ export default function PagePoker() {
              </>
            ) : (
              <div className="lobby-waiting">
-                <h1><NeonIcon name="poker-card" size={24} /> SALOON EXPRESSO</h1>
+                <h1><img src="/images/poker-join.png" alt="Poker" style={{ height: 36, objectFit: 'contain', filter: 'drop-shadow(0 0 12px #00ff66)', verticalAlign: 'middle', marginRight: 8 }} /> SALOON EXPRESSO</h1>
                 {pokerState.roomName && (
                   <p style={{color: '#ffcc00', fontSize: '1.2rem', fontWeight: 'bold', margin: '5px 0'}}>{pokerState.roomName}</p>
                 )}
