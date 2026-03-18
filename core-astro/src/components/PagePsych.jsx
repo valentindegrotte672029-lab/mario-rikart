@@ -452,6 +452,8 @@ export default function PagePsych() {
                                 </>
                             )}
                         </div>
+                            </>
+                        )}
                     </div>
 
                 </motion.div>
