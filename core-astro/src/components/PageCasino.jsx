@@ -95,10 +95,10 @@ export default function PageCasino() {
       <CategoryTabBar />
       <div className="casino-tab-bar">
         <button className={`casino-tab-btn ${casinoTab === 'poker' ? 'active' : ''}`} onClick={() => setCasinoTab('poker')}>
-          <NeonIcon name="poker-tab-neon" size={24} glow={casinoTab === 'poker' ? "#00ffff" : undefined} className="casino-tab-img" blendMode="screen" /> POKER
+          <NeonIcon name="poker-tab-neon" size={24} glow={casinoTab === 'poker' ? "#00ffff" : undefined} className="casino-tab-img" /> POKER
         </button>
         <button className={`casino-tab-btn ${casinoTab === 'polymario' ? 'active' : ''}`} onClick={() => setCasinoTab('polymario')}>
-          <NeonIcon name="polymario-tab-neon" size={24} glow={casinoTab === 'polymario' ? "#ff00ff" : undefined} className="casino-tab-img" blendMode="screen" /> POLYMARIO
+          <NeonIcon name="polymario-tab-neon" size={24} glow={casinoTab === 'polymario' ? "#ff00ff" : undefined} className="casino-tab-img" /> POLYMARIO
         </button>
       </div>
       {casinoTab === 'poker' ? (
@@ -107,7 +107,7 @@ export default function PageCasino() {
       <>
       <div className="casino-header">
         <h1 className="casino-title">
-          <NeonIcon name="polymario-tab-neon" size={32} glow="#ff00ff" style={{ marginRight: 10 }} blendMode="screen" />
+          <NeonIcon name="polymario-tab-neon" size={32} glow="#ff00ff" style={{ marginRight: 10 }} />
           POLYMARIO
         </h1>
         <p className="casino-subtitle">Dévoilez vos pronostics.</p>
@@ -240,27 +240,27 @@ export default function PageCasino() {
         .casino-tab-bar {
           display: flex;
           width: 100%;
-          max-width: 450px;
-          gap: 12px;
-          margin-bottom: 10px; /* Réduit drastiquement de 25px à 10px */
-          margin-top: -10px;   /* Remonte la barre vers le haut */
+          max-width: 400px; /* Réduit de 450px */
+          gap: 8px;         /* Réduit de 12px */
+          margin-bottom: 8px;
+          margin-top: -18px;  /* Remonte encore plus (était -10px) */
           padding: 0 10px;
           justify-content: center;
         }
         .casino-tab-btn {
           flex: 1;
-          background: rgba(255, 255, 255, 0.05) !important;
-          border: 1px solid rgba(255, 255, 255, 0.1) !important;
-          border-radius: 8px; /* Plus petit radius (8px au lieu de 12px) */
-          padding: 8px 5px;   /* Padding réduit (8px au lieu de 12px) */
-          color: #888;
-          font-weight: 800;
-          font-size: 0.8rem;  /* Police très légèrement réduite */
+          background: rgba(255, 255, 255, 0.03) !important;
+          border: 1px solid rgba(255, 255, 255, 0.08) !important;
+          border-radius: 6px; /* Plus petit radius */
+          padding: 6px 4px;   /* Padding encore réduit */
+          color: #777;
+          font-weight: 700;
+          font-size: 0.75rem; /* Police encore réduite */
 
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 10px;
+          gap: 6px;
           transition: all 0.2s;
           box-shadow: none !important;
         }
@@ -282,7 +282,7 @@ export default function PageCasino() {
           width: 100%;
           max-width: 450px;
           gap: 10px;
-          margin-bottom: 15px; /* Déjà 15px, je le laisse car l'autre barre a un margin-top négatif */
+          margin-bottom: 5px; /* Réduit de 15px à 5px */
           padding: 0 5px;
           z-index: 100;
         }
@@ -372,7 +372,7 @@ export default function PageCasino() {
             border-radius: 0;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 6px;
         }
         .create-bet-form h3 { color: #00ffcc; margin-bottom: 5px; }
         .create-bet-form input {
