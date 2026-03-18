@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "id": 1773801491593,
+    "type": "USER",
+    "message": "🎮 Nouveau joueur : TEST",
+    "data": {
+      "username": "TEST"
+    },
+    "timestamp": "2026-03-18T02:38:11.593Z",
+    "read": false
+  }
+]

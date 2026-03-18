@@ -9,17 +9,17 @@ import NeonIcon from './NeonIcon';
 import ComingSoon from './ComingSoon';
 
 const INGREDIENTS = [
-  { id: 'vodka', name: 'Vodka', icon: 'flask-purple-atomic' },
-  { id: 'tomate', name: 'Jus de tomate', icon: 'flask-orange-distill' },
-  { id: 'sauce_piment', name: 'Sauce piment', icon: 'fire-flower-pixel' },
-  { id: 'cornichon', name: 'Jus de cornichon', icon: 'flask-green-erlenmeyer' },
-  { id: 'olives', name: 'Jus d\'olives vertes', icon: 'flask-blue-beaker' },
-  { id: 'citron_vert', name: 'Jus de citron vert', icon: 'lemon-neon' },
-  { id: 'sel_poivre', name: 'Sel et Poivre noir', icon: 'skull-neon' },
-  { id: 'soja', name: 'Sauce soja', icon: 'flask-purple-atomic' },
-  { id: 'concombre', name: 'Tranches de concombre', icon: 'flask-green-erlenmeyer' },
-  { id: 'tabasco', name: 'Tabasco', icon: 'fire-flower-pixel' },
-  { id: 'pamplemousse', name: 'Jus de pamplemousse', icon: 'flask-orange-distill' },
+  { id: 'vodka', name: 'Vodka', icon: 'rikart-vodka' },
+  { id: 'tomate', name: 'Jus de tomate', icon: 'rikart-tomato' },
+  { id: 'sauce_piment', name: 'Sauce piment', icon: 'rikart-chili' },
+  { id: 'cornichon', name: 'Jus de cornichon', icon: 'rikart-pickle' },
+  { id: 'olives', name: 'Jus d\'olives vertes', icon: 'rikart-olive' },
+  { id: 'citron_vert', name: 'Jus de citron vert', icon: 'rikart-lime' },
+  { id: 'sel_poivre', name: 'Sel et Poivre noir', icon: 'rikart-salt-pepper' },
+  { id: 'soja', name: 'Sauce soja', icon: 'rikart-soy' },
+  { id: 'concombre', name: 'Tranches de concombre', icon: 'rikart-cucumber' },
+  { id: 'tabasco', name: 'Tabasco', icon: 'rikart-tabasco' },
+  { id: 'pamplemousse', name: 'Jus de pamplemousse', icon: 'rikart-grapefruit' },
 ];
 
 const LISTEUX = [
