@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { motion, AnimatePresence } from 'framer-motion';
 import { Timer, AlertTriangle, RefreshCcw } from 'lucide-react';
+import useStore from '../store/useStore';
 import NeonIcon from './NeonIcon';
 
 export default function PageChrono() {

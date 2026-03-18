@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import useStore from '../store/useStore';
 import NeonIcon from './NeonIcon';
 
 // Each pole = one group photo with face rects + name text rects (all in % of image)
