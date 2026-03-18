@@ -98,8 +98,8 @@ export default function Navigation() {
                 }
 
                 .snap-nav-icon {
-                    width: 26px;
-                    height: 26px;
+                    width: 32px;
+                    height: 32px;
                     filter: grayscale(0.8) brightness(0.5);
                     transition: all 0.2s ease;
                     line-height: 1;
