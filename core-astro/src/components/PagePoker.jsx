@@ -310,8 +310,8 @@ export default function PagePoker() {
                  </div>
                ) : !inQueue ? (
                  <div className="lobby-menu">
-                   <button className="btn-create" onClick={handleQuickMatch}><NeonIcon name="poker-card" size={18} /> Jouer au Poker</button>
-                   <button className="btn-join-code" onClick={() => setLobbyView('create')}><NeonIcon name="poker-card" size={18} /> Créer une partie</button>
+                   <button className="btn-create" onClick={handleQuickMatch}><NeonIcon name="poker-tab-neon" size={18} /> Jouer au Poker</button>
+                   <button className="btn-join-code" onClick={() => setLobbyView('create')}><NeonIcon name="poker-tab-neon" size={18} /> Créer une partie</button>
                    <button className="btn-join-code" onClick={() => setLobbyView('join')}><NeonIcon name="key-neon" size={20} /> Rejoindre une partie</button>
 
                    {pendingJoinRequest && (
