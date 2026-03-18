@@ -140,7 +140,6 @@ export default function PageWario() {
         }
 
         .wario-card {
-          flex: 1;
           width: 100%;
           border-radius: 32px;
           border-color: rgba(255, 204, 0, 0.4);
@@ -148,7 +147,6 @@ export default function PageWario() {
           box-shadow: 0 0 40px rgba(255, 204, 0, 0.1), inset 0 0 20px rgba(153, 0, 255, 0.1);
           display: flex;
           flex-direction: column;
-          overflow: hidden;
         }
 
         .wario-title {
@@ -175,9 +173,6 @@ export default function PageWario() {
           background: transparent !important;
           border-radius: 0;
           margin: 0 15px 15px 15px;
-          overflow-y: auto;
-          -webkit-overflow-scrolling: touch;
-          scrollbar-width: none;
           box-shadow: none !important;
           border: none !important;
         }

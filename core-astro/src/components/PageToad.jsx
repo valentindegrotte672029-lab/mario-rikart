@@ -189,14 +189,11 @@ export default function PageToad() {
 
         .toad-card {
           width: 100%;
-          padding: 20px 15px 80px 15px; /* Added bottom padding for tab bar */
+          padding: 20px 15px 40px 15px; /* Added bottom padding for tab bar */
           border-radius: 32px;
           border: 1px solid rgba(255, 51, 102, 0.3);
           background: rgba(25, 5, 10, 0.65);
           backdrop-filter: blur(15px);
-          max-height: calc(100vh - 120px);
-          overflow-y: auto;
-          -webkit-overflow-scrolling: touch;
         }
 
         .toad-title {

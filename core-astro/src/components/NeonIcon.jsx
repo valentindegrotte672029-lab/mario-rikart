@@ -1,8 +1,8 @@
 import React from 'react';
 
-const ICON_V = '15';
+const ICON_V = '18';
 // Progressive scaling: small inline icons stay readable, large display icons get much bigger
-const scaleSize = (s) => Math.round(s * Math.min(1.3 + s * 0.02, 2.5));
+const scaleSize = (s) => Math.round(s * Math.min(1.45 + s * 0.02, 2.8));
 
 export default function NeonIcon({ name, size = 20, glow, className = '', style = {} }) {
   const scaled = scaleSize(size);

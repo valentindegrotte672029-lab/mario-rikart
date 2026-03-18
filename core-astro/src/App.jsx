@@ -388,7 +388,7 @@ export default function App() {
 
         .content-area {
           flex: 1; display: flex; flex-direction: column; align-items: center;
-          padding: calc(var(--safe-top) + var(--header-height) + 20px) 20px calc(var(--safe-bottom) + var(--tab-height) + 20px) 20px;
+          padding: calc(var(--safe-top) + var(--header-height) + 20px) 20px calc(var(--safe-bottom) + var(--tab-height) + 40px) 20px;
           position: relative; z-index: 10;
           overflow-y: auto; overflow-x: hidden;
           -webkit-overflow-scrolling: touch;

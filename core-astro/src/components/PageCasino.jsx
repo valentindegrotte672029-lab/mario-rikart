@@ -80,7 +80,7 @@ export default function PageCasino() {
         <NeonIcon name="Luidgi icône" size={18} /> ARCADE
       </button>
       <button className="category-tab active" onClick={() => setPage('CASINO')}>
-        <NeonIcon name="Poker icône" size={18} /> CASINO
+        <NeonIcon name="casino-global-icon" size={18} /> CASINO
       </button>
     </div>
   );
@@ -95,10 +95,10 @@ export default function PageCasino() {
       <CategoryTabBar />
       <div className="casino-tab-bar">
         <button className={`casino-tab-btn ${casinoTab === 'poker' ? 'active' : ''}`} onClick={() => setCasinoTab('poker')}>
-          <img src="/images/icons/items/poker-casino-neon.png" alt="Poker" className="casino-tab-img" /> POKER
+          <img src="/images/icons/items/poker-principal.png?v=18" alt="Poker" className="casino-tab-img" /> POKER
         </button>
         <button className={`casino-tab-btn ${casinoTab === 'polymario' ? 'active' : ''}`} onClick={() => setCasinoTab('polymario')}>
-          <img src="/images/icons/items/polymario-casino-neon.png" alt="PolyMario" className="casino-tab-img" /> POLYMARIO
+          <img src="/images/icons/items/polymario-principal.png?v=18" alt="PolyMario" className="casino-tab-img" /> POLYMARIO
         </button>
       </div>
       {casinoTab === 'poker' ? (
@@ -107,7 +107,7 @@ export default function PageCasino() {
       <>
       <div className="casino-header">
         <h1 className="casino-title">
-          <img src="/images/polymario-icon.png" alt="Polymario" style={{ height: 32, objectFit: 'contain', filter: 'drop-shadow(0 0 12px #ff00ff)', marginRight: 10, verticalAlign: 'middle' }} />
+          <img src="/images/icons/items/polymario-principal.png?v=18" alt="Polymario" style={{ height: 32, objectFit: 'contain', filter: 'drop-shadow(0 0 12px #ff00ff)', marginRight: 10, verticalAlign: 'middle' }} />
           POLYMARIO
         </h1>
         <p className="casino-subtitle">Dévoilez vos pronostics.</p>

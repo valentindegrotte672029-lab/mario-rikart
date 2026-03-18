@@ -306,14 +306,11 @@ export default function PageMario() {
 
         .mario-card {
           width: 100%;
-          padding: 20px 15px 80px 15px; /* Padding bottom for Mobile Tab Bar */
+          padding: 20px 15px 40px 15px; 
           border-radius: 32px;
           border-color: rgba(255, 0, 0, 0.3);
           background: rgba(30, 0, 0, 0.75);
           backdrop-filter: blur(15px);
-          max-height: calc(100vh - 120px);
-          overflow-y: auto;
-          -webkit-overflow-scrolling: touch;
         }
 
         .mario-title {
