@@ -587,11 +587,13 @@ export default function PagePsych() {
                     height: auto;
                     min-height: fit-content;
                     margin-bottom: 20px;
+                    flex-shrink: 0; /* Prevents shrinking on mobile containers */
                 }
 
                 .card-header {
                     text-align: center;
                     margin-bottom: 25px;
+                    flex-shrink: 0;
                 }
 
                 .title-mobile {
@@ -609,6 +611,7 @@ export default function PagePsych() {
                     border-radius: 3px;
                     overflow: hidden;
                     margin-bottom: 10px;
+                    flex-shrink: 0;
                 }
 
                 .progress-bar-fill {
@@ -623,6 +626,7 @@ export default function PagePsych() {
                     font-size: 0.8rem;
                     font-weight: bold;
                     margin-bottom: 25px;
+                    flex-shrink: 0;
                 }
 
                 .question-text {
@@ -632,20 +636,22 @@ export default function PagePsych() {
                     margin-bottom: 25px;
                     line-height: 1.4;
                     min-height: 50px;
+                    flex-shrink: 0;
                 }
 
                 .options-grid {
                     display: flex;
                     flex-direction: column;
                     gap: 15px;
+                    flex: 1; /* Allow grid to push card height */
                 }
 
                 .option-btn {
                     padding: 15px 12px;
-                    background: transparent !important;
-                    border: none !important;
-                    border-radius: 0 !important;
-                    box-shadow: none !important;
+                    background: rgba(255, 255, 255, 0.03) !important;
+                    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+                    border-radius: 16px !important;
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.2) !important;
                     color: white;
                     font-size: 1rem;
                     font-weight: bold;
@@ -653,16 +659,23 @@ export default function PagePsych() {
                     transition: all 0.2s;
                     text-align: center;
                     line-height: 1.2;
-                    display: inline-flex;
+                    display: flex;
                     align-items: center;
-                    justify-content: center;
+                    justify-content: space-between;
                     gap: 8px;
+                }
+
+                .option-btn .neon-icon {
+                   filter: drop-shadow(0 0 12px rgba(255,255,255,0.4)) !important;
+                }
+                .option-btn img {
+                   mix-blend-mode: normal !important; /* Revenir en normal pour éviter le détourage dégueu du screen sur les stickers */
                 }
 
                 .option-btn:active {
                     transform: scale(0.97);
-                    background: transparent;
-                    filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.4));
+                    background: rgba(255, 255, 255, 0.1);
+                    border-color: var(--theme-color);
                 }
 
                 .calculating-view, .result-view {
