@@ -238,7 +238,34 @@ export default function PageCasino() {
         }
 
         .casino-tab-bar {
-          display: none;
+          display: flex;
+          gap: 10px;
+          margin-bottom: 20px;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          padding-bottom: 10px;
+          justify-content: center;
+        }
+
+        .casino-tab-btn {
+          background: rgba(255, 255, 255, 0.05) !important;
+          border: 1px solid rgba(255, 255, 255, 0.1) !important;
+          border-radius: 12px;
+          padding: 8px 16px;
+          color: #888;
+          font-weight: bold;
+          font-size: 0.9rem;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          transition: all 0.2s;
+        }
+
+        .casino-tab-btn.active {
+          background: rgba(255, 0, 255, 0.1) !important;
+          border-color: #ff00ff !important;
+          color: white;
+          text-shadow: 0 0 10px #ff00ff;
+          box-shadow: 0 0 15px rgba(255, 0, 255, 0.2);
         }
 
         .category-tab-bar {
