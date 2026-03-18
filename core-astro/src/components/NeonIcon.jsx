@@ -25,15 +25,15 @@ export default function NeonIcon({ name, size = 20, glow, className = '', style 
         width: scaled,
         height: scaled,
         flexShrink: 0,
-        filter: `${glowFilter} contrast(1.1) brightness(1.1)`,
-        overflow: 'hidden',
+        filter: `${glowFilter} contrast(${glow ? 1.3 : 1.05}) brightness(${glow ? 1.4 : 1.05})`,
+        overflow: 'visible',
         background: 'transparent',
         ...(useBlend ? {} : style),
       }}
     >
       <div style={{
-        width: '90%',
-        height: '90%',
+        width: '100%',
+        height: '100%',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -50,6 +50,7 @@ export default function NeonIcon({ name, size = 20, glow, className = '', style 
             pointerEvents: 'none',
             userSelect: 'none',
             background: 'transparent',
+            filter: glow ? 'drop-shadow(0 0 2px rgba(255,255,255,0.7))' : 'none',
           }}
         />
       </div>

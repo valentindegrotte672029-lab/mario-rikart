@@ -274,7 +274,12 @@ export default function PageCasino() {
           /* NeonIcon handles the glow now */
         }
         .casino-tab-btn.active .casino-tab-img {
-          /* NeonIcon handles the glow now */
+          animation: neon-pulse 2s infinite ease-in-out;
+        }
+
+        @keyframes neon-pulse {
+          0%, 100% { transform: scale(1); filter: brightness(1); }
+          50% { transform: scale(1.1); filter: brightness(1.2); }
         }
 
         .category-tab-bar {
