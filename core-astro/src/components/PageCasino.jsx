@@ -95,10 +95,10 @@ export default function PageCasino() {
       <CategoryTabBar />
       <div className="casino-tab-bar">
         <button className={`casino-tab-btn ${casinoTab === 'poker' ? 'active' : ''}`} onClick={() => setCasinoTab('poker')}>
-          <NeonIcon name="poker-icon" size={18} /> POKER
+          <img src="/images/icons/items/poker-casino-neon.png" alt="Poker" className="casino-tab-img" /> POKER
         </button>
         <button className={`casino-tab-btn ${casinoTab === 'polymario' ? 'active' : ''}`} onClick={() => setCasinoTab('polymario')}>
-          <NeonIcon name="polymario-icon" size={18} /> POLYMARIO
+          <img src="/images/icons/items/polymario-casino-neon.png" alt="PolyMario" className="casino-tab-img" /> POLYMARIO
         </button>
       </div>
       {casinoTab === 'poker' ? (
@@ -239,33 +239,43 @@ export default function PageCasino() {
 
         .casino-tab-bar {
           display: flex;
-          gap: 10px;
-          margin-bottom: 20px;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-          padding-bottom: 10px;
+          width: 100%;
+          max-width: 450px;
+          gap: 12px;
+          margin-bottom: 25px;
+          padding: 0 10px;
           justify-content: center;
         }
-
         .casino-tab-btn {
+          flex: 1;
           background: rgba(255, 255, 255, 0.05) !important;
           border: 1px solid rgba(255, 255, 255, 0.1) !important;
           border-radius: 12px;
-          padding: 8px 16px;
+          padding: 12px 5px;
           color: #888;
-          font-weight: bold;
-          font-size: 0.9rem;
+          font-weight: 800;
+          font-size: 0.85rem;
           display: flex;
           align-items: center;
-          gap: 8px;
+          justify-content: center;
+          gap: 10px;
           transition: all 0.2s;
+          box-shadow: none !important;
         }
-
         .casino-tab-btn.active {
-          background: rgba(255, 0, 255, 0.1) !important;
+          background: rgba(255, 0, 255, 0.15) !important;
           border-color: #ff00ff !important;
           color: white;
-          text-shadow: 0 0 10px #ff00ff;
-          box-shadow: 0 0 15px rgba(255, 0, 255, 0.2);
+          box-shadow: 0 0 15px rgba(255, 0, 255, 0.3) !important;
+        }
+        .casino-tab-img {
+          height: 28px;
+          width: 28px;
+          object-fit: contain;
+          filter: drop-shadow(0 0 8px rgba(255, 0, 255, 0.4));
+        }
+        .casino-tab-btn.active .casino-tab-img {
+          filter: drop-shadow(0 0 12px #ff00ff);
         }
 
         .category-tab-bar {

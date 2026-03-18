@@ -343,7 +343,7 @@ export default function PagePsych() {
                     <div className="horoscope-view-content">
                         <div className="card-header">
                             <Star size={48} color="#ffcc00" />
-                            <h1 className="title-mobile">Horoscope de Mars</h1>
+                            <h1 className="title-mobile" style={{ color: 'white', textShadow: '0 0 15px rgba(255,255,255,0.4)' }}>Horoscope de Mars</h1>
                         </div>
                         <div className="horoscope-container">
                             <p className="horoscope-subtitle">Signes Astro — Mars 2026</p>
@@ -584,7 +584,9 @@ export default function PagePsych() {
                     box-shadow: 0 10px 40px rgba(0, 255, 255, 0.2);
                     display: flex;
                     flex-direction: column;
-                    min-height: 450px;
+                    height: auto;
+                    min-height: fit-content;
+                    margin-bottom: 20px;
                 }
 
                 .card-header {
