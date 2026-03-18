@@ -7,8 +7,8 @@ const scaleSize = (s) => Math.round(s * Math.min(1.6 + s * 0.02, 3.0));
 export default function NeonIcon({ name, size = 20, glow, className = '', style = {}, blendMode = 'normal' }) {
   const scaled = scaleSize(size);
   const glowFilter = glow
-    ? `drop-shadow(0 0 ${Math.max(4, scaled * 0.08)}px ${glow}) drop-shadow(0 0 ${Math.max(12, scaled * 0.20)}px ${glow}cc) drop-shadow(0 0 ${Math.max(28, scaled * 0.45)}px ${glow}80)`
-    : `drop-shadow(0 0 ${Math.max(3, scaled * 0.06)}px rgba(255,255,255,0.9)) drop-shadow(0 0 ${Math.max(10, scaled * 0.18)}px rgba(255,255,255,0.5)) drop-shadow(0 0 ${Math.max(22, scaled * 0.35)}px rgba(255,255,255,0.25))`;
+    ? `drop-shadow(0 0 ${Math.max(2, scaled * 0.05)}px ${glow}) drop-shadow(0 0 ${Math.max(6, scaled * 0.15)}px ${glow}) drop-shadow(0 0 ${Math.max(15, scaled * 0.35)}px ${glow}aa)`
+    : `drop-shadow(0 0 ${Math.max(2, scaled * 0.04)}px rgba(255,255,255,0.9)) drop-shadow(0 0 ${Math.max(8, scaled * 0.16)}px rgba(255,255,255,0.4)) drop-shadow(0 0 ${Math.max(18, scaled * 0.32)}px rgba(255,255,255,0.2))`;
 
   const useBlend = blendMode !== 'normal';
 

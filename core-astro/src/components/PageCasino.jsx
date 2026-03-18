@@ -240,22 +240,22 @@ export default function PageCasino() {
         .casino-tab-bar {
           display: flex;
           width: 100%;
-          max-width: 400px; /* Réduit de 450px */
-          gap: 8px;         /* Réduit de 12px */
-          margin-bottom: 8px;
-          margin-top: -18px;  /* Remonte encore plus (était -10px) */
-          padding: 0 10px;
+          max-width: 320px; /* Réduit encore de 400px à 320px */
+          gap: 6px;         /* Réduit de 8px à 6px */
+          margin-bottom: 5px;
+          margin-top: -24px;  /* Remonte encore plus (était -18px) */
+          padding: 0 5px;
           justify-content: center;
         }
         .casino-tab-btn {
           flex: 1;
           background: rgba(255, 255, 255, 0.03) !important;
           border: 1px solid rgba(255, 255, 255, 0.08) !important;
-          border-radius: 6px; /* Plus petit radius */
-          padding: 6px 4px;   /* Padding encore réduit */
-          color: #777;
+          border-radius: 4px; /* Plus petit radius */
+          padding: 4px 2px;   /* Padding encore réduit */
+          color: #666;
           font-weight: 700;
-          font-size: 0.75rem; /* Police encore réduite */
+          font-size: 0.7rem; /* Police encore réduite */
 
           display: flex;
           align-items: center;
@@ -282,7 +282,7 @@ export default function PageCasino() {
           width: 100%;
           max-width: 450px;
           gap: 10px;
-          margin-bottom: 5px; /* Réduit de 15px à 5px */
+          margin-bottom: 2px; /* Réduit encore de 5px à 2px */
           padding: 0 5px;
           z-index: 100;
         }
