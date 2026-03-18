@@ -221,7 +221,7 @@ export default function PageMario() {
         {step === 'EDIT' && (
           <div className="editor-section">
             <div className="photo-editor-wrapper">
-              <div className="photo-container photo-editor-container">
+              <div className="photo-container photo-editor-container" data-block-app-swipe="true">
                 {/* Photo Arrière-plan */}
                 <img src={backPhoto} alt="Back" className="captured-photo bg-photo" />
 
@@ -240,7 +240,7 @@ export default function PageMario() {
                     whileDrag={{ scale: 1.2 }}
                     onClick={() => setStickers(prev => prev.filter(s => s.id !== sticker.id))}
                   >
-                    <NeonIcon name={sticker.icon} size={36} />
+                    <img src={`/images/icons/items/${sticker.icon}.png?v=22`} alt="" style={{ width: 50, height: 50, objectFit: 'contain', opacity: 0.85, pointerEvents: 'none' }} />
                   </motion.div>
                 ))}
               </div>
@@ -503,7 +503,7 @@ export default function PageMario() {
           cursor: grab;
           user-select: none;
           touch-action: none;
-          filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
+          filter: none;
           z-index: 20;
           will-change: transform;
           -webkit-transform: translateZ(0);
