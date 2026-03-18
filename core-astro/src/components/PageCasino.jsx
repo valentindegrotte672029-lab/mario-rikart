@@ -157,7 +157,7 @@ export default function PageCasino() {
                   
                   <h3 className="bet-question">{bet.question}</h3>
                   <div className="bet-pot-info">
-                    Cagnotte Globale: <span>{totalPot.toLocaleString()} <NeonIcon name="coin-gold" size={22} /></span>
+                    Cagnotte Globale: <span>{totalPot.toLocaleString()} <NeonIcon name="coin-gold" size={18} /></span>
                   </div>
 
                   <div className="bet-options">
@@ -184,7 +184,7 @@ export default function PageCasino() {
                           </div>
                           
                           <div className="option-details">
-                            {optionTotal.toLocaleString()} <NeonIcon name="coin-gold" size={18} /> misés
+                            {optionTotal.toLocaleString()} <NeonIcon name="coin-gold" size={14} /> misés
                           </div>
 
                           {bet.status === 'OPEN' && (
