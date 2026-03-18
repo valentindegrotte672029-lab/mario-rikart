@@ -194,14 +194,14 @@ export default function PageToad() {
 
         .ingredient-btn {
           background: transparent;
-          border: none;
-          border-radius: 0;
+          border: 2px solid transparent;
+          border-radius: 12px;
           padding: 10px;
           display: flex;
           flex-direction: column;
           align-items: center;
           gap: 5px;
-          color: white;
+          color: rgba(255, 255, 255, 0.7);
           transition: all 0.2s ease;
         }
 
@@ -210,6 +210,7 @@ export default function PageToad() {
           display: flex;
           align-items: center;
           justify-content: center;
+          transition: transform 0.2s ease;
         }
 
         .ingredient-btn .name {
@@ -220,11 +221,16 @@ export default function PageToad() {
         }
 
         .ingredient-btn.selected {
-          background: transparent;
-          border: none;
-          box-shadow: none;
+          background: rgba(255, 51, 102, 0.15);
+          border-color: #ff3366;
+          box-shadow: 0 0 15px rgba(255, 51, 102, 0.4) inset, 0 0 20px rgba(255, 51, 102, 0.2);
           transform: scale(1.05);
-          filter: drop-shadow(0 0 10px rgba(255, 51, 102, 0.6)) drop-shadow(0 0 20px rgba(255, 51, 102, 0.3));
+          color: white;
+        }
+        
+        .ingredient-btn.selected .emoji {
+          transform: scale(1.2);
+          filter: drop-shadow(0 0 8px #ff3366);
         }
 
         /* Liste des victimes */
@@ -236,21 +242,22 @@ export default function PageToad() {
 
         .victim-btn {
           background: transparent !important;
-          border: none !important;
-          color: white;
+          border: 2px solid transparent !important;
+          color: rgba(255, 255, 255, 0.7);
           padding: 8px 16px;
-          border-radius: 0;
+          border-radius: 12px;
           font-size: 0.9rem;
           font-weight: 600;
           transition: all 0.2s;
         }
 
         .victim-btn.selected {
-          background: transparent !important;
+          background: rgba(255, 51, 102, 0.15) !important;
           color: white;
-          box-shadow: none !important;
-          text-shadow: 0 0 15px var(--theme-color);
-          transform: scale(1.1);
+          border-color: #ff3366 !important;
+          box-shadow: 0 0 15px rgba(255, 51, 102, 0.4) inset, 0 0 15px rgba(255, 51, 102, 0.2) !important;
+          text-shadow: 0 0 10px #ff3366;
+          transform: scale(1.08);
           font-weight: 900;
         }
 
