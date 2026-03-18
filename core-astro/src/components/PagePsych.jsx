@@ -746,7 +746,7 @@ export default function PagePsych() {
                     opacity: 0.6;
                 }
                 .sign-text {
-                    color: #ccc;
+                    color: white;
                     font-size: 0.92rem;
                     line-height: 1.6;
                     margin-top: 12px;

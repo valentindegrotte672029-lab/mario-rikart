@@ -655,18 +655,16 @@ class PokerEngine {
                 // Bet aggressively - pick a size based on strength
                 let raiseAmount;
                 if (strength > 0.7) {
+                    // Value bet big
                     raiseAmount = Math.floor(this.state.pot * 0.5 + this.state.minRaise);
                 } else if (isBluffing) {
-                    raiseAmount = this.state.minRaise;
+                    // Bluff with 1-2x big blind
+                    raiseAmount = this.state.minRaise * (1 + Math.floor(Math.random() * 2));
                 } else {
+                    // Standard bet
                     raiseAmount = this.state.minRaise + Math.floor(this.state.pot * 0.3);
                 }
-                const actualRaise = Math.min(raiseAmount, bot.chips);
-                if (actualRaise > 0) {
-                    this.handleAction(bot.id, 'raise', actualRaise);
-                } else {
-                    this.handleAction(bot.id, 'call');
-                }
+                this.handleAction(bot.id, 'raise', Math.min(raiseAmount, bot.chips));
             } else {
                 this.handleAction(bot.id, 'call'); // Check only 10-15% of the time
             }
@@ -674,27 +672,20 @@ class PokerEngine {
             // SOMEONE HAS BET - Fold, Call, or Raise
             if (strength > 0.7 || (strength > 0.4 && isAggro)) {
                  // Re-raise with strong+ hands
-                 if (bot.chips > toCall) {
-                     const maxRaise = bot.chips - toCall;
-                     const desiredRaise = Math.floor(toCall * 0.5 + this.state.minRaise);
-                     const actualRaise = Math.min(desiredRaise, maxRaise);
-                     if (actualRaise > 0) this.handleAction(bot.id, 'raise', actualRaise);
-                     else this.handleAction(bot.id, 'call');
+                 const reraiseAmount = Math.floor(toCall * 1.5 + this.state.minRaise);
+                 if (bot.chips > reraiseAmount) {
+                     this.handleAction(bot.id, 'raise', reraiseAmount);
                  } else {
-                     this.handleAction(bot.id, 'call'); // all-in via call
+                     // All-in
+                     this.handleAction(bot.id, 'raise', bot.chips);
                  }
             } else if (isBluffing && bot.chips > toCall * 3) {
                  // Bluff re-raise
-                 if (bot.chips > toCall) {
-                     const actualRaise = Math.min(this.state.minRaise, bot.chips - toCall);
-                     if (actualRaise > 0) this.handleAction(bot.id, 'raise', actualRaise);
-                     else this.handleAction(bot.id, 'call');
-                 } else {
-                     this.handleAction(bot.id, 'call');
-                 }
+                 this.handleAction(bot.id, 'raise', Math.floor(toCall * 2 + this.state.minRaise));
             } else if (strength > potOdds || strength > 0.25) {
                  this.handleAction(bot.id, 'call');
             } else {
+                 // Only fold with truly garbage hands facing a big bet
                  if (toCall < bot.chips * 0.15) this.handleAction(bot.id, 'call');
                  else this.handleAction(bot.id, 'fold');
             }

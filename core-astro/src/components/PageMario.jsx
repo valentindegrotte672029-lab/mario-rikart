@@ -135,12 +135,12 @@ export default function PageMario() {
 
       <div className="glass-panel mobile-card mario-card">
         <h1 className="title-mobile mario-title">BeMARIO</h1>
-        <p className="subtitle sad-subtitle">Capturez vos B.O. en temps réel <NeonIcon name="camera-neon" size={18} /></p>
+        <p className="subtitle sad-subtitle">Capturez vos B.O. en temps réel <Camera size={18} /></p>
 
         {step === 'FEED' && (
           <div className="feed-section">
             <button className="btn-primary create-bereal-btn" onClick={() => setStep('CAPTURE_BACK')}>
-              <NeonIcon name="camera-neon" size={28} glow="#ff3333" /> Envoyer un BeMario
+              <PlusSquare size={28} color="white" /> Envoyer un BeMario
             </button>
 
             <div className="bereal-list">
@@ -182,7 +182,7 @@ export default function PageMario() {
               className="huge-btn capture-btn"
               onClick={() => fileInputBackRef.current.click()}
             >
-              <NeonIcon name="camera-neon" size={80} glow="#ff3333" />
+              <Camera size={80} color="#ff3333" />
               <span>1. DÉCOR (Arrière)</span>
             </button>
             <button className="btn-secondary cancel-capture-btn" onClick={cancelPhoto}>Annuler</button>
@@ -191,7 +191,7 @@ export default function PageMario() {
 
         {step === 'CAPTURE_FRONT' && (
           <div className="capture-section">
-              <h3 style={{ color: 'white', marginBottom: '10px' }}><NeonIcon name="camera-neon" size={20} /> Décor capturé !</h3>
+              <h3 style={{ color: 'white', marginBottom: '10px' }}><Camera size={20} /> Décor capturé !</h3>
             <input
               type="file"
               accept="image/*"
@@ -204,7 +204,7 @@ export default function PageMario() {
               className="huge-btn capture-btn front-capture"
               onClick={() => fileInputFrontRef.current.click()}
             >
-              <NeonIcon name="camera-neon" size={80} glow="#00ffcc" />
+              <SwitchCamera size={80} color="#00ffcc" />
               <span>2. SELFIE (Avant)</span>
             </button>
             <button className="btn-secondary cancel-capture-btn" onClick={cancelPhoto}>Annuler</button>
@@ -213,7 +213,7 @@ export default function PageMario() {
 
         {step === 'PROCESSING' && (
           <div className="capture-section" style={{ padding: '80px 0' }}>
-            <h3 className="blink-text" style={{ color: '#00ffcc', fontSize: '1.5rem' }}>Développement... <NeonIcon name="camera-neon" size={24} /></h3>
+            <h3 className="blink-text" style={{ color: '#00ffcc', fontSize: '1.5rem' }}>Développement... <Camera size={24} /></h3>
           </div>
         )}
 

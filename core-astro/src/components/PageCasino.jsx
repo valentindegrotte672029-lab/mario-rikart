@@ -84,7 +84,7 @@ export default function PageCasino() {
           <NeonIcon name="poker-card" size={18} /> Poker
         </button>
         <button className={`casino-tab-btn ${casinoTab === 'polymario' ? 'active' : ''}`} onClick={() => setCasinoTab('polymario')}>
-          <NeonIcon name="poker-card" size={18} /> Polymario
+          <NeonIcon name="polymario-icon" size={18} /> Polymario
         </button>
       </div>
 
@@ -93,7 +93,7 @@ export default function PageCasino() {
       ) : (
       <>
       <div className="casino-header">
-        <h1 className="casino-title"><NeonIcon name="poker-card" size={28} /> POLYMARIO</h1>
+        <h1 className="casino-title"><NeonIcon name="polymario-icon" size={28} /> POLYMARIO</h1>
         <p className="casino-subtitle">Dévoilez vos pronostics.</p>
         <button className="btn-create-toggle" onClick={() => setShowCreateForm(!showCreateForm)}>
           {showCreateForm ? 'Fermer' : 'Créer un Pari / Sondage'}
@@ -371,6 +371,17 @@ export default function PageCasino() {
           padding-right: 10px;
         }
 
+        .container-casino {
+            padding: 20px;
+            color: white;
+            padding-bottom: 120px;
+        }
+        
+        /* FIX iOS ZOOM BUG */
+        .container-casino input,
+        .container-casino textarea {
+            font-size: 16px !important;
+        }
         .bet-pot-info {
           font-size: 0.9rem;
           color: #aaa;

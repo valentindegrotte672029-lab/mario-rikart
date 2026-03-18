@@ -134,7 +134,7 @@ export default function PageChrono() {
                         >
                             <p className="desc">Lance le minuteur aveugle. Prenez du poppy jusqu'à ce que l'alarme sonne !</p>
                             <button className="huge-chrono-btn" onClick={startChrono}>
-                                <NeonIcon name="bomb-timer" size={100} glow="#ff9900" />
+                                <Timer size={100} color="#ffbb00" />
                                 <span>LANCER<br /><small style={{ fontSize: '0.8rem', opacity: 0.8 }}>(5s - 1min)</small></span>
                             </button>
                         </motion.div>
@@ -164,12 +164,12 @@ export default function PageChrono() {
                             initial={{ opacity: 0, scale: 1.5 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}
                             className="state-container alarm-container"
                         >
-                            <NeonIcon name="ambulance-neon" size={120} glow="#ff0000" />
+                            <AlertTriangle size={120} color="#ff0000" />
                             <h1 className="alarm-title">STOP !</h1>
                             <p className="alarm-subtitle">Le dernier qui a pris a perdu !</p>
 
                             <button className="btn-secondary mt-20" onClick={resetChrono}>
-                                <NeonIcon name="bone" size={20} /> Recommencer
+                                <RefreshCcw size={20} /> Recommencer
                             </button>
                         </motion.div>
                     )}

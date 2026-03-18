@@ -1,0 +1,553 @@
+diff --git a/core-astro/src/App.jsx b/core-astro/src/App.jsx
+index a984e62..5701d37 100644
+--- a/core-astro/src/App.jsx
++++ b/core-astro/src/App.jsx
+@@ -49,7 +49,7 @@ class ErrorBoundary extends Component {
+ }
+ 
+ export default function App() {
+-  const { speedBoost, currentPage, happening, triggerHappening, username, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, errorMsg, balance, socialStatus, setBets, setBalance, setPokerState } = useStore();
++  const { speedBoost, currentPage, setPage, happening, triggerHappening, username, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, errorMsg, balance, socialStatus, setBets, setBalance, setPokerState } = useStore();
+ 
+   // Gestion des WebSockets en temps réel (Remplace le mock)
+   useEffect(() => {
+@@ -139,6 +139,25 @@ export default function App() {
+     }
+   };
+ 
++  const handleDragEnd = (event, info) => {
++    const P_ORDER = ['LUIGI', 'TOAD', 'PEACH', 'MARIO', 'WARIO'];
++    const swipeThreshold = 50;
++    
++    if (info.offset.x < -swipeThreshold) {
++      // Swiped left -> next page
++      const currentIndex = P_ORDER.indexOf(currentPage);
++      if (currentIndex !== -1 && currentIndex < P_ORDER.length - 1) {
++         setPage(P_ORDER[currentIndex + 1]);
++      }
++    } else if (info.offset.x > swipeThreshold) {
++      // Swiped right -> prev page
++      const currentIndex = P_ORDER.indexOf(currentPage);
++      if (currentIndex > 0) {
++         setPage(P_ORDER[currentIndex - 1]);
++      }
++    }
++  };
++
+   return (
+     <div id="app-root">
+ 
+@@ -165,7 +184,16 @@ export default function App() {
+       <main className="content-area">
+         <ErrorBoundary>
+           <AnimatePresence mode="wait">
+-            {renderPage()}
++            <motion.div
++              key={currentPage}
++              drag="x"
++              dragConstraints={{ left: 0, right: 0 }}
++              dragElastic={0.2}
++              onDragEnd={handleDragEnd}
++              style={{ width: '100%', height: '100%', touchAction: 'pan-y' }}
++            >
++              {renderPage()}
++            </motion.div>
+           </AnimatePresence>
+         </ErrorBoundary>
+       </main>
+diff --git a/core-astro/src/components/Navigation.jsx b/core-astro/src/components/Navigation.jsx
+index 90ad0a6..a596542 100644
+--- a/core-astro/src/components/Navigation.jsx
++++ b/core-astro/src/components/Navigation.jsx
+@@ -19,58 +19,77 @@ export default function Navigation() {
+         }, 1200);
+     };
+ 
+-    const pages = ['LUIGI', 'TOAD', 'PEACH', 'MARIO', 'WARIO'];
++    const tabs = [
++        { id: 'LUIGI', icon: '/images/ticket-gold.png', color: '#00ffcc' },
++        { id: 'TOAD', icon: '/images/skull-neon.png', color: '#ff3366' },
++        { id: 'PEACH', icon: '/images/crown-neon.png', color: '#ff00ff' },
++        { id: 'MARIO', icon: '/images/camera-neon.png', color: '#ff0000' },
++        { id: 'WARIO', icon: '/images/devil-neon.png', color: '#ffcc00' }
++    ];
+ 
+     return (
+-        <div className="nav-bar float-animation">
+-            {pages.map(page => (
++        <div className="nav-dock float-animation">
++            {tabs.map(tab => (
+                 <button
+-                    key={page}
+-                    onClick={() => handleNavigate(page)}
+-                    className={`nav-btn ${currentPage === page ? 'active' : ''}`}
++                    key={tab.id}
++                    onClick={() => handleNavigate(tab.id)}
++                    className={`nav-btn ${currentPage === tab.id ? 'active' : ''}`}
+                     disabled={isBoosting}
++                    style={{ '--tab-color': tab.color }}
+                 >
+-                    {page}
++                    <img 
++                        src={tab.icon} 
++                        alt={tab.id} 
++                        className={`neon-icon neon-app-icon ${currentPage === tab.id ? 'active-icon' : ''}`} 
++                    />
+                 </button>
+             ))}
+ 
+             <style>{`
+-         .nav-bar {
++         .nav-dock {
+            position: fixed;
+-           bottom: 30px;
+-           left: 50%;
+-           transform: translateX(-50%);
++           bottom: 15px;
++           left: 5%;
++           width: 90%;
+            display: flex;
+-           gap: 15px;
+-           background: rgba(0,0,0,0.6);
+-           padding: 15px 25px;
+-           border-radius: 50px;
++           justify-content: space-around;
++           align-items: center;
++           background: rgba(10, 10, 15, 0.85); /* Fond transparent Glass */
++           padding: 10px 15px;
++           border-radius: 40px;
+            z-index: 100;
+            border: 1px solid rgba(255,255,255,0.1);
+-           backdrop-filter: blur(10px);
++           backdrop-filter: blur(20px);
++           -webkit-backdrop-filter: blur(20px);
++           box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            pointer-events: auto;
+          }
+ 
+          .nav-btn {
+            background: transparent;
+-           border: 2px solid transparent;
+-           color: #fff;
+-           font-size: 1rem;
+-           font-weight: bold;
++           border: none;
+            cursor: pointer;
+-           padding: 8px 15px;
+-           border-radius: 20px;
+-           transition: all 0.3s ease;
++           padding: 8px;
++           border-radius: 50%;
++           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
++           position: relative;
++           display: flex;
++           justify-content: center;
++           align-items: center;
++           width: 60px;
++           height: 60px;
+          }
+ 
+-         .nav-btn:hover {
+-           background: rgba(255,255,255,0.1);
++         .nav-btn.active {
++           transform: translateY(-15px);
++           background: rgba(255,255,255,0.05);
++           box-shadow: 0 10px 20px rgba(0,0,0,0.5), inset 0 0 15px var(--tab-color);
++           border: 1px solid var(--tab-color);
+          }
+ 
+-         .nav-btn.active {
+-           border-color: #00ffcc;
+-           color: #00ffcc;
+-           text-shadow: 0 0 10px #00ffcc;
++         .active-icon {
++           filter: drop-shadow(0 0 12px var(--tab-color)) drop-shadow(0 0 25px var(--tab-color));
++           transform: scale(1.15);
+          }
+        `}</style>
+         </div>
+diff --git a/core-astro/src/components/PageChrono.jsx b/core-astro/src/components/PageChrono.jsx
+index 381bd8d..3971084 100644
+--- a/core-astro/src/components/PageChrono.jsx
++++ b/core-astro/src/components/PageChrono.jsx
+@@ -133,7 +133,7 @@ export default function PageChrono() {
+                         >
+                             <p className="desc">Lance le minuteur aveugle. Prenez du poppy jusqu'à ce que l'alarme sonne !</p>
+                             <button className="huge-chrono-btn" onClick={startChrono}>
+-                                <Timer size={60} />
++                                <img src="/images/bomb-timer.png" className="neon-icon" style={{width: 80, height: 80, filter: 'drop-shadow(0 0 15px #ff9900)'}} alt="launch"/>
+                                 <span>LANCER<br /><small style={{ fontSize: '0.8rem', opacity: 0.8 }}>(5s - 1min)</small></span>
+                             </button>
+                         </motion.div>
+@@ -150,7 +150,7 @@ export default function PageChrono() {
+                                 animate={{ scale: [1, 1.2, 1], rotate: [0, -5, 5, 0] }}
+                                 transition={{ duration: 0.8, repeat: Infinity }}
+                             >
+-                                💣
++                                <img src="/images/bomb-timer.png" className="neon-icon" style={{width: 120, height: 120, filter: 'drop-shadow(0 0 20px red)'}} alt="bomb"/>
+                             </motion.div>
+                             <h2 className="running-text">C'est parti ! Prenez, prenez, prenez !</h2>
+                             <p className="tension-text">L'alarme peut sonner à tout moment...</p>
+@@ -163,7 +163,7 @@ export default function PageChrono() {
+                             initial={{ opacity: 0, scale: 1.5 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}
+                             className="state-container alarm-container"
+                         >
+-                            <AlertTriangle size={80} color="#fff" />
++                            <img src="/images/ambulance-neon.png" className="neon-icon" style={{width: 100, height: 100, filter: 'drop-shadow(0 0 20px red)'}} alt="alarm"/>
+                             <h1 className="alarm-title">STOP !</h1>
+                             <p className="alarm-subtitle">Le dernier qui a pris a perdu !</p>
+ 
+@@ -198,14 +198,14 @@ export default function PageChrono() {
+         .state-container { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 250px; }
+ 
+         .huge-chrono-btn {
+-          width: 100%; aspect-ratio: 1; max-width: 250px; border-radius: 50%;
+-          background: linear-gradient(135deg, #ff9900, #cc5500); border: none; color: white;
++          width: 100%; aspect-ratio: 1; max-width: 250px; border-radius: 0;
++          background: transparent !important; border: none; color: white;
+           font-size: 1.2rem; font-weight: bold; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+-          box-shadow: 0 10px 30px rgba(204, 85, 0, 0.5); transition: transform 0.1s;
++          box-shadow: none !important; transition: transform 0.1s;
+         }
+         .huge-chrono-btn:active { transform: scale(0.95); }
+ 
+-        .pulsing-bomb { font-size: 6rem; filter: drop-shadow(0 0 20px red); margin-bottom: 20px; }
++        .pulsing-bomb { margin-bottom: 20px; }
+         .running-text { font-size: 1.5rem; color: #ff5555; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; }
+         .tension-text { color: #888; font-style: italic; }
+ 
+diff --git a/core-astro/src/components/PageHome.jsx b/core-astro/src/components/PageHome.jsx
+index b56cbc4..b9a3b5f 100644
+--- a/core-astro/src/components/PageHome.jsx
++++ b/core-astro/src/components/PageHome.jsx
+@@ -7,15 +7,15 @@ export default function PageHome() {
+   const { setPage } = useStore();
+ 
+   const apps = [
+-    { id: 'LUIGI', icon: Beaker, label: 'Arcade', color: '#39ff14', bg: 'linear-gradient(135deg, #0f380f, #1a4a1a)' },
+-    { id: 'MARIO', icon: Camera, label: 'BeMario', color: '#ff3333', bg: 'linear-gradient(135deg, #4a0f0f, #8a1a1a)' },
+-    { id: 'WARIO', icon: Beer, label: 'Barnaque', color: '#ffcc00', bg: 'linear-gradient(135deg, #111111, #332200)' },
+-    { id: 'PEACH', icon: Flame, label: 'Peachasse', color: '#ff66b2', bg: 'linear-gradient(135deg, #4a0f38, #8a1a66)' },
+-    { id: 'TOAD', icon: Zap, label: 'Toad Bank', color: '#9933ff', bg: 'linear-gradient(135deg, #2a0f4a, #5a1a8a)' },
+-    { id: 'CHRONO', icon: Timer, label: 'Poppy', color: '#ff9900', bg: 'linear-gradient(135deg, #4a2a0f, #8a4a1a)' },
+-    { id: 'PSYCH', icon: Brain, label: 'Le Test', color: '#00ffff', bg: 'linear-gradient(135deg, #0f4a4a, #1a8a8a)' },
+-    { id: 'CASINO', icon: Gem, label: 'Paris IRL', color: '#ff00ff', bg: 'linear-gradient(135deg, #4a0f4a, #8a1a8a)' },
+-    { id: 'POKER', icon: Spade, label: 'Poker', color: '#00ff66', bg: 'linear-gradient(135deg, #0a3a0a, #1a5a1a)' },
++    { id: 'LUIGI', image: '/images/ticket-gold.png', label: 'Arcade', color: '#39ff14' },
++    { id: 'MARIO', image: '/images/camera-neon.png', label: 'BeMario', color: '#ff3333' },
++    { id: 'WARIO', image: '/images/devil-neon.png', label: 'Barnaque', color: '#ffcc00' },
++    { id: 'PEACH', image: '/images/crown-neon.png', label: 'Peachasse', color: '#ff66b2' },
++    { id: 'TOAD', image: '/images/skull-neon.png', label: 'Toad Bank', color: '#9933ff' },
++    { id: 'CHRONO', image: '/images/bomb-timer.png', label: 'Poppy', color: '#ff9900' },
++    { id: 'PSYCH', image: '/images/books-neon.png', label: 'Le Test', color: '#00ffff' },
++    { id: 'CASINO', image: '/images/key-neon.png', label: 'Paris IRL', color: '#ff00ff' },
++    { id: 'POKER', image: '/images/guitar-neon.png', label: 'Poker', color: '#00ff66' },
+   ];
+ 
+   return (
+@@ -42,8 +42,8 @@ export default function PageHome() {
+               setPage(app.id);
+             }}
+           >
+-            <div className="app-icon" style={{ background: app.bg, border: `1px solid ${app.color}40` }}>
+-              <app.icon size={36} color={app.color} strokeWidth={1.5} />
++            <div className="app-icon">
++              <img src={app.image} className="neon-icon" style={{width: 65, height: 65, filter: `drop-shadow(0 0 12px ${app.color})`}} alt={app.label}/>
+             </div>
+             <span className="app-label">{app.label}</span>
+           </motion.div>
+@@ -89,23 +89,11 @@ export default function PageHome() {
+         .app-icon {
+           width: 70px;
+           height: 70px;
+-          border-radius: 20px;
+           display: flex;
+           align-items: center;
+           justify-content: center;
+-          box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+           margin-bottom: 8px;
+           position: relative;
+-          overflow: hidden;
+-        }
+-        
+-        .app-icon::after {
+-          content: '';
+-          position: absolute;
+-          top: 0; left: 0; right: 0;
+-          height: 50%;
+-          background: linear-gradient(to bottom, rgba(255,255,255,0.2), rgba(255,255,255,0));
+-          border-radius: 20px 20px 0 0;
+         }
+ 
+         .app-label {
+diff --git a/core-astro/src/components/PageMario.jsx b/core-astro/src/components/PageMario.jsx
+index 221d763..b4b3a96 100644
+--- a/core-astro/src/components/PageMario.jsx
++++ b/core-astro/src/components/PageMario.jsx
+@@ -130,7 +130,7 @@ export default function PageMario() {
+         {step === 'FEED' && (
+           <div className="feed-section">
+             <button className="btn-primary create-bereal-btn" onClick={() => setStep('CAPTURE_BACK')}>
+-              <PlusSquare size={24} /> Ajouter un BeMario
++              <img src="/images/camera-neon.png" className="neon-icon" style={{width: 24, height: 24}} alt="cam"/> Ajouter un BeMario
+             </button>
+ 
+             <div className="bereal-list">
+@@ -172,7 +172,7 @@ export default function PageMario() {
+               className="huge-btn capture-btn"
+               onClick={() => fileInputBackRef.current.click()}
+             >
+-              <Camera size={50} />
++              <img src="/images/camera-neon.png" className="neon-icon" style={{width: 50, height: 50}} alt="cam"/>
+               <span>1. DÉCOR (Arrière)</span>
+             </button>
+             <button className="btn-secondary cancel-capture-btn" onClick={cancelPhoto}>Annuler</button>
+@@ -194,7 +194,7 @@ export default function PageMario() {
+               className="huge-btn capture-btn front-capture"
+               onClick={() => fileInputFrontRef.current.click()}
+             >
+-              <SwitchCamera size={50} />
++              <img src="/images/camera-neon.png" className="neon-icon" style={{width: 50, height: 50}} alt="cam"/>
+               <span>2. SELFIE (Avant)</span>
+             </button>
+             <button className="btn-secondary cancel-capture-btn" onClick={cancelPhoto}>Annuler</button>
+diff --git a/core-astro/src/components/PagePeach.jsx b/core-astro/src/components/PagePeach.jsx
+index 5f91bd1..ee79a76 100644
+--- a/core-astro/src/components/PagePeach.jsx
++++ b/core-astro/src/components/PagePeach.jsx
+@@ -39,7 +39,7 @@ export default function PagePeach() {
+ 
+       <div className="glass-panel mobile-card peach-card">
+         <div className="profile-header">
+-          <div className="avatar glow-avatar">👑</div>
++          <div className="avatar glow-avatar"><img src="/images/crown-neon.png" className="neon-icon" style={{width: 60, height: 60}} alt="crown"/></div>
+           <div className="titles">
+             <h1 className="title-mobile peach-title">PEACHASSE</h1>
+             <p className="only-fans-tag">💎 Top 0.01% Mushroom Kingdom</p>
+@@ -49,14 +49,14 @@ export default function PagePeach() {
+         <div className="leaks-scroll-area">
+           <div className="leak-card" onClick={() => spendCoins(999999, 'LEAK PRIVÉ PEACH')}>
+             <div className="card-bg soft-blur"></div>
+-            <Lock className="lock-icon" size={32} />
++            <img src="/images/lock-neon.png" className="neon-icon lock-icon" style={{width: 40, height: 40}} alt="lock"/>
+             <span className="unlock-text">Débloquer Content</span>
+             <span className="price-tag gold">999k 🟡</span>
+           </div>
+ 
+           <div className="leak-card" onClick={() => spendCoins(5000000, 'LEAK VIP PEACH')}>
+             <div className="card-bg heavy-blur"></div>
+-            <Lock className="lock-icon" size={32} color="#ffaa00" />
++            <img src="/images/lock-neon.png" className="neon-icon lock-icon" style={{width: 40, height: 40, filter: 'drop-shadow(0 0 8px #ffaa00) hue-rotate(-90deg)'}} alt="vip-lock"/>
+             <span className="unlock-text">👑 VIP Only</span>
+             <span className="price-tag gold">5M 🟡</span>
+           </div>
+@@ -77,7 +77,7 @@ export default function PagePeach() {
+               exit={{ scale: 0.8, y: 100 }}
+               onClick={handleDefend}
+             >
+-              <ShieldAlert size={48} color="white" />
++              <img src="/images/cop-neon.png" className="neon-icon" style={{width: 80, height: 80, marginBottom: '10px'}} alt="police"/>
+               <h2>ALERTE BBL BALLOON</h2>
+               <p>Maintient Peach en sécurité !<br />Tapote vite ({bblClicks}/5)</p>
+               <div className="balloons-anim">🎈 🍑 🎈</div>
+@@ -120,12 +120,11 @@ export default function PagePeach() {
+         }
+ 
+         .avatar.glow-avatar {
+-          font-size: 3.5rem;
+-          background: linear-gradient(135deg, #ff00ff, #ffaa00);
+-          border-radius: 50%;
++          background: transparent !important;
++          border-radius: 0;
+           width: 80px; height: 80px;
+           display: flex; justify-content: center; align-items: center;
+-          box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
++          box-shadow: none !important;
+         }
+ 
+         .titles { display: flex; flex-direction: column; }
+diff --git a/core-astro/src/components/PageToad.jsx b/core-astro/src/components/PageToad.jsx
+index 01cdeeb..b520a46 100644
+--- a/core-astro/src/components/PageToad.jsx
++++ b/core-astro/src/components/PageToad.jsx
+@@ -7,11 +7,11 @@ import useStore from '../store/useStore';
+ import { socket } from '../socket';
+ 
+ const INGREDIENTS = [
+-  { id: 'vodka', name: 'Vodka', emoji: '🍾' },
+-  { id: 'lait', name: 'Lait tiède', emoji: '🥛' },
+-  { id: 'piment', name: 'Piment pur', emoji: '🌶️' },
+-  { id: 'tabasco', name: 'Tabasco', emoji: '🔥' },
+-  { id: 'cornichon', name: 'Jus de cornichon', emoji: '🥒' },
++  { id: 'vodka', name: 'Vodka', image: '/images/ambulance-neon.png', emoji: '🍾' },
++  { id: 'lait', name: 'Lait tiède', image: '/images/poop-neon.png', emoji: '🥛' },
++  { id: 'piment', name: 'Piment pur', image: '/images/fire-neon.png', emoji: '🌶️' },
++  { id: 'tabasco', name: 'Tabasco', image: '/images/devil-neon.png', emoji: '🔥' },
++  { id: 'cornichon', name: 'Jus de corni.', image: '/images/tongue-neon.png', emoji: '🥒' },
+ ];
+ 
+ const LISTEUX = [
+@@ -78,7 +78,7 @@ export default function PageToad() {
+         {/* Section Ingrédients */}
+         <section className="toad-section">
+           <div className="section-header">
+-            <FlaskConical size={20} color="#ff3366" />
++            <img src="/images/soap-neon.png" className="neon-icon" style={{width: 25, height: 25}} alt="flask"/>
+             <h2>1. Choisir les ingrédients</h2>
+           </div>
+ 
+@@ -89,7 +89,7 @@ export default function PageToad() {
+                 className={`ingredient-btn ${selectedIngredients.includes(ing.id) ? 'selected' : ''}`}
+                 onClick={() => toggleIngredient(ing.id)}
+               >
+-                <span className="emoji">{ing.emoji}</span>
++                <div className="icon-slot"><img src={ing.image} className="neon-icon" style={{width: 35, height: 35}} alt="ing"/></div>
+                 <span className="name">{ing.name}</span>
+               </button>
+             ))}
+@@ -99,7 +99,7 @@ export default function PageToad() {
+         {/* Section Victime */}
+         <section className="toad-section">
+           <div className="section-header">
+-            <Skull size={20} color="#ff3366" />
++            <img src="/images/skull-neon.png" className="neon-icon" style={{width: 25, height: 25}} alt="skull"/>
+             <h2>2. Choisir la victime</h2>
+           </div>
+ 
+@@ -125,7 +125,7 @@ export default function PageToad() {
+           disabled={selectedIngredients.length === 0 || !selectedVictim || isSending}
+           onClick={handleSendMix}
+         >
+-          <Send size={24} className="btn-icon" />
++          <img src="/images/ticket-gold.png" className="neon-icon" style={{width: 24, height: 24}} alt="send"/>
+           <span>{isSending ? 'Mélange envoyé !' : 'Servir le mélange'}</span>
+         </button>
+       </div>
+@@ -192,9 +192,9 @@ export default function PageToad() {
+         }
+ 
+         .ingredient-btn {
+-          background: rgba(255, 255, 255, 0.05);
+-          border: 1px solid rgba(255, 255, 255, 0.1);
+-          border-radius: 12px;
++          background: transparent !important;
++          border: none !important;
++          border-radius: 0;
+           padding: 10px;
+           display: flex;
+           flex-direction: column;
+@@ -204,7 +204,7 @@ export default function PageToad() {
+           transition: all 0.2s ease;
+         }
+ 
+-        .ingredient-btn .emoji {
++        .icon-slot {
+           font-size: 1.6rem;
+         }
+ 
+@@ -216,9 +216,10 @@ export default function PageToad() {
+         }
+ 
+         .ingredient-btn.selected {
+-          background: rgba(255, 51, 102, 0.2);
+-          border-color: var(--theme-color);
+-          box-shadow: 0 0 15px rgba(255, 51, 102, 0.3);
++          background: transparent !important;
++          border: none !important;
++          box-shadow: none !important;
++          filter: drop-shadow(0 0 15px rgba(255, 51, 102, 0.8));
+           transform: scale(0.95);
+         }
+ 
+diff --git a/core-astro/src/components/PageWario.jsx b/core-astro/src/components/PageWario.jsx
+index c693f78..8defceb 100644
+--- a/core-astro/src/components/PageWario.jsx
++++ b/core-astro/src/components/PageWario.jsx
+@@ -13,11 +13,11 @@ export default function PageWario() {
+   const [orderQr, setOrderQr] = useState(null);
+ 
+   const menu = [
+-    { id: 'gourd-50', name: 'Gourdasse 50cc', price: 15000, icon: '🥃' },
+-    { id: 'gourd-100', name: 'Gourdasse 100cc', price: 30000, icon: '🍹' },
+-    { id: 'gourd-150', name: 'Gourdasse 150cc', price: 60000, icon: '🧉' },
+-    { id: 'gourd-200', name: 'Gourdasse 200cc Destructive', price: 100000, icon: '☠️' },
+-    { id: 'spacecake', name: 'Space Cake Céleste', price: 250000, icon: '⭐' },
++    { id: 'gourd-50', name: 'Gourdasse 50cc', price: 15000, image: '/images/lemon-neon.png' },
++    { id: 'gourd-100', name: 'Gourdasse 100cc', price: 30000, image: '/images/apple-neon.png' },
++    { id: 'gourd-150', name: 'Gourdasse 150cc', price: 60000, image: '/images/soap-neon.png' },
++    { id: 'gourd-200', name: 'Gourdasse 200cc Destr.', price: 100000, image: '/images/bomb-timer.png' },
++    { id: 'spacecake', name: 'Space Cake Céleste', price: 250000, image: '/images/spider-banana.png' },
+   ];
+ 
+   const handleBuy = (item) => {
+@@ -50,7 +50,7 @@ export default function PageWario() {
+         <div className="ios-list">
+           {menu.map((item, index) => (
+             <div key={item.id} className="ios-list-item" onClick={() => handleBuy(item)}>
+-              <div className="item-icon-circle">{item.icon}</div>
++              <div className="item-icon-container"><img src={item.image} className="neon-icon" style={{width: 35, height: 35}} alt="icon"/></div>
+               <div className="item-details">
+                 <h4>{item.name}</h4>
+                 <p className="wario-price-tag">{item.price} 🟡</p>
+@@ -72,7 +72,7 @@ export default function PageWario() {
+               onClick={() => setOrderQr(null)}
+             >
+               <div className="qr-modal-box" onClick={(e) => e.stopPropagation()}>
+-                <div style={{ fontSize: '5rem', marginBottom: '10px' }}>🎫</div>
++                <img src="/images/ticket-gold.png" className="neon-icon" style={{width: 60, height: 60, marginBottom: '10px'}} alt="ticket"/>
+                 <h3>Commande Validée</h3>
+                 <div className="qr-code-text">{orderQr}</div>
+                 <p>Présente ce code au barman.</p>
+@@ -153,15 +153,10 @@ export default function PageWario() {
+           transform: scale(0.98);
+         }
+ 
+-        .item-icon-circle {
++        .item-icon-container {
+           width: 45px; height: 45px;
+-          background: linear-gradient(135deg, rgba(255,204,0,0.2), rgba(153,0,255,0.2));
+-          border-radius: 12px;
+           display: flex; align-items: center; justify-content: center;
+-          font-size: 1.4rem;
+           margin-right: 15px;
+-          border: 1px solid rgba(255,204,0,0.3);
+-          box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+         }
+ 
+         .item-details { flex: 1; }
+diff --git a/core-astro/src/index.css b/core-astro/src/index.css
+index 17cc60f..b6d91d1 100644
+--- a/core-astro/src/index.css
++++ b/core-astro/src/index.css
+@@ -100,4 +100,23 @@ body {
+   opacity: 0;
+   transform: scale(1.05);
+   transition: opacity 300ms, transform 300ms;
++}
++
++/* =========================================
++   STYLE GLOBAL POUR LES NOUVELLES ICÔNES
++   ========================================= */
++.neon-icon {
++  background-color: transparent !important;
++  border: none !important;
++  box-shadow: none !important;
++  border-radius: 0 !important;
++  mix-blend-mode: screen;
++  filter: drop-shadow(0 0 8px currentColor);
++  display: block;
++}
++
++.neon-app-icon {
++  width: 45px;
++  height: 45px;
++  object-fit: contain;
+ }
+\ No newline at end of file
+diff --git a/inner-mare b/inner-mare
+index 85bc456..6ecc204 160000
+--- a/inner-mare
++++ b/inner-mare
+@@ -1 +1 @@
+-Subproject commit 85bc456e376142f1b3416521922734247fbcf48b
++Subproject commit 6ecc2040f97125fcbc45968d7ceb33f4cf1f59f2

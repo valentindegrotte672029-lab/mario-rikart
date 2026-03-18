@@ -285,7 +285,9 @@ export default function PagePoker() {
                    />
                    <div className="join-form-btns">
                      <button className="btn-back" onClick={() => setLobbyView('menu')}>← Retour</button>
-                     <button className="btn-join" onClick={handleJoinRoom} disabled={joinCode.length < 4}>Rejoindre</button>
+                     <button className="btn-join" style={{ background: 'transparent', boxShadow: 'none', padding: 0 }} onClick={handleJoinRoom} disabled={joinCode.length < 4}>
+                       <NeonIcon name="poker-join" size={80} />
+                     </button>
                    </div>
                  </div>
                ) : lobbyView === 'create' ? (
@@ -310,7 +312,7 @@ export default function PagePoker() {
                  <div className="lobby-menu">
                    <button className="btn-create" onClick={handleQuickMatch}><NeonIcon name="poker-card" size={18} /> Jouer au Poker</button>
                    <button className="btn-join-code" onClick={() => setLobbyView('create')}><NeonIcon name="poker-card" size={18} /> Créer une partie</button>
-                   <button className="btn-join-code" onClick={() => setLobbyView('join')}><NeonIcon name="key-neon" size={16} /> Rejoindre une partie</button>
+                   <button className="btn-join-code" onClick={() => setLobbyView('join')}><NeonIcon name="poker-join" size={20} /> Rejoindre une partie</button>
 
                    {pendingJoinRequest && (
                      <div className="pending-request">
@@ -458,7 +460,7 @@ export default function PagePoker() {
                    {opponents.map((opp, idx) => (
                       <div key={opp.id} className={`seat opponent opponent-${idx} ${pokerState.currentTurnIdx === pokerState.players.findIndex(p => p.username === opp.username) ? 'active-turn' : ''} ${opp.folded ? 'folded' : ''}`}>
                           <div className="player-info">
-                              <span className="player-name">{opp.username} {opp.isBot ? <NeonIcon name="robot-ia-poker" size={14} /> : ''}</span>
+                              <span className="player-name">{opp.username} {opp.isBot ? <NeonIcon name="robot-ia-poker" size={24} /> : ''}</span>
                               <span className="player-chips">{opp.chips} <NeonIcon name="coin-gold" size={22} /></span>
                           </div>
                           <div className="player-cards">
