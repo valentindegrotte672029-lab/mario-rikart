@@ -10,7 +10,6 @@ import NeonIcon from './NeonIcon';
 
 const STICKERS_GALLERY = [
   { id: 'mushroom', icon: 'red-mushroom-spotted' },
-  { id: 'star', icon: 'star-purple' },
   { id: 'fire', icon: 'fire-flower-pixel' },
   { id: 'shell', icon: 'shell-spiked-green' },
   { id: 'coins', icon: 'coins-stack' },
