@@ -135,7 +135,9 @@ export default function PageMario() {
 
       <div className="glass-panel mobile-card mario-card">
         <h1 className="title-mobile mario-title">BeMARIO</h1>
-        <p className="subtitle sad-subtitle">Capturez vos B.O. en temps réel <Camera size={18} /></p>
+        <p className="subtitle sad-subtitle" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+          Capturez vos B.O. en temps réel <NeonIcon name="camera-neon" size={20} />
+        </p>
 
         {step === 'FEED' && (
           <div className="feed-section">
