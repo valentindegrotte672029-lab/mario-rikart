@@ -24,6 +24,7 @@ export default function NeonIcon({ name, size = 20, glow, className = '', style 
         filter: `${glowFilter} contrast(1.1) brightness(1.1)`,
         overflow: 'hidden',
         background: 'transparent',
+        mixBlendMode: blendMode,
         ...style,
       }}
     >
@@ -46,7 +47,6 @@ export default function NeonIcon({ name, size = 20, glow, className = '', style 
             pointerEvents: 'none',
             userSelect: 'none',
             background: 'transparent',
-            mixBlendMode: blendMode,
           }}
         />
       </div>

@@ -242,7 +242,8 @@ export default function PageCasino() {
           width: 100%;
           max-width: 450px;
           gap: 12px;
-          margin-bottom: 25px;
+          margin-bottom: 10px; /* Réduit drastiquement de 25px à 10px */
+          margin-top: -10px;   /* Remonte la barre vers le haut */
           padding: 0 10px;
           justify-content: center;
         }
@@ -250,11 +251,12 @@ export default function PageCasino() {
           flex: 1;
           background: rgba(255, 255, 255, 0.05) !important;
           border: 1px solid rgba(255, 255, 255, 0.1) !important;
-          border-radius: 12px;
-          padding: 12px 5px;
+          border-radius: 8px; /* Plus petit radius (8px au lieu de 12px) */
+          padding: 8px 5px;   /* Padding réduit (8px au lieu de 12px) */
           color: #888;
           font-weight: 800;
-          font-size: 0.85rem;
+          font-size: 0.8rem;  /* Police très légèrement réduite */
+
           display: flex;
           align-items: center;
           justify-content: center;
@@ -280,7 +282,7 @@ export default function PageCasino() {
           width: 100%;
           max-width: 450px;
           gap: 10px;
-          margin-bottom: 15px;
+          margin-bottom: 15px; /* Déjà 15px, je le laisse car l'autre barre a un margin-top négatif */
           padding: 0 5px;
           z-index: 100;
         }
