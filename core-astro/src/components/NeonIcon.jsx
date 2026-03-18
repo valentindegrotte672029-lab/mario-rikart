@@ -4,7 +4,7 @@ const ICON_V = '21';
 // Progressive scaling: small inline icons stay readable, large display icons get much bigger
 const scaleSize = (s) => Math.round(s * Math.min(1.6 + s * 0.02, 3.0));
 
-export default function NeonIcon({ name, size = 20, glow, className = '', style = {} }) {
+export default function NeonIcon({ name, size = 20, glow, className = '', style = {}, blendMode = 'normal' }) {
   const scaled = scaleSize(size);
   const glowFilter = glow
     ? `drop-shadow(0 0 ${Math.max(4, scaled * 0.08)}px ${glow}) drop-shadow(0 0 ${Math.max(12, scaled * 0.20)}px ${glow}cc) drop-shadow(0 0 ${Math.max(28, scaled * 0.45)}px ${glow}80)`
@@ -46,6 +46,7 @@ export default function NeonIcon({ name, size = 20, glow, className = '', style 
             pointerEvents: 'none',
             userSelect: 'none',
             background: 'transparent',
+            mixBlendMode: blendMode,
           }}
         />
       </div>

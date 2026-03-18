@@ -267,7 +267,7 @@ export default function PagePoker() {
            {!myPlayer ? (
              <>
                <img src="/images/poker-saloon.jpg" alt="Poker" style={{width: '100%', maxWidth: 280, borderRadius: 14, marginBottom: 15, opacity: 0.9}} />
-               <h1><NeonIcon name="poker-join" size={32} glow="#00ff66" style={{ marginRight: 8 }} /> SALOON EXPRESSO</h1>
+               <h1><NeonIcon name="poker-join" blendMode="screen" size={32} glow="#00ff66" style={{ marginRight: 8 }} /> SALOON EXPRESSO</h1>
                <p>Mise de départ : <b>100 <NeonIcon name="coin-gold" size={18} /></b></p>
 
                {lobbyView === 'join' ? (
@@ -286,7 +286,7 @@ export default function PagePoker() {
                    <div className="join-form-btns">
                      <button className="btn-back" onClick={() => setLobbyView('menu')}>← Retour</button>
                      <button className="btn-join" style={{ background: 'transparent', boxShadow: 'none', padding: 0 }} onClick={handleJoinRoom} disabled={joinCode.length < 4}>
-                       <NeonIcon name="poker-join" size={80} />
+                       <NeonIcon name="poker-join" blendMode="screen" size={80} />
                      </button>
                    </div>
                  </div>
@@ -310,8 +310,8 @@ export default function PagePoker() {
                  </div>
                ) : !inQueue ? (
                  <div className="lobby-menu">
-                   <button className="btn-create" onClick={handleQuickMatch}><NeonIcon name="poker-tab-neon" size={18} /> Jouer au Poker</button>
-                   <button className="btn-join-code" onClick={() => setLobbyView('create')}><NeonIcon name="poker-tab-neon" size={18} /> Créer une partie</button>
+                   <button className="btn-create" onClick={handleQuickMatch}><NeonIcon name="poker-tab-neon" blendMode="screen" size={18} /> Jouer au Poker</button>
+                   <button className="btn-join-code" onClick={() => setLobbyView('create')}><NeonIcon name="poker-tab-neon" blendMode="screen" size={18} /> Créer une partie</button>
                    <button className="btn-join-code" onClick={() => setLobbyView('join')}><NeonIcon name="key-neon" size={20} /> Rejoindre une partie</button>
 
                    {pendingJoinRequest && (
@@ -354,7 +354,7 @@ export default function PagePoker() {
                    )}
                    <p style={{color: '#888', fontSize: '0.8rem', margin: '8px 0'}}>Dès que 3 joueurs sont prêts, la partie se lance</p>
                    <div style={{display: 'flex', gap: 10, justifyContent: 'center', marginTop: 10}}>
-                     <button className="btn-bots" onClick={handleQueueStartBots}><NeonIcon name="robot-ia-poker" size={18} /> Jouer avec l'IA</button>
+                     <button className="btn-bots" onClick={handleQueueStartBots}><NeonIcon name="robot-ia-poker" size={18} blendMode="screen" /> Jouer avec l'IA</button>
                      <button className="btn-back" onClick={handleLeaveQueue}>Annuler</button>
                    </div>
                  </div>
@@ -362,7 +362,7 @@ export default function PagePoker() {
              </>
            ) : (
              <div className="lobby-waiting">
-                <h1><NeonIcon name="poker-join" size={32} glow="#00ff66" style={{ marginRight: 8 }} /> SALOON EXPRESSO</h1>
+                <h1><NeonIcon name="poker-join" blendMode="screen" size={32} glow="#00ff66" style={{ marginRight: 8 }} /> SALOON EXPRESSO</h1>
                 {pokerState.roomName && (
                   <p style={{color: '#ffcc00', fontSize: '1.2rem', fontWeight: 'bold', margin: '5px 0'}}>{pokerState.roomName}</p>
                 )}
@@ -460,7 +460,7 @@ export default function PagePoker() {
                    {opponents.map((opp, idx) => (
                       <div key={opp.id} className={`seat opponent opponent-${idx} ${pokerState.currentTurnIdx === pokerState.players.findIndex(p => p.username === opp.username) ? 'active-turn' : ''} ${opp.folded ? 'folded' : ''}`}>
                           <div className="player-info">
-                              <span className="player-name">{opp.username} {opp.isBot ? <NeonIcon name="robot-ia-poker" size={24} /> : ''}</span>
+                              <span className="player-name">{opp.username} {opp.isBot ? <NeonIcon name="robot-ia-poker" size={24} blendMode="screen" /> : ''}</span>
                               <span className="player-chips">{opp.chips} <NeonIcon name="coin-gold" size={14} /></span>
                           </div>
                           <div className="player-cards">
