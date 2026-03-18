@@ -240,10 +240,9 @@ export default function PageCasino() {
         .casino-tab-bar {
           display: flex;
           width: 100%;
-          max-width: 320px; /* Réduit encore de 400px à 320px */
-          gap: 6px;         /* Réduit de 8px à 6px */
-          margin-bottom: 5px;
-          margin-top: -24px;  /* Remonte encore plus (était -18px) */
+          max-width: 260px; /* Réduit de 320px à 260px */
+          gap: 6px;
+          margin: -24px auto 5px auto; /* Centré avec auto */
           padding: 0 5px;
           justify-content: center;
         }

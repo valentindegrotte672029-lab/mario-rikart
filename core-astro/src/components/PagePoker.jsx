@@ -267,7 +267,7 @@ export default function PagePoker() {
            {!myPlayer ? (
              <>
                <img src="/images/poker-saloon.jpg" alt="Poker" style={{width: '100%', maxWidth: 280, borderRadius: 14, marginBottom: 15, opacity: 0.9}} />
-               <h1><NeonIcon name="poker-neon-sub" size={32} glow="#00ff66" style={{ marginRight: 8 }} /> SALOON EXPRESSO</h1>
+               <h1><NeonIcon name="poker-neon-sub" size={22} glow="#00ff66" style={{ marginRight: 8 }} /> SALOON EXPRESSO</h1>
                <p>Mise de départ : <b>100 <NeonIcon name="coin-gold" size={18} /></b></p>
 
                {lobbyView === 'join' ? (
