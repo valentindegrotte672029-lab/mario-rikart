@@ -342,19 +342,19 @@ export default function PageMario() {
 
         .create-bereal-btn {
           width: 100%;
-          background: transparent !important;
+          background: linear-gradient(135deg, #ff3333, #aa0000);
           color: white;
-          padding: 15px;
-          border-radius: 0;
-          font-size: 1.1rem;
           font-weight: bold;
+          font-size: 1.1rem;
+          padding: 15px;
+          border-radius: 15px;
           margin-bottom: 25px;
           display: flex;
           align-items: center;
           justify-content: center;
           gap: 10px;
-          box-shadow: none !important;
-          border: none !important;
+          box-shadow: 0 10px 20px rgba(170, 0, 0, 0.5);
+          border: none;
         }
 
         .bereal-list {
@@ -415,9 +415,9 @@ export default function PageMario() {
           width: 100%;
           aspect-ratio: 1;
           max-width: 200px;
-          background: transparent !important;
-          border: none !important;
-          border-radius: 0;
+          background: linear-gradient(135deg, #111, #333);
+          border: 4px solid #ff3333;
+          border-radius: 50%;
           color: white;
           font-weight: 900;
           font-size: 1rem;
@@ -426,13 +426,13 @@ export default function PageMario() {
           align-items: center;
           justify-content: center;
           gap: 15px;
-          box-shadow: none !important;
+          box-shadow: 0 10px 30px rgba(170, 0, 0, 0.5);
           transition: transform 0.1s;
         }
 
         .huge-btn.capture-btn.front-capture {
-          border-color: transparent !important;
-          box-shadow: none !important;
+          border-color: #00ffcc;
+          box-shadow: 0 10px 30px rgba(0, 255, 204, 0.3);
         }
 
         .huge-btn.capture-btn:active {
@@ -585,15 +585,15 @@ export default function PageMario() {
         .editor-actions { display: flex; gap: 10px; }
 
         .btn-secondary.cancel-btn {
-          flex: 1; background: transparent !important; color: white;
+          flex: 1; background: rgba(255,255,255,0.1); color: white;
           display: flex; align-items: center; justify-content: center; gap: 8px;
-          padding: 15px; border-radius: 0; border: none !important; box-shadow: none !important;
+          padding: 15px; border-radius: 12px; border: none;
         }
 
         .btn-primary.send-btn {
-          flex: 2; background: transparent !important; color: white;
+          flex: 2; background: linear-gradient(135deg, #ff3333, #cc0000); color: white;
           display: flex; align-items: center; justify-content: center; gap: 8px;
-          padding: 15px; border-radius: 0; border: none !important; font-weight: bold; box-shadow: none !important;
+          padding: 15px; border-radius: 12px; border: none; font-weight: bold;
         }
 
         .btn-primary.send-btn.sending { background: #4CAF50; }
