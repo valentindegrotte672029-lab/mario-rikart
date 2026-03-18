@@ -577,7 +577,7 @@ export default function PagePsych() {
 
                 .main-psych-card {
                     width: 100%;
-                    padding: 30px 20px;
+                    padding: 20px 15px;
                     border-radius: 32px;
                     border: 1px solid rgba(0, 255, 255, 0.3);
                     background: rgba(0, 25, 25, 0.85);
@@ -594,7 +594,7 @@ export default function PagePsych() {
 
                 .title-mobile {
                     color: var(--theme-color);
-                    font-size: 1.8rem;
+                    font-size: 1.5rem;
                     font-weight: 900;
                     margin-top: 10px;
                     text-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
@@ -624,12 +624,12 @@ export default function PagePsych() {
                 }
 
                 .question-text {
-                    font-size: 1.3rem;
+                    font-size: 1.15rem;
                     color: white;
                     text-align: center;
-                    margin-bottom: 40px;
+                    margin-bottom: 25px;
                     line-height: 1.4;
-                    min-height: 60px;
+                    min-height: 50px;
                 }
 
                 .options-grid {
@@ -639,18 +639,18 @@ export default function PagePsych() {
                 }
 
                 .option-btn {
-                    padding: 20px 15px;
+                    padding: 15px 12px;
                     background: transparent !important;
                     border: none !important;
                     border-radius: 0 !important;
                     box-shadow: none !important;
                     color: white;
-                    font-size: 1.1rem;
+                    font-size: 1rem;
                     font-weight: bold;
                     cursor: pointer;
                     transition: all 0.2s;
                     text-align: center;
-                    line-height: 1.3;
+                    line-height: 1.2;
                     display: inline-flex;
                     align-items: center;
                     justify-content: center;
