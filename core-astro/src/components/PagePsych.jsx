@@ -619,10 +619,10 @@ export default function PagePsych() {
 
                 .option-btn {
                     padding: 20px 15px;
-                    background: transparent;
-                    border: none;
-                    border-bottom: 1px solid rgba(0, 255, 255, 0.15);
-                    border-radius: 0;
+                    background: transparent !important;
+                    border: none !important;
+                    border-radius: 0 !important;
+                    box-shadow: none !important;
                     color: white;
                     font-size: 1.1rem;
                     font-weight: bold;
@@ -661,9 +661,10 @@ export default function PagePsych() {
                 .psych-tab {
                     flex: 1;
                     padding: 10px 0;
-                    border: 2px solid rgba(0, 255, 255, 0.2);
-                    border-radius: 14px;
-                    background: rgba(0, 25, 25, 0.6);
+                    border: none !important;
+                    border-bottom: 2px solid rgba(0, 255, 255, 0.2) !important;
+                    border-radius: 0;
+                    background: transparent !important;
                     color: #888;
                     font-size: 0.95rem;
                     font-weight: bold;
@@ -675,10 +676,11 @@ export default function PagePsych() {
                     transition: all 0.2s;
                 }
                 .psych-tab.active {
-                    background: rgba(0, 255, 255, 0.15);
-                    border-color: #00ffff;
+                    background: transparent !important;
+                    border-bottom-color: #00ffff !important;
                     color: #00ffff;
-                    box-shadow: 0 0 12px rgba(0, 255, 255, 0.3);
+                    box-shadow: none !important;
+                    text-shadow: 0 0 10px rgba(0,255,255,0.8);
                 }
 
                 /* Horoscope */
@@ -707,17 +709,18 @@ export default function PagePsych() {
                     gap: 10px;
                 }
                 .sign-card {
-                    background: rgba(255, 204, 0, 0.05);
-                    border: 1px solid rgba(255, 204, 0, 0.2);
-                    border-radius: 16px;
+                    background: transparent !important;
+                    border: none !important;
+                    border-radius: 0 !important;
+                    box-shadow: none !important;
                     padding: 14px 16px;
                     cursor: pointer;
                     transition: all 0.2s;
                 }
                 .sign-card.expanded {
-                    background: rgba(255, 204, 0, 0.1);
-                    border-color: rgba(255, 204, 0, 0.4);
-                    box-shadow: 0 4px 20px rgba(255, 204, 0, 0.15);
+                    background: transparent !important;
+                    border: none !important;
+                    box-shadow: none !important;
                 }
                 .sign-header {
                     display: flex;
@@ -753,9 +756,8 @@ export default function PagePsych() {
                 /* Mot Karté */
                 .cw-scam-banner {
                     text-align: center;
-                    background: linear-gradient(135deg, rgba(255,68,0,0.15), rgba(255,204,0,0.15));
-                    border: 2px dashed #ff4400;
-                    border-radius: 16px;
+                    background: transparent !important;
+                    border: none !important;
                     padding: 16px 12px;
                     margin-bottom: 16px;
                 }
@@ -788,9 +790,9 @@ export default function PagePsych() {
                 .cw-scam-result {
                     text-align: center;
                     padding: 40px 20px;
-                    background: rgba(255, 68, 68, 0.08);
-                    border: 2px solid rgba(255,68,68,0.3);
-                    border-radius: 20px;
+                    background: transparent !important;
+                    border: none !important;
+                    border-radius: 0;
                 }
                 .ws-grid {
                     display: grid;
@@ -836,20 +838,21 @@ export default function PagePsych() {
                 }
                 .ws-word-tag {
                     padding: 6px 12px;
-                    border-radius: 10px;
-                    background: rgba(255,255,255,0.08);
-                    border: 1px solid rgba(255,255,255,0.2);
-                    color: white;
+                    border-radius: 0;
+                    background: transparent !important;
+                    border: none !important;
+                    color: rgba(255,255,255,0.6);
                     font-size: 0.82rem;
                     font-weight: bold;
                     transition: all 0.3s;
                 }
                 .ws-word-tag.found {
                     text-decoration: line-through;
-                    opacity: 0.4;
-                    background: rgba(0,255,100,0.1);
-                    border-color: rgba(0,255,100,0.3);
+                    opacity: 0.8;
+                    background: transparent !important;
+                    border-color: transparent !important;
                     color: #88ff88;
+                    text-shadow: 0 0 10px #88ff88;
                 }
             `}</style>
         </motion.div>

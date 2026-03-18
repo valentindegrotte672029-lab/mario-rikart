@@ -140,7 +140,7 @@ export default function PageMario() {
         {step === 'FEED' && (
           <div className="feed-section">
             <button className="btn-primary create-bereal-btn" onClick={() => setStep('CAPTURE_BACK')}>
-              <PlusSquare size={24} /> Ajouter un BeMario
+              <NeonIcon name="camera-neon" size={28} glow="#ff3333" /> Envoyer un BeMario
             </button>
 
             <div className="bereal-list">
@@ -182,7 +182,7 @@ export default function PageMario() {
               className="huge-btn capture-btn"
               onClick={() => fileInputBackRef.current.click()}
             >
-              <Camera size={50} />
+              <NeonIcon name="camera-neon" size={80} glow="#ff3333" />
               <span>1. DÉCOR (Arrière)</span>
             </button>
             <button className="btn-secondary cancel-capture-btn" onClick={cancelPhoto}>Annuler</button>
@@ -204,7 +204,7 @@ export default function PageMario() {
               className="huge-btn capture-btn front-capture"
               onClick={() => fileInputFrontRef.current.click()}
             >
-              <SwitchCamera size={50} />
+              <NeonIcon name="camera-neon" size={80} glow="#00ffcc" />
               <span>2. SELFIE (Avant)</span>
             </button>
             <button className="btn-secondary cancel-capture-btn" onClick={cancelPhoto}>Annuler</button>
@@ -341,18 +341,20 @@ export default function PageMario() {
         }
 
         .create-bereal-btn {
-          background: linear-gradient(135deg, #ff3333, #aa0000);
+          width: 100%;
+          background: transparent !important;
           color: white;
-          font-weight: bold;
-          font-size: 1.1rem;
           padding: 15px;
-          border-radius: 15px;
+          border-radius: 0;
+          font-size: 1.1rem;
+          font-weight: bold;
+          margin-bottom: 25px;
           display: flex;
           align-items: center;
           justify-content: center;
           gap: 10px;
-          box-shadow: 0 10px 20px rgba(170, 0, 0, 0.5);
-          border: none;
+          box-shadow: none !important;
+          border: none !important;
         }
 
         .bereal-list {
@@ -413,9 +415,9 @@ export default function PageMario() {
           width: 100%;
           aspect-ratio: 1;
           max-width: 200px;
-          background: linear-gradient(135deg, #111, #333);
-          border: 4px solid #ff3333;
-          border-radius: 50%;
+          background: transparent !important;
+          border: none !important;
+          border-radius: 0;
           color: white;
           font-weight: 900;
           font-size: 1rem;
@@ -424,13 +426,13 @@ export default function PageMario() {
           align-items: center;
           justify-content: center;
           gap: 15px;
-          box-shadow: 0 10px 30px rgba(170, 0, 0, 0.5);
+          box-shadow: none !important;
           transition: transform 0.1s;
         }
 
         .huge-btn.capture-btn.front-capture {
-          border-color: #00ffcc;
-          box-shadow: 0 10px 30px rgba(0, 255, 204, 0.3);
+          border-color: transparent !important;
+          box-shadow: none !important;
         }
 
         .huge-btn.capture-btn:active {
@@ -583,15 +585,15 @@ export default function PageMario() {
         .editor-actions { display: flex; gap: 10px; }
 
         .btn-secondary.cancel-btn {
-          flex: 1; background: rgba(255,255,255,0.1); color: white;
+          flex: 1; background: transparent !important; color: white;
           display: flex; align-items: center; justify-content: center; gap: 8px;
-          padding: 15px; border-radius: 12px; border: none;
+          padding: 15px; border-radius: 0; border: none !important; box-shadow: none !important;
         }
 
         .btn-primary.send-btn {
-          flex: 2; background: linear-gradient(135deg, #ff3333, #cc0000); color: white;
+          flex: 2; background: transparent !important; color: white;
           display: flex; align-items: center; justify-content: center; gap: 8px;
-          padding: 15px; border-radius: 12px; border: none; font-weight: bold;
+          padding: 15px; border-radius: 0; border: none !important; font-weight: bold; box-shadow: none !important;
         }
 
         .btn-primary.send-btn.sending { background: #4CAF50; }

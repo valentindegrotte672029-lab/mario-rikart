@@ -71,11 +71,13 @@ export default function PageWario() {
               onClick={() => setOrderQr(null)}
             >
               <div className="qr-modal-box" onClick={(e) => e.stopPropagation()}>
-                <div style={{ marginBottom: '10px' }}><NeonIcon name="ticket-gold" size={64} glow="#ffcc00" /></div>
+                <div style={{ marginBottom: '10px' }}><NeonIcon name="ticket-gold" size={100} glow="#ffcc00" /></div>
                 <h3>Commande Validée</h3>
                 <div className="qr-code-text">{orderQr}</div>
                 <p>Présente ce code au barman.</p>
-                <button className="qr-close-btn" onClick={() => setOrderQr(null)}>Fermer</button>
+                <button className="qr-close-btn" onClick={() => setOrderQr(null)}>
+                  Fermer
+                </button>
               </div>
             </motion.div>
           )}
@@ -127,14 +129,14 @@ export default function PageWario() {
 
         .ios-list {
           flex: 1;
-          background: rgba(255, 255, 255, 0.02);
-          border-radius: 20px;
+          background: transparent !important;
+          border-radius: 0;
           margin: 0 15px 15px 15px;
           overflow-y: auto;
           -webkit-overflow-scrolling: touch;
           scrollbar-width: none;
-          box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
-          border: 1px solid rgba(255, 204, 0, 0.1);
+          box-shadow: none !important;
+          border: none !important;
         }
         .ios-list::-webkit-scrollbar { display: none; }
 
@@ -148,7 +150,7 @@ export default function PageWario() {
         }
 
         .ios-list-item:active {
-          background: rgba(255, 204, 0, 0.1);
+          background: transparent !important;
           transform: scale(0.98);
         }
 
@@ -201,35 +203,36 @@ export default function PageWario() {
         }
 
         .qr-modal-box {
-          background: linear-gradient(135deg, #ffffff, #ffeeaa);
-          color: black;
+          background: transparent !important;
+          color: white;
           width: 80%;
-          border-radius: 30px;
+          border-radius: 0;
           padding: 30px 20px;
           text-align: center;
           display: flex; flex-direction: column; align-items: center;
-          box-shadow: 0 10px 40px rgba(255, 204, 0, 0.5);
-          border: 4px solid var(--theme-color);
+          box-shadow: none !important;
+          border: none !important;
         }
 
-        .qr-modal-box h3 { margin-top: 15px; font-size: 1.3rem; font-weight: 900; color: #554400; }
+        .qr-modal-box h3 { margin-top: 15px; font-size: 1.3rem; font-weight: 900; color: #ffcc00; text-shadow: 0 0 15px rgba(255, 204, 0, 0.6); }
         
         .qr-code-text {
           font-family: monospace;
-          background: #332200;
+          background: transparent !important;
           color: var(--theme-color);
           padding: 10px 20px;
-          border-radius: 10px;
+          border-radius: 0;
           font-size: 1.2rem;
           letter-spacing: 2px;
           margin: 15px 0;
           font-weight: bold;
-          border: 1px solid var(--theme-color);
+          border: none !important;
+          text-shadow: 0 0 10px rgba(255, 204, 0, 0.8);
         }
 
-        .qr-modal-box p { color: #555; font-size: 0.9rem; margin-bottom: 25px; font-weight: bold; }
+        .qr-modal-box p { color: #ccc; font-size: 0.9rem; margin-bottom: 25px; font-weight: bold; text-shadow: 0 0 5px rgba(255, 255, 255, 0.5); }
 
-        .qr-close-btn { background: #111; color: var(--theme-color); font-weight: bold; padding: 12px 30px; border-radius: 20px; font-size: 1rem; width: 100%; border: 1px solid var(--theme-color); cursor: pointer; }
+        .qr-close-btn { background: transparent !important; color: white; font-weight: bold; padding: 12px 30px; border-radius: 0; font-size: 1rem; width: 100%; border: none !important; cursor: pointer; text-shadow: 0 0 5px rgba(255,255,255,0.5); box-shadow: none !important; }
 `}</style>
     </motion.div>
   );

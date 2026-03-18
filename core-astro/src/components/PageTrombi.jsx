@@ -238,10 +238,8 @@ export default function PageTrombi() {
                 .trombi-header {
                     text-align: center;
                     padding: 20px 16px;
-                    background: rgba(255,100,50,0.08);
-                    border: 2px solid rgba(255,100,50,0.3);
-                    border-radius: 16px;
-                    backdrop-filter: blur(10px);
+                    background: transparent !important;
+                    border: none !important;
                 }
                 .trombi-title {
                     font-size: 2rem;
@@ -267,9 +265,9 @@ export default function PageTrombi() {
                 .trombi-congrats {
                     text-align: center;
                     padding: 24px;
-                    background: rgba(255,204,0,0.08);
-                    border: 2px solid rgba(255,204,0,0.3);
-                    border-radius: 16px;
+                    background: transparent !important;
+                    border: none !important;
+                    border-radius: 0;
                 }
                 .trombi-pole-section {
                     margin-bottom: 8px;
@@ -289,8 +287,8 @@ export default function PageTrombi() {
                     width: 100%;
                     border-radius: 12px;
                     overflow: hidden;
-                    border: 2px solid rgba(255,255,255,0.1);
-                    background: #000;
+                    border: none !important;
+                    background: transparent !important;
                 }
                 .trombi-group-photo {
                     display: block;
@@ -323,9 +321,9 @@ export default function PageTrombi() {
                     padding: 20px;
                 }
                 .trombi-modal {
-                    background: #1a1a2e;
-                    border: 2px solid rgba(255,255,255,0.15);
-                    border-radius: 20px;
+                    background: transparent !important;
+                    border: none !important;
+                    border-radius: 0;
                     padding: 30px 24px;
                     max-width: 340px;
                     width: 100%;
@@ -353,13 +351,14 @@ export default function PageTrombi() {
                 }
                 .trombi-modal-close {
                     padding: 12px 28px;
-                    border-radius: 14px;
-                    border: 2px solid #ffcc00;
-                    background: rgba(255,204,0,0.1);
+                    border-radius: 0;
+                    border: none !important;
+                    background: transparent !important;
                     color: #ffcc00;
                     font-size: 1rem;
                     font-weight: bold;
                     cursor: pointer;
+                    text-shadow: 0 0 10px rgba(255,204,0,0.8);
                 }
                 .trombi-modal-close:active {
                     background: rgba(255,204,0,0.25);

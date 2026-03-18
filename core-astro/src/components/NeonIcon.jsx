@@ -7,8 +7,8 @@ const scaleSize = (s) => Math.round(s * Math.min(1.3 + s * 0.02, 2.5));
 export default function NeonIcon({ name, size = 20, glow, className = '', style = {} }) {
   const scaled = scaleSize(size);
   const glowFilter = glow
-    ? `drop-shadow(0 0 ${Math.max(6, scaled * 0.12)}px ${glow}) drop-shadow(0 0 ${Math.max(12, scaled * 0.22)}px ${glow}80)`
-    : `drop-shadow(0 0 ${Math.max(4, scaled * 0.08)}px rgba(255,255,255,0.6)) drop-shadow(0 0 ${Math.max(8, scaled * 0.16)}px rgba(255,255,255,0.25))`;
+    ? `drop-shadow(0 0 ${Math.max(10, scaled * 0.18)}px ${glow}) drop-shadow(0 0 ${Math.max(24, scaled * 0.32)}px ${glow}80)`
+    : `drop-shadow(0 0 ${Math.max(8, scaled * 0.16)}px rgba(255,255,255,0.7)) drop-shadow(0 0 ${Math.max(18, scaled * 0.28)}px rgba(255,255,255,0.35))`;
   return (
     <span
       className={`neon-icon ${className}`}
@@ -21,9 +21,8 @@ export default function NeonIcon({ name, size = 20, glow, className = '', style 
         height: scaled,
         flexShrink: 0,
         filter: glowFilter || undefined,
-        overflow: 'hidden', // masque tout débordement
-        borderRadius: '50%', // optionnel pour forcer l'aspect rond
-        background: 'rgba(0,0,0,0)', // fond transparent
+        overflow: 'hidden',
+        background: 'transparent',
         ...style,
       }}
     >
@@ -45,6 +44,8 @@ export default function NeonIcon({ name, size = 20, glow, className = '', style 
             display: 'block',
             pointerEvents: 'none',
             userSelect: 'none',
+            background: 'transparent',
+            mixBlendMode: 'screen',
           }}
         />
       </div>

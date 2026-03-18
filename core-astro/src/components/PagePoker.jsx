@@ -577,21 +577,21 @@ export default function PagePoker() {
 
         .lobby-menu { display: flex; flex-direction: column; gap: 12px; }
 
-        .btn-create { background: #00ff66; color: black; font-weight: bold; font-size: 1.1rem; padding: 14px 20px; border: none; border-radius: 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; justify-content: center; }
+        .btn-create { background: transparent !important; color: #00ff66; font-weight: bold; font-size: 1.1rem; padding: 14px 20px; border: none !important; border-radius: 0; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; justify-content: center; text-shadow: 0 0 10px rgba(0,255,102,0.8); }
         .btn-create:active { transform: scale(0.95); }
 
-        .btn-join-code { background: transparent; color: #00ffcc; font-weight: bold; font-size: 1rem; padding: 12px 20px; border: 2px solid #00ffcc; border-radius: 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; justify-content: center; }
+        .btn-join-code { background: transparent !important; color: #00ffcc; font-weight: bold; font-size: 1rem; padding: 12px 20px; border: none !important; border-radius: 0; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; justify-content: center; text-shadow: 0 0 10px rgba(0,255,204,0.8); }
         .btn-join-code:active { transform: scale(0.95); }
 
         .open-rooms { margin-top: 8px; }
         .open-rooms-title { color: #888; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
         .room-card {
           display: flex; align-items: center; justify-content: space-between;
-          background: rgba(255,255,255,0.05); border: 1px solid rgba(0,255,102,0.3);
-          border-radius: 10px; padding: 10px 14px; width: 100%; cursor: pointer;
+          background: transparent !important; border: none !important; border-bottom: 2px solid rgba(0,255,102,0.3) !important;
+          border-radius: 0; padding: 10px 14px; width: 100%; cursor: pointer;
           margin-bottom: 6px; color: white; font-size: 0.9rem;
         }
-        .room-card:active { background: rgba(0,255,102,0.15); }
+        .room-card:active { background: transparent !important; box-shadow: 0 0 15px rgba(0,255,102,0.2) inset; }
         .room-code { font-weight: 900; color: #ffcc00; font-family: monospace; font-size: 1.1rem; }
         .room-players { color: #aaa; flex: 1; text-align: center; font-size: 0.8rem; }
         .room-count { color: #00ff66; font-weight: bold; }
@@ -605,12 +605,12 @@ export default function PagePoker() {
         }
         .code-input::placeholder { color: rgba(255,255,255,0.2); letter-spacing: 4px; }
         .join-form-btns { display: flex; gap: 10px; }
-        .btn-back { background: transparent; color: #aaa; border: 1px solid #555; border-radius: 8px; padding: 10px 16px; cursor: pointer; font-weight: bold; }
-        .btn-join { background: #00ff66; color: black; font-weight: bold; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; }
-        .btn-join:disabled { opacity: 0.4; }
+        .btn-back { background: transparent !important; color: #aaa; border: none !important; border-radius: 0; padding: 10px 16px; cursor: pointer; font-weight: bold; text-shadow: 0 0 5px rgba(255,255,255,0.3); }
+        .btn-join { background: transparent !important; color: #00ff66; font-weight: bold; padding: 10px 20px; border: none !important; border-radius: 0; cursor: pointer; text-shadow: 0 0 10px rgba(0,255,102,0.8); }
+        .btn-join:disabled { opacity: 0.4; text-shadow: none; }
         .btn-join:active { transform: scale(0.95); }
 
-        .btn-bots { background: #ffcc00; color: black; font-weight: bold; padding: 10px 20px; border: none; border-radius: 8px; margin-top: 15px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; justify-content: center; }
+        .btn-bots { background: transparent !important; color: #ffcc00; font-weight: bold; padding: 10px 20px; border: none !important; border-radius: 0; margin-top: 15px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; justify-content: center; text-shadow: 0 0 10px rgba(255,204,0,0.8); }
         .btn-bots:active { transform: scale(0.95); }
 
         .queue-waiting { text-align: center; }
@@ -919,9 +919,9 @@ export default function PagePoker() {
         .action-buttons button:active:not(:disabled) { transform: translateY(2px); }
         .action-buttons button:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        .btn-fold { background: #334155; color: white; }
-        .btn-call { background: #4ade80; color: black; }
-        .btn-raise { background: #a855f7; color: white; }
+        .btn-fold { background: transparent !important; border: none !important; color: #888; text-shadow: 0 0 5px rgba(255,255,255,0.3); }
+        .btn-call { background: transparent !important; border: none !important; color: #4ade80; text-shadow: 0 0 10px rgba(74,222,128,0.8); }
+        .btn-raise { background: transparent !important; border: none !important; color: #a855f7; text-shadow: 0 0 10px rgba(168,85,247,0.8); }
 
         /* TOP INFO BAR */
         .poker-top-bar {
@@ -929,12 +929,14 @@ export default function PagePoker() {
             align-items: center;
             justify-content: space-between;
             padding: 6px 12px;
-            background: rgba(0,0,0,0.6);
-            border-radius: 12px;
+            background: transparent !important;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            border-radius: 0;
             margin-bottom: 8px;
         }
         .btn-leave-table {
-            background: rgba(255,60,60,0.15);
+            background: transparent !important;
+            border: none !important;
             color: #ff6b6b;
             font-size: 0.75rem;
             font-weight: 700;

@@ -274,20 +274,21 @@ export default function PageCasino() {
 
         .btn-create-toggle {
             margin-top: 15px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid #ff00ff;
+            background: transparent !important;
+            border: none !important;
             color: #ff00ff;
-            border-radius: 20px;
+            border-radius: 0;
             padding: 8px 15px;
             font-weight: bold;
             cursor: pointer;
+            text-shadow: 0 0 10px rgba(255, 0, 255, 0.8);
         }
 
         .create-bet-form {
-            background: rgba(0,0,0,0.8);
-            border: 2px dashed #00ffcc;
+            background: transparent !important;
+            border: none !important;
             padding: 20px;
-            border-radius: 15px;
+            border-radius: 0;
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -316,8 +317,8 @@ export default function PageCasino() {
           padding: 40px;
           color: #aaa;
           font-style: italic;
-          background: rgba(0,0,0,0.4);
-          border-radius: 15px;
+          background: transparent !important;
+          border-radius: 0;
         }
 
         .bets-container {
@@ -327,17 +328,18 @@ export default function PageCasino() {
         }
 
         .bet-card {
-          background: rgba(0, 0, 0, 0.6);
-          border: 2px solid #ff00ff;
-          border-radius: 15px;
+          background: transparent !important;
+          border: none !important;
+          border-radius: 0;
           padding: 15px;
           position: relative;
           overflow: hidden;
-          box-shadow: 0 5px 20px rgba(255, 0, 255, 0.2);
+          box-shadow: none !important;
+          border-bottom: 1px solid rgba(255, 0, 255, 0.2) !important;
         }
 
         .bet-card.resolved {
-          border-color: #555;
+          border-bottom-color: transparent !important;
           box-shadow: none;
           opacity: 0.8;
         }
@@ -390,15 +392,16 @@ export default function PageCasino() {
         }
 
         .bet-option {
-          background: rgba(255, 255, 255, 0.05);
+          background: transparent !important;
           padding: 12px;
-          border-radius: 10px;
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 0;
+          border: none !important;
+          border-left: 2px solid rgba(255, 255, 255, 0.2) !important;
         }
 
         .bet-option.winner {
-          background: rgba(0, 255, 0, 0.1);
-          border-color: #39ff14;
+          background: transparent !important;
+          border-left-color: #39ff14 !important;
         }
 
         .option-header {
@@ -461,12 +464,13 @@ export default function PageCasino() {
 
         .place-bet-controls button {
           flex: 1;
-          background: #ff00ff;
-          color: white;
-          border: none;
-          border-radius: 8px;
+          background: transparent !important;
+          color: #ff00ff;
+          border: none !important;
+          border-radius: 0;
           font-weight: bold;
           cursor: pointer;
+          text-shadow: 0 0 10px rgba(255, 0, 255, 0.8);
         }
 
         .place-bet-controls button:active {

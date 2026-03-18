@@ -279,9 +279,10 @@ export default function PagePeach() {
         .leak-card {
           flex: 0 0 85%;
           height: 200px;
-          border-radius: 20px;
-          background: rgba(0,0,0,0.5);
-          border: 1px solid rgba(255, 0, 255, 0.2);
+          border-radius: 0;
+          background: transparent !important;
+          border: none !important;
+          box-shadow: none !important;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -294,15 +295,13 @@ export default function PagePeach() {
         }
 
         .leak-card.vip-card {
-          border-color: rgba(255, 170, 0, 0.4);
-          background: rgba(40, 20, 0, 0.5);
+          border: none !important;
+          background: transparent !important;
+          box-shadow: none !important;
         }
 
         .card-bg {
-          position: absolute;
-          top: 0; left: 0; right: 0; bottom: 0;
-          background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,0,255,0.05) 10px, rgba(255,0,255,0.05) 20px);
-          z-index: 0;
+          display: none;
         }
 
         .lock-icon { z-index: 1; }
@@ -311,11 +310,12 @@ export default function PagePeach() {
 
         .price-tag.gold {
           z-index: 1;
-          background: rgba(255, 170, 0, 0.2);
+          background: transparent !important;
           color: #ffaa00;
           padding: 5px 15px;
-          border-radius: 12px;
-          border: 1px solid rgba(255, 170, 0, 0.5);
+          border-radius: 0;
+          border: none !important;
+          text-shadow: 0 0 10px rgba(255, 170, 0, 0.8);
           display: inline-flex;
           align-items: center;
           gap: 3px;
@@ -328,9 +328,9 @@ export default function PagePeach() {
           align-items: center;
           justify-content: center;
           gap: 10px;
-          background: linear-gradient(90deg, rgba(255,170,0,0.15), rgba(255,0,255,0.15));
-          border: 1px solid rgba(255, 170, 0, 0.4);
-          border-radius: 16px;
+          background: transparent !important;
+          border: none !important;
+          border-radius: 0;
           padding: 12px 15px;
           margin-bottom: 15px;
           cursor: pointer;
@@ -352,7 +352,7 @@ export default function PagePeach() {
           border-radius: 12px;
           overflow: hidden;
           cursor: pointer;
-          border: 1px solid rgba(255, 0, 255, 0.2);
+          border: none !important;
         }
 
         .peach-thumb img {

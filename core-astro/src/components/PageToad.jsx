@@ -126,7 +126,7 @@ export default function PageToad() {
           disabled={selectedIngredients.length === 0 || !selectedVictim || isSending}
           onClick={handleSendMix}
         >
-          <Send size={24} className="btn-icon" />
+          <NeonIcon name="skull-neon" size={40} glow="#ff3366" />
           <span>{isSending ? 'Mélange envoyé !' : 'Servir le mélange'}</span>
         </button>
       </div>
@@ -235,51 +235,56 @@ export default function PageToad() {
         }
 
         .victim-btn {
-          background: rgba(255, 255, 255, 0.08);
-          border: 1px solid transparent;
+          background: transparent !important;
+          border: none !important;
           color: white;
           padding: 8px 16px;
-          border-radius: 20px;
+          border-radius: 0;
           font-size: 0.9rem;
           font-weight: 600;
           transition: all 0.2s;
         }
 
         .victim-btn.selected {
-          background: var(--theme-color);
+          background: transparent !important;
           color: white;
-          box-shadow: 0 4px 15px rgba(255, 51, 102, 0.5);
-          transform: scale(1.05);
+          box-shadow: none !important;
+          text-shadow: 0 0 15px var(--theme-color);
+          transform: scale(1.1);
+          font-weight: 900;
         }
 
         /* Bouton Envoi */
         .send-mix-btn {
           width: 100%;
-          background: linear-gradient(135deg, #ff3366, #ff0044);
+          background: transparent !important;
           color: white;
           padding: 18px;
-          border-radius: 20px;
+          border-radius: 0;
           font-size: 1.2rem;
           font-weight: bold;
-          border: none;
+          border: none !important;
+          box-shadow: none !important;
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 10px;
+          gap: 15px;
           margin-top: 10px;
-          box-shadow: 0 10px 30px rgba(255, 51, 102, 0.4);
+          text-shadow: 0 0 15px rgba(255, 51, 102, 0.8);
         }
 
         .send-mix-btn:disabled {
-          background: #555;
-          box-shadow: none;
-          opacity: 0.5;
+          background: transparent !important;
+          box-shadow: none !important;
+          opacity: 0.3;
           transform: none;
+          text-shadow: none;
         }
 
         .send-mix-btn.sending {
-          background: #4CAF50;
-          box-shadow: 0 10px 30px rgba(76, 175, 80, 0.4);
+          background: transparent !important;
+          box-shadow: none !important;
+          text-shadow: 0 0 15px rgba(76, 175, 80, 0.8);
         }
       `}</style>
     </motion.div>

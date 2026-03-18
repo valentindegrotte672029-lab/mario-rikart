@@ -134,7 +134,7 @@ export default function PageChrono() {
                         >
                             <p className="desc">Lance le minuteur aveugle. Prenez du poppy jusqu'à ce que l'alarme sonne !</p>
                             <button className="huge-chrono-btn" onClick={startChrono}>
-                                <Timer size={60} />
+                                <NeonIcon name="bomb-timer" size={100} glow="#ff9900" />
                                 <span>LANCER<br /><small style={{ fontSize: '0.8rem', opacity: 0.8 }}>(5s - 1min)</small></span>
                             </button>
                         </motion.div>
@@ -164,12 +164,12 @@ export default function PageChrono() {
                             initial={{ opacity: 0, scale: 1.5 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}
                             className="state-container alarm-container"
                         >
-                            <AlertTriangle size={80} color="#fff" />
+                            <NeonIcon name="ambulance-neon" size={120} glow="#ff0000" />
                             <h1 className="alarm-title">STOP !</h1>
                             <p className="alarm-subtitle">Le dernier qui a pris a perdu !</p>
 
                             <button className="btn-secondary mt-20" onClick={resetChrono}>
-                                <RefreshCcw size={20} /> Recommencer
+                                <NeonIcon name="bone" size={20} /> Recommencer
                             </button>
                         </motion.div>
                     )}
@@ -199,10 +199,11 @@ export default function PageChrono() {
         .state-container { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 250px; }
 
         .huge-chrono-btn {
-          width: 100%; aspect-ratio: 1; max-width: 250px; border-radius: 50%;
-          background: linear-gradient(135deg, #ff9900, #cc5500); border: none; color: white;
+          width: 100%; aspect-ratio: 1; max-width: 250px; border-radius: 0;
+          background: transparent !important; border: none !important; color: white;
           font-size: 1.2rem; font-weight: bold; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
-          box-shadow: 0 10px 30px rgba(204, 85, 0, 0.5); transition: transform 0.1s;
+          box-shadow: none !important; transition: transform 0.1s;
+          text-shadow: 0 0 10px rgba(255,153,0,0.8);
         }
         .huge-chrono-btn:active { transform: scale(0.95); }
 
@@ -215,7 +216,7 @@ export default function PageChrono() {
         .alarm-subtitle { font-size: 1.2rem; color: #ffaaaa; }
         
         .mt-20 { margin-top: 30px; }
-        .btn-secondary { background: rgba(255,255,255,0.1); color: white; border: none; padding: 15px 30px; border-radius: 20px; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .btn-secondary { background: transparent !important; color: white; border: none !important; padding: 15px 30px; border-radius: 0; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; font-weight: bold; box-shadow: none !important; }
 
         @keyframes shakeHard { 0% { transform: translate(3px, 5px) rotate(1deg); } 100% { transform: translate(-3px, -5px) rotate(-1deg); } }
       `}</style>

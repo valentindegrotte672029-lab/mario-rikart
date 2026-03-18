@@ -207,11 +207,10 @@ export default function PageLuigiNew() {
         .arcade-grid { display: flex; flex-direction: column; gap: 8px; margin-top: 5px; } /* Tighter gap */
         
         .arcade-btn {
-          display: flex; align-items: center; background: transparent;
-          border: none; border-radius: 0;
+          display: flex; align-items: center; background: transparent !important;
+          border: none !important; border-radius: 0;
           padding: 10px 12px 10px 10px; color: white; text-align: left; cursor: pointer;
           transition: transform 0.1s; position: relative; overflow: hidden;
-          border-bottom: 1px solid rgba(57, 255, 20, 0.12);
         }
         .arcade-btn:active { transform: scale(0.97); }
         
@@ -263,12 +262,13 @@ export default function PageLuigiNew() {
 
         .leaderboard-full-btn {
           width: 100%; margin-top: 15px; margin-bottom: 5px;
-          background: linear-gradient(135deg, #112211, #001100);
-          color: white; border: 2px solid #ffcc00;
-          padding: 15px; border-radius: 16px;
+          background: transparent !important;
+          color: white; border: none !important;
+          padding: 15px; border-radius: 0;
           font-weight: 900; font-size: 1rem;
           display: flex; align-items: center; justify-content: center; gap: 8px;
-          box-shadow: 0 4px 15px rgba(255, 204, 0, 0.2); transition: transform 0.1s;
+          box-shadow: none !important; transition: transform 0.1s;
+          text-shadow: 0 0 10px rgba(255,204,0,0.8);
         }
         .leaderboard-full-btn:active { transform: scale(0.96); }
 
@@ -280,7 +280,7 @@ export default function PageLuigiNew() {
 
         .lb-header-modal {
           display: flex; justify-content: space-between; align-items: center;
-          padding: 25px 20px 15px 20px; border-bottom: 2px solid #336633;
+          padding: 25px 20px 15px 20px; border-bottom: none !important;
         }
         .lb-header-modal h2 { color: #ffcc00; font-size: 1.5rem; font-weight: 900; letter-spacing: 1px; display: flex; align-items: center; gap: 6px; }
         .lb-close-btn { background: none; border: none; color: white; padding: 5px; cursor: pointer; }
@@ -290,8 +290,8 @@ export default function PageLuigiNew() {
           display: flex; flex-direction: column; gap: 20px;
         }
 
-        .lb-category { background: rgba(0,0,0,0.4); border-radius: 15px; padding: 15px; border: 1px solid rgba(57, 255, 20, 0.2); }
-        .lb-category h3 { color: #aaffaa; font-size: 1.1rem; border-bottom: 1px solid #224422; padding-bottom: 8px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+        .lb-category { background: transparent !important; border-radius: 0; padding: 15px; border: none !important; }
+        .lb-category h3 { color: #aaffaa; font-size: 1.1rem; border-bottom: none !important; padding-bottom: 8px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
         .empty-lb { color: #888; font-style: italic; font-size: 0.9rem; text-align: center; }
 
         .lb-line { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #1a331a; font-size: 1rem; }
