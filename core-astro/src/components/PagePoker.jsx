@@ -362,7 +362,7 @@ export default function PagePoker() {
              </>
            ) : (
              <div className="lobby-waiting">
-                <h1><NeonIcon name="poker-neon-sub" size={32} glow="#00ff66" style={{ marginRight: 8 }} /> SALOON EXPRESSO</h1>
+                <h1><NeonIcon name="poker-neon-sub" size={22} style={{ marginRight: 8 }} /> SALOON EXPRESSO</h1>
                 {pokerState.roomName && (
                   <p style={{color: '#ffcc00', fontSize: '1.2rem', fontWeight: 'bold', margin: '5px 0'}}>{pokerState.roomName}</p>
                 )}
