@@ -252,7 +252,13 @@ export default function PageChrono() {
         }
         .huge-chrono-btn:active { transform: scale(0.95); }
 
-        .pulsing-bomb { font-size: 6rem; filter: drop-shadow(0 0 20px red); margin-bottom: 20px; }
+        .pulsing-bomb {
+          font-size: 6rem;
+          filter: drop-shadow(0 0 25px rgba(255, 0, 0, 0.8)) drop-shadow(0 0 45px rgba(255, 0, 0, 0.4));
+          opacity: 0.85;
+          mix-blend-mode: plus-lighter;
+          margin-bottom: 20px;
+        }
         .running-text { font-size: 1.5rem; color: #ff5555; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; }
         .tension-text { color: #888; font-style: italic; }
 

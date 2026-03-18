@@ -340,7 +340,7 @@ export default function PagePsych() {
                     transition={{ duration: 0.25 }}
                     style={{ width: '100%' }}
                 >
-                    <div className="glass-panel main-psych-card">
+                    <div className="horoscope-view-content">
                         <div className="card-header">
                             <Star size={48} color="#ffcc00" />
                             <h1 className="title-mobile">Horoscope de Mars</h1>
@@ -378,6 +378,7 @@ export default function PagePsych() {
                             </div>
                         </div>
                     </div>
+
                 </motion.div>
             ) : pageView === 'crossword' ? (
                 <motion.div
@@ -388,7 +389,7 @@ export default function PagePsych() {
                     transition={{ duration: 0.25 }}
                     style={{ width: '100%' }}
                 >
-                    <div className="glass-panel main-psych-card">
+                    <div className="crossword-view-content">
                         <div className="card-header">
                             <h1 className="title-mobile">Mot Karté</h1>
                         </div>
@@ -447,6 +448,7 @@ export default function PagePsych() {
                             )}
                         </div>
                     </div>
+
                 </motion.div>
             ) : (
             <motion.div
@@ -457,7 +459,7 @@ export default function PagePsych() {
                 transition={{ duration: 0.25 }}
                 style={{ width: '100%' }}
             >
-            <div className="glass-panel main-psych-card">
+            <div className="test-view-content">
                 <div className="card-header">
                     <Brain size={48} color="#00ffff" />
                     <h1 className="title-mobile">Bilan Psychologique</h1>
@@ -528,6 +530,7 @@ export default function PagePsych() {
                     </div>
                 )}
                 </div>
+
             </motion.div>
             )}
             </AnimatePresence>
