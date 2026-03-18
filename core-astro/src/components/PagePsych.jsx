@@ -391,9 +391,13 @@ export default function PagePsych() {
                     style={{ width: '100%' }}
                 >
                     <div className="crossword-view-content">
-                        <div className="card-header">
-                            <h1 className="title-mobile">Mot Karté</h1>
-                        </div>
+                        {!featureFlags.warioCrossword ? (
+                            <ComingSoon title="Mot Karté" icon="devil-neon" color="#ff4444" />
+                        ) : (
+                            <>
+                                <div className="card-header">
+                                    <h1 className="title-mobile">Mot Karté</h1>
+                                </div>
                         <div className="horoscope-container">
                             <div className="cw-scam-banner">
                                 <p className="cw-scam-title"><NeonIcon name="coins-stack" size={28} /> GAGNEZ 10 000€ <NeonIcon name="coins-stack" size={28} /></p>

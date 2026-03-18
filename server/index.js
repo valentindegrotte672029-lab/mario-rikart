@@ -43,7 +43,7 @@ let leaderboards = loadDb('leaderboards.json', { FLAPPYWEED: {}, CHAMPININJA: {}
 let usersDb = loadDb('users.json', {});
 let betsDb = loadDb('bets.json', []);
 let notificationsDb = loadDb('notifications.json', []);
-let featureFlags = loadDb('feature_flags.json', { warioTest: true, toadLab: true, peachasse: true });
+let featureFlags = loadDb('feature_flags.json', { warioTest: true, warioCrossword: true, toadLab: true, peachasse: true });
 
 // Helpers de sauvegarde
 const saveUsers = () => saveDb('users.json', usersDb);
