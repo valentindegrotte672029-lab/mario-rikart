@@ -242,7 +242,7 @@ export default function PageCasino() {
           width: 100%;
           max-width: 240px; /* Réduit à 240px */
           gap: 4px;
-          margin: -24px auto 5px auto;
+          margin: -28px auto 5px auto; /* Rapproché de -24px à -28px */
           padding: 0 5px;
           justify-content: center;
         }

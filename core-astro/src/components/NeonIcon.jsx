@@ -7,8 +7,8 @@ const scaleSize = (s) => Math.round(s * Math.min(1.6 + s * 0.02, 3.0));
 export default function NeonIcon({ name, size = 20, glow, className = '', style = {}, blendMode = 'normal' }) {
   const scaled = scaleSize(size);
   const glowFilter = glow
-    ? `drop-shadow(0 0 ${Math.max(2, scaled * 0.05)}px ${glow}) drop-shadow(0 0 ${Math.max(6, scaled * 0.15)}px ${glow}) drop-shadow(0 0 ${Math.max(15, scaled * 0.35)}px ${glow}aa)`
-    : `drop-shadow(0 0 ${Math.max(2, scaled * 0.04)}px rgba(255,255,255,0.9)) drop-shadow(0 0 ${Math.max(8, scaled * 0.16)}px rgba(255,255,255,0.4)) drop-shadow(0 0 ${Math.max(18, scaled * 0.32)}px rgba(255,255,255,0.2))`;
+    ? `drop-shadow(0 0 ${Math.max(1, scaled * 0.03)}px ${glow}) drop-shadow(0 0 ${Math.max(3, scaled * 0.08)}px ${glow}) drop-shadow(0 0 ${Math.max(8, scaled * 0.15)}px ${glow}88)`
+    : `drop-shadow(0 0 ${Math.max(1, scaled * 0.02)}px rgba(255,255,255,0.8)) drop-shadow(0 0 ${Math.max(4, scaled * 0.08)}px rgba(255,255,255,0.3)) drop-shadow(0 0 ${Math.max(10, scaled * 0.15)}px rgba(255,255,255,0.1))`;
 
   const useBlend = blendMode !== 'normal';
 
@@ -25,7 +25,7 @@ export default function NeonIcon({ name, size = 20, glow, className = '', style 
         width: scaled,
         height: scaled,
         flexShrink: 0,
-        filter: `${glowFilter} contrast(${glow ? 1.3 : 1.05}) brightness(${glow ? 1.4 : 1.05})`,
+        filter: `${glowFilter} contrast(${glow ? 1.15 : 1.02}) brightness(${glow ? 1.2 : 1.02})`,
         overflow: 'visible',
         background: 'transparent',
         ...(useBlend ? {} : style),
