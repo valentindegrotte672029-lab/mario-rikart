@@ -10,7 +10,11 @@ export default function NeonIcon({ name, size = 20, glow, className = '', style 
     ? `drop-shadow(0 0 ${Math.max(4, scaled * 0.08)}px ${glow}) drop-shadow(0 0 ${Math.max(12, scaled * 0.20)}px ${glow}cc) drop-shadow(0 0 ${Math.max(28, scaled * 0.45)}px ${glow}80)`
     : `drop-shadow(0 0 ${Math.max(3, scaled * 0.06)}px rgba(255,255,255,0.9)) drop-shadow(0 0 ${Math.max(10, scaled * 0.18)}px rgba(255,255,255,0.5)) drop-shadow(0 0 ${Math.max(22, scaled * 0.35)}px rgba(255,255,255,0.25))`;
 
-  return (
+  const useBlend = blendMode !== 'normal';
+
+  // When blendMode is used, we need it on an OUTER wrapper WITHOUT filter,
+  // because CSS filter creates an isolated stacking context that blocks mix-blend-mode.
+  const inner = (
     <span
       className={`neon-icon ${className}`}
       style={{
@@ -24,8 +28,7 @@ export default function NeonIcon({ name, size = 20, glow, className = '', style 
         filter: `${glowFilter} contrast(1.1) brightness(1.1)`,
         overflow: 'hidden',
         background: 'transparent',
-        mixBlendMode: blendMode,
-        ...style,
+        ...(useBlend ? {} : style),
       }}
     >
       <div style={{
@@ -50,6 +53,24 @@ export default function NeonIcon({ name, size = 20, glow, className = '', style 
           }}
         />
       </div>
+    </span>
+  );
+
+  if (!useBlend) return inner;
+
+  // Outer wrapper: carries the blend mode WITHOUT filter (no isolation)
+  return (
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        verticalAlign: 'middle',
+        mixBlendMode: blendMode,
+        ...style,
+      }}
+    >
+      {inner}
     </span>
   );
 }
