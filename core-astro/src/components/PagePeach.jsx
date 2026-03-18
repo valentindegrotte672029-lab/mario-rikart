@@ -86,7 +86,7 @@ export default function PagePeach() {
                 <Lock className="lock-icon" size={32} />
                 <span className="unlock-text">Débloquer Contenu</span>
                 <span className="unlock-sub">10 photos aléatoires <NeonIcon name="fire-flower-pixel" size={14} /></span>
-                <span className="price-tag gold">500 <NeonIcon name="coin-gold" size={22} /></span>
+                <span className="price-tag gold">500 <NeonIcon name="coin-gold" size={18} /></span>
               </div>
 
               <div className="leak-card vip-card" onClick={handleUnlockVip}>
@@ -94,7 +94,7 @@ export default function PagePeach() {
                 <Crown className="lock-icon" size={32} color="#ffaa00" />
                 <span className="unlock-text"><NeonIcon name="peach-crown" size={18} /> VIP Only</span>
                 <span className="unlock-sub">Les 26 photos complètes <NeonIcon name="star-mushroom-indigo" size={14} /></span>
-                <span className="price-tag gold">2000 <NeonIcon name="coin-gold" size={22} /></span>
+                <span className="price-tag gold">2000 <NeonIcon name="coin-gold" size={18} /></span>
               </div>
             </div>
           )}
@@ -104,7 +104,7 @@ export default function PagePeach() {
             <div className="upgrade-banner" onClick={handleUnlockVip}>
               <Crown size={20} color="#ffaa00" />
               <span>Passer VIP — voir les 26 photos</span>
-              <span className="price-tag gold small">2000 <NeonIcon name="coin-gold" size={22} /></span>
+              <span className="price-tag gold small">2000 <NeonIcon name="coin-gold" size={18} /></span>
             </div>
           )}
 

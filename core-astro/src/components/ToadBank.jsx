@@ -33,7 +33,7 @@ export default function ToadBankMobile() {
                 {currentPage}
               </motion.span>
             </AnimatePresence>
-            <span className="bank-balance">{balance.toLocaleString('fr-FR')} <NeonIcon name="coin-gold" size={26} /></span>
+            <span className="bank-balance">{balance.toLocaleString('fr-FR')} <NeonIcon name="coin-gold" size={22} /></span>
           </div>
         </div>
 
