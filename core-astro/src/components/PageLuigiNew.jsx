@@ -43,7 +43,7 @@ export default function PageLuigiNew() {
 
         <div className="arcade-grid">
           <button className="arcade-btn flappyweed-btn" onClick={() => setActiveGame('FLAPPYWEED')}>
-            <span className="game-icon"><NeonIcon name="fire-flower-pixel" size={32} /></span>
+            <span className="game-icon"><NeonIcon name="fire-flower-pixel" size={24} /></span>
             <div className="game-info">
               <h3>ROULE-TA-FLEUR</h3>
               <p>Evite les tuyaux en volant.</p>
@@ -52,7 +52,7 @@ export default function PageLuigiNew() {
           </button>
 
           <button className="arcade-btn champininja-btn" onClick={() => setActiveGame('CHAMPININJA')}>
-            <span className="game-icon"><NeonIcon name="champi-ninja" size={32} glow="#ff3232" /></span>
+            <span className="game-icon"><NeonIcon name="champi-ninja" size={24} glow="#ff3232" /></span>
             <div className="game-info">
               <h3>CHAMPI NINJA</h3>
               <p>Taille les champis, évite les bombes.</p>
@@ -61,7 +61,7 @@ export default function PageLuigiNew() {
           </button>
 
           <button className="arcade-btn doodleweed-btn" onClick={() => setActiveGame('DOODLEWEED')}>
-            <span className="game-icon"><NeonIcon name="doodle-weed" size={32} glow="#39ff14" /></span>
+            <span className="game-icon"><NeonIcon name="doodle-weed" size={24} glow="#39ff14" /></span>
             <div className="game-info">
               <h3>DOODLE-WEED</h3>
               <p>Monte le plus haut possible !</p>
@@ -95,7 +95,7 @@ export default function PageLuigiNew() {
             <div className="lb-scroll-content">
               {/* FlappyWeed */}
               <div className="lb-category">
-                <h3><NeonIcon name="fire-flower-pixel" size={18} /> Roule-Ta-Feuille</h3>
+                <h3><NeonIcon name="fire-flower-pixel" size={18} /> Roule-Ta-Fleur</h3>
                 {Object.keys(leaderboards.FLAPPYWEED || {}).length === 0 ? <p className="empty-lb">Aucun score</p> : (
                   Object.entries(leaderboards.FLAPPYWEED).sort(([,a], [,b]) => b.score - a.score).slice(0, 10).map(([user, data], i) => (
                     <div key={user} className="lb-line">
@@ -207,18 +207,20 @@ export default function PageLuigiNew() {
         .arcade-grid { display: flex; flex-direction: column; gap: 8px; margin-top: 5px; } /* Tighter gap */
         
         .arcade-btn {
-          display: flex; align-items: center; background: transparent !important;
-          border: none !important; border-radius: 0;
-          padding: 10px 12px 10px 10px; color: white; text-align: left; cursor: pointer;
-          transition: transform 0.1s; position: relative; overflow: hidden;
+          display: flex; align-items: center; background: rgba(57, 255, 20, 0.05) !important;
+          border: 1px solid rgba(57, 255, 20, 0.15) !important; border-radius: 16px;
+          padding: 12px; color: white; text-align: left; cursor: pointer;
+          transition: all 0.2s; position: relative; overflow: hidden;
+          margin-bottom: 4px;
         }
-        .arcade-btn:active { transform: scale(0.97); }
+        .arcade-btn:active { transform: scale(0.97); background: rgba(57, 255, 20, 0.1) !important; }
+        .arcade-btn:hover { border-color: rgba(57, 255, 20, 0.4) !important; box-shadow: 0 0 15px rgba(57, 255, 20, 0.1); }
         
         .pacweed-btn { background: transparent; border-bottom-color: var(--theme-color); box-shadow: none; }
         
         .game-icon { font-size: 2rem; margin-right: 12px; filter: drop-shadow(0 0 5px var(--theme-color)); flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
         .game-info { flex: 1; display: flex; flex-direction: column; justify-content: center; min-width: 0; padding-right: 65px; }
-        .game-info h3 { font-size: 1rem; font-weight: 900; color: var(--theme-color); margin-bottom: 2px; letter-spacing: 0.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
+        .game-info h3 { font-size: 1rem; font-weight: 900; color: var(--theme-color); margin-bottom: 2px; letter-spacing: 0.5px; white-space: normal; line-height: 1.2; }
         .game-info p { font-size: 0.7rem; color: #aaa; line-height: 1.2; }
         
         .play-tag { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: var(--theme-color); color: black; font-weight: 800; font-size: 0.7rem; padding: 4px 6px; border-radius: 6px; flex-shrink: 0; }
