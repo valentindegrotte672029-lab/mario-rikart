@@ -29,10 +29,10 @@ export default function PageLuigiNew() {
   const CategoryTabBar = () => (
     <div className="category-tab-bar">
       <button className="category-tab active" onClick={() => setPage('LUIGI')}>
-        <NeonIcon name="fire-flower-pixel" size={18} /> ARCADE
+        <NeonIcon name="Luidgi icône" size={18} /> ARCADE
       </button>
       <button className="category-tab" onClick={() => setPage('CASINO')}>
-        <NeonIcon name="poker-icon" size={18} /> CASINO
+        <NeonIcon name="Poker icône" size={18} /> CASINO
       </button>
     </div>
   );

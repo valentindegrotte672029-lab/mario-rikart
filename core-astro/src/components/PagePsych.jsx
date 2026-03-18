@@ -213,7 +213,20 @@ export default function PagePsych() {
     const [wsFoundWords, setWsFoundWords] = useState(new Set());
     const viewTheme = PSYCH_VIEW_THEME[pageView] || PSYCH_VIEW_THEME.test;
 
-    const { setBgOverride, clearBgOverride } = useStore();
+    const { setBgOverride, clearBgOverride, setPage, spendCoins } = useStore();
+
+    const CategoryTabBar = () => (
+
+        <div className="category-tab-bar">
+            <button className="category-tab" onClick={() => setPage('WARIO')}>
+                <NeonIcon name="Wario icône" size={18} /> BAR
+            </button>
+            <button className="category-tab active" onClick={() => setPage('PSYCH')}>
+                <NeonIcon name="Test icône" size={18} /> TEST
+            </button>
+        </div>
+    );
+
     useEffect(() => {
         setBgOverride({ bg: viewTheme.bg, glow: viewTheme.accent, glowSoft: viewTheme.glow });
     }, [viewTheme]);

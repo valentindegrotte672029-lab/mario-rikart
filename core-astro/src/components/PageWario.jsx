@@ -16,10 +16,10 @@ export default function PageWario() {
   const CategoryTabBar = () => (
     <div className="category-tab-bar">
       <button className="category-tab active" onClick={() => setPage('WARIO')}>
-        <NeonIcon name="wario-icon" size={18} /> BAR
+        <NeonIcon name="Wario icône" size={18} /> BAR
       </button>
       <button className="category-tab" onClick={() => setPage('PSYCH')}>
-        <NeonIcon name="test-icon" size={18} /> TEST
+        <NeonIcon name="Test icône" size={18} /> TEST
       </button>
     </div>
   );

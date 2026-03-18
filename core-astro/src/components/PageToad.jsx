@@ -64,10 +64,10 @@ export default function PageToad() {
   const CategoryTabBar = () => (
     <div className="category-tab-bar">
       <button className="category-tab active" onClick={() => setPage('TOAD')}>
-        <NeonIcon name="toad-icon" size={18} /> TOAD-XIQUE
+        <NeonIcon name="Toad icône" size={18} /> TOAD-XIQUE
       </button>
       <button className="category-tab" onClick={() => setPage('CHRONO')}>
-        <NeonIcon name="poppy-icon" size={18} /> POPPY
+        <NeonIcon name="Poppy icône" size={18} /> POPPY
       </button>
     </div>
   );
