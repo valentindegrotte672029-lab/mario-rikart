@@ -165,7 +165,7 @@ export default function PageTrombi() {
 
             {allRevealed && (
                 <motion.div className="trombi-congrats" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
-                    <p style={{ fontSize: '2.5rem' }}><NeonIcon name="lock-neon" size={48} /></p>
+                    <p style={{ fontSize: '2.5rem' }}><NeonIcon name="lock-neon" size={32} /></p>
                     <h2 style={{ color: '#ffcc00' }}>DOSSIER COMPLET</h2>
                     <p style={{ color: '#aaa', fontSize: '0.9rem' }}>Toutes les identités ont été déclassifiées.</p>
                 </motion.div>
@@ -174,7 +174,7 @@ export default function PageTrombi() {
             {POLES.map((pole, pi) => (
                 <div key={pi} className="trombi-pole-section">
                     <div className="trombi-pole-header" style={{ borderColor: pole.color }}>
-                        <span>{pole.icon ? <NeonIcon name={pole.icon} size={22} /> : pole.emoji}</span>
+                        <span>{pole.icon ? <NeonIcon name={pole.icon} size={18} /> : pole.emoji}</span>
                         <span style={{ color: pole.color }}>{pole.name}</span>
                     </div>
                     <div className="trombi-photo-container">
@@ -221,7 +221,7 @@ export default function PageTrombi() {
                                 </b>
                             </p>
                             <button className="trombi-modal-close" onClick={handleCloseInfo}>
-                                DÉCLASSIFIER <NeonIcon name="lock-neon" size={18} />
+                                DÉCLASSIFIER <NeonIcon name="lock-neon" size={14} />
                             </button>
                         </motion.div>
                     </motion.div>
