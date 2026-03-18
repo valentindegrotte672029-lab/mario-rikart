@@ -114,6 +114,19 @@ export default function PageChrono() {
         };
     }, []);
 
+    const setPage = useStore(s => s.setPage);
+
+    const CategoryTabBar = () => (
+        <div className="category-tab-bar">
+            <button className="category-tab" onClick={() => setPage('TOAD')}>
+                <NeonIcon name="toad-icon" size={18} /> TOAD-XIQUE
+            </button>
+            <button className="category-tab active" onClick={() => setPage('CHRONO')}>
+                <NeonIcon name="poppy-icon" size={18} /> POPPY
+            </button>
+        </div>
+    );
+
     return (
         <motion.div
             className={`page-mobile chrono-mobile ${status}`}
@@ -122,6 +135,7 @@ export default function PageChrono() {
             exit={{ opacity: 0, scale: 1.05 }}
             transition={{ duration: 0.3 }}
         >
+            <CategoryTabBar />
             <div className="glass-panel mobile-card chrono-card">
                 <h1 className="title-mobile chrono-title">CHRONO POPPY</h1>
 
@@ -179,8 +193,38 @@ export default function PageChrono() {
             <style>{`
         .chrono-mobile {
           --theme-color: #ff9900;
-          width: 100%; height: 100%; display: flex; align-items: center; position: relative;
+          width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; position: relative;
           transition: background-color 0.5s ease;
+        }
+
+        .category-tab-bar {
+          display: flex;
+          width: 100%;
+          max-width: 450px;
+          gap: 10px;
+          margin-bottom: 15px;
+          padding: 0 5px;
+        }
+        .category-tab {
+          flex: 1;
+          background: rgba(255, 255, 255, 0.05) !important;
+          border: 1px solid rgba(255, 255, 255, 0.1) !important;
+          border-radius: 15px;
+          padding: 12px;
+          color: #aaa;
+          font-weight: 800;
+          font-size: 0.8rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          transition: all 0.2s;
+        }
+        .category-tab.active {
+          background: rgba(255, 153, 0, 0.2) !important;
+          border-color: #ff9900 !important;
+          color: white;
+          box-shadow: 0 0 15px rgba(255, 153, 0, 0.3);
         }
 
         .chrono-mobile.alarm { background: rgba(255, 0, 0, 0.4); animation: bgFlash 0.5s infinite alternate; }

@@ -150,6 +150,19 @@ export default function PageTrombi() {
         />
     );
 
+    const setPage = useStore(s => s.setPage);
+
+    const CategoryTabBar = () => (
+        <div className="category-tab-bar">
+            <button className="category-tab" onClick={() => setPage('PEACH')}>
+                <NeonIcon name="peach-icon" size={18} /> PEACH
+            </button>
+            <button className="category-tab active" onClick={() => setPage('TROMBI')}>
+                <NeonIcon name="trombi-icon" size={18} /> TROMBI
+            </button>
+        </div>
+    );
+
     return (
         <motion.div
             className="page-trombi"
@@ -157,6 +170,7 @@ export default function PageTrombi() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
         >
+            <CategoryTabBar />
             <div className="trombi-header">
                 <h1 className="trombi-title"><NeonIcon name="newspaper-neon" size={24} /> EPSTEIN FILES</h1>
                 <p className="trombi-subtitle">LISTE TRIBUT-BOUILLET — CLASSIFIÉ</p>
@@ -234,6 +248,37 @@ export default function PageTrombi() {
                     flex-direction: column;
                     gap: 16px;
                     padding: 0 0 40px 0;
+                }
+
+                .category-tab-bar {
+                  display: flex;
+                  width: 100%;
+                  max-width: 450px;
+                  gap: 10px;
+                  margin-bottom: 15px;
+                  padding: 0 5px;
+                  z-index: 100;
+                }
+                .category-tab {
+                  flex: 1;
+                  background: rgba(255, 255, 255, 0.05) !important;
+                  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+                  border-radius: 15px;
+                  padding: 12px;
+                  color: #aaa;
+                  font-weight: 800;
+                  font-size: 0.8rem;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  gap: 8px;
+                  transition: all 0.2s;
+                }
+                .category-tab.active {
+                  background: rgba(255, 102, 178, 0.2) !important;
+                  border-color: #ff66b2 !important;
+                  color: white;
+                  box-shadow: 0 0 15px rgba(255, 102, 178, 0.3);
                 }
                 .trombi-header {
                     text-align: center;

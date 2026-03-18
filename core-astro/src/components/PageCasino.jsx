@@ -72,6 +72,19 @@ export default function PageCasino() {
     setNewBetOptions(newOptions);
   };
 
+  const setPage = useStore(s => s.setPage);
+
+  const CategoryTabBar = () => (
+    <div className="category-tab-bar">
+      <button className="category-tab" onClick={() => setPage('LUIGI')}>
+        <NeonIcon name="fire-flower-pixel" size={18} /> ARCADE
+      </button>
+      <button className="category-tab active" onClick={() => setPage('CASINO')}>
+        <NeonIcon name="poker-icon" size={18} /> CASINO
+      </button>
+    </div>
+  );
+
   return (
     <motion.div
       className="page-casino"
@@ -79,15 +92,15 @@ export default function PageCasino() {
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
     >
+      <CategoryTabBar />
       <div className="casino-tab-bar">
         <button className={`casino-tab-btn ${casinoTab === 'poker' ? 'active' : ''}`} onClick={() => setCasinoTab('poker')}>
-          <NeonIcon name="poker-card" size={18} /> Poker
+          <NeonIcon name="poker-icon" size={18} /> POKER
         </button>
         <button className={`casino-tab-btn ${casinoTab === 'polymario' ? 'active' : ''}`} onClick={() => setCasinoTab('polymario')}>
-          <img src="/images/polymario-icon.png" alt="Polymario" style={{ height: 18, objectFit: 'contain', filter: 'drop-shadow(0 0 8px #ff00ff)' }} /> Polymario
+          <NeonIcon name="polymario-icon" size={18} /> POLYMARIO
         </button>
       </div>
-
       {casinoTab === 'poker' ? (
         <PagePoker />
       ) : (
@@ -225,11 +238,40 @@ export default function PageCasino() {
         }
 
         .casino-tab-bar {
-          display: flex;
-          gap: 8px;
-          justify-content: center;
-          margin-bottom: 8px;
+          display: none;
         }
+
+        .category-tab-bar {
+          display: flex;
+          width: 100%;
+          max-width: 450px;
+          gap: 10px;
+          margin-bottom: 15px;
+          padding: 0 5px;
+          z-index: 100;
+        }
+        .category-tab {
+          flex: 1;
+          background: rgba(255, 255, 255, 0.05) !important;
+          border: 1px solid rgba(255, 255, 255, 0.1) !important;
+          border-radius: 15px;
+          padding: 12px;
+          color: #aaa;
+          font-weight: 800;
+          font-size: 0.8rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          transition: all 0.2s;
+        }
+        .category-tab.active {
+          background: rgba(57, 255, 20, 0.2) !important;
+          border-color: #39ff14 !important;
+          color: white;
+          box-shadow: 0 0 15px rgba(57, 255, 20, 0.3);
+        }
+
         .casino-tab-btn {
           flex: 1;
           padding: 10px;

@@ -5,15 +5,11 @@ import useStore from '../store/useStore';
 const ICON_ASSET_VERSION = '20260317-2';
 
 const PAGES = [
-    { id: 'WARIO',  iconSrc: '/images/icons/nav/wario-icon.png',  label: 'Bar',      color: '#ffcc00' },
-    { id: 'TOAD',   iconSrc: '/images/icons/nav/toad-icon.png',   label: 'Bank',     color: '#9933ff' },
-    { id: 'PEACH',  iconSrc: '/images/icons/nav/peach-icon.png',  label: 'Peach',    color: '#ff66b2' },
-    { id: 'LUIGI',  iconSrc: '/images/icons/nav/luidgi-icon.png', label: 'Arcade',   color: '#39ff14' },
-    { id: 'MARIO',  iconSrc: '/images/icons/nav/mario-icon.png',  label: 'BeMario',  color: '#ff3333' },
-    { id: 'CHRONO', iconSrc: '/images/icons/nav/poppy-icon.png',  label: 'Poppy',    color: '#ff9900' },
-    { id: 'CASINO', iconSrc: '/images/icons/nav/poker-icon.png',  label: 'Casino',   color: '#ff00ff' },
-    { id: 'TROMBI', iconSrc: '/images/icons/nav/trombi-icon.png', label: 'Trombi',   color: '#ff6633' },
-    { id: 'PSYCH',  iconSrc: '/images/icons/nav/test-icon.png',   label: 'Test',     color: '#00ffff' },
+    { id: 'WARIO',  iconSrc: '/images/icons/nav/wario-icon.png',  label: 'Wario',    color: '#ffcc00', subPages: ['PSYCH'] },
+    { id: 'LUIGI',  iconSrc: '/images/icons/nav/luidgi-icon.png', label: 'Luidgi',   color: '#39ff14', subPages: ['CASINO'] },
+    { id: 'MARIO',  iconSrc: '/images/icons/nav/mario-icon.png',  label: 'BeMario',  color: '#ff3333', subPages: [] },
+    { id: 'TOAD',   iconSrc: '/images/icons/nav/toad-icon.png',   label: 'Toad',     color: '#9933ff', subPages: ['CHRONO'] },
+    { id: 'PEACH',  iconSrc: '/images/icons/nav/peach-icon.png',  label: 'Peach',    color: '#ff66b2', subPages: ['TROMBI'] },
 ];
 
 export default function Navigation() {
@@ -28,8 +24,8 @@ export default function Navigation() {
     return (
         <>
             <nav className="snap-bottom-nav">
-                {PAGES.map(({ id, iconSrc, label, color }) => {
-                    const isActive = currentPage === id;
+                {PAGES.map(({ id, iconSrc, label, color, subPages }) => {
+                    const isActive = currentPage === id || subPages.includes(currentPage);
                     return (
                         <motion.button
                             key={id}

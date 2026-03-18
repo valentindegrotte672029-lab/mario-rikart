@@ -302,21 +302,23 @@ export default function PagePsych() {
             exit={{ opacity: 0, scale: 1.05 }}
             transition={{ duration: 0.3 }}
         >
-            {/* Tab Switcher */}
-            <div className="psych-tab-bar">
-                <button className={`psych-tab ${pageView === 'test' ? 'active' : ''}`} onClick={() => setPageView('test')}>
-                    <Brain size={18} /> Test
-                </button>
-                <button className={`psych-tab ${pageView === 'horoscope' ? 'active' : ''}`} onClick={() => setPageView('horoscope')}>
-                    <Star size={18} /> Horoscope
-                </button>
-                <button className={`psych-tab ${pageView === 'crossword' ? 'active' : ''}`} onClick={() => setPageView('crossword')}>
-                    Mot Karté
-                </button>
-            </div>
+            <CategoryTabBar />
+            <div className="glass-panel main-psych-card">
+                <div className="psych-tab-bar">
+                    <button className={`psych-tab ${pageView === 'test' ? 'active' : ''}`} onClick={() => setPageView('test')}>
+                        <Brain size={18} /> Test
+                    </button>
+                    <button className={`psych-tab ${pageView === 'horoscope' ? 'active' : ''}`} onClick={() => setPageView('horoscope')}>
+                        <Star size={18} /> Horoscope
+                    </button>
+                    <button className={`psych-tab ${pageView === 'crossword' ? 'active' : ''}`} onClick={() => setPageView('crossword')}>
+                        Mot Karté
+                    </button>
+                </div>
 
-            <AnimatePresence mode="wait">
-            {pageView === 'horoscope' ? (
+                <AnimatePresence mode="wait">
+                {pageView === 'horoscope' ? (
+
                 <motion.div
                     key="horoscope"
                     initial={{ opacity: 0, x: 40 }}
@@ -512,12 +514,15 @@ export default function PagePsych() {
                         </AnimatePresence>
                     </div>
                 )}
-            </div>
+                </div>
             </motion.div>
             )}
             </AnimatePresence>
+            </div>
 
             <style>{`
+
+
                 .psych-mobile {
                     --theme-color: var(--psych-accent, #00ffff);
                     width: 100%;
@@ -681,6 +686,37 @@ export default function PagePsych() {
                     color: #00ffff;
                     box-shadow: none !important;
                     text-shadow: 0 0 10px rgba(0,255,255,0.8);
+                }
+
+                .category-tab-bar {
+                  display: flex;
+                  width: 100%;
+                  max-width: 450px;
+                  gap: 10px;
+                  margin-bottom: 15px;
+                  padding: 0 5px;
+                  z-index: 1000;
+                }
+                .category-tab {
+                  flex: 1;
+                  background: rgba(255, 255, 255, 0.05) !important;
+                  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+                  border-radius: 15px;
+                  padding: 12px;
+                  color: #aaa;
+                  font-weight: 800;
+                  font-size: 0.8rem;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  gap: 8px;
+                  transition: all 0.2s;
+                }
+                .category-tab.active {
+                  background: rgba(0, 206, 209, 0.2) !important;
+                  border-color: #00ced1 !important;
+                  color: white;
+                  box-shadow: 0 0 15px rgba(0, 206, 209, 0.3);
                 }
 
                 /* Horoscope */

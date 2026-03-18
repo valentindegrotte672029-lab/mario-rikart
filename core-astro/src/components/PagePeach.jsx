@@ -17,6 +17,18 @@ export default function PagePeach() {
   const [bblAlert, setBblAlert] = useState(false);
   const [bblClicks, setBblClicks] = useState(0);
   const [viewerIndex, setViewerIndex] = useState(null);
+  const setPage = useStore(s => s.setPage);
+
+  const CategoryTabBar = () => (
+    <div className="category-tab-bar">
+      <button className="category-tab active" onClick={() => setPage('PEACH')}>
+        <NeonIcon name="peach-icon" size={18} /> PEACH
+      </button>
+      <button className="category-tab" onClick={() => setPage('TROMBI')}>
+        <NeonIcon name="trombi-icon" size={18} /> TROMBI
+      </button>
+    </div>
+  );
 
   const visiblePhotos = peachUnlock === 'vip' ? ALL_PHOTOS : peachUnlock === 'basic' ? BASIC_PHOTOS : [];
 
@@ -66,8 +78,8 @@ export default function PagePeach() {
       transition={{ type: 'spring', stiffness: 260, damping: 20 }}
     >
       <div className="peach-ambient"></div>
-
-        <div className="glass-panel mobile-card peach-card">
+      <CategoryTabBar />
+      <div className="glass-panel mobile-card peach-card">
           <div className="profile-header">
             <div className="avatar glow-avatar"><NeonIcon name="peach-crown" size={50} /></div>
             <div className="titles">
@@ -204,6 +216,37 @@ export default function PagePeach() {
           border-color: rgba(255, 0, 255, 0.3);
           background: rgba(20, 0, 20, 0.6);
           box-shadow: 0 10px 40px rgba(50, 0, 50, 0.5);
+        }
+
+        .category-tab-bar {
+          display: flex;
+          width: 100%;
+          max-width: 450px;
+          gap: 10px;
+          margin-bottom: 15px;
+          padding: 0 5px;
+          z-index: 100;
+        }
+        .category-tab {
+          flex: 1;
+          background: rgba(255, 255, 255, 0.05) !important;
+          border: 1px solid rgba(255, 255, 255, 0.1) !important;
+          border-radius: 15px;
+          padding: 12px;
+          color: #aaa;
+          font-weight: 800;
+          font-size: 0.8rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          transition: all 0.2s;
+        }
+        .category-tab.active {
+          background: rgba(255, 0, 255, 0.2) !important;
+          border-color: #ff00ff !important;
+          color: white;
+          box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
         }
 
         .profile-header {

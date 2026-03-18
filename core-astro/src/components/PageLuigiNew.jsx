@@ -23,6 +23,19 @@ export default function PageLuigiNew() {
     clearHappening(); // "Aspirer" really cleans the global happening block
     setTimeout(() => setCleaning(false), 2000);
   };
+  
+  const setPage = useStore(s => s.setPage);
+
+  const CategoryTabBar = () => (
+    <div className="category-tab-bar">
+      <button className="category-tab active" onClick={() => setPage('LUIGI')}>
+        <NeonIcon name="fire-flower-pixel" size={18} /> ARCADE
+      </button>
+      <button className="category-tab" onClick={() => setPage('CASINO')}>
+        <NeonIcon name="poker-icon" size={18} /> CASINO
+      </button>
+    </div>
+  );
 
   return (
     <>
@@ -33,6 +46,7 @@ export default function PageLuigiNew() {
         exit={{ opacity: 0 }}
         transition={{ duration: 0.3 }}
       >
+      <CategoryTabBar />
       <div className="gas-ambient"></div>
 
       <div className="glass-panel mobile-card luigi-card">
@@ -159,6 +173,37 @@ export default function PageLuigiNew() {
           overflow-y: auto;
           overflow-x: hidden;
           padding: calc(var(--safe-top) + 15px) 15px 30px 15px; /* Reduced bottom padding */
+        }
+
+        .category-tab-bar {
+          display: flex;
+          width: 100%;
+          max-width: 450px;
+          gap: 10px;
+          margin-bottom: 15px;
+          padding: 0 5px;
+          z-index: 100;
+        }
+        .category-tab {
+          flex: 1;
+          background: rgba(255, 255, 255, 0.05) !important;
+          border: 1px solid rgba(255, 255, 255, 0.1) !important;
+          border-radius: 15px;
+          padding: 12px;
+          color: #aaa;
+          font-weight: 800;
+          font-size: 0.8rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          transition: all 0.2s;
+        }
+        .category-tab.active {
+          background: rgba(57, 255, 20, 0.2) !important;
+          border-color: #39ff14 !important;
+          color: white;
+          box-shadow: 0 0 15px rgba(57, 255, 20, 0.3);
         }
 
         .gas-ambient {

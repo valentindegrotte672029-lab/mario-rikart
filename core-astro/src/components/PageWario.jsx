@@ -10,8 +10,19 @@ import NeonIcon from './NeonIcon';
 const generateQr = () => `WRO-${Math.random().toString(36).substring(7).toUpperCase()}`;
 
 export default function PageWario() {
-  const { spendCoins } = useStore();
+  const { spendCoins, setBgOverride, clearBgOverride, setPage } = useStore();
   const [orderQr, setOrderQr] = useState(null);
+
+  const CategoryTabBar = () => (
+    <div className="category-tab-bar">
+      <button className="category-tab active" onClick={() => setPage('WARIO')}>
+        <NeonIcon name="wario-icon" size={18} /> BAR
+      </button>
+      <button className="category-tab" onClick={() => setPage('PSYCH')}>
+        <NeonIcon name="test-icon" size={18} /> TEST
+      </button>
+    </div>
+  );
 
   const menu = [
     { id: 'gourd-50', name: 'Gourdasse 50cc', price: 15000, icon: 'flask-purple-atomic' },
@@ -41,6 +52,7 @@ export default function PageWario() {
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 1.05 }}
     >
+      <CategoryTabBar />
       <div className="glass-panel mobile-card wario-card">
         <h1 className="title-mobile wario-title">WARIO-BARNAQUE</h1>
         <p className="wario-motto">"Même pour un verre d'eau, tu raques."</p>
@@ -92,8 +104,39 @@ export default function PageWario() {
           height: 100%;
           display: flex;
           flex-direction: column;
-          justify-content: flex-start;
-          background: linear-gradient(to bottom, #111111, #220022);
+          align-items: center;
+          position: relative;
+        }
+
+        .category-tab-bar {
+          display: flex;
+          width: 100%;
+          max-width: 450px;
+          gap: 10px;
+          margin-bottom: 15px;
+          padding: 0 5px;
+          z-index: 100;
+        }
+        .category-tab {
+          flex: 1;
+          background: rgba(255, 255, 255, 0.05) !important;
+          border: 1px solid rgba(255, 255, 255, 0.1) !important;
+          border-radius: 15px;
+          padding: 12px;
+          color: #aaa;
+          font-weight: 800;
+          font-size: 0.8rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          transition: all 0.2s;
+        }
+        .category-tab.active {
+          background: rgba(255, 204, 0, 0.2) !important;
+          border-color: #ffcc00 !important;
+          color: white;
+          box-shadow: 0 0 15px rgba(255, 204, 0, 0.3);
         }
 
         .wario-card {
