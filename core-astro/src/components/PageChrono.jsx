@@ -254,10 +254,11 @@ export default function PageChrono() {
 
         .pulsing-bomb {
           font-size: 6rem;
-          filter: drop-shadow(0 0 25px rgba(255, 0, 0, 0.8)) drop-shadow(0 0 45px rgba(255, 0, 0, 0.4));
-          opacity: 0.85;
-          mix-blend-mode: plus-lighter;
+          filter: drop-shadow(0 0 15px rgba(255, 0, 0, 0.6)) drop-shadow(0 0 35px rgba(255, 60, 0, 0.3));
+          opacity: 0.75;
+          mix-blend-mode: screen;
           margin-bottom: 20px;
+          transition: filter 0.3s ease;
         }
         .running-text { font-size: 1.5rem; color: #ff5555; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; }
         .tension-text { color: #888; font-style: italic; }
