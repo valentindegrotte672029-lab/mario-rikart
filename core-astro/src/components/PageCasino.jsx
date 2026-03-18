@@ -240,9 +240,9 @@ export default function PageCasino() {
         .casino-tab-bar {
           display: flex;
           width: 100%;
-          max-width: 260px; /* Réduit de 320px à 260px */
-          gap: 6px;
-          margin: -24px auto 5px auto; /* Centré avec auto */
+          max-width: 240px; /* Réduit à 240px */
+          gap: 4px;
+          margin: -24px auto 5px auto;
           padding: 0 5px;
           justify-content: center;
         }
@@ -250,91 +250,22 @@ export default function PageCasino() {
           flex: 1;
           background: rgba(255, 255, 255, 0.03) !important;
           border: 1px solid rgba(255, 255, 255, 0.08) !important;
-          border-radius: 4px; /* Plus petit radius */
-          padding: 4px 2px;   /* Padding encore réduit */
+          border-radius: 4px;
+          padding: 3px 1px;
           color: #666;
           font-weight: 700;
-          font-size: 0.7rem; /* Police encore réduite */
-
+          font-size: 0.65rem;
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 6px;
+          gap: 4px;
           transition: all 0.2s;
-          box-shadow: none !important;
         }
         .casino-tab-btn.active {
           background: rgba(255, 0, 255, 0.15) !important;
           border-color: #ff00ff !important;
           color: white;
           box-shadow: 0 0 15px rgba(255, 0, 255, 0.3) !important;
-        }
-        .casino-tab-img {
-          /* NeonIcon handles the glow now */
-        }
-        .casino-tab-btn.active .casino-tab-img {
-          animation: neon-pulse 2s infinite ease-in-out;
-        }
-
-        @keyframes neon-pulse {
-          0%, 100% { transform: scale(1); filter: brightness(1); }
-          50% { transform: scale(1.1); filter: brightness(1.2); }
-        }
-
-        .category-tab-bar {
-          display: flex;
-          width: 100%;
-          max-width: 450px;
-          gap: 10px;
-          margin-bottom: 2px; /* Réduit encore de 5px à 2px */
-          padding: 0 5px;
-          z-index: 100;
-        }
-        .category-tab {
-          flex: 1;
-          background: rgba(255, 255, 255, 0.05) !important;
-          border: 1px solid rgba(255, 255, 255, 0.1) !important;
-          border-radius: 15px;
-          padding: 12px;
-          color: #aaa;
-          font-weight: 800;
-          font-size: 0.8rem;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 8px;
-          transition: all 0.2s;
-        }
-        .category-tab.active {
-          background: rgba(57, 255, 20, 0.2) !important;
-          border-color: #39ff14 !important;
-          color: white;
-          box-shadow: 0 0 15px rgba(57, 255, 20, 0.3);
-        }
-
-        .casino-tab-btn {
-          flex: 1;
-          padding: 10px;
-          border-radius: 0;
-          border: none;
-          border-bottom: 2px solid transparent;
-          background: transparent;
-          color: #888;
-          font-weight: bold;
-          font-size: 0.95rem;
-          cursor: pointer;
-          transition: all 0.2s;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          gap: 4px;
-        }
-        .casino-tab-btn.active {
-          background: transparent;
-          border-bottom-color: #ff00ff;
-          color: #ff00ff;
-          box-shadow: none;
-          filter: drop-shadow(0 0 8px rgba(255,0,255,0.4));
         }
 
         .casino-header {
