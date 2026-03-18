@@ -166,7 +166,7 @@ export default function PageChrono() {
                                 animate={{ scale: [1, 1.2, 1], rotate: [0, -5, 5, 0] }}
                                 transition={{ duration: 0.8, repeat: Infinity }}
                             >
-                                <NeonIcon name="bomb-timer" size={65} glow="#ff6600" />
+                                <NeonIcon name="bomb-timer" size={65} glow="#ff6600" blendMode="screen" />
                             </motion.div>
                             <h2 className="running-text">C'est parti ! Prenez, prenez, prenez !</h2>
                             <p className="tension-text">L'alarme peut sonner à tout moment...</p>

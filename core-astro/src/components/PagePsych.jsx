@@ -549,25 +549,16 @@ export default function PagePsych() {
                     position: relative;
                     overflow-y: auto;
                     padding: 15px;
-                    background-image: var(--psych-bg);
+                    background-image: 
+                        radial-gradient(circle at center, var(--psych-glow, rgba(0,206,209,0.35)) 0%, transparent 58%),
+                        linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+                        var(--psych-bg);
                     background-position: center;
                     background-size: cover;
                     background-repeat: no-repeat;
                     background-attachment: fixed;
                     border-radius: 24px;
                     transition: background 0.5s ease-in-out;
-                }
-
-                .psych-mobile::before {
-                    content: '';
-                    position: absolute;
-                    inset: 0;
-                    background:
-                      radial-gradient(circle at center, var(--psych-glow, rgba(0,206,209,0.35)) 0%, transparent 58%),
-                      rgba(0,0,0,0.6);
-                    z-index: 0;
-                    pointer-events: none;
-                    border-radius: 24px;
                 }
 
                 .psych-mobile > * {
