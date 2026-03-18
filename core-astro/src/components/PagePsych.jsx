@@ -185,17 +185,17 @@ const PSYCH_VIEW_THEME = {
     test: {
         accent: '#00CED1',
         glow: 'rgba(0, 206, 209, 0.35)',
-        bg: `linear-gradient(145deg, rgba(0,206,209,0.24), rgba(0,15,20,0.92)), url('/images/backgrounds/bg_psych_neural_v2.jpg?v=${BG_ASSET_VERSION}')`,
+        bg: `linear-gradient(145deg, rgba(0,206,209,0.24), rgba(0,12,18,0.94)), url('/images/backgrounds/bg_psych_neural_v2.jpg?v=${BG_ASSET_VERSION}')`,
     },
     horoscope: {
         accent: '#4B0082',
         glow: 'rgba(75, 0, 130, 0.35)',
-        bg: `linear-gradient(145deg, rgba(75,0,130,0.30), rgba(8,8,26,0.94)), url('/images/backgrounds/bg_horoscope_galaxy_v3.png?v=${BG_ASSET_VERSION}')`,
+        bg: `linear-gradient(145deg, rgba(75,0,130,0.28), rgba(0,12,18,0.94)), url('/images/backgrounds/bg_psych_neural_v2.jpg?v=${BG_ASSET_VERSION}')`,
     },
     crossword: {
         accent: '#E0FFFF',
         glow: 'rgba(0, 255, 255, 0.30)',
-        bg: `linear-gradient(145deg, rgba(224,255,255,0.16), rgba(0,20,18,0.95)), url('/images/backgrounds/bg_motskartes_matrix_v3.png?v=${BG_ASSET_VERSION}')`,
+        bg: `linear-gradient(145deg, rgba(224,255,255,0.18), rgba(0,12,18,0.94)), url('/images/backgrounds/bg_psych_neural_v2.jpg?v=${BG_ASSET_VERSION}')`,
     },
 };
 
@@ -580,8 +580,8 @@ export default function PagePsych() {
                     padding: 20px 15px;
                     border-radius: 32px;
                     border: 1px solid rgba(0, 255, 255, 0.3);
-                    background: rgba(0, 25, 25, 0.85);
-                    box-shadow: 0 10px 40px rgba(0, 255, 255, 0.2);
+                    background: rgba(0, 10, 12, 0.88);
+                    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
                     display: flex;
                     flex-direction: column;
                     height: auto;

@@ -92,21 +92,32 @@ export default function PagePeach() {
 
           {/* Unlock cards when not yet purchased */}
           {peachUnlock === 'none' && (
-            <div className="leaks-scroll-area" data-block-app-swipe="true">
-              <div className="leak-card" onClick={handleUnlockBasic}>
-                <div className="card-bg soft-blur"></div>
-                <Lock className="lock-icon" size={32} />
-                <span className="unlock-text">Débloquer Contenu</span>
-                <span className="unlock-sub">10 photos aléatoires <NeonIcon name="fire-flower-pixel" size={14} /></span>
-                <span className="price-tag gold">500 <NeonIcon name="coin-gold" size={14} /></span>
+            <div className="subscription-tiers">
+              <h3 className="tiers-title">Abonnements Disponibles</h3>
+
+              <div className="tier-card basic-tier" onClick={handleUnlockBasic}>
+                <div className="tier-header">
+                  <span className="tier-name"><Lock size={18} /> Pack Découverte</span>
+                  <span className="price-tag gold">500 <NeonIcon name="coin-gold" size={14} /></span>
+                </div>
+                <ul className="tier-features">
+                  <li><NeonIcon name="fire-flower-pixel" size={14} /> 10 photos aléatoires</li>
+                  <li><NeonIcon name="lock-neon" size={14} /> Accès basique au feed</li>
+                </ul>
+                <button className="btn-subscribe basic">S'abonner</button>
               </div>
 
-              <div className="leak-card vip-card" onClick={handleUnlockVip}>
-                <div className="card-bg heavy-blur"></div>
-                <Crown className="lock-icon" size={32} color="#ffaa00" />
-                <span className="unlock-text"><NeonIcon name="peach-crown" size={18} /> VIP Only</span>
-                <span className="unlock-sub">Les 26 photos complètes <NeonIcon name="star-mushroom-indigo" size={14} /></span>
-                <span className="price-tag gold">2000 <NeonIcon name="coin-gold" size={14} /></span>
+              <div className="tier-card vip-tier" onClick={handleUnlockVip}>
+                <div className="tier-badge">RECOMMANDÉ</div>
+                <div className="tier-header">
+                  <span className="tier-name"><NeonIcon name="peach-crown" size={18} /> Pack Full VIP</span>
+                  <span className="price-tag gold">2000 <NeonIcon name="coin-gold" size={14} /></span>
+                </div>
+                <ul className="tier-features">
+                  <li><Crown size={14} color="#ffaa00" /> Les 26 photos complètes</li>
+                  <li><NeonIcon name="star-mushroom-indigo" size={14} /> Contenu exclusif non censuré</li>
+                </ul>
+                <button className="btn-subscribe vip">Débloquer VIP</button>
               </div>
             </div>
           )}
@@ -307,63 +318,140 @@ export default function PagePeach() {
           gap: 3px;
         }
 
-        /* Unlock cards scroll */
-        .leaks-scroll-area {
-          display: flex;
-          gap: 15px;
-          overflow-x: auto;
-          scroll-snap-type: x mandatory;
-          padding-bottom: 10px;
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-        .leaks-scroll-area::-webkit-scrollbar { display: none; }
-
-        .leak-card {
-          flex: 0 0 85%;
-          height: 200px;
-          border-radius: 0;
-          background: transparent !important;
-          border: none !important;
-          box-shadow: none !important;
+        /* Subscription tiers overlay */
+        .subscription-tiers {
           display: flex;
           flex-direction: column;
-          align-items: center;
-          justify-content: center;
+          gap: 15px;
+          margin-top: 10px;
+          margin-bottom: 20px;
+        }
+
+        .tiers-title {
+          color: white;
+          font-size: 1.1rem;
+          font-weight: bold;
+          margin-bottom: 5px;
+          text-transform: uppercase;
+          text-align: center;
+        }
+
+        .tier-card {
+          background: rgba(40, 0, 40, 0.4);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 16px;
+          padding: 15px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
           position: relative;
-          overflow: hidden;
-          scroll-snap-align: center;
           cursor: pointer;
+          transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .tier-card:active {
+          transform: scale(0.98);
+        }
+
+        .tier-card.basic-tier {
+          border-left: 4px solid #aaa;
+        }
+
+        .tier-card.vip-tier {
+          background: rgba(255, 0, 255, 0.1);
+          border: 1px solid rgba(255, 0, 255, 0.4);
+          border-left: 4px solid #ff00ff;
+          box-shadow: 0 5px 20px rgba(255, 0, 255, 0.2);
+        }
+
+        .tier-badge {
+          position: absolute;
+          top: -10px; right: 15px;
+          background: #ff00ff;
+          color: white;
+          font-size: 0.75rem;
+          font-weight: 900;
+          padding: 3px 10px;
+          border-radius: 12px;
+          box-shadow: 0 0 10px rgba(255, 0, 255, 0.6);
+          letter-spacing: 1px;
+        }
+
+        .tier-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 5px;
+        }
+
+        .tier-name {
+          font-size: 1.2rem;
+          font-weight: 900;
+          color: white;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        .vip-tier .tier-name {
+          color: #ffaa00;
+          text-shadow: 0 0 10px rgba(255, 170, 0, 0.5);
+        }
+
+        .tier-features {
+          list-style: none;
+          padding: 0; margin: 0;
+          display: flex;
+          flex-direction: column;
           gap: 6px;
         }
 
-        .leak-card.vip-card {
-          border: none !important;
-          background: transparent !important;
-          box-shadow: none !important;
+        .tier-features li {
+          font-size: 0.85rem;
+          color: #ccc;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        .vip-tier .tier-features li {
+          color: #fff;
         }
 
-        .card-bg {
-          display: none;
+        .btn-subscribe {
+          margin-top: 10px;
+          width: 100%;
+          padding: 12px;
+          border-radius: 12px;
+          border: none;
+          font-weight: 900;
+          font-size: 1rem;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          cursor: pointer;
         }
 
-        .lock-icon { z-index: 1; }
-        .unlock-text { z-index: 1; font-weight: bold; font-size: 1.1rem; display: inline-flex; align-items: center; gap: 4px; }
-        .unlock-sub { z-index: 1; font-size: 0.8rem; color: #ccc; display: inline-flex; align-items: center; gap: 3px; }
+        .btn-subscribe.basic {
+          background: rgba(255, 255, 255, 0.1);
+          color: white;
+          border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-subscribe.vip {
+          background: linear-gradient(90deg, #ff00ff, #ff0088);
+          color: white;
+          box-shadow: 0 0 15px rgba(255, 0, 255, 0.5);
+        }
 
         .price-tag.gold {
-          z-index: 1;
-          background: transparent !important;
+          background: rgba(255, 170, 0, 0.1);
+          border: 1px solid rgba(255, 170, 0, 0.3);
           color: #ffaa00;
-          padding: 5px 15px;
-          border-radius: 0;
-          border: none !important;
-          text-shadow: 0 0 10px rgba(255, 170, 0, 0.8);
+          padding: 4px 10px;
+          border-radius: 8px;
           display: inline-flex;
           align-items: center;
-          gap: 3px;
+          gap: 4px;
+          font-weight: bold;
         }
-        .price-tag.gold.small { padding: 3px 10px; font-size: 0.85rem; }
+        .price-tag.gold.small { padding: 3px 8px; font-size: 0.85rem; }
 
         /* Upgrade banner */
         .upgrade-banner {

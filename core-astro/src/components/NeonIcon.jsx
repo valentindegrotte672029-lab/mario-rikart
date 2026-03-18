@@ -7,8 +7,9 @@ const scaleSize = (s) => Math.round(s * Math.min(1.6 + s * 0.02, 3.0));
 export default function NeonIcon({ name, size = 20, glow, className = '', style = {} }) {
   const scaled = scaleSize(size);
   const glowFilter = glow
-    ? `drop-shadow(0 0 ${Math.max(10, scaled * 0.18)}px ${glow}) drop-shadow(0 0 ${Math.max(24, scaled * 0.32)}px ${glow}80)`
-    : `drop-shadow(0 0 ${Math.max(8, scaled * 0.16)}px rgba(255,255,255,0.7)) drop-shadow(0 0 ${Math.max(18, scaled * 0.28)}px rgba(255,255,255,0.35))`;
+    ? `drop-shadow(0 0 ${Math.max(4, scaled * 0.08)}px ${glow}) drop-shadow(0 0 ${Math.max(12, scaled * 0.20)}px ${glow}cc) drop-shadow(0 0 ${Math.max(28, scaled * 0.45)}px ${glow}80)`
+    : `drop-shadow(0 0 ${Math.max(3, scaled * 0.06)}px rgba(255,255,255,0.9)) drop-shadow(0 0 ${Math.max(10, scaled * 0.18)}px rgba(255,255,255,0.5)) drop-shadow(0 0 ${Math.max(22, scaled * 0.35)}px rgba(255,255,255,0.25))`;
+
   return (
     <span
       className={`neon-icon ${className}`}
@@ -20,7 +21,7 @@ export default function NeonIcon({ name, size = 20, glow, className = '', style 
         width: scaled,
         height: scaled,
         flexShrink: 0,
-        filter: glowFilter || undefined,
+        filter: `${glowFilter} contrast(1.1) brightness(1.1)`,
         overflow: 'hidden',
         background: 'transparent',
         ...style,
@@ -45,7 +46,6 @@ export default function NeonIcon({ name, size = 20, glow, className = '', style 
             pointerEvents: 'none',
             userSelect: 'none',
             background: 'transparent',
-            mixBlendMode: 'screen',
           }}
         />
       </div>

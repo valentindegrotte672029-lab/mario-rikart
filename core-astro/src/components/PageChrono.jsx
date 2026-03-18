@@ -166,7 +166,7 @@ export default function PageChrono() {
                                 animate={{ scale: [1, 1.2, 1], rotate: [0, -5, 5, 0] }}
                                 transition={{ duration: 0.8, repeat: Infinity }}
                             >
-                                <NeonIcon name="bomb-timer" size={80} glow="#ff3333" />
+                                <NeonIcon name="bomb-timer" size={110} glow="#ff3333" />
                             </motion.div>
                             <h2 className="running-text">C'est parti ! Prenez, prenez, prenez !</h2>
                             <p className="tension-text">L'alarme peut sonner à tout moment...</p>
@@ -253,14 +253,21 @@ export default function PageChrono() {
         .huge-chrono-btn:active { transform: scale(0.95); }
 
         .pulsing-bomb {
-          font-size: 6rem;
-          filter: drop-shadow(0 0 15px rgba(255, 0, 0, 0.6)) drop-shadow(0 0 35px rgba(255, 60, 0, 0.3));
-          opacity: 0.75;
-          mix-blend-mode: screen;
-          margin-bottom: 20px;
-          transition: filter 0.3s ease;
+          width: 140px;
+          height: 140px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+          margin-bottom: 25px;
+          /* Premium Integration Glow */
+          background: radial-gradient(circle, rgba(255, 60, 0, 0.15) 0%, transparent 70%);
+          border-radius: 50%;
         }
-        .running-text { font-size: 1.5rem; color: #ff5555; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; }
+        
+        /* The glow is now handled primarily by NeonIcon's improved drop-shadows, 
+           but we add a secondary layer for the 'premium' feel */
+        .running-text { font-size: 1.5rem; color: #ff5555; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; text-shadow: 0 0 10px rgba(255,0,0,0.4); }
         .tension-text { color: #888; font-style: italic; }
 
         .alarm-container { animation: shakeHard 0.1s infinite alternate; }

@@ -95,10 +95,10 @@ export default function PageCasino() {
       <CategoryTabBar />
       <div className="casino-tab-bar">
         <button className={`casino-tab-btn ${casinoTab === 'poker' ? 'active' : ''}`} onClick={() => setCasinoTab('poker')}>
-          <img src="/images/icons/items/poker-tab-neon.png?v=20" alt="Poker" className="casino-tab-img" /> POKER
+          <NeonIcon name="poker-tab-neon" size={24} glow={casinoTab === 'poker' ? "#00ffff" : undefined} className="casino-tab-img" /> POKER
         </button>
         <button className={`casino-tab-btn ${casinoTab === 'polymario' ? 'active' : ''}`} onClick={() => setCasinoTab('polymario')}>
-          <img src="/images/icons/items/polymario-tab-neon.png?v=20" alt="PolyMario" className="casino-tab-img" /> POLYMARIO
+          <NeonIcon name="polymario-tab-neon" size={24} glow={casinoTab === 'polymario' ? "#ff00ff" : undefined} className="casino-tab-img" /> POLYMARIO
         </button>
       </div>
       {casinoTab === 'poker' ? (
@@ -107,7 +107,7 @@ export default function PageCasino() {
       <>
       <div className="casino-header">
         <h1 className="casino-title">
-          <img src="/images/icons/items/polymario-tab-neon.png?v=20" alt="Polymario" style={{ height: 32, objectFit: 'contain', filter: 'drop-shadow(0 0 12px #ff00ff)', marginRight: 10, verticalAlign: 'middle' }} />
+          <NeonIcon name="polymario-tab-neon" size={32} glow="#ff00ff" style={{ marginRight: 10 }} />
           POLYMARIO
         </h1>
         <p className="casino-subtitle">Dévoilez vos pronostics.</p>
@@ -269,13 +269,10 @@ export default function PageCasino() {
           box-shadow: 0 0 15px rgba(255, 0, 255, 0.3) !important;
         }
         .casino-tab-img {
-          height: 28px;
-          width: 28px;
-          object-fit: contain;
-          filter: drop-shadow(0 0 8px rgba(255, 0, 255, 0.4));
+          /* NeonIcon handles the glow now */
         }
         .casino-tab-btn.active .casino-tab-img {
-          filter: drop-shadow(0 0 12px #ff00ff);
+          /* NeonIcon handles the glow now */
         }
 
         .category-tab-bar {
