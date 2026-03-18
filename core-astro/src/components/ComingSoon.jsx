@@ -11,7 +11,7 @@ export default function ComingSoon({ title, icon = "clock-neon", color = "#ffcc0
       animate={{ opacity: 1, y: 0 }}
       style={{
         display: 'flex',
-        flexDirection: column,
+        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         padding: '60px 20px',
