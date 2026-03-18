@@ -392,7 +392,7 @@ export default function PagePsych() {
                 >
                     <div className="crossword-view-content">
                         {!featureFlags.warioCrossword ? (
-                            <ComingSoon title="Mot Karté" icon="devil-neon" color="#ff4444" />
+                            <ComingSoon title="Mot Karté" icon="devil-neon" color="#ff4444" iconSize={60} />
                         ) : (
                             <>
                                 <div className="card-header">
@@ -468,7 +468,7 @@ export default function PagePsych() {
             >
                     <div className="test-view-content">
                         {!featureFlags.warioTest ? (
-                            <ComingSoon title="Bilan Psychologique" icon="brain" color="#00ffff" />
+                            <ComingSoon title="Bilan Psychologique" icon="Test icône" color="#00ffff" />
                         ) : (
                             <>
                                 <div className="card-header">

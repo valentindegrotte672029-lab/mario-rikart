@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Clock } from 'lucide-react';
 import NeonIcon from './NeonIcon';
 
-export default function ComingSoon({ title, icon = "clock-neon", color = "#ffcc00" }) {
+export default function ComingSoon({ title, icon = "clock-neon", color = "#ffcc00", iconSize = 80 }) {
   return (
     <motion.div 
       className="coming-soon-container"
@@ -23,7 +23,7 @@ export default function ComingSoon({ title, icon = "clock-neon", color = "#ffcc0
       }}
     >
       <div style={{ position: 'relative', marginBottom: '20px' }}>
-        <NeonIcon name={icon} size={80} glow={color} />
+        <NeonIcon name={icon} size={iconSize} glow={color} />
         <motion.div
            animate={{ rotate: 360 }}
            transition={{ duration: 10, repeat: Infinity, ease: "linear" }}

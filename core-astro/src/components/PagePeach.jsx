@@ -82,7 +82,7 @@ export default function PagePeach() {
       <CategoryTabBar />
       <div className="glass-panel mobile-card peach-card">
           {!featureFlags.peachasse ? (
-            <ComingSoon title="Peachasse Lux" icon="peach-crown" color="#ff00ff" />
+            <ComingSoon title="Peachasse Lux" icon="Peach icône" color="#ff00ff" />
           ) : (
             <>
               <div className="profile-header">

@@ -90,7 +90,7 @@ export default function PageToad() {
       <CategoryTabBar />
       <div className="glass-panel mobile-card toad-card">
         {!useStore.getState().featureFlags.toadLab ? (
-          <ComingSoon title="Toad-xique" icon="toad-vomit" color="#ff3366" />
+          <ComingSoon title="Toad-Xique Lab" icon="Toad icône" color="#00ff00" />
         ) : (
           <>
             <h1 className="title-mobile toad-title">TOAD-XIQUE</h1>

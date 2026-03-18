@@ -24,7 +24,7 @@ const useStore = create(
     clearBgOverride: () => set({ bgOverride: null }),
     
     // Feature Flags (Contrôlés par l'admin)
-    featureFlags: { warioTest: true, toadLab: true, peachasse: true },
+    featureFlags: { warioTest: true, warioCrossword: true, toadLab: true, peachasse: true },
     setFeatureFlags: (flags) => set({ featureFlags: flags }),
 
     // Toad Bank State
