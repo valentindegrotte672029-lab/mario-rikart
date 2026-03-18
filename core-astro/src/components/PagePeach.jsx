@@ -5,6 +5,7 @@ import { Lock, ShieldAlert, X, Crown, ChevronLeft, ChevronRight } from 'lucide-r
 import useStore from '../store/useStore';
 import { socket } from '../socket';
 import NeonIcon from './NeonIcon';
+import ComingSoon from './ComingSoon';
 
 // All 26 photos
 const ALL_PHOTOS = Array.from({ length: 26 }, (_, i) => `/images/peach/peach-${i + 1}.jpg`);
@@ -13,7 +14,7 @@ const ALL_PHOTOS = Array.from({ length: 26 }, (_, i) => `/images/peach/peach-${i
 const BASIC_PHOTOS = [1, 3, 5, 7, 9, 11, 14, 17, 20, 23].map(n => `/images/peach/peach-${n}.jpg`);
 
 export default function PagePeach() {
-  const { spendCoins, peachUnlock, setPeachUnlock } = useStore();
+  const { spendCoins, peachUnlock, setPeachUnlock, featureFlags } = useStore();
   const [bblAlert, setBblAlert] = useState(false);
   const [bblClicks, setBblClicks] = useState(0);
   const [viewerIndex, setViewerIndex] = useState(null);
@@ -80,7 +81,11 @@ export default function PagePeach() {
       <div className="peach-ambient"></div>
       <CategoryTabBar />
       <div className="glass-panel mobile-card peach-card">
-          <div className="profile-header">
+          {!featureFlags.peachasse ? (
+            <ComingSoon title="Peachasse Lux" icon="peach-crown" color="#ff00ff" />
+          ) : (
+            <>
+              <div className="profile-header">
             <div className="avatar glow-avatar"><NeonIcon name="peach-crown" size={50} /></div>
             <div className="titles">
               <h1 className="title-mobile peach-title">PEACHASSE</h1>
@@ -147,6 +152,8 @@ export default function PagePeach() {
                 </motion.div>
               ))}
             </div>
+          )}
+            </>
           )}
         </div>
 

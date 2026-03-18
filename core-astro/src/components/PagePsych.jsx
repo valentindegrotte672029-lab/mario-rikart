@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import useStore from '../store/useStore';
 import { Brain, ArrowRight, RotateCcw, Star } from 'lucide-react';
 import NeonIcon from './NeonIcon';
+import ComingSoon from './ComingSoon';
 
 const HOROSCOPE_SIGNS = [
     {
@@ -213,7 +214,7 @@ export default function PagePsych() {
     const [wsFoundWords, setWsFoundWords] = useState(new Set());
     const viewTheme = PSYCH_VIEW_THEME[pageView] || PSYCH_VIEW_THEME.test;
 
-    const { setBgOverride, clearBgOverride, setPage, spendCoins } = useStore();
+    const { setBgOverride, clearBgOverride, setPage, spendCoins, featureFlags } = useStore();
 
     const CategoryTabBar = () => (
 
@@ -459,77 +460,83 @@ export default function PagePsych() {
                 transition={{ duration: 0.25 }}
                 style={{ width: '100%' }}
             >
-            <div className="test-view-content">
-                <div className="card-header">
-                    <Brain size={48} color="#00ffff" />
-                    <h1 className="title-mobile">Bilan Psychologique</h1>
+                    <div className="test-view-content">
+                        {!featureFlags.warioTest ? (
+                            <ComingSoon title="Bilan Psychologique" icon="brain" color="#00ffff" />
+                        ) : (
+                            <>
+                                <div className="card-header">
+                                    <Brain size={48} color="#00ffff" />
+                                    <h1 className="title-mobile">Bilan Psychologique</h1>
                                 </div>
 
-                {isCalculating ? (
-                    <div className="calculating-view">
-                        <motion.div
-                            animate={{ rotate: 360 }}
-                            transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                        >
-                            <Brain size={64} color="#00ffff" />
-                        </motion.div>
-                        <h2 style={{ marginTop: '20px', color: '#00ffff' }}>Analyse en cours...</h2>
-                        <p style={{ color: '#aaa', marginTop: '10px' }}>Sondage des tréfonds de ton âme.</p>
-                    </div>
-                ) : isFinished ? (
-                    <motion.div
-                        className="result-view"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                    >
-                        <h2 style={{ color: '#00ffff', marginBottom: '15px' }}>TEST TERMINÉ !</h2>
-                        <p style={{ color: '#888', fontSize: '0.85rem', marginBottom: '8px' }}>Tu es :</p>
-                        <p style={{ color: '#00ffff', fontSize: '1.6rem', fontWeight: '900', marginBottom: '20px', textShadow: '0 0 15px rgba(0,255,255,0.4)' }}>
-                            {result}
-                        </p>
-                        <button className="btn-secondary" onClick={restartTest}>
-                            <RotateCcw size={20} style={{ marginRight: '10px' }} />
-                            Refaire le test
-                        </button>
-                    </motion.div>
-                ) : (
-                    <div className="question-view">
-                        <div className="progress-bar-bg">
-                            <motion.div
-                                className="progress-bar-fill"
-                                initial={{ width: 0 }}
-                                animate={{ width: `${progress}%` }}
-                            ></motion.div>
-                        </div>
-                        <p className="question-counter">Question {currentQuestionIndex + 1} / {QUESTIONS.length}</p>
-
-                        <AnimatePresence mode="wait">
-                            <motion.div
-                                key={currentQuestionIndex}
-                                initial={{ opacity: 0, x: 50 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -50 }}
-                                transition={{ duration: 0.2 }}
-                                className="question-container"
-                            >
-                                <h3 className="question-text">{currentQ.text}</h3>
-
-                                <div className="options-grid">
-                                    {currentQ.options.map((opt, idx) => (
-                                        <button
-                                            key={idx}
-                                            className="option-btn"
-                                            onClick={() => handleAnswer(opt.value)}
+                                {isCalculating ? (
+                                    <div className="calculating-view">
+                                        <motion.div
+                                            animate={{ rotate: 360 }}
+                                            transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
                                         >
-                                            {opt.text} {opt.icon && <NeonIcon name={opt.icon} size={28} />}
+                                            <Brain size={64} color="#00ffff" />
+                                        </motion.div>
+                                        <h2 style={{ marginTop: '20px', color: '#00ffff' }}>Analyse en cours...</h2>
+                                        <p style={{ color: '#aaa', marginTop: '10px' }}>Sondage des tréfonds de ton âme.</p>
+                                    </div>
+                                ) : isFinished ? (
+                                    <motion.div
+                                        className="result-view"
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                    >
+                                        <h2 style={{ color: '#00ffff', marginBottom: '15px' }}>TEST TERMINÉ !</h2>
+                                        <p style={{ color: '#888', fontSize: '0.85rem', marginBottom: '8px' }}>Tu es :</p>
+                                        <p style={{ color: '#00ffff', fontSize: '1.6rem', fontWeight: '900', marginBottom: '20px', textShadow: '0 0 15px rgba(0,255,255,0.4)' }}>
+                                            {result}
+                                        </p>
+                                        <button className="btn-secondary" onClick={restartTest}>
+                                            <RotateCcw size={20} style={{ marginRight: '10px' }} />
+                                            Refaire le test
                                         </button>
-                                    ))}
-                                </div>
-                            </motion.div>
-                        </AnimatePresence>
+                                    </motion.div>
+                                ) : (
+                                    <div className="question-view">
+                                        <div className="progress-bar-bg">
+                                            <motion.div
+                                                className="progress-bar-fill"
+                                                initial={{ width: 0 }}
+                                                animate={{ width: `${progress}%` }}
+                                            ></motion.div>
+                                        </div>
+                                        <p className="question-counter">Question {currentQuestionIndex + 1} / {QUESTIONS.length}</p>
+
+                                        <AnimatePresence mode="wait">
+                                            <motion.div
+                                                key={currentQuestionIndex}
+                                                initial={{ opacity: 0, x: 50 }}
+                                                animate={{ opacity: 1, x: 0 }}
+                                                exit={{ opacity: 0, x: -50 }}
+                                                transition={{ duration: 0.2 }}
+                                                className="question-container"
+                                            >
+                                                <h3 className="question-text">{currentQ.text}</h3>
+
+                                                <div className="options-grid">
+                                                    {currentQ.options.map((opt, idx) => (
+                                                        <button
+                                                            key={idx}
+                                                            className="option-btn"
+                                                            onClick={() => handleAnswer(opt.value)}
+                                                        >
+                                                            {opt.text} {opt.icon && <NeonIcon name={opt.icon} size={28} />}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </motion.div>
+                                        </AnimatePresence>
+                                    </div>
+                                )}
+                            </>
+                        )}
                     </div>
-                )}
-                </div>
 
             </motion.div>
             )}

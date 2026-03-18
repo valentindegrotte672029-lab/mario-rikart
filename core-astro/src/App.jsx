@@ -49,7 +49,7 @@ class ErrorBoundary extends Component {
 }
 
 export default function App() {
-  const { currentPage, setPage, resetSpeed, happening, triggerHappening, username, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, errorMsg, balance, socialStatus, setBets, setBalance, setPokerState, setPokerRooms, bgOverride } = useStore();
+  const { currentPage, setPage, resetSpeed, happening, triggerHappening, username, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, errorMsg, balance, socialStatus, setBets, setBalance, setPokerState, setPokerRooms, bgOverride, setFeatureFlags } = useStore();
 
   const SWIPE_PAGES = ['WARIO', 'PSYCH', 'LUIGI', 'CASINO', 'MARIO', 'TOAD', 'CHRONO', 'PEACH', 'TROMBI'];
   const swipeDir = useRef(1);
@@ -146,6 +146,7 @@ export default function App() {
         useStore.getState().setPendingJoinRequest(false);
         alert('Ta demande a été refusée.');
       });
+      socket.on('sync_feature_flags', (flags) => setFeatureFlags(flags));
 
       return () => {
         socket.off('connect', onConnect);
@@ -167,7 +168,7 @@ export default function App() {
         socket.disconnect();
       };
     }
-  }, [username, triggerHappening, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, setBets, setBalance, setPokerState, setPokerRooms]);
+  }, [username, triggerHappening, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, setBets, setBalance, setPokerState, setPokerRooms, setFeatureFlags]);
 
   // Synchronisation continue des pièces, rang et peachUnlock vers le serveur
   const peachUnlock = useStore(s => s.peachUnlock);

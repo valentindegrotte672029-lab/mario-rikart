@@ -43,6 +43,7 @@ let leaderboards = loadDb('leaderboards.json', { FLAPPYWEED: {}, CHAMPININJA: {}
 let usersDb = loadDb('users.json', {});
 let betsDb = loadDb('bets.json', []);
 let notificationsDb = loadDb('notifications.json', []);
+let featureFlags = loadDb('feature_flags.json', { warioTest: true, toadLab: true, peachasse: true });
 
 // Helpers de sauvegarde
 const saveUsers = () => saveDb('users.json', usersDb);
@@ -52,6 +53,7 @@ const saveBereals = () => saveDb('bereals.json', berealsQueue);
 const saveMassages = () => saveDb('massages.json', massagesQueue);
 const saveLeaderboards = () => saveDb('leaderboards.json', leaderboards);
 const saveNotifications = () => saveDb('notifications.json', notificationsDb);
+const saveFeatureFlags = () => saveDb('feature_flags.json', featureFlags);
 
 const addNotification = (type, message, data = {}) => {
     const notif = { id: Date.now(), type, message, data, timestamp: new Date().toISOString(), read: false };
@@ -69,6 +71,7 @@ const pokerManager = new PokerManager(io, usersDb, saveUsers);
 
 io.on('connection', (socket) => {
     console.log(`⚡ Nouvelle connexion : ${socket.id}`);
+    socket.emit('sync_feature_flags', featureFlags);
 
     // 0. Authentification Joueur 
     socket.on('authenticate', ({ username, password }, callback) => {
@@ -138,6 +141,7 @@ io.on('connection', (socket) => {
         socket.emit('leaderboards_update', leaderboards);
         socket.emit('admin_notifications_history', notificationsDb);
         socket.emit('poker_admin_tables', pokerManager.listAllTables());
+        socket.emit('sync_feature_flags', featureFlags);
         // Users list
         const adminUsersList = Object.keys(usersDb).map(alias => ({
             username: alias,
@@ -168,6 +172,12 @@ io.on('connection', (socket) => {
         notificationsDb = [];
         saveNotifications();
         socket.emit('admin_notifications_history', []);
+    });
+
+    socket.on('update_feature_flags', (newFlags) => {
+        featureFlags = { ...featureFlags, ...newFlags };
+        saveFeatureFlags();
+        io.emit('sync_feature_flags', featureFlags);
     });
 
     socket.on('request_bereals', () => {

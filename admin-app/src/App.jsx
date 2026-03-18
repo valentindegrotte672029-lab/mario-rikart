@@ -19,7 +19,8 @@ function App() {
   const [pokerLive, setPokerLive] = useState(null);
   const [pokerHistory, setPokerHistory] = useState([]);
   const [activeHappening, setActiveHappening] = useState(null);
-  const [activeTab, setActiveTab] = useState('WARIO'); // 'WARIO', 'BEREAL', 'ARCADE', 'USERS', 'BETS', 'POKER'
+  const [activeTab, setActiveTab] = useState('WARIO'); // 'WARIO', 'BEREAL', 'ARCADE', 'USERS', 'BETS', 'POKER', 'SETTINGS'
+  const [featureFlags, setFeatureFlags] = useState({ warioTest: true, toadLab: true, peachasse: true });
 
   // Formulaire Paris
   const [betQuestion, setBetQuestion] = useState('');
@@ -59,6 +60,7 @@ function App() {
     // Poker Live
     socket.on('poker_state', (state) => setPokerLive(state));
     socket.on('poker_history', (history) => setPokerHistory(history));
+    socket.on('sync_feature_flags', (flags) => setFeatureFlags(flags));
 
     return () => {
       socket.off('connect');
@@ -192,6 +194,13 @@ function App() {
             style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '10px', fontWeight: 'bold', border: 'none', cursor: 'pointer', background: activeTab === 'POKER' ? '#4ade80' : '#222', color: activeTab === 'POKER' ? '#000' : '#aaa' }}
           >
              🃁 POKER LIVE
+          </button>
+
+          <button
+            onClick={() => setActiveTab('SETTINGS')}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '10px', fontWeight: 'bold', border: 'none', cursor: 'pointer', background: activeTab === 'SETTINGS' ? '#666' : '#222', color: activeTab === 'SETTINGS' ? '#fff' : '#aaa' }}
+          >
+             ⚙️ ACCÈS
           </button>
         </div>
 
@@ -632,7 +641,54 @@ function App() {
                   </div>
                 )}
               </div>
+            </div>
+          )}
 
+          {activeTab === 'SETTINGS' && (
+            <div style={{ padding: '20px', background: '#111', borderRadius: '15px', color: 'white' }}>
+              <h2 style={{ color: '#aaa', marginBottom: '25px' }}>⚙️ Contrôle des Accès (Feature Flags)</h2>
+              <p style={{ color: '#888', marginBottom: '30px' }}>Active ou désactive en temps réel les sections spécifiques pour tous les joueurs.</p>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '500px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px', background: '#222', borderRadius: '10px', border: '1px solid #333' }}>
+                  <div>
+                    <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Test Wario (Psych)</h3>
+                    <p style={{ margin: '5px 0 0 0', fontSize: '0.85rem', color: '#666' }}>Désactive l'onglet "Test" dans la section Wario.</p>
+                  </div>
+                  <button 
+                    onClick={() => socket.emit('update_feature_flags', { warioTest: !featureFlags.warioTest })}
+                    style={{ padding: '10px 20px', borderRadius: '8px', border: 'none', fontWeight: 'bold', cursor: 'pointer', background: featureFlags.warioTest ? '#4CAF50' : '#f44336', color: 'white' }}
+                  >
+                    {featureFlags.warioTest ? 'OUVERT' : 'FERMÉ'}
+                  </button>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px', background: '#222', borderRadius: '10px', border: '1px solid #333' }}>
+                  <div>
+                    <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Toad Lab (Toad-xique)</h3>
+                    <p style={{ margin: '5px 0 0 0', fontSize: '0.85rem', color: '#666' }}>Désactive la partie création de mélange atroce.</p>
+                  </div>
+                  <button 
+                    onClick={() => socket.emit('update_feature_flags', { toadLab: !featureFlags.toadLab })}
+                    style={{ padding: '10px 20px', borderRadius: '8px', border: 'none', fontWeight: 'bold', cursor: 'pointer', background: featureFlags.toadLab ? '#4CAF50' : '#f44336', color: 'white' }}
+                  >
+                    {featureFlags.toadLab ? 'OUVERT' : 'FERMÉ'}
+                  </button>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px', background: '#222', borderRadius: '10px', border: '1px solid #333' }}>
+                  <div>
+                    <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Peachasse (Galerie Only)</h3>
+                    <p style={{ margin: '5px 0 0 0', fontSize: '0.85rem', color: '#666' }}>Désactive la galerie et les abonnements Peach.</p>
+                  </div>
+                  <button 
+                    onClick={() => socket.emit('update_feature_flags', { peachasse: !featureFlags.peachasse })}
+                    style={{ padding: '10px 20px', borderRadius: '8px', border: 'none', fontWeight: 'bold', cursor: 'pointer', background: featureFlags.peachasse ? '#4CAF50' : '#f44336', color: 'white' }}
+                  >
+                    {featureFlags.peachasse ? 'OUVERT' : 'FERMÉ'}
+                  </button>
+                </div>
+              </div>
             </div>
           )}
 
