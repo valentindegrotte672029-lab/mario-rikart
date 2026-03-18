@@ -166,7 +166,7 @@ export default function PageChrono() {
                                 animate={{ scale: [1, 1.2, 1], rotate: [0, -5, 5, 0] }}
                                 transition={{ duration: 0.8, repeat: Infinity }}
                             >
-                                <NeonIcon name="bomb-timer" size={110} glow="#ff3333" />
+                                <NeonIcon name="bomb-timer" size={85} glow="#ff3333" />
                             </motion.div>
                             <h2 className="running-text">C'est parti ! Prenez, prenez, prenez !</h2>
                             <p className="tension-text">L'alarme peut sonner à tout moment...</p>
@@ -253,8 +253,8 @@ export default function PageChrono() {
         .huge-chrono-btn:active { transform: scale(0.95); }
 
         .pulsing-bomb {
-          width: 140px;
-          height: 140px;
+          width: 110px;
+          height: 110px;
           display: flex;
           align-items: center;
           justify-content: center;

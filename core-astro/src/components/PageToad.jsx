@@ -9,10 +9,16 @@ import NeonIcon from './NeonIcon';
 
 const INGREDIENTS = [
   { id: 'vodka', name: 'Vodka', icon: 'flask-purple-atomic' },
-  { id: 'lait', name: 'Lait tiède', icon: 'flask-blue-beaker' },
-  { id: 'piment', name: 'Piment pur', icon: 'flask-orange-distill' },
-  { id: 'tabasco', name: 'Tabasco', icon: 'fire-flower-pixel' },
+  { id: 'tomate', name: 'Jus de tomate', icon: 'flask-orange-distill' },
+  { id: 'sauce_piment', name: 'Sauce piment', icon: 'fire-flower-pixel' },
   { id: 'cornichon', name: 'Jus de cornichon', icon: 'flask-green-erlenmeyer' },
+  { id: 'olives', name: 'Jus d\'olives vertes', icon: 'flask-blue-beaker' },
+  { id: 'citron_vert', name: 'Jus de citron vert', icon: 'lemon-neon' },
+  { id: 'sel_poivre', name: 'Sel et Poivre noir', icon: 'skull-neon' },
+  { id: 'soja', name: 'Sauce soja', icon: 'flask-purple-atomic' },
+  { id: 'concombre', name: 'Tranches de concombre', icon: 'flask-green-erlenmeyer' },
+  { id: 'tabasco', name: 'Tabasco', icon: 'fire-flower-pixel' },
+  { id: 'pamplemousse', name: 'Jus de pamplemousse', icon: 'flask-orange-distill' },
 ];
 
 const LISTEUX = [
