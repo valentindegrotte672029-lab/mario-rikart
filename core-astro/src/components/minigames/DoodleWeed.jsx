@@ -297,7 +297,7 @@ export default function DoodleWeed({ onExit }) {
                                 transform: `translate(${stateRef.current.luigi.x}px, ${stateRef.current.luigi.y}px) scaleX(${stateRef.current.luigi.vx < 0 ? -1 : 1})`
                             }}
                         >
-                            <img src="/images/icons/items/doodle-weed.png" alt="Luigi" className="yoshi-sprite-doodle" />
+                            <img src="/images/icons/items/Luidgi icône.png" alt="Luigi" className="yoshi-sprite-doodle" />
                         </div>
                     )}
                 </div>

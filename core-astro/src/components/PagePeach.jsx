@@ -7,11 +7,11 @@ import { socket } from '../socket';
 import NeonIcon from './NeonIcon';
 import ComingSoon from './ComingSoon';
 
-// All 26 photos
-const ALL_PHOTOS = Array.from({ length: 26 }, (_, i) => `/images/peach/peach-${i + 1}.jpg`);
+// All 8 new Radek photos
+const ALL_PHOTOS = Array.from({ length: 8 }, (_, i) => `/images/peach/peach-${i + 1}.jpg`);
 
-// The 10 photos included in the basic pack (fixed set for everyone)
-const BASIC_PHOTOS = [1, 3, 5, 7, 9, 11, 14, 17, 20, 23].map(n => `/images/peach/peach-${n}.jpg`);
+// The 4 photos included in the basic pack (first 4)
+const BASIC_PHOTOS = [1, 2, 3, 4].map(n => `/images/peach/peach-${n}.jpg`);
 
 export default function PagePeach() {
   const { spendCoins, peachUnlock, setPeachUnlock, featureFlags } = useStore();

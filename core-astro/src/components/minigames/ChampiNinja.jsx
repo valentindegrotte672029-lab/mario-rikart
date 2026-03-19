@@ -8,7 +8,7 @@ import { socket } from '../../socket';
 import NeonIcon from '../NeonIcon';
 
 const GAME_DURATION = 20; // 20 seconds of intense clicking
-const SPAWN_INTERVAL_MS = 300; // Fast Time between spawns
+const SPAWN_INTERVAL_MS = 500; // Slower/Simpler
 
 export default function ChampiNinja({ onExit }) {
     const [gameState, setGameState] = useState('START'); // START, PLAYING, GAMEOVER
@@ -43,8 +43,8 @@ export default function ChampiNinja({ onExit }) {
     const spawnItem = useCallback(() => {
         if (gameState !== 'PLAYING') return;
 
-        // 30% chance for a bomb (chaotic)
-        const isBomb = Math.random() > 0.70; 
+        // 20% chance for a bomb (simpler)
+        const isBomb = Math.random() > 0.80; 
         const isGolden = !isBomb && Math.random() > 0.9; // 10% chance for golden champi if not bomb
 
         const newItem = {
@@ -52,7 +52,7 @@ export default function ChampiNinja({ onExit }) {
             x: Math.random() * 80 + 10, // 10% to 90% view width
             y: 500, // Spawn from bottom
             type: isBomb ? 'bomb' : (isGolden ? 'golden' : 'champi'),
-            velocityY: Math.random() * 10 + 20, // Fast initial jump strength
+            velocityY: Math.random() * 8 + 15, // Slower jump strength
             rotation: Math.random() * 360,
         };
 
