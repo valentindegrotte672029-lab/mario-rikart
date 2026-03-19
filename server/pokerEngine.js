@@ -165,6 +165,7 @@ class PokerEngine {
     }
 
     startWithBots() {
+        console.log(`[POKER] engine.startWithBots() called. Status: ${this.state.status}, Players: ${this.state.players.length}`);
         if (this.state.status !== 'WAITING' || this.state.players.length === 0) return;
         
         while (this.state.players.length < 3) {
@@ -1030,12 +1031,14 @@ class PokerManager {
     }
 
     startQueueWithBots(socketId) {
-        // Remove from queue
+        console.log(`[POKER] startQueueWithBots called for socket ${socketId}`);
         const player = this.matchQueue.find(q => q.socketId === socketId);
-        if (!player) return;
-        this.matchQueue = this.matchQueue.filter(q => q.socketId !== socketId);
-
-        // Create room, join, start with bots
+        if (!player) {
+            const s = this.io.sockets.sockets.get(socketId);
+            if (s) s.emit('poker_error', 'Session expatriée (Joueur non trouvé dans la queue)');
+            return;
+        }
+        
         const code = this._generateCode();
         const engine = new PokerEngine(this.io, this.usersDb, this.saveUsers, code, this);
         engine.creator = player.username;
@@ -1044,9 +1047,15 @@ class PokerManager {
 
         const res = engine.joinTable(player.socketId, player.username);
         if (res && res.success) {
+            this.matchQueue = this.matchQueue.filter(q => q.socketId !== socketId);
             this.socketToTable.set(player.socketId, code);
             engine.startWithBots();
+        } else {
+            const s = this.io.sockets.sockets.get(socketId);
+            if (s) s.emit('poker_error', res?.error || 'Erreur lors de la création de la table');
+            this.tables.delete(code);
         }
+        
         this.broadcastQueue();
         this.broadcastRooms();
         this.broadcastAdminRooms();
