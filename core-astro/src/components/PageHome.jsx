@@ -7,7 +7,7 @@ export default function PageHome() {
   const { setPage } = useStore();
 
   const apps = [
-    { id: 'LUIGI', icon: 'rikart-doodle-icon', label: 'Arcade', color: '#39ff14' },
+    { id: 'LUIGI', icon: 'Luidgi icône', label: 'Arcade', color: '#39ff14' },
     { id: 'MARIO', icon: 'camera-neon', label: 'BeMario', color: '#ff3333' },
     { id: 'WARIO', icon: 'devil-neon', label: 'Barnaque', color: '#ffcc00' },
     { id: 'PEACH', icon: 'rikart-peachasse-icon', label: 'Peachasse', color: '#ff66b2' },
