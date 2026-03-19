@@ -3,7 +3,33 @@ import { motion } from 'framer-motion';
 import { Clock } from 'lucide-react';
 import NeonIcon from './NeonIcon';
 
-export default function ComingSoon({ title, icon = "clock-neon", color = "#ffcc00", iconSize = 80 }) {
+export default function ComingSoon({ title, icon = "clock-neon", color = "#ffcc00", iconSize = 80, minimal = false }) {
+  if (minimal) {
+    return (
+      <motion.div 
+        className="coming-soon-container minimal"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '100px 20px',
+          textAlign: 'center',
+          width: '100%'
+        }}
+      >
+        <h2 style={{ color: 'white', fontSize: '1.4rem', fontWeight: 900, marginBottom: '8px', textShadow: `0 0 10px ${color}` }}>
+          {title.toUpperCase()}
+        </h2>
+        <div style={{ color: color, fontWeight: 'bold', fontSize: '0.85rem', letterSpacing: '1px', opacity: 0.9 }}>
+          CETTE SECTION EST ACTUELLEMENT FERMÉE
+        </div>
+      </motion.div>
+    );
+  }
+
   return (
     <motion.div 
       className="coming-soon-container"

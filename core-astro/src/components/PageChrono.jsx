@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Timer, AlertTriangle, RefreshCcw } from 'lucide-react';
 import useStore from '../store/useStore';
 import NeonIcon from './NeonIcon';
+import ComingSoon from './ComingSoon';
 
 export default function PageChrono() {
     const [status, setStatus] = useState('idle'); // 'idle', 'running', 'alarm'
@@ -138,6 +139,10 @@ export default function PageChrono() {
         >
             <CategoryTabBar />
             <div className="glass-panel mobile-card chrono-card">
+                {!useStore.getState().featureFlags.toadLab ? (
+                    <ComingSoon title="Poppy" minimal={true} color="#ff9900" />
+                ) : (
+                <>
                 <h1 className="title-mobile chrono-title">CHRONO POPPY</h1>
 
                 <AnimatePresence mode="wait">
@@ -189,6 +194,8 @@ export default function PageChrono() {
                         </motion.div>
                     )}
                 </AnimatePresence>
+                </>
+                )}
             </div>
 
             <style>{`
