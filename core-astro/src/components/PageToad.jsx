@@ -71,7 +71,7 @@ export default function PageToad() {
   const CategoryTabBar = () => (
     <div className="category-tab-bar">
       <button className="category-tab active" onClick={() => setPage('TOAD')}>
-        <NeonIcon name="rikart-mixer-icon" size={18} /> TOAD-XIQUE
+        <NeonIcon name="Toad icône" size={18} /> TOAD-XIQUE
       </button>
       <button className="category-tab" onClick={() => setPage('CHRONO')}>
         <NeonIcon name="Poppy icône" size={18} /> POPPY
@@ -90,12 +90,12 @@ export default function PageToad() {
       <CategoryTabBar />
       <div className="glass-panel mobile-card toad-card">
         {!useStore.getState().featureFlags.toadLab ? (
-          <ComingSoon title="Toad-Xique Lab" icon="rikart-mixer-icon" color="#00ff00" />
+          <ComingSoon title="Toad-Xique Lab" icon="Toad icône" color="#00ff00" />
         ) : (
           <>
             <h1 className="title-mobile toad-title">TOAD-XIQUE</h1>
         <p className="subtitle" style={{ textAlign: 'center', color: '#ffbbcc', marginBottom: '5px', fontStyle: 'italic', fontSize: '0.9rem' }}>
-          "Créer un mélange atroce qu'un listeux va devoir raout" <NeonIcon name="toad-vomit" size={20} />
+          "Créer un mélange atroce qu'un listeux va devoir raout" <NeonIcon name="toad-vomit" size={12} />
         </p>
         <p className="subtitle" style={{ textAlign: 'center', color: '#ff3366', marginBottom: '15px', fontWeight: 'bold', fontSize: '0.8rem' }}>
           <NeonIcon name="warning-triangle" size={16} /> MAX 3 INGRÉDIENTS <NeonIcon name="warning-triangle" size={16} />

@@ -23,7 +23,7 @@ export default function PagePeach() {
   const CategoryTabBar = () => (
     <div className="category-tab-bar">
       <button className="category-tab active" onClick={() => setPage('PEACH')}>
-        <NeonIcon name="rikart-peachasse-icon" size={18} /> PEACH
+        <NeonIcon name="Peach icône" size={18} /> PEACH
       </button>
       <button className="category-tab" onClick={() => setPage('TROMBI')}>
         <NeonIcon name="Trombi icône" size={18} /> TROMBI

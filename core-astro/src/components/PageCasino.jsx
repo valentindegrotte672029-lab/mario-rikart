@@ -80,7 +80,7 @@ export default function PageCasino() {
         <NeonIcon name="Luidgi icône" size={18} /> ARCADE
       </button>
       <button className="category-tab active" onClick={() => setPage('CASINO')}>
-        <NeonIcon name="rikart-polymario-icon" size={18} /> CASINO
+        <NeonIcon name="casino-global-icon" size={18} /> CASINO
       </button>
     </div>
   );
@@ -95,10 +95,10 @@ export default function PageCasino() {
       <CategoryTabBar />
       <div className="casino-tab-bar">
         <button className={`casino-tab-btn ${casinoTab === 'poker' ? 'active' : ''}`} onClick={() => setCasinoTab('poker')}>
-          <NeonIcon name="rikart-poker-icon" size={24} glow={casinoTab === 'poker' ? "#00ffff" : undefined} className="casino-tab-img" /> POKER
+          <NeonIcon name="poker-tab-neon" size={24} glow={casinoTab === 'poker' ? "#00ffff" : undefined} className="casino-tab-img" /> POKER
         </button>
         <button className={`casino-tab-btn ${casinoTab === 'polymario' ? 'active' : ''}`} onClick={() => setCasinoTab('polymario')}>
-          <NeonIcon name="rikart-polymario-icon" size={24} glow={casinoTab === 'polymario' ? "#ff00ff" : undefined} className="casino-tab-img" /> POLYMARIO
+          <NeonIcon name="polymario-tab-neon" size={24} glow={casinoTab === 'polymario' ? "#ff00ff" : undefined} className="casino-tab-img" /> POLYMARIO
         </button>
       </div>
       {casinoTab === 'poker' ? (
@@ -107,7 +107,7 @@ export default function PageCasino() {
       <>
       <div className="casino-header">
         <h1 className="casino-title">
-          <NeonIcon name="rikart-polymario-icon" size={32} glow="#ff00ff" style={{ marginRight: 10 }} />
+          <NeonIcon name="polymario-tab-neon" size={32} glow="#ff00ff" style={{ marginRight: 10 }} />
           POLYMARIO
         </h1>
         <p className="casino-subtitle">Dévoilez vos pronostics.</p>
