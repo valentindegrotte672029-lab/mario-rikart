@@ -178,7 +178,7 @@ export default function FlappyWeed({ onExit }) {
                         <h1>Appuie pour Voler</h1>
                         <p>100 Pièces par Tuyau passé !</p>
                         <div className="bird-preview" style={{ marginTop: '20px', animation: 'float 2s infinite alternate' }}>
-                            <img src="/images/icons/items/Luidgi icône.png" alt="Luigi" className="yoshi-sprite" />
+                            <img src="/images/yoshi-weed.png" alt="Yoshi" className="yoshi-sprite" />
                         </div>
                     </div>
                 )}
