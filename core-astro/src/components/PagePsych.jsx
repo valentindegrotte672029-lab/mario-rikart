@@ -121,8 +121,8 @@ const QUESTIONS = [
         id: 10,
         text: "T'es plutôt :",
         options: [
-            { text: "Je me lave les mains après le moindre pipi", value: "propre", icon: "soap-neon" },
-            { text: "J'aime avoir de la matière fécale sous les ongles", value: "sale", icon: "poop-neon" }
+            { text: "Je me lave les mains après le moindre pipi", value: "propre", icon: "rikart-soap-test" },
+            { text: "J'aime avoir de la matière fécale sous les ongles", value: "sale", icon: "rikart-poop-test" }
         ]
     }
 ];

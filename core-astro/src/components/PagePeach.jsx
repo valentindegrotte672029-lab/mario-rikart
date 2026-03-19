@@ -23,7 +23,7 @@ export default function PagePeach() {
   const CategoryTabBar = () => (
     <div className="category-tab-bar">
       <button className="category-tab active" onClick={() => setPage('PEACH')}>
-        <NeonIcon name="Peach icône" size={18} /> PEACH
+        <NeonIcon name="rikart-peachasse-icon" size={18} /> PEACH
       </button>
       <button className="category-tab" onClick={() => setPage('TROMBI')}>
         <NeonIcon name="Trombi icône" size={18} /> TROMBI
@@ -82,11 +82,11 @@ export default function PagePeach() {
       <CategoryTabBar />
       <div className="glass-panel mobile-card peach-card">
           {!featureFlags.peachasse ? (
-            <ComingSoon title="Peachasse Lux" icon="Peach icône" color="#ff00ff" />
+            <ComingSoon title="Peachasse Lux" icon="rikart-peachasse-icon" color="#ff00ff" />
           ) : (
             <>
               <div className="profile-header">
-            <div className="avatar glow-avatar"><NeonIcon name="peach-crown" size={50} /></div>
+            <div className="avatar glow-avatar"><NeonIcon name="rikart-peachasse-icon" size={50} /></div>
             <div className="titles">
               <h1 className="title-mobile peach-title">PEACHASSE</h1>
               <p className="only-fans-tag"><NeonIcon name="star-mushroom-indigo" size={16} /> Top 0.01% Mushroom Kingdom</p>

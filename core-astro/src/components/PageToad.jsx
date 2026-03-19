@@ -71,7 +71,7 @@ export default function PageToad() {
   const CategoryTabBar = () => (
     <div className="category-tab-bar">
       <button className="category-tab active" onClick={() => setPage('TOAD')}>
-        <NeonIcon name="Toad icône" size={18} /> TOAD-XIQUE
+        <NeonIcon name="rikart-mixer-icon" size={18} /> TOAD-XIQUE
       </button>
       <button className="category-tab" onClick={() => setPage('CHRONO')}>
         <NeonIcon name="Poppy icône" size={18} /> POPPY
@@ -90,7 +90,7 @@ export default function PageToad() {
       <CategoryTabBar />
       <div className="glass-panel mobile-card toad-card">
         {!useStore.getState().featureFlags.toadLab ? (
-          <ComingSoon title="Toad-Xique Lab" icon="Toad icône" color="#00ff00" />
+          <ComingSoon title="Toad-Xique Lab" icon="rikart-mixer-icon" color="#00ff00" />
         ) : (
           <>
             <h1 className="title-mobile toad-title">TOAD-XIQUE</h1>

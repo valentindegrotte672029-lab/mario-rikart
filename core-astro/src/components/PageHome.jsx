@@ -7,15 +7,15 @@ export default function PageHome() {
   const { setPage } = useStore();
 
   const apps = [
-    { id: 'LUIGI', icon: 'ticket-gold', label: 'Arcade', color: '#39ff14' },
+    { id: 'LUIGI', icon: 'rikart-doodle-icon', label: 'Arcade', color: '#39ff14' },
     { id: 'MARIO', icon: 'camera-neon', label: 'BeMario', color: '#ff3333' },
     { id: 'WARIO', icon: 'devil-neon', label: 'Barnaque', color: '#ffcc00' },
-    { id: 'PEACH', icon: 'crown-neon', label: 'Peachasse', color: '#ff66b2' },
-    { id: 'TOAD', icon: 'skull-neon', label: 'Toad Bank', color: '#9933ff' },
+    { id: 'PEACH', icon: 'rikart-peachasse-icon', label: 'Peachasse', color: '#ff66b2' },
+    { id: 'TOAD', icon: 'rikart-mixer-icon', label: 'Toad Bank', color: '#9933ff' },
     { id: 'CHRONO', icon: 'bomb-timer', label: 'Poppy', color: '#ff9900' },
     { id: 'PSYCH', icon: 'books-neon', label: 'Le Test', color: '#00ffff' },
-    { id: 'CASINO', icon: 'key-neon', label: 'Paris IRL', color: '#ff00ff' },
-    { id: 'POKER', icon: 'guitar-neon', label: 'Poker', color: '#00ff66' },
+    { id: 'CASINO', icon: 'rikart-polymario-icon', label: 'Paris IRL', color: '#ff00ff' },
+    { id: 'POKER', icon: 'rikart-poker-icon', label: 'Poker', color: '#00ff66' },
   ];
 
   return (
