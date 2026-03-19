@@ -43,8 +43,8 @@ export default function ChampiNinja({ onExit }) {
     const spawnItem = useCallback(() => {
         if (gameState !== 'PLAYING') return;
 
-        // 25% chance for a bomb (balanced)
-        const isBomb = Math.random() > 0.75; 
+        // 35% chance for a bomb (more challenge)
+        const isBomb = Math.random() > 0.65; 
         const isGolden = !isBomb && Math.random() > 0.9; // 10% chance for golden champi if not bomb
 
         const newItem = {

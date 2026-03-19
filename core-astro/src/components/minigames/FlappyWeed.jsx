@@ -8,7 +8,7 @@ import NeonIcon from '../NeonIcon';
 
 const GRAVITY = 0.45;
 const JUMP_STRENGTH = -8.5;
-const PIPE_SPEED = 3.5;
+const PIPE_SPEED = 3.0;
 const PIPE_WIDTH = 60;
 const PIPE_GAP = 220;
 const BIRD_SIZE = 25;
@@ -83,8 +83,8 @@ export default function FlappyWeed({ onExit }) {
             // 2. Update Pipes
             let newPipes = [...pipesRef.current];
 
-            // Progressive difficulty calculations
-            let currentSpeed = PIPE_SPEED + (scoreRef.current * 0.2);
+            // Progressive difficulty calculations (Slightly slower increment)
+            let currentSpeed = PIPE_SPEED + (scoreRef.current * 0.15);
             currentSpeed = Math.min(currentSpeed, 6); // Cap speed
 
             let currentGap = PIPE_GAP - (scoreRef.current * 1.5);
