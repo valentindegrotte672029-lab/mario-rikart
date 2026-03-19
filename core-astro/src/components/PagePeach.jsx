@@ -90,8 +90,8 @@ export default function PagePeach() {
             <div className="titles">
               <h1 className="title-mobile peach-title">PEACHASSE</h1>
               <p className="only-fans-tag"><NeonIcon name="star-mushroom-indigo" size={16} /> Top 0.01% Mushroom Kingdom</p>
-              {peachUnlock === 'vip' && <p className="vip-badge"><NeonIcon name="peach-crown" size={14} /> VIP — 26 photos</p>}
-              {peachUnlock === 'basic' && <p className="basic-badge"><NeonIcon name="lock-neon" size={14} /> Basic — 10 photos</p>}
+              {peachUnlock === 'vip' && <p className="vip-badge"><NeonIcon name="peach-crown" size={14} /> VIP — 8 photos</p>}
+              {peachUnlock === 'basic' && <p className="basic-badge"><NeonIcon name="lock-neon" size={14} /> Basic — 4 photos</p>}
             </div>
           </div>
 
@@ -119,7 +119,7 @@ export default function PagePeach() {
                   <span className="price-tag gold">2000 <NeonIcon name="coin-gold" size={14} /></span>
                 </div>
                 <ul className="tier-features">
-                  <li><Crown size={14} color="#ffaa00" /> Les 26 photos complètes</li>
+                  <li><Crown size={14} color="#ffaa00" /> Les 8 photos complètes</li>
                   <li><NeonIcon name="star-mushroom-indigo" size={14} /> Contenu exclusif non censuré</li>
                 </ul>
                 <button className="btn-subscribe vip">Débloquer VIP</button>
@@ -131,7 +131,7 @@ export default function PagePeach() {
           {peachUnlock === 'basic' && (
             <div className="upgrade-banner" onClick={handleUnlockVip}>
               <Crown size={20} color="#ffaa00" />
-              <span>Passer VIP — voir les 26 photos</span>
+              <span>Passer VIP — voir les 8 photos</span>
               <span className="price-tag gold small">2000 <NeonIcon name="coin-gold" size={14} /></span>
             </div>
           )}
