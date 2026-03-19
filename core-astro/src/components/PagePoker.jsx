@@ -250,10 +250,10 @@ export default function PagePoker() {
   const isMyTurn = pokerState?.players?.[pokerState?.currentTurnIdx]?.username === username;
   const toCall = isMyTurn ? (pokerState.highestBet - (myPlayer?.currentBet || 0)) : 0;
 
-  // Reset actionSent when turn changes
+  // Reset actionSent when turn changes, status changes or street changes
   useEffect(() => {
     if (isMyTurn) setActionSent(false);
-  }, [isMyTurn]);
+  }, [isMyTurn, pokerState?.status, pokerState?.communityCards?.length]);
 
   return (
     <motion.div
@@ -496,9 +496,8 @@ export default function PagePoker() {
                 </div>
             </div>
 
-            {/* Controls */}
             <AnimatePresence>
-                {isMyTurn && !myPlayer?.folded && !actionSent && (
+                {isMyTurn && !myPlayer?.folded && !actionSent && ['PREFLOP', 'FLOP', 'TURN', 'RIVER'].includes(pokerState?.status) && (
                     <motion.div 
                         className="poker-controls"
                         initial={{ y: 100 }}
