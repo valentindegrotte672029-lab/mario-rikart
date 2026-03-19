@@ -6,11 +6,11 @@ import useStore from '../../store/useStore';
 import { socket } from '../../socket';
 import NeonIcon from '../NeonIcon';
 
-const GRAVITY = 0.45;
-const JUMP_STRENGTH = -8.5;
+const GRAVITY = 0.40; // Simpler
+const JUMP_STRENGTH = -8.0; // More controlled
 const PIPE_SPEED = 3.0;
 const PIPE_WIDTH = 60;
-const PIPE_GAP = 220;
+const PIPE_GAP = 250; // Larger gap
 const BIRD_SIZE = 25;
 
 export default function FlappyWeed({ onExit }) {
