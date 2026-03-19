@@ -402,12 +402,12 @@ export default function PagePsych() {
                             <div className="cw-scam-banner">
                                 <p className="cw-scam-title"><NeonIcon name="coins-stack" size={28} /> GAGNEZ 10 000€ <NeonIcon name="coins-stack" size={28} /></p>
                                 <p className="cw-scam-sub">Trouvez tous les mots cachés et remportez le jackpot !</p>
-                                <p className="cw-scam-author">— Posté par Waluigi <NeonIcon name="devil-neon" size={28} glow="#ff4444" /></p>
+                                <p className="cw-scam-author">— Posté par Waluigi <NeonIcon name="devil-neon" size={16} glow="#ff4444" /></p>
                             </div>
 
                             {wsAllFound ? (
                                 <motion.div className="cw-scam-result" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
-                                    <p style={{ fontSize: '3rem', marginBottom: 10 }}><NeonIcon name="devil-neon" size={80} glow="#ff4444" /></p>
+                                    <p style={{ fontSize: '3rem', marginBottom: 10 }}><NeonIcon name="devil-neon" size={50} glow="#ff4444" /></p>
                                     <h2 style={{ color: '#ff4444', marginBottom: 10 }}>ARNAQUE !</h2>
                                     <p style={{ color: '#ccc', fontSize: '0.95rem', lineHeight: 1.5 }}>
                                         Bravo, tu as tout trouvé... mais tu ne gagnes <b style={{ color: '#ff4444' }}>RIEN DU TOUT</b> !
