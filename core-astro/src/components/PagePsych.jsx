@@ -38,12 +38,9 @@ const HOROSCOPE_SIGNS = [
     },
     {
         id: 'DKR',
-        icon: 'phoenix-bird', // Pas pu générer Phénix encore
+        icon: 'astro-dkr',
         name: 'DKR',
         text: `Ce mois-ci, le 27, une éclipse a lieu, c'est le phoenix et l'epsci qui se rencontrent. Pour la première fois? Certainement pas. En cette période l'epsci revit, après tout, c'est pas au vieux singe qu'on apprend à faire la grimace. Votre ambition et votre envie de réussir ne connaissent plus de limite, vous êtes inarrêtables. Cependant vous avez tendance à vous disperser, (2e et 3e décan), tout doucement le matin, inarrêtables le soir... En effet quand le soleil se couche, votre plein potentiel est de sortie (rien à voir avec le ftor). Mais attention, n'oubliez jamais que le sheitan se cache dans les détails et qu'ils se vengeront si vous les négligez. Ne chassez pas vos vieux démons, ce sont des vieux goat mais n'oubliez pas d'accueillir le monde qui s'ouvre à vous à bras ouverts.`
-    }
-];
-n'oubliez pas d'accueillir le monde qui s'ouvre à vous à bras ouverts.`
     }
 ];
 
@@ -52,72 +49,72 @@ const QUESTIONS = [
         id: 1,
         text: "Tu préfères :",
         options: [
-            { text: "Les araignées bananes", value: "araignees_bananes", icon: "spider-banana" },
-            { text: "Le petit Spirou", value: "petit_spirou", icon: "book-neon" }
+            { text: "Les araignées bananes", value: "araignees_bananes", icon: "rikart-spider" },
+            { text: "Le petit Spirou", value: "petit_spirou", icon: "rikart-book" }
         ]
     },
     {
         id: 2,
         text: "T'es plutôt bête ou tuborg :",
         options: [
-            { text: "Despé", value: "despe", icon: "lemon-neon" },
-            { text: "Appi", value: "appi", icon: "apple-neon" }
+            { text: "Despé", value: "despe", icon: "rikart-lemon-test" },
+            { text: "Appi", value: "appi", icon: "rikart-apple" }
         ]
     },
     {
         id: 3,
         text: "L'EPSCI est-il mort ?",
         options: [
-            { text: "Oui, c'est l'hécatombe", value: "oui", icon: "skull-neon" },
-            { text: "Non, toujours vivant comme dirait Renaud", value: "non", icon: "guitar-neon" }
+            { text: "Oui, c'est l'hécatombe", value: "oui", icon: "rikart-skull" },
+            { text: "Non, toujours vivant comme dirait Renaud", value: "non", icon: "rikart-guitar" }
         ]
     },
     {
         id: 4,
         text: "Tu préfères :",
         options: [
-            { text: "Spot", value: "spot", icon: "cop-neon" },
-            { text: "Le dyslexique qui livre des dwichs", value: "dyslexique", icon: "bike-neon" }
+            { text: "Spot", value: "spot", icon: "rikart-cop" },
+            { text: "Le dyslexique qui livre des dwichs", value: "dyslexique", icon: "rikart-bike" }
         ]
     },
     {
         id: 5,
         text: "Tu te décris plutôt comme un être social ou un loup solitaire :",
         options: [
-            { text: "Je suis le MVP du patio", value: "social", icon: "crown-neon" },
-            { text: "Je connais le Learning Lab comme ma poche", value: "loup", icon: "books-neon" }
+            { text: "Je suis le MVP du patio", value: "social", icon: "rikart-crown" },
+            { text: "Je connais le Learning Lab comme ma poche", value: "loup", icon: "rikart-books" }
         ]
     },
     {
         id: 6,
         text: "Quel moyen de transport utilises-tu le plus :",
         options: [
-            { text: "Pédalo", value: "pedalo", icon: "canoe-neon" },
-            { text: "Tricycle", value: "tricycle", icon: "bike-neon" }
+            { text: "Pédalo", value: "pedalo", icon: "rikart-canoe" },
+            { text: "Tricycle", value: "tricycle", icon: "rikart-bike" }
         ]
     },
     {
         id: 7,
         text: "Tu préfères :",
         options: [
-            { text: "Lécher le couloir des assos", value: "couloir", icon: "tongue-neon" },
-            { text: "Le chef cuisto du Massala Bar", value: "massala", icon: "fire-neon" }
+            { text: "Lécher le couloir des assos", value: "couloir", icon: "rikart-tongue" },
+            { text: "Le chef cuisto du Massala Bar", value: "massala", icon: "rikart-fire" }
         ]
     },
     {
         id: 8,
         text: "Tu préfères :",
         options: [
-            { text: "Ton père", value: "pere", icon: "man-neon" },
-            { text: "Ta mère", value: "mere", icon: "woman-neon" }
+            { text: "Ton père", value: "pere", icon: "rikart-man" },
+            { text: "Ta mère", value: "mere", icon: "rikart-woman" }
         ]
     },
     {
         id: 9,
         text: "T'es plutôt :",
         options: [
-            { text: "La PC", value: "pc", icon: "ambulance-neon" },
-            { text: "Le discours RDA", value: "rda", icon: "crown-neon" }
+            { text: "La PC", value: "pc", icon: "rikart-ambulance" },
+            { text: "Le discours RDA", value: "rda", icon: "rikart-crown" }
         ]
     },
     {
