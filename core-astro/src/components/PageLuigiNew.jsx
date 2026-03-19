@@ -57,7 +57,7 @@ export default function PageLuigiNew() {
 
         <div className="arcade-grid">
           <button className="arcade-btn flappyweed-btn" onClick={() => setActiveGame('FLAPPYWEED')}>
-            <span className="game-icon"><NeonIcon name="yoshi-weed" size={24} /></span>
+            <span className="game-icon"><NeonIcon name="fire-flower-pixel" size={24} /></span>
             <div className="game-info">
               <h3>ROULE-TA-FLEUR</h3>
               <p>Evite les tuyaux en volant.</p>
@@ -75,7 +75,7 @@ export default function PageLuigiNew() {
           </button>
 
           <button className="arcade-btn doodleweed-btn" onClick={() => setActiveGame('DOODLEWEED')}>
-            <span className="game-icon"><NeonIcon name="yoshi-weed" size={24} glow="#39ff14" /></span>
+            <span className="game-icon"><NeonIcon name="doodle-weed" size={24} glow="#39ff14" /></span>
             <div className="game-info">
               <h3>DOODLE-WEED</h3>
               <p>Monte le plus haut possible !</p>
