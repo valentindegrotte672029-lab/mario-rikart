@@ -162,7 +162,7 @@ export default function PageToad() {
           disabled={selectedIngredients.length === 0 || !selectedVictim || isSending}
           onClick={handleSendMix}
         >
-          <NeonIcon name="skull-neon" size={40} glow="#ff3366" />
+          <NeonIcon name="skull-neon" size={28} glow="#ff3366" />
           <span>{isSending ? 'Mélange envoyé !' : 'Servir le mélange'}</span>
         </button>
           </>
@@ -213,11 +213,12 @@ export default function PageToad() {
 
         .toad-card {
           width: 100%;
-          padding: 20px 15px 40px 15px; /* Added bottom padding for tab bar */
+          padding: 20px 15px 120px 15px; /* Increased bottom padding for bottom nav */
           border-radius: 32px;
           border: 1px solid rgba(255, 51, 102, 0.3);
           background: rgba(25, 5, 10, 0.65);
           backdrop-filter: blur(15px);
+          overflow-y: auto; /* Ensure scrolling within card if needed */
         }
 
         .toad-title {
