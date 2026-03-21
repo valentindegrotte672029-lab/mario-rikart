@@ -152,6 +152,12 @@ export default function App() {
         useStore.getState().setPendingJoinRequest(false);
         alert('Ta demande a été refusée.');
       });
+      socket.on('account_deleted', ({ username: targetUser }) => {
+          if (targetUser === username) {
+              alert("⚠️ Ton compte a été supprimé par l'administrateur.");
+              logout();
+          }
+      });
       socket.on('sync_feature_flags', (flags) => setFeatureFlags(flags));
 
       return () => {
@@ -172,7 +178,9 @@ export default function App() {
         socket.off('poker_join_request');
         socket.off('poker_request_sent');
         socket.off('poker_join_denied');
-        socket.disconnect();
+      socket.off('account_deleted');
+      socket.off('sync_feature_flags');
+      socket.disconnect();
       };
     }
   }, [username, triggerHappening, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, setBets, setBalance, setPokerState, setPokerRooms, setFeatureFlags]);
