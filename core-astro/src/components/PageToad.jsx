@@ -151,6 +151,11 @@ export default function PageToad() {
           </div>
         </section>
 
+        {/* Information Prix */}
+        <div style={{ textAlign: 'center', marginBottom: '10px', fontSize: '0.85rem', color: '#ffcc00', fontWeight: 'bold', textShadow: '0 0 10px rgba(255, 204, 0, 0.3)' }}>
+          Chaque mélange atroce coûte 500 pièces <NeonIcon name="coin-gold" size={14} />
+        </div>
+
         {/* Bouton Envoi */}
         <button
           className={`btn-primary send-mix-btn ${isSending ? 'sending' : ''}`}
