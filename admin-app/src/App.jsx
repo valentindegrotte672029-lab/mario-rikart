@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
-import { Users, LayoutDashboard, MessageSquare, Settings, Play, Coins, Timer, ArrowLeft, Trash2, Trophy, Clock } from 'lucide-react';
+import { Users, LayoutDashboard, MessageSquare, Settings, Play, Coins, Timer, ArrowLeft, Trash2, Trophy, Clock, Activity, ShieldAlert, Swords, Zap, XCircle, ShoppingBag, Camera } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Connexion au serveur Node (Environnement dynamique)
