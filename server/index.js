@@ -167,7 +167,7 @@ io.on('connection', (socket) => {
         const alias = username?.toUpperCase();
         if (alias && blacklistDb.includes(alias)) {
             socket.emit('account_deleted', { username: alias });
-            socket.disconnect(true);
+            setTimeout(() => socket.disconnect(true), 1500);
             return;
         }
         if (alias && usersDb[alias]) {
@@ -242,7 +242,7 @@ io.on('connection', (socket) => {
             const sockets = await io.fetchSockets();
             for (const s of sockets) {
                 if (s.username === alias || players[s.id] === alias) {
-                    s.disconnect(true);
+                    setTimeout(() => s.disconnect(true), 1500);
                 }
             }
         }
@@ -422,10 +422,12 @@ io.on('connection', (socket) => {
     // 1. Connexion d'un joueur
     socket.on('join_game', (username) => {
         const alias = username?.toUpperCase();
-        if (alias && blacklistDb.includes(alias)) {
+        
+        // Anti-bypass check for blacklisted accounts
+        if (blacklistDb.includes(alias)) {
             console.log(`🚫 Tentative de connexion bloquée (Blacklist) : ${alias}`);
             socket.emit('account_deleted', { username: alias });
-            socket.disconnect(true);
+            setTimeout(() => socket.disconnect(true), 1500);
             return;
         }
         
@@ -624,7 +626,7 @@ io.on('connection', (socket) => {
         const alias = socket.username || players[socket.id];
         if (alias && blacklistDb.includes(alias)) {
             socket.emit('account_deleted', { username: alias });
-            socket.disconnect(true);
+            setTimeout(() => socket.disconnect(true), 1500);
         }
     });
 
