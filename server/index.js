@@ -108,6 +108,12 @@ io.on('connection', (socket) => {
     // 0. Authentification Joueur 
     socket.on('authenticate', ({ username, password }, callback) => {
         const alias = username.toUpperCase();
+
+        // Anti-Multi-compte : Empêche deux utilisateurs d'être connectés sur le même pseudo
+        if (Object.values(players).includes(alias)) {
+            return callback({ success: false, message: "🚨 Ce pseudo est déjà en ligne sur un autre appareil." });
+        }
+
         if (usersDb[alias]) {
             if (usersDb[alias].password === password) {
                 players[socket.id] = alias;
@@ -124,7 +130,7 @@ io.on('connection', (socket) => {
                     }
                 });
             } else {
-                callback({ success: false, message: "🚨 Mot de passe incorrect." });
+                callback({ success: false, message: "🚨 Mot de passe incorrect (ou pseudo déjà pris !)" });
             }
         } else {
             // Check blacklist
