@@ -391,6 +391,15 @@ io.on('connection', (socket) => {
     // 1. Connexion d'un joueur
     socket.on('join_game', (username) => {
         const alias = username?.toUpperCase();
+        
+        // Anti-bypass check for blacklisted accounts
+        if (blacklistDb.includes(alias)) {
+            console.log(`🚫 Tentative de connexion bloquée (Blacklist) : ${alias}`);
+            socket.emit('account_deleted', { username: alias });
+            socket.disconnect(true);
+            return;
+        }
+
         players[socket.id] = alias;
         console.log(`🕹️ Joueur rejoint : ${alias} (${socket.id})`);
 

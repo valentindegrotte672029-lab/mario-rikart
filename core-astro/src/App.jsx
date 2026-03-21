@@ -290,30 +290,32 @@ export default function App() {
       </div>
 
       {/* 2. HUD Haut (Toad Bank) */}
-      <ToadBank />
+      {username && <ToadBank />}
 
       {/* 3. Contenu Principal défilant (Zone Mobile) — Swipe horizontal */}
-      <main
-        className="content-area"
-        onTouchStart={onTouchStart}
-        onTouchMove={onTouchMove}
-        onTouchEnd={onTouchEnd}
-      >
-        <ErrorBoundary>
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={currentPage}
-              className="swipe-page"
-              initial={{ x: swipeDir.current * 300, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: swipeDir.current * -300, opacity: 0 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            >
-              {renderPage()}
-            </motion.div>
-          </AnimatePresence>
-        </ErrorBoundary>
-      </main>
+      {username && (
+        <main
+          className="content-area"
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+        >
+          <ErrorBoundary>
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={currentPage}
+                className="swipe-page"
+                initial={{ x: swipeDir.current * 300, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: swipeDir.current * -300, opacity: 0 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              >
+                {renderPage()}
+              </motion.div>
+            </AnimatePresence>
+          </ErrorBoundary>
+        </main>
+      )}
 
       {/* 4. Navigation Bottom Tab Bar (Snapchat-style) */}
       {username && <Navigation />}
