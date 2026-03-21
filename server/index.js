@@ -229,11 +229,13 @@ io.on('connection', (socket) => {
             addNotification('ADMIN', `🗑️ Compte supprimé et banni : ${alias}`);
             sendAllUsersToAdmin(); // Refresh all admins
 
-            // 3. Force kick all active instances
+            // 3. Broadcast to EVERYONE to ensure the client logs itself out
+            io.emit('account_deleted', { username: alias });
+
+            // 4. Force physical kick for active instances we CAN track
             const sockets = await io.fetchSockets();
             for (const s of sockets) {
                 if (s.username === alias || players[s.id] === alias) {
-                    s.emit('account_deleted', { username: alias });
                     s.disconnect(true);
                 }
             }
