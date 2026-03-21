@@ -269,6 +269,12 @@ io.on('connection', (socket) => {
                     // On crédite les utilisateurs dans la DB
                     if (usersDb[wb.username]) {
                         usersDb[wb.username].balance = (usersDb[wb.username].balance || 0) + winnings;
+                        
+                        // NOTIFICATION EN TEMPS RÉEL SI CONNECTÉ
+                        const winnerSocketId = Object.keys(players).find(sid => players[sid] === wb.username);
+                        if (winnerSocketId) {
+                            io.to(winnerSocketId).emit('balance_update', usersDb[wb.username].balance);
+                        }
                     }
                 });
                 saveUsers();
@@ -276,7 +282,7 @@ io.on('connection', (socket) => {
 
             saveBets();
             io.emit('sync_bets', betsDb);
-            // On force les clients gagnants à refetch leur balance (via un broadcast ciblé ou global)
+            // On force les clients à savoir que le pari est résolu
             io.emit('bet_resolved', { betId, winningOptionIdx, totalPot, subsidizedPot });
         }
     });

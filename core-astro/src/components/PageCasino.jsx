@@ -179,12 +179,20 @@ export default function PageCasino() {
                       const optionTotal = optionBets.reduce((acc, b) => acc + b.amount, 0);
                       const percentage = totalPot > 0 ? ((optionTotal / totalPot) * 100).toFixed(0) : 0;
                       const isWinner = bet.winningOption === idx;
+                      
+                      // CALCUL DE LA CÔTE (AVEC BONUS CASINO 1.2x)
+                      const odd = optionTotal === 0 ? "10.00" : (totalPot * 1.2 / optionTotal).toFixed(2);
+                      const myInput = selectedAmounts[`${bet.id}-${idx}`] || 0;
+                      const potentialGain = Math.floor(myInput * odd);
 
                       return (
                         <div key={idx} className={`bet-option ${isWinner ? 'winner' : ''}`}>
                           <div className="option-header">
                             <span className="option-name">{opt}</span>
-                            <span className="option-percentage">{percentage}%</span>
+                            <div className="option-badges">
+                                <span className="option-odd">x{odd}</span>
+                                <span className="option-percentage">{percentage}%</span>
+                            </div>
                           </div>
                           
                           <div className="progress-bar-bg">
@@ -201,15 +209,22 @@ export default function PageCasino() {
                           </div>
 
                           {bet.status === 'OPEN' && (
-                            <div className="place-bet-controls">
-                              <input 
-                                type="number" 
-                                placeholder="Mise" 
-                                value={selectedAmounts[`${bet.id}-${idx}`] || ''}
-                                onChange={e => setSelectedAmounts(prev => ({ ...prev, [`${bet.id}-${idx}`]: e.target.value }))}
-                                min="1"
-                              />
-                              <button onClick={() => handlePlaceBet(bet.id, idx, opt)}>PARIER</button>
+                            <div className="place-bet-area">
+                              <div className="place-bet-controls">
+                                <input 
+                                  type="number" 
+                                  placeholder="Mise" 
+                                  value={selectedAmounts[`${bet.id}-${idx}`] || ''}
+                                  onChange={e => setSelectedAmounts(prev => ({ ...prev, [`${bet.id}-${idx}`]: e.target.value }))}
+                                  min="1"
+                                />
+                                <button onClick={() => handlePlaceBet(bet.id, idx, opt)}>PARIER</button>
+                              </div>
+                              {myInput > 0 && (
+                                <div className="potential-gain">
+                                  Gain estimé : <span>{potentialGain.toLocaleString()} <NeonIcon name="coin-gold" size={12} /></span>
+                                </div>
+                              )}
                             </div>
                           )}
 
@@ -512,37 +527,73 @@ export default function PageCasino() {
           gap: 4px;
         }
 
-        .place-bet-controls {
-          display: flex;
-          gap: 10px;
-          margin-top: 10px;
-        }
+         .place-bet-area {
+           display: flex;
+           flex-direction: column;
+           gap: 6px;
+           margin-top: 10px;
+         }
 
-        .place-bet-controls input {
-          flex: 1;
-          padding: 8px;
-          border-radius: 8px;
-          border: none;
-          background: #222;
-          color: white;
-          font-weight: bold;
-          text-align: center;
-        }
+         .place-bet-controls {
+           display: flex;
+           gap: 10px;
+         }
 
-        .place-bet-controls button {
-          flex: 1;
-          background: transparent !important;
-          color: #ff00ff;
-          border: none !important;
-          border-radius: 0;
-          font-weight: bold;
-          cursor: pointer;
-          text-shadow: 0 0 10px rgba(255, 0, 255, 0.8);
-        }
+         .place-bet-controls input {
+           flex: 1;
+           padding: 8px;
+           border-radius: 8px;
+           border: 1px solid rgba(255, 255, 255, 0.1);
+           background: rgba(0,0,0,0.3);
+           color: white;
+           font-weight: bold;
+           text-align: center;
+           outline: none;
+         }
 
-        .place-bet-controls button:active {
-          transform: scale(0.95);
-        }
+         .place-bet-controls button {
+           flex: 1;
+           background: #ff00ff !important;
+           color: white !important;
+           border: none !important;
+           border-radius: 8px !important;
+           font-weight: 900 !important;
+           cursor: pointer;
+           text-shadow: 0 0 10px rgba(255, 0, 255, 0.8);
+           box-shadow: 0 0 15px rgba(255, 0, 255, 0.4);
+         }
+
+         .place-bet-controls button:active {
+           transform: scale(0.95);
+         }
+
+         .option-badges {
+           display: flex;
+           gap: 10px;
+           align-items: center;
+         }
+
+         .option-odd {
+           background: rgba(0, 255, 204, 0.15);
+           color: #00ffcc;
+           padding: 2px 8px;
+           border-radius: 6px;
+           font-size: 0.8rem;
+           border: 1px solid rgba(0, 255, 204, 0.3);
+           font-weight: 900;
+         }
+
+         .potential-gain {
+           font-size: 0.75rem;
+           color: #aaa;
+           text-align: right;
+           margin-right: 5px;
+         }
+         
+         .potential-gain span {
+           color: #00ffcc;
+           font-weight: 800;
+         }
 
         .winner-badge {
           text-align: center;
