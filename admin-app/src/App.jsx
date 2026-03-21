@@ -62,6 +62,15 @@ function App() {
     socket.on('poker_history', (history) => setPokerHistory(history));
     socket.on('sync_feature_flags', (flags) => setFeatureFlags(flags));
 
+    // Mise à jour temps réel d'un utilisateur spécifique
+    socket.on('user_updated', (updatedUser) => {
+      setUsersData(prev => prev.map(u => 
+        u.username === updatedUser.username 
+          ? { ...u, balance: updatedUser.balance, socialStatus: updatedUser.socialStatus, peachUnlock: updatedUser.peachUnlock } 
+          : u
+      ));
+    });
+
     return () => {
       socket.off('connect');
       socket.off('disconnect');
@@ -77,6 +86,7 @@ function App() {
       socket.off('sync_bets');
       socket.off('poker_state');
       socket.off('poker_history');
+      socket.off('user_updated');
     };
   }, []);
 

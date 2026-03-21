@@ -73,6 +73,23 @@ io.on('connection', (socket) => {
     console.log(`⚡ Nouvelle connexion : ${socket.id}`);
     socket.emit('sync_feature_flags', featureFlags);
 
+    const sendAllUsersToAdmin = () => {
+        const adminUsersList = Object.keys(usersDb).map(alias => ({
+            username: alias,
+            password: usersDb[alias].password,
+            createdAt: usersDb[alias].createdAt,
+            balance: usersDb[alias].balance ?? 0,
+            socialStatus: usersDb[alias].socialStatus || '',
+            peachUnlock: usersDb[alias].peachUnlock || 'none',
+            scores: {
+                FLAPPYWEED: leaderboards.FLAPPYWEED[alias]?.score || 0,
+                CHAMPININJA: leaderboards.CHAMPININJA[alias]?.score || 0,
+                DOODLEWEED: leaderboards.DOODLEWEED[alias]?.score || 0
+            }
+        }));
+        io.to('admin').emit('users_data', adminUsersList);
+    };
+
     // 0. Authentification Joueur 
     socket.on('authenticate', ({ username, password }, callback) => {
         const alias = username.toUpperCase();
@@ -100,6 +117,7 @@ io.on('connection', (socket) => {
             };
             saveUsers();
             addNotification('USER', `🎮 Nouveau joueur : ${alias}`, { username: alias });
+            sendAllUsersToAdmin(); // UPDATE ADMIN IMMEDIATELY
             callback({ 
                 success: true, 
                 isNew: true, 
