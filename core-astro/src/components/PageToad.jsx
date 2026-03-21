@@ -9,17 +9,17 @@ import NeonIcon from './NeonIcon';
 import ComingSoon from './ComingSoon';
 
 const INGREDIENTS = [
-  { id: 'vodka', name: 'Vodka', icon: 'rikart-vodka' },
-  { id: 'tomate', name: 'Jus de tomate', icon: 'rikart-tomato' },
-  { id: 'sauce_piment', name: 'Sauce piment', icon: 'rikart-chili' },
-  { id: 'cornichon', name: 'Jus de cornichon', icon: 'rikart-pickle' },
-  { id: 'olives', name: 'Jus d\'olives vertes', icon: 'rikart-olive' },
-  { id: 'citron_vert', name: 'Jus de citron vert', icon: 'rikart-lime' },
-  { id: 'sel_poivre', name: 'Sel et Poivre noir', icon: 'rikart-salt-pepper' },
-  { id: 'soja', name: 'Sauce soja', icon: 'rikart-soy' },
-  { id: 'concombre', name: 'Tranches de concombre', icon: 'rikart-cucumber' },
-  { id: 'tabasco', name: 'Tabasco', icon: 'rikart-tabasco' },
-  { id: 'pamplemousse', name: 'Jus de pamplemousse', icon: 'rikart-grapefruit' },
+  { id: 'vodka', name: 'Vodka', icon: 'simple-vodka' },
+  { id: 'tomate', name: 'Jus de tomate', icon: 'simple-tomato' },
+  { id: 'sauce_piment', name: 'Sauce piment', icon: 'simple-chili' },
+  { id: 'cornichon', name: 'Jus de cornichon', icon: 'simple-pickle' },
+  { id: 'olives', name: 'Jus d\'olives vertes', icon: 'simple-olive' },
+  { id: 'citron_vert', name: 'Jus de citron vert', icon: 'simple-lime' },
+  { id: 'sel_poivre', name: 'Sel et Poivre noir', icon: 'simple-salt-pepper' },
+  { id: 'soja', name: 'Sauce soja', icon: 'simple-soy' },
+  { id: 'concombre', name: 'Tranches de concombre', icon: 'simple-cucumber' },
+  { id: 'tabasco', name: 'Tabasco', icon: 'simple-tabasco' },
+  { id: 'pamplemousse', name: 'Jus de pamplemousse', icon: 'simple-grapefruit' },
 ];
 
 const LISTEUX = [
