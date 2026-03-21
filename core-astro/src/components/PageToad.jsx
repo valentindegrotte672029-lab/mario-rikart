@@ -27,7 +27,7 @@ const LISTEUX = [
 ];
 
 export default function PageToad() {
-  const { username } = useStore();
+  const { username, spendCoins } = useStore();
   const [selectedIngredients, setSelectedIngredients] = useState([]);
   const [selectedVictim, setSelectedVictim] = useState('');
   const [isSending, setIsSending] = useState(false);
@@ -52,6 +52,12 @@ export default function PageToad() {
     if (window.navigator?.vibrate) window.navigator.vibrate([50, 100, 50]);
 
     const mixName = "Mélange " + selectedIngredients.map(id => INGREDIENTS.find(i => i.id === id).name).join(' + ');
+
+    const success = spendCoins(500, "MÉLANGE TOAD-XIQUE");
+    if (!success) {
+      if (window.navigator?.vibrate) window.navigator.vibrate(200);
+      return;
+    }
 
     // Envoi de la commande spéciale au Master
     socket.emit('new_order', {

@@ -8,7 +8,8 @@ import { socket } from '../../socket';
 import NeonIcon from '../NeonIcon';
 
 const GAME_DURATION = 20; // 20 seconds of intense clicking
-const SPAWN_INTERVAL_MS = 500; // Slower/Simpler
+const SPAWN_INTERVAL_MS = 450; // Slower/Simpler
+const REWARD_MULTIPLIER = 1.2;
 
 export default function ChampiNinja({ onExit }) {
     const [gameState, setGameState] = useState('START'); // START, PLAYING, GAMEOVER
@@ -29,11 +30,11 @@ export default function ChampiNinja({ onExit }) {
             const updatedItems = currentItems.map(item => ({
                 ...item,
                 y: item.y - item.velocityY,
-                velocityY: item.velocityY - 0.85 // High Gravity effect
+                velocityY: item.velocityY - 0.70 // High Gravity effect
             }));
 
-            // Remove items that fell out of screen (y > 600)
-            return updatedItems.filter(item => item.y < 600);
+            // Filter out items that fell below the screen (approx 600px)
+            return updatedItems.filter(item => item.y < 650);
         });
 
         requestRef.current = requestAnimationFrame(updateGame);
@@ -43,16 +44,18 @@ export default function ChampiNinja({ onExit }) {
     const spawnItem = useCallback(() => {
         if (gameState !== 'PLAYING') return;
 
-        // 35% chance for a bomb (more challenge)
-        const isBomb = Math.random() > 0.65; 
-        const isGolden = !isBomb && Math.random() > 0.9; // 10% chance for golden champi if not bomb
+        // Probabilities: 75% Champi, 20% Bomb, 5% Golden
+        const rng = Math.random();
+        let type = 'champi';
+        if (rng > 0.95) type = 'golden';
+        else if (rng > 0.75) type = 'bomb';
 
         const newItem = {
             id: itemIdCounter.current++,
             x: Math.random() * 80 + 10, // 10% to 90% view width
-            y: 500, // Spawn from bottom
-            type: isBomb ? 'bomb' : (isGolden ? 'golden' : 'champi'),
-            velocityY: Math.random() * 8 + 15, // Slower jump strength
+            y: 550, // Spawn from bottom
+            type: type,
+            velocityY: Math.random() * 7 + 17, // Slower jump strength
             rotation: Math.random() * 360,
         };
 
@@ -93,9 +96,13 @@ export default function ChampiNinja({ onExit }) {
 
     const endGame = () => {
         setGameState('GAMEOVER');
+        setItems([]); // CLEAR ITEMS IMMEDIATELY
+        if (window.navigator?.vibrate) window.navigator.vibrate([200, 100, 200]);
+
         setScore(currentScore => {
             if (currentScore > 0) {
-                useStore.setState(state => ({ balance: state.balance + Math.floor(currentScore * 1.2) }));
+                const totalReward = Math.floor(currentScore * REWARD_MULTIPLIER);
+                useStore.setState(state => ({ balance: state.balance + totalReward }));
                 socket.emit('submit_score', { game: 'CHAMPININJA', score: currentScore });
             }
             return currentScore;
@@ -105,20 +112,25 @@ export default function ChampiNinja({ onExit }) {
     const handleSlice = (id, type) => {
         if (gameState !== 'PLAYING') return;
 
-        if (window.navigator?.vibrate) window.navigator.vibrate(50);
+        if (window.navigator?.vibrate) window.navigator.vibrate(40);
 
         if (type === 'bomb') {
-            if (window.navigator?.vibrate) window.navigator.vibrate([200, 100, 200]);
-            setScore(prev => Math.max(0, prev - 100)); // Heavy Penality
-            // Optional : Flash screen effect ?
+            if (window.navigator?.vibrate) window.navigator.vibrate([150, 50, 150]);
+            setScore(prev => Math.max(0, prev - 50)); // Heavy Penality
         } else if (type === 'golden') {
-            setScore(prev => prev + 35); // Big reward
+            setScore(prev => prev + 25); // Big reward
         } else {
-            setScore(prev => prev + 8); // Normal Reward
+            setScore(prev => prev + 5); // Normal Reward
         }
 
         // Remove item
         setItems(prev => prev.filter(i => i.id !== id));
+    };
+
+    const getItemIcon = (type) => {
+        if (type === 'bomb') return <NeonIcon name="bomb" size={35} glow="red" />;
+        if (type === 'golden') return <NeonIcon name="coin-gold" size={35} glow="gold" />;
+        return <NeonIcon name="mushroom-red-classic" size={35} glow="#ff3366" />;
     };
 
     // --- RENDERING ---
@@ -134,7 +146,7 @@ export default function ChampiNinja({ onExit }) {
                 <button className="back-btn" onClick={onExit}><ArrowLeft size={24} /></button>
                 <h2>CHAMPI NINJA</h2>
                 <div className="score-display">
-                    <Coins size={16} color="#ffcc00" /> {Math.floor(score * 1.2)}
+                    <Coins size={16} color="#ffcc00" /> {Math.floor(score * REWARD_MULTIPLIER)}
                 </div>
             </div>
 
@@ -149,8 +161,8 @@ export default function ChampiNinja({ onExit }) {
                 {gameState === 'START' && (
                     <div className="overlay-menu">
                         <h1>Slash rapide !</h1>
-                        <p>Tape sur les 🍄 pour scorrer.</p>
-                        <p>Attention aux bombes 💣 !</p>
+                        <div className="overlay-text">Tape sur les 🍄 pour scorrer.</div>
+                        <div className="overlay-text secondary">Attention aux bombes 💣 !</div>
                         <button className="start-btn" onClick={startGame}>JOUER (20s)</button>
                     </div>
                 )}
@@ -158,8 +170,9 @@ export default function ChampiNinja({ onExit }) {
                 {gameState === 'GAMEOVER' && (
                     <div className="overlay-menu">
                         <h1>TERMINE</h1>
-                        <p>Total récolté : <strong style={{ color: '#ffcc00' }}>{score * 2} <NeonIcon name="coin-gold" size={18} /></strong></p>
-                        <button className="start-btn" onClick={startGame}>REJOUER</button>
+                        <div className="overlay-text">Score : {score} pts</div>
+                        <div className="overlay-text">Total récolté : <strong style={{ color: '#ffcc00' }}>{Math.floor(score * REWARD_MULTIPLIER)} <NeonIcon name="coin-gold" size={18} /></strong></div>
+                        <button className="start-btn" onClick={startGame} style={{ marginTop: '20px' }}>REJOUER</button>
                     </div>
                 )}
 
@@ -167,27 +180,29 @@ export default function ChampiNinja({ onExit }) {
                 <div className="play-area">
                     <AnimatePresence>
                         {items.map((item) => (
-                            <motion.button
+                            <motion.div
                                 key={item.id}
                                 className={`ninja-item ${item.type}`}
                                 style={{
                                     left: `${item.x}%`,
                                     top: `${item.y}px`,
                                 }}
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1, rotate: item.rotation + (item.velocityY * 10) }}
-                                exit={{ scale: 0, opacity: 0 }}
+                                initial={{ scale: 0, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1, rotate: item.rotation + (item.velocityY * 5) }}
+                                exit={{ scale: 1.5, opacity: 0, filter: 'brightness(2)' }}
                                 onPointerDown={(e) => {
                                     e.preventDefault(); // Prevent accidental scrolling
                                     handleSlice(item.id, item.type);
                                 }}
                             >
-                                {item.type === 'bomb' ? '💣' : (item.type === 'golden' ? '⭐' : '🍄')}
-                            </motion.button>
+                                {getItemIcon(item.type)}
+                            </motion.div>
                         ))}
                     </AnimatePresence>
                 </div>
             </div>
+
+            <p style={{ textAlign: 'center', color: '#888', marginTop: '10px' }}>Tapote ou glisse sur les champignons.</p>
 
             <style>{`
                 .champininja-mobile {
@@ -197,8 +212,7 @@ export default function ChampiNinja({ onExit }) {
                     display: flex; flex-direction: column;
                     align-items: center;
                     background-color: #110000;
-                    background-image: url('/grain.png'), linear-gradient(135deg, #110000 0%, #330011 100%);
-                    background-blend-mode: overlay;
+                    background-image: radial-gradient(circle at center, #330011 0%, #110000 100%);
                     z-index: 9999;
                     padding: calc(env(safe-area-inset-top, 0px) + 85px) 15px 15px 15px;
                     box-sizing: border-box;
@@ -206,44 +220,42 @@ export default function ChampiNinja({ onExit }) {
 
                 .header-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; color: var(--theme-color); width: 100%; max-width: 450px; }
                 .back-btn { background: rgba(255,255,255,0.1); border: none; padding: 10px; border-radius: 50%; color: white; display: flex; }
-                .score-display { display: flex; align-items: center; gap: 5px; font-weight: bold; background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; border: 1px solid var(--theme-color); color: white; }
+                .score-display { display: flex; align-items: center; gap: 5px; font-weight: 900; background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; border: 1px solid var(--theme-color); color: white; font-size: 1.1rem; }
 
                 .game-container {
                     flex: 1; position: relative; width: 100%; max-width: 450px;
-                    background: rgba(0,0,0,0.4); border-radius: 20px; border: 2px solid var(--theme-color);
-                    box-shadow: inset 0 0 50px rgba(0,0,0,0.8), 0 0 15px rgba(255, 51, 102, 0.3);
-                    overflow: hidden; touch-action: none; /* Crucial for swiping/tapping games */
+                    background: rgba(0,0,0,0.6); border-radius: 30px; border: 2px solid var(--theme-color);
+                    box-shadow: inset 0 0 50px rgba(0,0,0,0.8), 0 0 30px rgba(255, 51, 102, 0.2);
+                    overflow: hidden; touch-action: none;
                 }
 
                 .timer-hud {
                     position: absolute; top: 15px; right: 15px; z-index: 5;
-                    display: flex; align-items: center; gap: 5px;
-                    color: white; font-weight: bold; font-size: 1.2rem;
-                    background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 10px;
+                    display: flex; align-items: center; gap: 8px;
+                    color: white; font-weight: 900; font-size: 1.3rem;
+                    background: rgba(255, 51, 102, 0.3); padding: 8px 15px; border-radius: 12px;
+                    border: 1px solid var(--theme-color);
                 }
 
-                .overlay-menu { position: absolute; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.85); z-index: 20; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
-                .overlay-menu h1 { color: var(--theme-color); font-size: 2.5rem; margin-bottom: 10px; text-shadow: 0 0 15px var(--theme-color); font-family: 'Knewave', cursive; }
-                .overlay-menu p { color: white; margin-bottom: 5px; font-size: 1.1rem; }
-                .overlay-menu p:last-of-type { margin-bottom: 30px; }
-                .start-btn { background: var(--theme-color); color: white; font-weight: bold; font-size: 1.2rem; padding: 15px 40px; border-radius: 30px; border: none; box-shadow: 0 0 15px var(--theme-color); }
+                .overlay-menu { position: absolute; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.9); z-index: 20; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 25px; }
+                .overlay-menu h1 { color: var(--theme-color); font-size: 2.8rem; margin-bottom: 15px; text-shadow: 0 0 20px var(--theme-color); font-weight: 900; }
+                .overlay-text { color: white; margin-bottom: 8px; font-size: 1.3rem; font-weight: bold; }
+                .overlay-text.secondary { color: #888; font-size: 1rem; margin-bottom: 30px; }
+                .start-btn { background: var(--theme-color); color: white; font-weight: 900; font-size: 1.4rem; padding: 18px 45px; border-radius: 40px; border: none; box-shadow: 0 0 25px var(--theme-color); cursor: pointer; }
 
                 .play-area {
                     width: 100%; height: 100%; position: relative;
                 }
 
                 .ninja-item {
-                    position: absolute; width: 60px; height: 60px;
-                    border: none; background: transparent;
-                    font-size: 3rem; display: flex; justify-content: center; align-items: center;
+                    position: absolute; width: 70px; height: 70px;
+                    display: flex; justify-content: center; align-items: center;
                     cursor: pointer; user-select: none;
                     transform-origin: center;
+                    z-index: 10;
                 }
                 
-                .ninja-item.golden { filter: drop-shadow(0 0 10px gold); font-size: 3.5rem; }
-                .ninja-item.bomb { filter: drop-shadow(0 0 5px red); }
-                .ninja-item.champi { filter: drop-shadow(0 0 5px rgba(0,0,0,0.5)); }
-
+                .ninja-item.golden { scale: 1.2; }
             `}</style>
         </motion.div >
     );

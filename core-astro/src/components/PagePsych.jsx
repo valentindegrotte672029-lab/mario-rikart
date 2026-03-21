@@ -330,42 +330,48 @@ export default function PagePsych() {
                     style={{ width: '100%' }}
                 >
                     <div className="horoscope-view-content">
-                        <div className="card-header">
-                            <Star size={48} color="#ffcc00" />
-                            <h1 className="title-mobile" style={{ color: 'white', textShadow: '0 0 15px rgba(255,255,255,0.4)' }}>Horoscope de Mars</h1>
-                        </div>
-                        <div className="horoscope-container">
-                            <p className="horoscope-subtitle">Signes Astro — Mars 2026</p>
-                            <div className="signs-list">
-                                {HOROSCOPE_SIGNS.map(sign => (
-                                    <motion.div
-                                        key={sign.id}
-                                        className={`sign-card ${expandedSign === sign.id ? 'expanded' : ''}`}
-                                        onClick={() => setExpandedSign(expandedSign === sign.id ? null : sign.id)}
-                                        layout
-                                    >
-                                        <div className="sign-header">
-                                            <span className="sign-emoji"><NeonIcon name={sign.icon} size={24} /></span>
-                                            <span className="sign-name">{sign.name}</span>
-                                            <span className="sign-chevron">{expandedSign === sign.id ? '▲' : '▼'}</span>
-                                        </div>
-                                        <AnimatePresence>
-                                            {expandedSign === sign.id && (
-                                                <motion.p
-                                                    className="sign-text"
-                                                    initial={{ opacity: 0, height: 0 }}
-                                                    animate={{ opacity: 1, height: 'auto' }}
-                                                    exit={{ opacity: 0, height: 0 }}
-                                                    transition={{ duration: 0.3 }}
-                                                >
-                                                    {sign.text}
-                                                </motion.p>
-                                            )}
-                                        </AnimatePresence>
-                                    </motion.div>
-                                ))}
-                            </div>
-                        </div>
+                        {!featureFlags.horoscope ? (
+                            <ComingSoon title="Horoscope de Mars" minimal={true} color="#4B0082" />
+                        ) : (
+                            <>
+                                <div className="card-header">
+                                    <Star size={48} color="#ffcc00" />
+                                    <h1 className="title-mobile" style={{ color: 'white', textShadow: '0 0 15px rgba(255,255,255,0.4)' }}>Horoscope de Mars</h1>
+                                </div>
+                                <div className="horoscope-container">
+                                    <p className="horoscope-subtitle">Signes Astro — Mars 2026</p>
+                                    <div className="signs-list">
+                                        {HOROSCOPE_SIGNS.map(sign => (
+                                            <motion.div
+                                                key={sign.id}
+                                                className={`sign-card ${expandedSign === sign.id ? 'expanded' : ''}`}
+                                                onClick={() => setExpandedSign(expandedSign === sign.id ? null : sign.id)}
+                                                layout
+                                            >
+                                                <div className="sign-header">
+                                                    <span className="sign-emoji"><NeonIcon name={sign.icon} size={24} /></span>
+                                                    <span className="sign-name">{sign.name}</span>
+                                                    <span className="sign-chevron">{expandedSign === sign.id ? '▲' : '▼'}</span>
+                                                </div>
+                                                <AnimatePresence>
+                                                    {expandedSign === sign.id && (
+                                                        <motion.p
+                                                            className="sign-text"
+                                                            initial={{ opacity: 0, height: 0 }}
+                                                            animate={{ opacity: 1, height: 'auto' }}
+                                                            exit={{ opacity: 0, height: 0 }}
+                                                            transition={{ duration: 0.3 }}
+                                                        >
+                                                            {sign.text}
+                                                        </motion.p>
+                                                    )}
+                                                </AnimatePresence>
+                                            </motion.div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </>
+                        )}
                     </div>
 
                 </motion.div>

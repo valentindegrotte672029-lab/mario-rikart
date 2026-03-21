@@ -176,7 +176,6 @@ export default function FlappyWeed({ onExit }) {
                 {gameState === 'START' && (
                     <div className="overlay-menu">
                         <h1>Appuie pour Voler</h1>
-                        <p>100 Pièces par Tuyau passé !</p>
                         <div className="bird-preview" style={{ marginTop: '20px', animation: 'float 2s infinite alternate' }}>
                             <img src="/images/yoshi-weed.png" alt="Yoshi" className="yoshi-sprite" />
                         </div>

@@ -83,9 +83,20 @@ const useStore = create(
     removeJoinRequest: (socketId) => set(s => ({ joinRequests: s.joinRequests.filter(r => r.socketId !== socketId) })),
     clearJoinRequests: () => set({ joinRequests: [] }),
 
-    // Peach unlock state: 'none' | 'basic' | 'vip'
     peachUnlock: 'none',
     setPeachUnlock: (level) => set({ peachUnlock: level }),
+
+    // Gourdasse unlock state: null | 'gourd-50' | 'gourd-100' | 'gourd-150'
+    gourdasseUnlock: null,
+    setGourdasseUnlock: (level) => {
+        const alias = useStore.getState().username;
+        set({ gourdasseUnlock: level });
+        if (alias) {
+            import('../socket').then(({ socket }) => {
+                socket.emit('sync_gourdasse', { username: alias, gourdasseUnlock: level });
+            });
+        }
+    },
 
     setBalance: (balance) => set({ balance })
     }),
@@ -96,7 +107,8 @@ const useStore = create(
             username: state.username, 
             balance: state.balance, 
             socialStatus: state.socialStatus,
-            peachUnlock: state.peachUnlock 
+            peachUnlock: state.peachUnlock,
+            gourdasseUnlock: state.gourdasseUnlock
         }),
     }
 ));

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
-import { Activity, ShieldAlert, Swords, Zap, XCircle, ShoppingBag, Users, Camera } from 'lucide-react';
+import { Users, LayoutDashboard, MessageSquare, Settings, Play, Coins, Timer, ArrowLeft, Trash2, Trophy, Clock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Connexion au serveur Node (Environnement dynamique)
@@ -20,7 +20,7 @@ function App() {
   const [pokerHistory, setPokerHistory] = useState([]);
   const [activeHappening, setActiveHappening] = useState(null);
   const [activeTab, setActiveTab] = useState('WARIO'); // 'WARIO', 'BEREAL', 'ARCADE', 'USERS', 'BETS', 'POKER', 'SETTINGS'
-  const [featureFlags, setFeatureFlags] = useState({ warioTest: true, toadLab: true, peachasse: true });
+  const [featureFlags, setFeatureFlags] = useState({ warioTest: true, toadLab: true, peachasse: true, horoscope: true });
 
   // Formulaire Paris
   const [betQuestion, setBetQuestion] = useState('');
@@ -66,7 +66,7 @@ function App() {
     socket.on('user_updated', (updatedUser) => {
       setUsersData(prev => prev.map(u => 
         u.username === updatedUser.username 
-          ? { ...u, balance: updatedUser.balance, socialStatus: updatedUser.socialStatus, peachUnlock: updatedUser.peachUnlock } 
+          ? { ...u, balance: updatedUser.balance, socialStatus: updatedUser.socialStatus, peachUnlock: updatedUser.peachUnlock, gourdasseUnlock: updatedUser.gourdasseUnlock } 
           : u
       ));
     });
@@ -87,6 +87,7 @@ function App() {
       socket.off('poker_state');
       socket.off('poker_history');
       socket.off('user_updated');
+      socket.off('sync_feature_flags');
     };
   }, []);
 
@@ -384,29 +385,70 @@ function App() {
                   <thead>
                     <tr style={{ background: '#222', color: '#aaa' }}>
                       <th style={{ padding: '15px', borderBottom: '1px solid #333' }}>Alias</th>
-                      <th style={{ padding: '15px', borderBottom: '1px solid #333' }}>Mot de Passe</th>
-                      <th style={{ padding: '15px', borderBottom: '1px solid #333' }}>Inscription</th>
-                      <th style={{ padding: '15px', borderBottom: '1px solid #333', textAlign: 'center', color: '#aaffaa' }}>Roule-Ta-Fleur</th>
-                      <th style={{ padding: '15px', borderBottom: '1px solid #333', textAlign: 'center', color: '#aaffaa' }}>Ninja</th>
-                      <th style={{ padding: '15px', borderBottom: '1px solid #333', textAlign: 'center', color: '#aaffaa' }}>Doodle</th>
+                      <th style={{ padding: '15px', borderBottom: '1px solid #333', color: '#ffcc00' }}>Balance</th>
+                      <th style={{ padding: '15px', borderBottom: '1px solid #333' }}>Statut</th>
+                      <th style={{ padding: '15px', borderBottom: '1px solid #333', color: '#ff00ff' }}>Peach</th>
+                      <th style={{ padding: '15px', borderBottom: '1px solid #333', color: '#9900ff' }}>Gourdasse</th>
+                      <th style={{ padding: '15px', borderBottom: '1px solid #333', textAlign: 'center', color: '#aaffaa' }}>Scores (F/N/D)</th>
+                      <th style={{ padding: '15px', borderBottom: '1px solid #333', textAlign: 'center' }}>Action</th>
                     </tr>
                   </thead>
                   <tbody>
                     {usersData.length === 0 ? (
                       <tr>
-                        <td colSpan="6" style={{ padding: '20px', textAlign: 'center', color: '#888' }}>Aucun compte trouvé</td>
+                        <td colSpan="7" style={{ padding: '20px', textAlign: 'center', color: '#888' }}>Aucun compte trouvé</td>
                       </tr>
                     ) : (
                       usersData.map((user, idx) => (
                         <tr key={idx} style={{ background: idx % 2 === 0 ? '#1a1a1a' : '#111', transition: 'background 0.2s' }}>
                           <td style={{ padding: '15px', borderBottom: '1px solid #333', fontWeight: 'bold', color: 'white' }}>{user.username}</td>
-                          <td style={{ padding: '15px', borderBottom: '1px solid #333', fontFamily: 'monospace', color: '#ffaaaa' }}>{user.password || '---'}</td>
-                          <td style={{ padding: '15px', borderBottom: '1px solid #333', color: '#aaa', fontSize: '0.9rem' }}>
-                            {user.createdAt ? new Date(user.createdAt).toLocaleString() : 'Inconnu'}
+                          <td style={{ padding: '15px', borderBottom: '1px solid #333', color: '#ffcc00', fontWeight: '900' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <span>{user.balance || 0} 🟡</span>
+                              <button 
+                                onClick={() => {
+                                  const newBal = window.prompt(`Nouveau solde pour ${user.username} :`, user.balance);
+                                  if (newBal !== null && !isNaN(newBal)) {
+                                    socket.emit('update_user_balance', { username: user.username, newBalance: newBal });
+                                  }
+                                }}
+                                style={{ background: 'none', border: 'none', color: '#ffcc00', cursor: 'pointer', fontSize: '0.7rem', padding: '2px 5px', borderBottom: '1px dashed #ffcc00' }}
+                              >
+                                Modifier
+                              </button>
+                            </div>
                           </td>
-                          <td style={{ padding: '15px', borderBottom: '1px solid #333', textAlign: 'center', fontWeight: 'bold', color: '#39ff14' }}>{user.scores.FLAPPYWEED}</td>
-                          <td style={{ padding: '15px', borderBottom: '1px solid #333', textAlign: 'center', fontWeight: 'bold', color: '#39ff14' }}>{user.scores.CHAMPININJA}</td>
-                          <td style={{ padding: '15px', borderBottom: '1px solid #333', textAlign: 'center', fontWeight: 'bold', color: '#39ff14' }}>{user.scores.DOODLEWEED}</td>
+                          <td style={{ padding: '15px', borderBottom: '1px solid #333', color: '#888', fontSize: '0.8rem' }}>{user.socialStatus}</td>
+                          <td style={{ padding: '15px', borderBottom: '1px solid #333', color: '#ff00ff', fontSize: '0.8rem', fontWeight: 'bold' }}>{user.peachUnlock?.toUpperCase() || 'NONE'}</td>
+                          <td style={{ padding: '15px', borderBottom: '1px solid #333', color: '#9900ff', fontSize: '0.8rem', fontWeight: 'bold' }}>{user.gourdasseUnlock?.replace('gourd-', '') || 'NONE'}</td>
+                          <td style={{ padding: '15px', borderBottom: '1px solid #333', textAlign: 'center', fontSize: '0.85rem' }}>
+                            <span style={{ color: '#39ff14' }}>{user.scores?.FLAPPYWEED || 0}</span> / 
+                            <span style={{ color: '#39ff14' }}> {user.scores?.CHAMPININJA || 0}</span> / 
+                            <span style={{ color: '#39ff14' }}> {user.scores?.DOODLEWEED || 0}</span>
+                          </td>
+                          <td style={{ padding: '15px', borderBottom: '1px solid #333', textAlign: 'center' }}>
+                            <button 
+                              onClick={() => {
+                                if (window.confirm(`Êtes-vous sûr de vouloir supprimer le compte de ${user.username} ? Cette action est irréversible.`)) {
+                                  socket.emit('delete_user', { username: user.username });
+                                }
+                              }}
+                              style={{ 
+                                background: 'rgba(255, 68, 68, 0.14)', 
+                                border: '1px solid #ff4444', 
+                                color: '#ff4444', 
+                                borderRadius: '8px', 
+                                padding: '6px 10px', 
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '5px',
+                                margin: '0 auto'
+                              }}
+                            >
+                              <Trash2 size={14} /> Supprimer
+                            </button>
+                          </td>
                         </tr>
                       ))
                     )}
@@ -709,6 +751,19 @@ function App() {
                     style={{ padding: '10px 20px', borderRadius: '8px', border: 'none', fontWeight: 'bold', cursor: 'pointer', background: featureFlags.peachasse ? '#4CAF50' : '#f44336', color: 'white' }}
                   >
                     {featureFlags.peachasse ? 'OUVERT' : 'FERMÉ'}
+                  </button>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px', background: '#222', borderRadius: '10px', border: '1px solid #333' }}>
+                  <div>
+                    <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Horoscope de Mars</h3>
+                    <p style={{ margin: '5px 0 0 0', fontSize: '0.85rem', color: '#666' }}>Désactive la section Horoscope dans Wario.</p>
+                  </div>
+                  <button 
+                    onClick={() => socket.emit('update_feature_flags', { horoscope: !featureFlags.horoscope })}
+                    style={{ padding: '10px 20px', borderRadius: '8px', border: 'none', fontWeight: 'bold', cursor: 'pointer', background: featureFlags.horoscope ? '#4CAF50' : '#f44336', color: 'white' }}
+                  >
+                    {featureFlags.horoscope ? 'OUVERT' : 'FERMÉ'}
                   </button>
                 </div>
               </div>

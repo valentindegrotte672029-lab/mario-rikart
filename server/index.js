@@ -43,7 +43,7 @@ let leaderboards = loadDb('leaderboards.json', { FLAPPYWEED: {}, CHAMPININJA: {}
 let usersDb = loadDb('users.json', {});
 let betsDb = loadDb('bets.json', []);
 let notificationsDb = loadDb('notifications.json', []);
-let featureFlags = loadDb('feature_flags.json', { warioTest: true, warioCrossword: true, toadLab: true, peachasse: true });
+let featureFlags = loadDb('feature_flags.json', { warioTest: true, warioCrossword: true, toadLab: true, peachasse: true, horoscope: true });
 
 // Helpers de sauvegarde
 const saveUsers = () => saveDb('users.json', usersDb);
@@ -145,7 +145,54 @@ io.on('connection', (socket) => {
             usersDb[alias].peachUnlock = peachUnlock;
             saveUsers();
             // Push updated user data to admin in real-time
-            io.to('admin').emit('user_updated', { username: alias, balance, socialStatus, peachUnlock });
+            io.to('admin').emit('user_updated', { username: alias, balance, socialStatus, peachUnlock, gourdasseUnlock: usersDb[alias].gourdasseUnlock });
+        }
+    });
+
+    socket.on('sync_gourdasse', ({ username, gourdasseUnlock }) => {
+        const alias = username?.toUpperCase();
+        if (alias && usersDb[alias]) {
+            usersDb[alias].gourdasseUnlock = gourdasseUnlock;
+            saveUsers();
+            io.to('admin').emit('user_updated', { 
+                username: alias, 
+                balance: usersDb[alias].balance, 
+                socialStatus: usersDb[alias].socialStatus, 
+                peachUnlock: usersDb[alias].peachUnlock, 
+                gourdasseUnlock 
+            });
+        }
+    });
+
+    socket.on('update_user_balance', ({ username, newBalance }) => {
+        const alias = username?.toUpperCase();
+        if (alias && usersDb[alias]) {
+            const oldBalance = usersDb[alias].balance;
+            usersDb[alias].balance = parseInt(newBalance);
+            saveUsers();
+            
+            // Notify admin
+            io.to('admin').emit('user_updated', { 
+                username: alias, 
+                balance: usersDb[alias].balance, 
+                socialStatus: usersDb[alias].socialStatus,
+                peachUnlock: usersDb[alias].peachUnlock,
+                gourdasseUnlock: usersDb[alias].gourdasseUnlock
+            });
+
+            // Notify specific user if connected
+            io.emit('balance_update_forced', { username: alias, newBalance: usersDb[alias].balance });
+            addNotification('ADMIN', `💰 Solde de ${alias} modifié : ${oldBalance} ➡️ ${newBalance}`);
+        }
+    });
+
+    socket.on('delete_user', ({ username }) => {
+        const alias = username?.toUpperCase();
+        if (alias && usersDb[alias]) {
+            delete usersDb[alias];
+            saveUsers();
+            addNotification('ADMIN', `🗑️ Compte supprimé : ${alias}`);
+            sendAllUsersToAdmin(); // Refresh all admins
         }
     });
 
@@ -168,6 +215,7 @@ io.on('connection', (socket) => {
             balance: usersDb[alias].balance ?? 0,
             socialStatus: usersDb[alias].socialStatus || '',
             peachUnlock: usersDb[alias].peachUnlock || 'none',
+            gourdasseUnlock: usersDb[alias].gourdasseUnlock || null,
             scores: {
                 FLAPPYWEED: leaderboards.FLAPPYWEED[alias]?.score || 0,
                 CHAMPININJA: leaderboards.CHAMPININJA[alias]?.score || 0,
@@ -223,6 +271,7 @@ io.on('connection', (socket) => {
                 balance: usersDb[alias].balance ?? 0,
                 socialStatus: usersDb[alias].socialStatus || '',
                 peachUnlock: usersDb[alias].peachUnlock || 'none',
+                gourdasseUnlock: usersDb[alias].gourdasseUnlock || null,
                 scores: {
                     FLAPPYWEED: leaderboards.FLAPPYWEED[alias]?.score || 0,
                     CHAMPININJA: leaderboards.CHAMPININJA[alias]?.score || 0,

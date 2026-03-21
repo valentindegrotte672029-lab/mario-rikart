@@ -10,7 +10,7 @@ import NeonIcon from './NeonIcon';
 const generateQr = () => `WLU-${Math.random().toString(36).substring(7).toUpperCase()}`;
 
 export default function PageWaluigi() {
-  const { spendCoins, setBgOverride, clearBgOverride, setPage } = useStore();
+  const { spendCoins, setBgOverride, clearBgOverride, setPage, gourdasseUnlock, setGourdasseUnlock } = useStore();
   const [orderQr, setOrderQr] = useState(null);
 
   const CategoryTabBar = () => (
@@ -31,15 +31,37 @@ export default function PageWaluigi() {
   ];
 
   const handleBuy = (item) => {
-    const success = spendCoins(item.price, item.name.toUpperCase());
+    const tiers = ['gourd-50', 'gourd-100', 'gourd-150'];
+    const currentTierIdx = tiers.indexOf(gourdasseUnlock);
+    const targetTierIdx = tiers.indexOf(item.id);
+
+    // Si on possède déjà ce tier ou plus haut
+    if (gourdasseUnlock && targetTierIdx <= currentTierIdx) {
+      if (window.navigator?.vibrate) window.navigator.vibrate(200);
+      return;
+    }
+
+    const previousPrice = currentTierIdx === -1 ? 0 : menu[currentTierIdx].price;
+    const finalCost = item.price - previousPrice;
+
+    const success = spendCoins(finalCost, item.name.toUpperCase());
     if (!success) {
       if (window.navigator?.vibrate) window.navigator.vibrate(200);
       return;
     }
+
     if (window.navigator?.vibrate) window.navigator.vibrate([30, 50, 30]);
 
-    // Emission Websocket au panel Admin
-    socket.emit('new_order', { item: item.name, price: item.price, id: item.id });
+    setGourdasseUnlock(item.id);
+
+    // Emission Websocket au panel Admin avec info UPGRADE si nécessaire
+    socket.emit('new_order', {
+      item: item.name,
+      price: finalCost,
+      id: item.id,
+      username: useStore.getState().username,
+      note: gourdasseUnlock ? `UPGRADE depuis ${menu[currentTierIdx].name} (-${previousPrice})` : 'PREMIER ACHAT GOURDASSE'
+    });
 
     // Génération mock de QR Code
     setOrderQr(`WLU - ${Math.random().toString(36).substring(7).toUpperCase()} `);
@@ -59,17 +81,36 @@ export default function PageWaluigi() {
 
         {/* Liste iOS Native Style */}
         <div className="ios-list">
-          {menu.map((item, index) => (
-            <div key={item.id} className="ios-list-item" onClick={() => handleBuy(item)}>
-              <div className="item-icon-circle"><NeonIcon name={item.icon} size={30} /></div>
-              <div className="item-details">
-                <h4>{item.name}</h4>
-                <p className="waluigi-price-tag">{item.price} <NeonIcon name="coin-gold" size={18} /></p>
+          {menu.map((item, index) => {
+            const tiers = ['gourd-50', 'gourd-100', 'gourd-150'];
+            const currentTierIdx = tiers.indexOf(gourdasseUnlock);
+            const targetTierIdx = tiers.indexOf(item.id);
+            const isOwned = gourdasseUnlock === item.id;
+            const isUpgrade = gourdasseUnlock && targetTierIdx > currentTierIdx;
+            const isDowngrade = gourdasseUnlock && targetTierIdx < currentTierIdx;
+            
+            const prevPrice = currentTierIdx === -1 ? 0 : menu[currentTierIdx].price;
+            const displayPrice = isUpgrade ? item.price - prevPrice : item.price;
+
+            return (
+              <div 
+                key={item.id} 
+                className={`ios-list-item ${isOwned ? 'owned' : ''} ${isDowngrade ? 'disabled' : ''}`} 
+                onClick={() => !isOwned && !isDowngrade && handleBuy(item)}
+              >
+                <div className="item-icon-circle"><NeonIcon name={item.icon} size={30} /></div>
+                <div className="item-details">
+                  <h4>{item.name} {isOwned && <span className="owned-tag">(DÉJÀ POSSÉDÉ)</span>}</h4>
+                  <p className="waluigi-price-tag">
+                    {isOwned ? 'INCLUS' : (isDowngrade ? 'VERROUILLÉ' : `${displayPrice} `)}
+                    {!isOwned && !isDowngrade && <NeonIcon name="coin-gold" size={18} />}
+                  </p>
+                </div>
+                {!isOwned && !isDowngrade && <ChevronRight size={20} color="#9900ff" className="chevron" />}
+                {index !== menu.length - 1 && <div className="ios-separator"></div>}
               </div>
-              <ChevronRight size={20} color="#9900ff" className="chevron" />
-              {index !== menu.length - 1 && <div className="ios-separator"></div>}
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Modal QR Code */}
@@ -221,6 +262,10 @@ export default function PageWaluigi() {
           filter: drop-shadow(0 0 6px rgba(255, 204, 0, 0.3));
           margin-top: 4px;
         }
+
+        .owned-tag { color: #00ff66; font-size: 0.7rem; margin-left: 10px; font-weight: 400; }
+        .ios-list-item.owned { background: rgba(0, 255, 102, 0.05) !important; cursor: default; }
+        .ios-list-item.disabled { opacity: 0.3; cursor: not-allowed; }
 
         .chevron { opacity: 0.8; color: var(--theme-color); }
 

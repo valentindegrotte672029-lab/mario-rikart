@@ -132,16 +132,20 @@ export default function DoodleWeed({ onExit }) {
                 state.score += Math.floor(diff / 5);
                 setScore(state.score); // Sync UI
 
-                // Progressive difficulty: medium ramp-up
-                const difficultyMultiplier = Math.min(state.score / 1000, 2.5); // Accrue maximum cap for end game
-                const minDistance = 50 + (45 * difficultyMultiplier);
-                const maxDistanceAdd = 70 + (60 * difficultyMultiplier);
+                // Progressive difficulty: dynamic caps for playability
+                // Peak difficulty reached at 2500 score
+                const difficultyMultiplier = Math.min(state.score / 2500, 1.0); 
+                
+                // Gap management: Luigi jumps ~204px. Max gap capped at 180px.
+                const minDistance = 50 + (30 * difficultyMultiplier); // 50 to 80
+                const maxDistanceAdd = 50 + (50 * difficultyMultiplier); // 50 to 100
+                // Max possible gap = 180px
 
                 const topPlatY = Math.min(...activePlatforms.map(p => p.y));
                 if (topPlatY > 0) {
-                    // Dynamics platform types
-                    const springChance = Math.max(0.02, 0.15 - (difficultyMultiplier * 0.08));
-                    const breakChance = Math.min(0.4, 0.05 + (difficultyMultiplier * 0.25));
+                    // Dynamic platform types: Normal platforms reach 0% at max difficulty
+                    const springChance = 0.05; 
+                    const breakChance = Math.min(0.95, 0.10 + (difficultyMultiplier * 0.90)); 
 
                     const rand = Math.random();
                     let platType = 'normal';

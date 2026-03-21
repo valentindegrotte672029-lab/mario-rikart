@@ -126,6 +126,12 @@ export default function App() {
       socket.on('active_users', (users) => setActiveUsers(users));
       socket.on('sync_bets', (bets) => setBets(bets));
       socket.on('balance_update', (newBalance) => setBalance(newBalance));
+      socket.on('balance_update_forced', ({ username: targetUser, newBalance }) => {
+          if (targetUser === username) {
+              setBalance(newBalance);
+              if (window.navigator?.vibrate) window.navigator.vibrate([100, 50, 100]);
+          }
+      });
       socket.on('bet_resolved', () => {
           // Si un pari est résolu par l'admin, on synchronise notre balance globale
           socket.emit('request_my_balance', username);
@@ -157,6 +163,7 @@ export default function App() {
         socket.off('active_users');
         socket.off('sync_bets');
         socket.off('balance_update');
+        socket.off('balance_update_forced');
         socket.off('bet_resolved');
         socket.off('poker_state');
         socket.off('poker_error');

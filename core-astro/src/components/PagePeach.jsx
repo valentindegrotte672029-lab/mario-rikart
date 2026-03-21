@@ -50,7 +50,7 @@ export default function PagePeach() {
 
   const handleUnlockBasic = () => {
     if (peachUnlock !== 'none') return;
-    const success = spendCoins(500, 'LEAK PRIVÉ PEACH');
+    const success = spendCoins(2000, 'PACK DÉCOUVERTE PEACH');
     if (success) {
       setPeachUnlock('basic');
       socket.emit('peach_purchase', { username: useStore.getState().username, level: 'basic' });
@@ -58,7 +58,8 @@ export default function PagePeach() {
   };
 
   const handleUnlockVip = () => {
-    const success = spendCoins(2000, 'LEAK VIP PEACH');
+    const cost = peachUnlock === 'basic' ? 3000 : 5000;
+    const success = spendCoins(cost, 'PACK FULL VIP PEACH');
     if (success) {
       setPeachUnlock('vip');
       socket.emit('peach_purchase', { username: useStore.getState().username, level: 'vip' });
@@ -103,7 +104,7 @@ export default function PagePeach() {
               <div className="tier-card basic-tier" onClick={handleUnlockBasic}>
                 <div className="tier-header">
                   <span className="tier-name"><Lock size={18} /> Pack Découverte</span>
-                  <span className="price-tag gold">500 <NeonIcon name="coin-gold" size={14} /></span>
+                  <span className="price-tag gold">2000 <NeonIcon name="coin-gold" size={14} /></span>
                 </div>
                 <ul className="tier-features">
                   <li><NeonIcon name="fire-flower-pixel" size={14} /> 10 photos aléatoires</li>
@@ -116,7 +117,7 @@ export default function PagePeach() {
                 <div className="tier-badge">RECOMMANDÉ</div>
                 <div className="tier-header">
                   <span className="tier-name"><NeonIcon name="peach-crown" size={18} /> Pack Full VIP</span>
-                  <span className="price-tag gold">2000 <NeonIcon name="coin-gold" size={14} /></span>
+                  <span className="price-tag gold">5000 <NeonIcon name="coin-gold" size={14} /></span>
                 </div>
                 <ul className="tier-features">
                   <li><Crown size={14} color="#ffaa00" /> Les 8 photos complètes</li>
@@ -132,7 +133,7 @@ export default function PagePeach() {
             <div className="upgrade-banner" onClick={handleUnlockVip}>
               <Crown size={20} color="#ffaa00" />
               <span>Passer VIP — voir les 8 photos</span>
-              <span className="price-tag gold small">2000 <NeonIcon name="coin-gold" size={14} /></span>
+              <span className="price-tag gold small">3000 <NeonIcon name="coin-gold" size={14} /></span>
             </div>
           )}
 

@@ -22,6 +22,7 @@ const FILES_TO_PROCESS = [
   'coins-stack.png',
   'coin-gold.png',
   'ticket-gold.png',
+  'Waluigi icône.png',
 ];
 
 function removeBlackBackground(filePath) {
