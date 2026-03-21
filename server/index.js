@@ -44,9 +44,11 @@ let usersDb = loadDb('users.json', {});
 let betsDb = loadDb('bets.json', []);
 let notificationsDb = loadDb('notifications.json', []);
 let featureFlags = loadDb('feature_flags.json', { warioTest: true, warioCrossword: true, toadLab: true, peachasse: true, horoscope: true });
+let blacklistDb = loadDb('blacklist.json', []);
 
 // Helpers de sauvegarde
 const saveUsers = () => saveDb('users.json', usersDb);
+const saveBlacklist = () => saveDb('blacklist.json', blacklistDb);
 const saveBets = () => saveDb('bets.json', betsDb);
 const saveOrders = () => saveDb('orders.json', ordersQueue);
 const saveBereals = () => saveDb('bereals.json', berealsQueue);
@@ -95,6 +97,8 @@ io.on('connection', (socket) => {
         const alias = username.toUpperCase();
         if (usersDb[alias]) {
             if (usersDb[alias].password === password) {
+                players[socket.id] = alias;
+                socket.join('authenticated');
                 callback({ 
                     success: true, 
                     isNew: false, 
@@ -108,6 +112,11 @@ io.on('connection', (socket) => {
                 callback({ success: false, message: "🚨 Mot de passe incorrect." });
             }
         } else {
+            // Check blacklist
+            if (blacklistDb.includes(alias)) {
+                return callback({ success: false, message: "🚨 Ce compte a été banni ou supprimé définitivement." });
+            }
+
             // Création automatique si le pseudo n'existe pas
             usersDb[alias] = { 
                 password, 
@@ -133,13 +142,7 @@ io.on('connection', (socket) => {
     // 0.1 Sauvegarde Serveur des Données Joueur (Appelé par Zustand)
     socket.on('sync_user_data', ({ username, balance, socialStatus, peachUnlock }) => {
         const alias = username?.toUpperCase();
-        if (alias) {
-            if (!usersDb[alias]) {
-                usersDb[alias] = {
-                    createdAt: new Date().toISOString(),
-                    password: ''
-                };
-            }
+        if (alias && usersDb[alias]) {
             usersDb[alias].balance = balance;
             usersDb[alias].socialStatus = socialStatus;
             usersDb[alias].peachUnlock = peachUnlock;
@@ -191,7 +194,25 @@ io.on('connection', (socket) => {
         if (alias && usersDb[alias]) {
             delete usersDb[alias];
             saveUsers();
-            addNotification('ADMIN', `🗑️ Compte supprimé : ${alias}`);
+            
+            // Add to blacklist
+            if (!blacklistDb.includes(alias)) {
+                blacklistDb.push(alias);
+                saveBlacklist();
+            }
+            
+            // Kick the user if they are online
+            io.emit('account_deleted', { username: alias });
+            
+            // Force physical disconnect of any socket associated with this user
+            const sockets = io.sockets.sockets;
+            for (const [id, s] of sockets) {
+               if (players[id] === alias) {
+                   s.disconnect(true);
+               }
+            }
+
+            addNotification('ADMIN', `🗑️ Compte supprimé et banni : ${alias}`);
             sendAllUsersToAdmin(); // Refresh all admins
         }
     });
