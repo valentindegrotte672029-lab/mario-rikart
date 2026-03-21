@@ -11,7 +11,7 @@ const useStore = create(
     logout: () => set({ username: null, balance: 100, socialStatus: "PAUVRE HÈRE DU ROYAUME (RMI)" }),
 
     // Navigation
-    currentPage: 'MARIO', // LUIGI, TOAD, PEACH, MARIO, WARIO, etc.
+    currentPage: 'MARIO', // LUIGI, TOAD, PEACH, MARIO, WALUIGI, etc.
     speedBoost: false,
     activeUsers: [],
     setActiveUsers: (users) => set({ activeUsers: users }),

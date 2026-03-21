@@ -5,7 +5,7 @@ import useStore from '../store/useStore';
 const ICON_ASSET_VERSION = '20260317-2';
 
 const PAGES = [
-    { id: 'WARIO',  iconSrc: '/images/icons/nav/wario-icon.png',  label: 'Wario',    color: '#ffcc00', subPages: ['PSYCH'] },
+    { id: 'WALUIGI', iconSrc: '/images/icons/nav/waluigi-icon.png', label: 'Waluigi', color: '#9900ff', subPages: ['PSYCH'] },
     { id: 'LUIGI',  iconSrc: '/images/icons/nav/luidgi-icon.png', label: 'Luigi',   color: '#39ff14', subPages: ['CASINO'] },
     { id: 'MARIO',  iconSrc: '/images/icons/nav/mario-icon.png',  label: 'BeMario',  color: '#ff3333', subPages: [] },
     { id: 'TOAD',   iconSrc: '/images/icons/nav/toad-icon.png',   label: 'Toad',     color: '#9933ff', subPages: ['CHRONO'] },

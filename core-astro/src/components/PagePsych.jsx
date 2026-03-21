@@ -219,8 +219,8 @@ export default function PagePsych() {
     const CategoryTabBar = () => (
 
         <div className="category-tab-bar">
-            <button className="category-tab" onClick={() => setPage('WARIO')}>
-                <NeonIcon name="Wario icône" size={18} /> BAR
+            <button className="category-tab" onClick={() => setPage('WALUIGI')}>
+                <NeonIcon name="Waluigi icône" size={18} /> BAR
             </button>
             <button className="category-tab active" onClick={() => setPage('PSYCH')}>
                 <NeonIcon name="Test icône" size={18} /> TEST

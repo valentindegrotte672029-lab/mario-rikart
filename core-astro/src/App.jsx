@@ -9,7 +9,7 @@ import PageLuigi from './components/PageLuigiNew';
 import PageToad from './components/PageToad';
 import PagePeach from './components/PagePeach';
 import PageMario from './components/PageMario';
-import PageWario from './components/PageWario';
+import PageWaluigi from './components/PageWaluigi';
 import PageChrono from './components/PageChrono';
 import PagePsych from './components/PagePsych';
 import PageCasino from './components/PageCasino';
@@ -51,7 +51,7 @@ class ErrorBoundary extends Component {
 export default function App() {
   const { currentPage, setPage, resetSpeed, happening, triggerHappening, username, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, errorMsg, balance, socialStatus, setBets, setBalance, setPokerState, setPokerRooms, bgOverride, setFeatureFlags } = useStore();
 
-  const SWIPE_PAGES = ['WARIO', 'PSYCH', 'LUIGI', 'CASINO', 'MARIO', 'TOAD', 'CHRONO', 'PEACH', 'TROMBI'];
+  const SWIPE_PAGES = ['WALUIGI', 'PSYCH', 'LUIGI', 'CASINO', 'MARIO', 'TOAD', 'CHRONO', 'PEACH', 'TROMBI'];
   const swipeDir = useRef(1);
   const touchRef = useRef({ startX: 0, startY: 0, swiping: false });
 
@@ -200,10 +200,10 @@ export default function App() {
       glowSoft: 'rgba(75, 0, 130, 0.35)',
       bg: `linear-gradient(145deg, rgba(75,0,130,0.34), rgba(15,0,30,0.95)), url('/images/backgrounds/bg_toadxique_potions_v3.png?v=${BG_ASSET_VERSION}')`,
     },
-    WARIO: {
-      glow: '#FFD700',
-      glowSoft: 'rgba(255, 215, 0, 0.30)',
-      bg: `linear-gradient(145deg, rgba(255,215,0,0.22), rgba(32,20,0,0.92)), url('/images/backgrounds/bg_wario_gold_v3.png?v=${BG_ASSET_VERSION}')`,
+    WALUIGI: {
+      glow: '#9900ff',
+      glowSoft: 'rgba(153, 0, 255, 0.30)',
+      bg: `linear-gradient(145deg, rgba(153,0,255,0.22), rgba(15,0,25,0.92)), url('/images/backgrounds/bg_wario_gold_v3.png?v=${BG_ASSET_VERSION}')`,
     },
     CHRONO: {
       glow: '#FF8C00',
@@ -240,7 +240,7 @@ export default function App() {
       case 'TOAD': return <PageToad key="toad" />;
       case 'PEACH': return <PagePeach key="peach" />;
       case 'MARIO': return <PageMario key="mario" />;
-      case 'WARIO': return <PageWario key="wario" />;
+      case 'WALUIGI': return <PageWaluigi key="waluigi" />;
       case 'CHRONO': return <PageChrono key="chrono" />;
       case 'PSYCH': return <PagePsych key="psych" />;
       case 'CASINO': return <PageCasino key="casino" />;

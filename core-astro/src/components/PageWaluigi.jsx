@@ -7,16 +7,16 @@ import useStore from '../store/useStore';
 import { socket } from '../socket';
 import NeonIcon from './NeonIcon';
 
-const generateQr = () => `WRO-${Math.random().toString(36).substring(7).toUpperCase()}`;
+const generateQr = () => `WLU-${Math.random().toString(36).substring(7).toUpperCase()}`;
 
-export default function PageWario() {
+export default function PageWaluigi() {
   const { spendCoins, setBgOverride, clearBgOverride, setPage } = useStore();
   const [orderQr, setOrderQr] = useState(null);
 
   const CategoryTabBar = () => (
     <div className="category-tab-bar">
-      <button className="category-tab active" onClick={() => setPage('WARIO')}>
-        <NeonIcon name="Wario icône" size={18} /> BAR
+      <button className="category-tab active" onClick={() => setPage('WALUIGI')}>
+        <NeonIcon name="Waluigi icône" size={18} /> BAR
       </button>
       <button className="category-tab" onClick={() => setPage('PSYCH')}>
         <NeonIcon name="Test icône" size={18} /> TEST
@@ -42,20 +42,20 @@ export default function PageWario() {
     socket.emit('new_order', { item: item.name, price: item.price, id: item.id });
 
     // Génération mock de QR Code
-    setOrderQr(`WRO - ${Math.random().toString(36).substring(7).toUpperCase()} `);
+    setOrderQr(`WLU - ${Math.random().toString(36).substring(7).toUpperCase()} `);
   };
 
   return (
     <motion.div
-      className="page-mobile wario-mobile"
+      className="page-mobile waluigi-mobile"
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 1.05 }}
     >
       <CategoryTabBar />
-      <div className="glass-panel mobile-card wario-card">
-        <h1 className="title-mobile wario-title">WARIO-BARNAQUE</h1>
-        <p className="wario-motto">"Même pour un verre d'eau, tu raques."</p>
+      <div className="glass-panel mobile-card waluigi-card">
+        <h1 className="title-mobile waluigi-title">WALUIGI-BARNAQUE</h1>
+        <p className="waluigi-motto">"Tu vas raquer, c'est WALUIGI TIME !"</p>
 
         {/* Liste iOS Native Style */}
         <div className="ios-list">
@@ -64,9 +64,9 @@ export default function PageWario() {
               <div className="item-icon-circle"><NeonIcon name={item.icon} size={30} /></div>
               <div className="item-details">
                 <h4>{item.name}</h4>
-                <p className="wario-price-tag">{item.price} <NeonIcon name="coin-gold" size={18} /></p>
+                <p className="waluigi-price-tag">{item.price} <NeonIcon name="coin-gold" size={18} /></p>
               </div>
-              <ChevronRight size={20} color="#ffcc00" className="chevron" />
+              <ChevronRight size={20} color="#9900ff" className="chevron" />
               {index !== menu.length - 1 && <div className="ios-separator"></div>}
             </div>
           ))}
@@ -83,7 +83,7 @@ export default function PageWario() {
               onClick={() => setOrderQr(null)}
             >
               <div className="qr-modal-box" onClick={(e) => e.stopPropagation()}>
-                <div style={{ marginBottom: '10px' }}><NeonIcon name="ticket-gold" size={100} glow="#ffcc00" /></div>
+                <div style={{ marginBottom: '10px' }}><NeonIcon name="ticket-gold" size={100} glow="#9900ff" /></div>
                 <h3>Commande Validée</h3>
                 <div className="qr-code-text">{orderQr}</div>
                 <p>Présente ce code au barman.</p>
@@ -97,9 +97,9 @@ export default function PageWario() {
       </div>
 
       <style>{`
-        .wario-mobile {
-          --theme-color: #ffcc00;
-          --accent-purple: #9900ff;
+        .waluigi-mobile {
+          --theme-color: #9900ff;
+          --accent-yellow: #ffcc00;
           width: 100%;
           height: 100%;
           display: flex;
@@ -133,33 +133,33 @@ export default function PageWario() {
           transition: all 0.2s;
         }
         .category-tab.active {
-          background: rgba(255, 204, 0, 0.2) !important;
-          border-color: #ffcc00 !important;
+          background: rgba(153, 0, 255, 0.2) !important;
+          border-color: #9900ff !important;
           color: white;
-          box-shadow: 0 0 15px rgba(255, 204, 0, 0.3);
+          box-shadow: 0 0 15px rgba(153, 0, 255, 0.3);
         }
 
-        .wario-card {
+        .waluigi-card {
           width: 100%;
           border-radius: 32px;
-          border-color: rgba(255, 204, 0, 0.4);
-          background: rgba(40, 30, 0, 0.9);
-          box-shadow: 0 0 40px rgba(255, 204, 0, 0.1), inset 0 0 20px rgba(153, 0, 255, 0.1);
+          border-color: rgba(153, 0, 255, 0.4);
+          background: rgba(15, 0, 25, 0.9);
+          box-shadow: 0 0 40px rgba(153, 0, 255, 0.1), inset 0 0 20px rgba(255, 204, 0, 0.05);
           display: flex;
           flex-direction: column;
         }
 
-        .wario-title {
+        .waluigi-title {
           color: var(--theme-color);
           font-size: 1.8rem;
           text-align: center;
           margin-top: 25px;
           font-weight: 900;
           letter-spacing: 1px;
-          text-shadow: 0 0 15px rgba(255, 204, 0, 0.4);
+          text-shadow: 0 0 15px rgba(153, 0, 255, 0.4);
         }
 
-        .wario-motto {
+        .waluigi-motto {
           text-align: center;
           font-style: italic;
           color: #ff88dd;
@@ -175,6 +175,7 @@ export default function PageWario() {
           margin: 0 15px 15px 15px;
           box-shadow: none !important;
           border: none !important;
+          overflow-y: auto;
         }
         .ios-list::-webkit-scrollbar { display: none; }
 
@@ -188,7 +189,7 @@ export default function PageWario() {
         }
 
         .ios-list-item:active {
-          background: transparent !important;
+          background: rgba(153, 0, 255, 0.1) !important;
           transform: scale(0.98);
         }
 
@@ -207,13 +208,13 @@ export default function PageWario() {
         .item-details { flex: 1; }
         .item-details h4 { font-size: 0.95rem; color: white; margin-bottom: 3px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
         
-        .wario-price-tag {
+        .waluigi-price-tag {
           display: inline-flex;
           align-items: center;
           gap: 3px;
           background: transparent;
           border: none;
-          color: var(--theme-color); font-weight: 900;
+          color: var(--accent-yellow); font-weight: 900;
           padding: 3px 0; border-radius: 0;
           font-size: 0.9rem;
           text-shadow: 0 0 8px rgba(255, 204, 0, 0.6);
@@ -221,20 +222,20 @@ export default function PageWario() {
           margin-top: 4px;
         }
 
-        .chevron { opacity: 0.5; color: var(--theme-color); }
+        .chevron { opacity: 0.8; color: var(--theme-color); }
 
         .ios-separator {
           position: absolute;
           bottom: 0; right: 0;
           width: calc(100% - 80px);
           height: 1px;
-          background: rgba(255, 204, 0, 0.15);
+          background: rgba(153, 0, 255, 0.15);
         }
 
         .qr-modal-overlay {
           position: absolute;
           top: 0; left: 0; width: 100%; height: 100%;
-          background: rgba(0, 0, 0, 0.8);
+          background: rgba(0, 0, 0, 0.85);
           backdrop-filter: blur(10px);
           z-index: 200;
           display: flex; align-items: center; justify-content: center;
@@ -252,7 +253,7 @@ export default function PageWario() {
           border: none !important;
         }
 
-        .qr-modal-box h3 { margin-top: 15px; font-size: 1.3rem; font-weight: 900; color: #ffcc00; text-shadow: 0 0 15px rgba(255, 204, 0, 0.6); }
+        .qr-modal-box h3 { margin-top: 15px; font-size: 1.3rem; font-weight: 900; color: #9900ff; text-shadow: 0 0 15px rgba(153, 0, 255, 0.6); }
         
         .qr-code-text {
           font-family: monospace;
@@ -265,13 +266,13 @@ export default function PageWario() {
           margin: 15px 0;
           font-weight: bold;
           border: none !important;
-          text-shadow: 0 0 10px rgba(255, 204, 0, 0.8);
+          text-shadow: 0 0 10px rgba(153, 0, 255, 0.8);
         }
 
-        .qr-modal-box p { color: #ccc; font-size: 0.9rem; margin-bottom: 25px; font-weight: bold; text-shadow: 0 0 5px rgba(255, 255, 255, 0.5); }
+        .qr-modal-box p { color: #ccc; font-size: 0.9rem; margin-bottom: 25px; font-weight: bold; text-shadow: 0 0 5px rgba(255, 255, 255, 0.3); }
 
-        .qr-close-btn { background: transparent !important; color: white; font-weight: bold; padding: 12px 30px; border-radius: 0; font-size: 1rem; width: 100%; border: none !important; cursor: pointer; text-shadow: 0 0 5px rgba(255,255,255,0.5); box-shadow: none !important; }
-`}</style>
+        .qr-close-btn { background: rgba(153, 0, 255, 0.2) !important; border: 1px solid #9900ff !important; color: white; font-weight: bold; padding: 12px 30px; border-radius: 12px; font-size: 1rem; width: 100%; cursor: pointer; text-shadow: 0 0 5px rgba(255,255,255,0.5); }
+      `}</style>
     </motion.div>
   );
 }

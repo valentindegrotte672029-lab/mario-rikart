@@ -9,7 +9,7 @@ export default function PageHome() {
   const apps = [
     { id: 'LUIGI', icon: 'Luidgi icône', label: 'Arcade', color: '#39ff14' },
     { id: 'MARIO', icon: 'camera-neon', label: 'BeMario', color: '#ff3333' },
-    { id: 'WARIO', icon: 'devil-neon', label: 'Barnaque', color: '#ffcc00' },
+    { id: 'WALUIGI', icon: 'devil-neon', label: 'Barnaque', color: '#9900ff' },
     { id: 'PEACH', icon: 'rikart-peachasse-icon', label: 'Peachasse', color: '#ff66b2' },
     { id: 'TOAD', icon: 'skull-neon', label: 'Toad Bank', color: '#9933ff' },
     { id: 'CHRONO', icon: 'bomb-timer', label: 'Poppy', color: '#ff9900' },

@@ -23,7 +23,7 @@ const INGREDIENTS = [
 ];
 
 const LISTEUX = [
-  'Luigi', 'Toad', 'Peach', 'Mario', 'Wario'
+  'Luigi', 'Toad', 'Peach', 'Mario', 'Waluigi'
 ];
 
 export default function PageToad() {
