@@ -13,18 +13,6 @@ const HOROSCOPE_SIGNS = [
         text: `Les Samouraïs sont aux commandes, 2e et 3e décan. L'alignement du patio est en harmonie avec le local et représente la façon dont vous maniez le katana. Et comme la navette stellaire sera conjointe au parc et au grisy, il n'est pas sûr que vous soyez très satisfait. Cela dit, comme nous le verrons plus loin, vous serez soutenu par la pc, et comme c'est une de vos planètes maîtresses, elle peut se révéler plus forte que les discours rda, ou en tout cas vous coûter du pain éco plus`
     },
     {
-        id: 'TMK',
-        icon: 'lion-gold',
-        name: 'TMK',
-        text: `Grâce aux navettes stellaires et au grisy chez vos amis Samouraïs, ce mois devrait être vraiment satisfaisant, à la fois pour votre foie et pour vos poumons, mais aussi parce que les « affaires » qui sont en cours avancent en votre faveur. 2e et 3e décan, sur le plan relationnel, hugo et constant font toujours la paire malgré les 10729KM qui les séparent. Vous tomberez sur des gens aimables et qui ne demanderont qu'à vous aider (le vieux privilège). Attention cependant, atlantide rétrograde, vous allez être tentés de détruire massivement un maximum de chose, n'écoutez pas ce for intérieur. (Non, aucune blague sur Levon ne sera faite pour des raisons évidentes).`
-    },
-    {
-        id: 'VRK',
-        icon: 'leopard-cyan',
-        name: 'VRK',
-        text: `Les groudasses traversent les Atlantes, mettant en lumière votre vie intérieure puisque nous avons affaire à votre secteur de prédilection, la destruction de sete et d'event en tout genre, symbole de ravonnerie, ou tout simplement de savoir vivre. Surveillez aussi les substances qui traînent, votre système immunitaire sera moins actif sous cette conjoncture. À partir du 27, le bo sera dans votre signe et on pourra souhaiter un bon anniversaire à votre 1er décan, la consommation excessive de scotch, qui est encore face à des situations compliquées pour les uns, alors que pour d'autres elle est signe d'un gros succès.`
-    },
-    {
         id: 'PRK',
         icon: 'monkey-green',
         name: 'PRK',
@@ -220,7 +208,7 @@ export default function PagePsych() {
 
         <div className="category-tab-bar">
             <button className="category-tab" onClick={() => setPage('WALUIGI')}>
-                <NeonIcon name="Waluigi icône" size={18} /> BAR
+                <NeonIcon name="Waluigi icône" size={18} style={{ transform: 'scaleX(1.15)' }} /> BAR
             </button>
             <button className="category-tab active" onClick={() => setPage('PSYCH')}>
                 <NeonIcon name="Test icône" size={18} /> TEST
@@ -498,9 +486,9 @@ export default function PagePsych() {
                                         <p style={{ color: '#00ffff', fontSize: '1.6rem', fontWeight: '900', marginBottom: '20px', textShadow: '0 0 15px rgba(0,255,255,0.4)' }}>
                                             {result}
                                         </p>
-                                        <button className="btn-secondary" onClick={restartTest}>
-                                            <RotateCcw size={20} style={{ marginRight: '10px' }} />
-                                            Refaire le test
+                                        <button className="btn-restart-test" onClick={restartTest}>
+                                            <RotateCcw size={20} />
+                                            <span>REFAIRE LE TEST</span>
                                         </button>
                                     </motion.div>
                                 ) : (
@@ -674,6 +662,36 @@ export default function PagePsych() {
                 }
                 .option-btn img {
                    mix-blend-mode: normal !important; /* Revenir en normal pour éviter le détourage dégueu du screen sur les stickers */
+                }
+
+                .btn-restart-test {
+                    background: linear-gradient(135deg, rgba(0, 206, 209, 0.2), rgba(0, 255, 255, 0.1)) !important;
+                    border: 2px solid #00ced1 !important;
+                    color: white;
+                    padding: 14px 28px;
+                    border-radius: 18px !important;
+                    font-weight: 900;
+                    font-size: 1rem;
+                    letter-spacing: 1px;
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    cursor: pointer;
+                    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    box-shadow: 0 0 20px rgba(0, 206, 209, 0.3);
+                    text-transform: uppercase;
+                }
+
+                .btn-restart-test:active {
+                    transform: scale(0.92);
+                    box-shadow: 0 0 30px rgba(0, 206, 209, 0.5);
+                }
+
+                .btn-restart-test svg {
+                   transition: transform 0.5s;
+                }
+                .btn-restart-test:hover svg {
+                   transform: rotate(-360deg);
                 }
 
                 .option-btn:active {

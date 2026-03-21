@@ -516,16 +516,16 @@ export default function PagePoker() {
                            <span>Relance : {raiseAmount} <NeonIcon name="coin-gold" size={14} /></span>
                         </div>
                         <div className="action-buttons">
-                           <button className="btn-fold" onClick={() => handleAction('fold')}>Coucher</button>
+                           <button className="btn-fold" onClick={() => handleAction('fold')}>Fold</button>
                            <button className="btn-call" onClick={() => handleAction('call')}>
-                               {toCall === 0 ? 'Parole' : `Suivre (${toCall})`}
+                               {toCall === 0 ? 'Check' : `Call (${toCall})`}
                            </button>
                            <button 
                              className="btn-raise" 
                              onClick={() => handleAction('raise')}
                              disabled={myPlayer.chips <= toCall}
                            >
-                               Relancer
+                               Raise
                            </button>
                         </div>
                     </motion.div>

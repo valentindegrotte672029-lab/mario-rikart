@@ -16,7 +16,7 @@ export default function PageWaluigi() {
   const CategoryTabBar = () => (
     <div className="category-tab-bar">
       <button className="category-tab active" onClick={() => setPage('WALUIGI')}>
-        <NeonIcon name="Waluigi icône" size={18} /> BAR
+        <NeonIcon name="Waluigi icône" size={18} style={{ transform: 'scaleX(1.15)' }} /> BAR
       </button>
       <button className="category-tab" onClick={() => setPage('PSYCH')}>
         <NeonIcon name="Test icône" size={18} /> TEST
