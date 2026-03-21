@@ -154,8 +154,8 @@ export default function App() {
       });
       socket.on('account_deleted', ({ username: targetUser }) => {
           if (targetUser === username) {
-              alert("⚠️ Ton compte a été supprimé par l'administrateur.");
               logout();
+              alert("⚠️ Ton compte a été supprimé par l'administrateur.");
           }
       });
       socket.on('sync_feature_flags', (flags) => setFeatureFlags(flags));

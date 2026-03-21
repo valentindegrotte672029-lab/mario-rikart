@@ -157,6 +157,11 @@ io.on('connection', (socket) => {
     // 0.1 Sauvegarde Serveur des Données Joueur (Appelé par Zustand)
     socket.on('sync_user_data', ({ username, balance, socialStatus, peachUnlock }) => {
         const alias = username?.toUpperCase();
+        if (alias && blacklistDb.includes(alias)) {
+            socket.emit('account_deleted', { username: alias });
+            socket.disconnect(true);
+            return;
+        }
         if (alias && usersDb[alias]) {
             usersDb[alias].balance = balance;
             usersDb[alias].socialStatus = socialStatus;
@@ -406,15 +411,13 @@ io.on('connection', (socket) => {
     // 1. Connexion d'un joueur
     socket.on('join_game', (username) => {
         const alias = username?.toUpperCase();
-        
-        // Anti-bypass check for blacklisted accounts
-        if (blacklistDb.includes(alias)) {
+        if (alias && blacklistDb.includes(alias)) {
             console.log(`🚫 Tentative de connexion bloquée (Blacklist) : ${alias}`);
             socket.emit('account_deleted', { username: alias });
             socket.disconnect(true);
             return;
         }
-
+        
         players[socket.id] = alias;
         console.log(`🕹️ Joueur rejoint : ${alias} (${socket.id})`);
 
