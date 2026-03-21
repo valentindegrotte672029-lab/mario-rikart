@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback, Component } from 'react';
+import React, { useState, useEffect, useRef, useCallback, Component } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import ToadBank from './components/ToadBank';
@@ -49,7 +49,8 @@ class ErrorBoundary extends Component {
 }
 
 export default function App() {
-  const { currentPage, setPage, resetSpeed, happening, triggerHappening, username, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, errorMsg, balance, socialStatus, setBets, setBalance, setPokerState, setPokerRooms, bgOverride, setFeatureFlags } = useStore();
+  const [isDeleted, setIsDeleted] = useState(false);
+  const { logout, currentPage, setPage, resetSpeed, happening, triggerHappening, username, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, errorMsg, balance, socialStatus, setBets, setBalance, setPokerState, setPokerRooms, bgOverride, setFeatureFlags } = useStore();
 
   const SWIPE_PAGES = ['WALUIGI', 'PSYCH', 'LUIGI', 'CASINO', 'MARIO', 'TOAD', 'CHRONO', 'PEACH', 'TROMBI'];
   const swipeDir = useRef(1);
@@ -154,8 +155,7 @@ export default function App() {
       });
       socket.on('account_deleted', ({ username: targetUser }) => {
           if (targetUser === username?.toUpperCase()) {
-              logout();
-              alert("⚠️ Ton compte a été supprimé par l'administrateur.");
+              setIsDeleted(true);
           }
       });
       socket.on('sync_feature_flags', (flags) => setFeatureFlags(flags));
@@ -267,7 +267,34 @@ export default function App() {
   return (
     <div id="app-root">
 
-      {/* 0. Écran Connexion Pseudo (Bloque tout tant que non rempli) */}
+      {/* 0. Écran de suppression (BAN) */}
+      {isDeleted && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+          backgroundColor: '#000000', zIndex: 9999999,
+          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+          color: 'white', padding: '20px', textAlign: 'center',
+          fontFamily: "'Knewave', cursive"
+        }}>
+          <h1 style={{ color: '#ff3333', fontSize: '3.5rem', marginBottom: '20px', textShadow: '0 0 30px #ff3333' }}>COMPTE BANNI</h1>
+          <p style={{ fontSize: '1.2rem', marginBottom: '40px', fontFamily: 'Inter, sans-serif' }}>Ton compte a été définitivement supprimé par l'administrateur.</p>
+          <button 
+            onClick={() => {
+              setIsDeleted(false);
+              logout();
+            }}
+            style={{
+              padding: '15px 40px', fontSize: '1.5rem', fontWeight: 'bold',
+              backgroundColor: '#ff3333', color: 'white', border: 'none', borderRadius: '40px',
+              cursor: 'pointer', boxShadow: '0 0 20px #ff3333', fontFamily: "'Knewave', cursive"
+            }}
+          >
+            SE DÉCONNECTER
+          </button>
+        </div>
+      )}
+
+      {/* 1. Écran Connexion Pseudo (Bloque tout tant que non rempli) */}
       <AnimatePresence>
         {!username && <SplashScreen key="splash" />}
       </AnimatePresence>
