@@ -390,8 +390,9 @@ io.on('connection', (socket) => {
 
     // 1. Connexion d'un joueur
     socket.on('join_game', (username) => {
-        players[socket.id] = username;
-        console.log(`🕹️ Joueur rejoint : ${username} (${socket.id})`);
+        const alias = username?.toUpperCase();
+        players[socket.id] = alias;
+        console.log(`🕹️ Joueur rejoint : ${alias} (${socket.id})`);
 
         // Informe le Master (Admin) qu'un nouveau joueur est là
         io.emit('player_joined', { id: socket.id, username, totalPlayers: Object.keys(players).length });
@@ -583,9 +584,9 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         pokerManager.leaveQueue(socket.id);
         pokerManager.leaveTable(socket.id);
-        const username = players[socket.id];
+        const alias = players[socket.id];
         delete players[socket.id];
-        console.log(`❌ Joueur déconnecté : ${username || socket.id}`);
+        console.log(`❌ Joueur déconnecté : ${alias || socket.id}`);
         // Prévient l'admin et met à jour la liste des joueurs
         io.emit('player_left', { id: socket.id, totalPlayers: Object.keys(players).length });
         broadcastActiveUsers();
