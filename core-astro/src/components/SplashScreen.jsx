@@ -31,7 +31,9 @@ export default function SplashScreen() {
           setLoginData(
             inputValue.trim().toUpperCase(), 
             response.userData.balance, 
-            response.userData.socialStatus
+            response.userData.socialStatus,
+            response.userData.peachUnlock,
+            response.userData.gourdasseUnlock
           );
         } else {
           setError(response.message);

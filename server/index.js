@@ -105,7 +105,9 @@ io.on('connection', (socket) => {
                     message: "Bon retour parmi nous !",
                     userData: {
                         balance: usersDb[alias].balance || 100,
-                        socialStatus: usersDb[alias].socialStatus || "PAUVRE HÈRE DU ROYAUME (RMI)"
+                        socialStatus: usersDb[alias].socialStatus || "PAUVRE HÈRE DU ROYAUME (RMI)",
+                        peachUnlock: usersDb[alias].peachUnlock || 'none',
+                        gourdasseUnlock: usersDb[alias].gourdasseUnlock || null
                     }
                 });
             } else {
