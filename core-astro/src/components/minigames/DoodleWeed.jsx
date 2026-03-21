@@ -209,6 +209,30 @@ export default function DoodleWeed({ onExit }) {
         };
     }, []);
 
+    // --- KEYBOARD CONTROLS ---
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (gameState !== 'PLAYING') return;
+            if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+                stateRef.current.luigi.vx = -3.5;
+            } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+                stateRef.current.luigi.vx = 3.5;
+            }
+        };
+        const handleKeyUp = (e) => {
+            if (gameState !== 'PLAYING') return;
+            if (['ArrowLeft', 'ArrowRight', 'a', 'A', 'd', 'D'].includes(e.key)) {
+                stateRef.current.luigi.vx = 0;
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        window.addEventListener('keyup', handleKeyUp);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+            window.removeEventListener('keyup', handleKeyUp);
+        };
+    }, [gameState]);
+
     // --- CONTROLS ---
     const handleTouchStart = (e) => {
         if (gameState !== 'PLAYING') return;
@@ -258,7 +282,8 @@ export default function DoodleWeed({ onExit }) {
                 {gameState === 'START' && (
                     <div className="overlay-menu">
                         <h1>Monte le + haut !</h1>
-                        <p>Penche ton téléphone (ou swipe) pour diriger Luigi.</p>
+                        <p>Tape à gauche ou à droite de ton écran pour jouer.</p>
+                        <p>(Ou utilise les flèches du clavier)</p>
                         <p>Ne tombe pas !</p>
                         <button className="start-btn" onClick={startGame}>JOUER</button>
                     </div>
@@ -306,6 +331,10 @@ export default function DoodleWeed({ onExit }) {
                     )}
                 </div>
             </div >
+
+            <p style={{ textAlign: 'center', color: '#444', marginTop: '10px', fontSize: '0.85rem', fontWeight: '800' }}>
+                Tape à gauche ou à droite de ton écran pour jouer
+            </p>
 
             <style dangerouslySetInnerHTML={{
                 __html: `

@@ -191,8 +191,13 @@ export default function ChampiNinja({ onExit }) {
                                 animate={{ scale: 1, opacity: 1, rotate: item.rotation + (item.velocityY * 5) }}
                                 exit={{ scale: 1.5, opacity: 0, filter: 'brightness(2)' }}
                                 onPointerDown={(e) => {
-                                    e.preventDefault(); // Prevent accidental scrolling
+                                    e.preventDefault();
                                     handleSlice(item.id, item.type);
+                                }}
+                                onPointerEnter={(e) => {
+                                    if (e.buttons === 1) { // 1 = Left mouse button held
+                                        handleSlice(item.id, item.type);
+                                    }
                                 }}
                             >
                                 {getItemIcon(item.type)}
