@@ -21,17 +21,30 @@ const io = new Server(server, {
 
 // --- BASE DE DONNÉES / PERSISTANCE ---
 const loadDb = (filename, defaultVal) => {
-    const file = path.join(__dirname, filename);
-    if (fs.existsSync(file)) {
-        try { return JSON.parse(fs.readFileSync(file, 'utf-8')); } 
-        catch (e) { return defaultVal; }
+    try {
+        const filePath = path.join(__dirname, filename);
+        if (fs.existsSync(filePath)) {
+            const content = fs.readFileSync(filePath, 'utf-8');
+            if (content && content.trim().length > 0) {
+                return JSON.parse(content);
+            }
+        }
+    } catch (e) {
+        console.error(`🚨 ERREUR CHARGEMENT DB ${filename}:`, e.message);
     }
-    fs.writeFileSync(file, JSON.stringify(defaultVal, null, 2));
+    console.log(`ℹ️ initialisation DB ${filename} avec valeur par défaut.`);
     return defaultVal;
 };
 
 const saveDb = (filename, data) => {
-    fs.writeFileSync(path.join(__dirname, filename), JSON.stringify(data, null, 2));
+    try {
+        const filePath = path.join(__dirname, filename);
+        const tempPath = filePath + '.tmp';
+        fs.writeFileSync(tempPath, JSON.stringify(data, null, 2));
+        fs.renameSync(tempPath, filePath);
+    } catch (e) {
+        console.error(`❌ ÉCHEC SAUVEGARDE DB ${filename}:`, e);
+    }
 };
 
 // Stockage en mémoire des listes (chargées depuis le disque au démarrage)

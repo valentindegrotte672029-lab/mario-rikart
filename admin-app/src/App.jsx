@@ -118,6 +118,9 @@ function App() {
             <div className="status-indicator" style={{ background: isConnected ? '#00ffcc' : '#ff0000' }}></div>
             Serveur Principal
           </div>
+          <div style={{ fontSize: '0.65rem', color: '#666', marginBottom: '10px', wordBreak: 'break-all', fontFamily: 'monospace' }}>
+            {WS_URL}
+          </div>
           <div className="stat-box">
             <h3>{players}</h3>
             <p>Joueurs Connectés</p>
