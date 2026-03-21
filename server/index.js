@@ -131,6 +131,8 @@ io.on('connection', (socket) => {
             if (blacklistDb.includes(alias)) {
                 return callback({ success: false, message: "🚨 Ce compte a été banni ou supprimé définitivement." });
             }
+            // Temporarily store username on socket for easier kicking
+            socket.username = alias;
 
             // Création automatique si le pseudo n'existe pas
             usersDb[alias] = { 
@@ -209,31 +211,32 @@ io.on('connection', (socket) => {
         }
     });
 
-    socket.on('delete_user', ({ username }) => {
+    socket.on('delete_user', async ({ username }) => {
         const alias = username?.toUpperCase();
-        if (alias && usersDb[alias]) {
-            delete usersDb[alias];
-            saveUsers();
-            
-            // Add to blacklist
+        if (alias) {
+            // 1. Remove from usersDb if present
+            if (usersDb[alias]) {
+                delete usersDb[alias];
+                saveUsers();
+            }
+
+            // 2. Add to blacklist if not already there
             if (!blacklistDb.includes(alias)) {
                 blacklistDb.push(alias);
                 saveBlacklist();
             }
-            
-            // Kick the user if they are online
-            io.emit('account_deleted', { username: alias });
-            
-            // Force physical disconnect of any socket associated with this user
-            const sockets = io.sockets.sockets;
-            for (const [id, s] of sockets) {
-               if (players[id] === alias) {
-                   s.disconnect(true);
-               }
-            }
 
             addNotification('ADMIN', `🗑️ Compte supprimé et banni : ${alias}`);
             sendAllUsersToAdmin(); // Refresh all admins
+
+            // 3. Force kick all active instances
+            const sockets = await io.fetchSockets();
+            for (const s of sockets) {
+                if (s.username === alias || players[s.id] === alias) {
+                    s.emit('account_deleted', { username: alias });
+                    s.disconnect(true);
+                }
+            }
         }
     });
 
@@ -608,6 +611,15 @@ io.on('connection', (socket) => {
     });
 
     // Déconnexion
+    // 10. Security: Continuous Blacklist Enforcement
+    socket.onAny((event) => {
+        const alias = socket.username || players[socket.id];
+        if (alias && blacklistDb.includes(alias)) {
+            socket.emit('account_deleted', { username: alias });
+            socket.disconnect(true);
+        }
+    });
+
     socket.on('disconnect', () => {
         pokerManager.leaveQueue(socket.id);
         pokerManager.leaveTable(socket.id);
