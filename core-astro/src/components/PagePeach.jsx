@@ -107,7 +107,7 @@ export default function PagePeach() {
                   <span className="price-tag gold">2000 <NeonIcon name="coin-gold" size={14} /></span>
                 </div>
                 <ul className="tier-features">
-                  <li><NeonIcon name="fire-flower-pixel" size={14} /> 10 photos aléatoires</li>
+                  <li><NeonIcon name="fire-flower-pixel" size={14} /> 4 photos aléatoires</li>
                   <li><NeonIcon name="lock-neon" size={14} /> Accès basique au feed</li>
                 </ul>
                 <button className="btn-subscribe basic">S'abonner</button>
