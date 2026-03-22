@@ -148,7 +148,7 @@ export default function PageMario() {
               {bereals.length === 0 ? (
                 <p className="empty-feed">Aucun post pour le moment. Sois le premier !</p>
               ) : (
-                bereals.map(post => (
+                [...bereals].sort((a, b) => b.timestamp - a.timestamp).map(post => (
                   <div className="bereal-post" key={post.id}>
                     <div className="post-header">
                       <strong>{post.username}</strong>
@@ -291,14 +291,17 @@ export default function PageMario() {
         .mario-mobile {
           --theme-color: #aa0000;
           width: 100%;
-          height: 100%;
+          min-height: 100vh;
+          min-height: 100dvh;
           display: flex;
-          align-items: center;
+          align-items: flex-start;
           position: relative;
+          padding: calc(env(safe-area-inset-top, 0px) + 85px) 0 30px 0;
+          box-sizing: border-box;
         }
 
         .tears-overlay {
-          position: absolute;
+          position: fixed;
           top: -20%; left: -20%; right: -20%; bottom: -20%;
           background: radial-gradient(circle at top, rgba(150, 0, 0, 0.4), transparent 70%);
           z-index: -1;
@@ -306,6 +309,8 @@ export default function PageMario() {
 
         .mario-card {
           width: 100%;
+          display: flex;
+          flex-direction: column;
           padding: 20px 15px 40px 15px; 
           border-radius: 32px;
           border-color: rgba(255, 0, 0, 0.3);
