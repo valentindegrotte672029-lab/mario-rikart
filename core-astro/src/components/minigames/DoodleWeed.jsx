@@ -132,30 +132,35 @@ export default function DoodleWeed({ onExit }) {
                 state.score += Math.floor(diff / 5);
                 setScore(state.score); // Sync UI
 
-                // Progressive difficulty: dynamic caps for playability
-                // Peak difficulty reached at 2500 score
-                const difficultyMultiplier = Math.min(state.score / 2500, 1.0); 
-                
-                // Gap management: Luigi jumps ~204px. Max gap capped at 180px.
-                const minDistance = 50 + (30 * difficultyMultiplier); // 50 to 80
-                const maxDistanceAdd = 50 + (50 * difficultyMultiplier); // 50 to 100
-                // Max possible gap = 180px
+                // Progressive difficulty
+                let minDist, maxDistAdd, chanceSpring, chanceBreak;
+
+                if (state.score >= 2000) {
+                    // EXTREME MODE: Max gap, almost all wooden
+                    minDist = 195; // Absolute jump peak is ~204.5px
+                    maxDistAdd = 5; // Gap will be extremely tight (195-200px)
+                    chanceSpring = 0.03; // Very rare mushrooms
+                    chanceBreak = 0.0; // Only wooden platforms (no breaking)
+                } else {
+                    // Normal escalation (0-1999)
+                    const diffMult = Math.min(state.score / 2000, 1.0);
+                    minDist = 50 + (80 * diffMult); 
+                    maxDistAdd = 50 + (30 * diffMult); 
+                    chanceSpring = 0.10 - (0.05 * diffMult); 
+                    chanceBreak = 0.10 + (0.40 * diffMult); 
+                }
 
                 const topPlatY = Math.min(...activePlatforms.map(p => p.y));
                 if (topPlatY > 0) {
-                    // Dynamic platform types: Normal platforms reach 0% at max difficulty
-                    const springChance = 0.05; 
-                    const breakChance = Math.min(0.95, 0.10 + (difficultyMultiplier * 0.90)); 
-
                     const rand = Math.random();
                     let platType = 'normal';
-                    if (rand < springChance) platType = 'spring';
-                    else if (rand < springChance + breakChance) platType = 'breaking';
+                    if (rand < chanceSpring) platType = 'spring';
+                    else if (rand < chanceSpring + chanceBreak) platType = 'breaking';
 
                     activePlatforms.push({
                         id: Date.now(),
                         x: Math.random() * (GAME_WIDTH - PLATFORM_WIDTH),
-                        y: topPlatY - (Math.random() * maxDistanceAdd + minDistance),
+                        y: topPlatY - (Math.random() * maxDistAdd + minDist),
                         type: platType
                     });
                 }
