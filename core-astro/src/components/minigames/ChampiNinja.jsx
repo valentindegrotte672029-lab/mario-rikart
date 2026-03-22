@@ -9,7 +9,7 @@ import NeonIcon from '../NeonIcon';
 
 const GAME_DURATION = 20; // 20 seconds of intense clicking
 const SPAWN_INTERVAL_MS = 450; // Slower/Simpler
-const REWARD_MULTIPLIER = 1.2;
+const REWARD_MULTIPLIER = 0.6;
 
 export default function ChampiNinja({ onExit }) {
     const [gameState, setGameState] = useState('START'); // START, PLAYING, GAMEOVER
