@@ -12,7 +12,7 @@ const POLES = [
         icon: 'peach-crown',
         color: '#ffcc00',
         photo: '/images/trombi/page_1.jpg',
-        description: 'Le pôle Présidence dirige le BDE, coordonne tous les autres pôles et représente les étudiants auprès de l\'administration.',
+        description: 'Le pôle Présidence dirige la liste et coordonne tous les autres pôles.',
         members: [
             { name: 'Lucas Tribut', role: 'Président', face: { x: 20.4, y: 43.1, w: 20.7, h: 18.2 }, text: { x: 2.3, y: 67.9, w: 30.3, h: 3.4 } },
             { name: 'Estelle Bouillet', role: 'Vice-Présidente', face: { x: 57.5, y: 56.6, w: 20.7, h: 14 }, text: { x: 57.5, y: 73.5, w: 37.2, h: 3.3 } },
@@ -36,7 +36,7 @@ const POLES = [
         icon: 'coins-stack',
         color: '#39ff14',
         photo: '/images/trombi/page_3.jpg',
-        description: 'Le pôle Trésorerie gère le budget du BDE, les encaissements, les dépenses et s\'assure que les comptes sont en ordre.',
+        description: 'Le pôle Trésorerie gère le budget de la liste, les encaissements, les dépenses et s\'assure que les comptes sont en ordre.',
         members: [
             { name: 'Mateo Cavaloc', role: 'Trésorier', face: { x: 16.8, y: 51.2, w: 27.4, h: 18.5 }, text: { x: 14.2, y: 88.4, w: 21.4, h: 1.8 } },
             { name: 'Kylian Libouban', role: 'Head Trésorier', face: { x: 55.6, y: 50, w: 26.3, h: 17.5 }, text: { x: 57.8, y: 84, w: 23.2, h: 2.4 } },
