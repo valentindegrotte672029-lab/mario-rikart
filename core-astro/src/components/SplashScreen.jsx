@@ -14,7 +14,7 @@ export default function SplashScreen() {
 
   const handleJoin = (e) => {
     e.preventDefault();
-    if (inputValue.trim().length > 2 && passwordValue.trim().length > 2) {
+    if (inputValue.trim().length >= 3 && passwordValue.length >= 4) {
       if (window.navigator?.vibrate) window.navigator.vibrate([20, 50, 20]);
       
       setIsLoading(true);
@@ -67,9 +67,11 @@ export default function SplashScreen() {
           />
           <input
             type="password"
-            placeholder="Mot de passe (4 char min)"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            placeholder="Mot de passe (4 chiffres min)"
             value={passwordValue}
-            onChange={(e) => setPasswordValue(e.target.value)}
+            onChange={(e) => setPasswordValue(e.target.value.replace(/[^0-9]/g, ''))}
             className="splash-input"
           />
 
@@ -78,7 +80,7 @@ export default function SplashScreen() {
           <button
             type="submit"
             className="splash-btn"
-            disabled={inputValue.trim().length < 3 || passwordValue.trim().length < 4 || isLoading}
+            disabled={inputValue.trim().length < 3 || passwordValue.length < 4 || isLoading}
           >
             {isLoading ? "VÉRIFICATION..." : "ENTRER DANS LE KART"}
           </button>
