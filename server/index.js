@@ -20,9 +20,12 @@ const io = new Server(server, {
 });
 
 // --- BASE DE DONNÉES / PERSISTANCE ---
+// Permet d'utiliser un dossier distant (comme /data sur Render) pour les sauvegardes
+const DB_DIR = process.env.DATA_DIR || __dirname;
+
 const loadDb = (filename, defaultVal) => {
     try {
-        const filePath = path.join(__dirname, filename);
+        const filePath = path.join(DB_DIR, filename);
         if (fs.existsSync(filePath)) {
             const content = fs.readFileSync(filePath, 'utf-8');
             if (content && content.trim().length > 0) {
@@ -38,7 +41,8 @@ const loadDb = (filename, defaultVal) => {
 
 const saveDb = (filename, data) => {
     try {
-        const filePath = path.join(__dirname, filename);
+        if (!fs.existsSync(DB_DIR)) fs.mkdirSync(DB_DIR, { recursive: true });
+        const filePath = path.join(DB_DIR, filename);
         const tempPath = filePath + '.tmp';
         fs.writeFileSync(tempPath, JSON.stringify(data, null, 2));
         fs.renameSync(tempPath, filePath);
