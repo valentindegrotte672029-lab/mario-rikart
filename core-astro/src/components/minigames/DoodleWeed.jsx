@@ -37,7 +37,7 @@ export default function DoodleWeed({ onExit }) {
     // --- INIT MAP ---
     const generateInitialPlatforms = () => {
         let initialPlatforms = [
-            { id: 0, x: GAME_WIDTH / 2 - PLATFORM_WIDTH / 2, y: 400, type: 'normal' } // Starting platform
+            { id: 0, x: GAME_WIDTH / 2 - PLATFORM_WIDTH / 2, y: 400, type: 'normal', width: 50 } // Starting platform
         ];
         // Generate up to y = -1000
         let currentY = 400;
@@ -48,7 +48,8 @@ export default function DoodleWeed({ onExit }) {
                 id: idCount++,
                 x: Math.random() * (GAME_WIDTH - PLATFORM_WIDTH),
                 y: currentY,
-                type: Math.random() > 0.9 ? 'spring' : 'normal'
+                type: Math.random() > 0.9 ? 'spring' : 'normal',
+                width: 50
             });
         }
         return initialPlatforms;
@@ -92,7 +93,7 @@ export default function DoodleWeed({ onExit }) {
 
                     // Le joueur était-il au-dessus de la plateforme à la frame précédente, et l'a dépassée à la frame actuelle ?
                     const isFallingThrough = startY <= plat.y + 10 && endY >= plat.y;
-                    const isHorizontallyAligned = nextX + 30 > plat.x - 10 && nextX < plat.x + PLATFORM_WIDTH + 10;
+                    const isHorizontallyAligned = nextX + 30 > plat.x - 10 && nextX < plat.x + (plat.width || 50) + 10;
 
                     if (!hitPlatform && isFallingThrough && isHorizontallyAligned) {
                         hitPlatform = plat;
@@ -133,14 +134,15 @@ export default function DoodleWeed({ onExit }) {
                 setScore(state.score); // Sync UI
 
                 // Progressive difficulty
-                let minDist, maxDistAdd, chanceSpring, chanceBreak;
+                let minDist, maxDistAdd, chanceSpring, chanceBreak, currentWidth;
 
                 if (state.score >= 2000) {
                     // EXTREME MODE: Max gap, almost all wooden
-                    minDist = 195; // Absolute jump peak is ~204.5px
-                    maxDistAdd = 5; // Gap will be extremely tight (195-200px)
+                    minDist = 200; // Absolute jump peak is ~204.5px
+                    maxDistAdd = 5; // Gap will be 200-205px (slightly more than standard max jump)
                     chanceSpring = 0.03; // Very rare mushrooms
                     chanceBreak = 0.0; // Only wooden platforms (no breaking)
+                    currentWidth = Math.max(15, 50 - ((state.score - 2000) / 40)); // Shrinks from 50 down to 15
                 } else {
                     // Normal escalation (0-1999)
                     const diffMult = Math.min(state.score / 2000, 1.0);
@@ -148,6 +150,7 @@ export default function DoodleWeed({ onExit }) {
                     maxDistAdd = 50 + (30 * diffMult); 
                     chanceSpring = 0.10 - (0.05 * diffMult); 
                     chanceBreak = 0.10 + (0.40 * diffMult); 
+                    currentWidth = 50;
                 }
 
                 const topPlatY = Math.min(...activePlatforms.map(p => p.y));
@@ -159,9 +162,10 @@ export default function DoodleWeed({ onExit }) {
 
                     activePlatforms.push({
                         id: Date.now(),
-                        x: Math.random() * (GAME_WIDTH - PLATFORM_WIDTH),
+                        x: Math.random() * (GAME_WIDTH - currentWidth),
                         y: topPlatY - (Math.random() * maxDistAdd + minDist),
-                        type: platType
+                        type: platType,
+                        width: currentWidth
                     });
                 }
                 currentPlatforms = activePlatforms;
@@ -313,7 +317,7 @@ export default function DoodleWeed({ onExit }) {
                             style={{
                                 left: `${plat.x}px`,
                                 top: `${plat.y}px`,
-                                width: `${PLATFORM_WIDTH}px`,
+                                width: `${plat.width || 50}px`,
                                 height: `${PLATFORM_HEIGHT}px`
                             }}
                         >
