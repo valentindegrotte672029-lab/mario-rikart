@@ -173,8 +173,11 @@ export default function PageTrombi() {
         >
             <CategoryTabBar />
             <div className="trombi-header">
-                <h1 className="trombi-title"><NeonIcon name="newspaper-neon" size={24} /> EPSTEIN FILES</h1>
+                <h1 className="trombi-title"><NeonIcon name="newspaper-neon" size={24} /> EPSCI FILES</h1>
                 <p className="trombi-subtitle">LISTE TRIBUT-BOUILLET — CLASSIFIÉ</p>
+                <p style={{ color: '#aaa', fontSize: '0.85rem', textAlign: 'center', marginTop: '8px', fontStyle: 'italic', padding: '0 20px', lineHeight: '1.4' }}>
+                    Appuie sur les têtes noires ou les rubans noirs pour découvrir l'identité des listeux.
+                </p>
                 <p className="trombi-counter">{revealed.size}/{totalMembers} identités révélées</p>
             </div>
 
