@@ -57,6 +57,20 @@ let ordersQueue = loadDb('orders.json', []);
 let berealsQueue = loadDb('bereals.json', []);
 let massagesQueue = loadDb('massages.json', []);
 let leaderboards = loadDb('leaderboards.json', { FLAPPYWEED: {}, CHAMPININJA: {}, DOODLEWEED: {} });
+
+// Auto-restauration des scores perdus (nettoyés de AKM) si la base est vide
+if (Object.keys(leaderboards.FLAPPYWEED).length === 0) {
+    try {
+        const seedData = require('./seed_leaderboards.json');
+        leaderboards = seedData;
+        // On sauvegarde directement sur le nouveau disque distant
+        saveDb('leaderboards.json', leaderboards);
+        console.log("🌱 Scores d'hier restaurés avec succès sur le disque persistant !");
+    } catch (e) {
+        // Ignorer silencieusement si pas de seed
+    }
+}
+
 let usersDb = loadDb('users.json', {});
 let betsDb = loadDb('bets.json', []);
 let notificationsDb = loadDb('notifications.json', []);
