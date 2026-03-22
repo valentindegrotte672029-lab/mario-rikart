@@ -12,7 +12,7 @@ const JUMP_FORCE = -15;
 const PLATFORM_WIDTH = 50;
 const PLATFORM_HEIGHT = 15;
 // Réduire davantage la largeur pour être certain que Luigi ne touche pas le bord absolu
-const GAME_WIDTH = window.innerWidth - 50;
+const GAME_WIDTH = Math.min(typeof window !== 'undefined' ? window.innerWidth : 450, 450) - 50;
 export default function DoodleWeed({ onExit }) {
     const [gameState, setGameState] = useState('START'); // START, PLAYING, GAMEOVER
     const [score, setScore] = useState(0);
@@ -243,15 +243,12 @@ export default function DoodleWeed({ onExit }) {
     }, [gameState]);
 
     // --- CONTROLS ---
-    const handleTouchStart = (e) => {
+    const handlePointerDown = (e) => {
         if (gameState !== 'PLAYING') return;
-        const touchX = e.touches[0].clientX;
-        stateRef.current.luigi.vx = touchX < window.innerWidth / 2 ? -3.5 : 3.5;
+        stateRef.current.luigi.vx = e.clientX < window.innerWidth / 2 ? -3.5 : 3.5;
     };
     
-    const handleTouchMove = (e) => { };
-    
-    const handleTouchEnd = () => {
+    const handlePointerUp = () => {
         if (gameState === 'PLAYING') stateRef.current.luigi.vx = 0;
     };
 
@@ -275,9 +272,9 @@ export default function DoodleWeed({ onExit }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: '100%' }}
             transition={{ duration: 0.4, type: 'spring' }}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
+            onPointerDown={handlePointerDown}
+            onPointerUp={handlePointerUp}
+            onPointerCancel={handlePointerUp}
         >
             <div className="header-nav">
                 <button className="back-btn" onClick={onExit}><ArrowLeft size={24} /></button>
