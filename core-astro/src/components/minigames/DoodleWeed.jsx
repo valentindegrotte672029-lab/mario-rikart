@@ -125,9 +125,10 @@ export default function DoodleWeed({ onExit }) {
                 nextY = 250;
 
                 let activePlatforms = [];
-                for (let p of currentPlatforms) {
-                    let py = p.y + diff;
-                    if (py < 700) activePlatforms.push({ ...p, y: py });
+                for (let i = 0; i < currentPlatforms.length; i++) {
+                    let p = currentPlatforms[i];
+                    p.y += diff;
+                    if (p.y < 700) activePlatforms.push(p);
                 }
 
                 state.score += Math.floor(diff / 5);
@@ -153,7 +154,11 @@ export default function DoodleWeed({ onExit }) {
                     currentWidth = 50;
                 }
 
-                const topPlatY = Math.min(...activePlatforms.map(p => p.y));
+                let topPlatY = 700;
+                for (let i = 0; i < activePlatforms.length; i++) {
+                    if (activePlatforms[i].y < topPlatY) topPlatY = activePlatforms[i].y;
+                }
+
                 if (topPlatY > 0) {
                     const rand = Math.random();
                     let platType = 'normal';
@@ -161,7 +166,7 @@ export default function DoodleWeed({ onExit }) {
                     else if (rand < chanceSpring + chanceBreak) platType = 'breaking';
 
                     activePlatforms.push({
-                        id: Date.now(),
+                        id: Math.random().toString(36).substr(2, 9),
                         x: Math.random() * (GAME_WIDTH - currentWidth),
                         y: topPlatY - (Math.random() * maxDistAdd + minDist),
                         type: platType,
