@@ -128,9 +128,9 @@ export default function ChampiNinja({ onExit }) {
     };
 
     const getItemIcon = (type) => {
-        if (type === 'bomb') return <NeonIcon name="bomb" size={35} glow="red" />;
-        if (type === 'golden') return <NeonIcon name="coin-gold" size={35} glow="gold" />;
-        return <NeonIcon name="mushroom-red-classic" size={35} glow="#ff3366" />;
+        if (type === 'bomb') return <span style={{ fontSize: '45px', filter: 'drop-shadow(0 0 10px red)' }}>💣</span>;
+        if (type === 'golden') return <span style={{ fontSize: '50px', filter: 'drop-shadow(0 0 15px gold)' }}>🌟</span>;
+        return <span style={{ fontSize: '45px', filter: 'drop-shadow(0 0 10px #ff3366)' }}>🍄</span>;
     };
 
     // --- RENDERING ---
