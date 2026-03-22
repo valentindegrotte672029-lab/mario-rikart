@@ -48,7 +48,7 @@ const POLES = [
         icon: 'castle-gothic-purple',
         color: '#ff66b2',
         photo: '/images/trombi/page_4.jpg',
-        description: 'Le pôle Ambassade représente le BDE à l\'extérieur, gère les relations avec les autres écoles et associations.',
+        description: 'Le pôle Ambassade trouve les partenariats pour la liste.',
         members: [
             { name: 'Alexandre Hofherr', role: 'Ambassadeur', face: { x: 27.1, y: 32.6, w: 21.2, h: 11.6 }, text: { x: 18.8, y: 70, w: 27, h: 9.9 } },
             { name: 'Emma Gomes', role: 'Head Ambassadrice', face: { x: 69, y: 47.2, w: 20.9, h: 12.2 }, text: { x: 63.3, y: 73.7, w: 19.7, h: 10.5 } },
@@ -60,7 +60,7 @@ const POLES = [
         icon: 'trombi-com',
         color: '#ff4400',
         photo: '/images/trombi/page_5.jpg',
-        description: 'Le pôle Communication gère les réseaux sociaux, les affiches, les vidéos et toute la visibilité du BDE.',
+        description: 'Le pôle Communication gère les réseaux sociaux, les affiches, les vidéos et toute la visibilité de la liste.',
         members: [
             { name: 'Valentin Degrotte', role: 'Communication', face: { x: 14, y: 61.2, w: 23.5, h: 13.3 }, text: { x: 3.6, y: 94.5, w: 33.9, h: 2 } },
             { name: 'Maxime Blood', role: 'Head Communication', face: { x: 56, y: 58, w: 24.3, h: 17.6 }, text: { x: 36.9, y: 89.6, w: 25, h: 1.9 } },
@@ -72,7 +72,7 @@ const POLES = [
         icon: 'trombi-event',
         color: '#ff00ff',
         photo: '/images/trombi/page_6.jpg',
-        description: 'Le pôle Événementiel organise toutes les soirées, galas, afterworks et événements de la vie étudiante.',
+        description: 'Le pôle Événementiel organise tous les événements et voyages pour les étudiants.',
         members: [
             { name: 'Victoire Callens', role: 'Head Événementiel', face: { x: 14.3, y: 45.9, w: 23.8, h: 16.4 }, text: { x: 12.6, y: 78.6, w: 27.2, h: 13.1 } },
             { name: 'Hanaé Lemoine', role: 'Événementiel', face: { x: 59.5, y: 44.7, w: 19.2, h: 16.5 }, text: { x: 55.8, y: 77.9, w: 27.6, h: 13.1 } },
