@@ -148,7 +148,7 @@ export default function PageLuigiNew() {
 
               {/* Cémantix */}
               <div className="lb-category">
-                <h3><NeonIcon name="brain-neon" size={18} /> Cémantix (Chrono)</h3>
+                <h3><NeonIcon name="motus-neon" size={18} /> Cémantix (Chrono)</h3>
                 {Object.keys(leaderboards.CEMANTIX || {}).length === 0 ? <p className="empty-lb">Aucun temps enregistré</p> : (
                   Object.entries(leaderboards.CEMANTIX).sort(([,a], [,b]) => a.score - b.score).slice(0, 10).map(([user, data], i) => {
                     const mins = Math.floor(data.score / 60);

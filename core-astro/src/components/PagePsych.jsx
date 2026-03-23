@@ -214,7 +214,7 @@ export default function PagePsych() {
                 <NeonIcon name="Test icône" size={18} /> TEST
             </button>
             <button className="category-tab" onClick={() => setPage('CEMANTIX')}>
-                <NeonIcon name="brain-neon" size={18} /> MOTUS
+                <NeonIcon name="motus-neon" size={18} /> MOTUS
             </button>
         </div>
     );

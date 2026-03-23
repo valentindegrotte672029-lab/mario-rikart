@@ -40,7 +40,7 @@ export default function NeonIcon({ name, size = 20, glow, className = '', style 
         margin: 'auto',
       }}>
         <img
-          src={`/images/icons/items/${name}.png?v=${ICON_V}`}
+          src={`/images/icons/items/${name}.${name === 'motus-neon' ? 'jpg' : 'png'}?v=${ICON_V}`}
           alt=""
           style={{
             width: '100%',

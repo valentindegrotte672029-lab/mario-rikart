@@ -52,7 +52,7 @@ export default function PageCemantix() {
         <NeonIcon name="Test icône" size={18} /> TEST
       </button>
       <button className="category-tab active" onClick={() => setPage('CEMANTIX')}>
-        <NeonIcon name="brain-neon" size={18} /> MOTUS
+        <NeonIcon name="motus-neon" size={18} /> MOTUS
       </button>
     </div>
   );
@@ -180,7 +180,7 @@ export default function PageCemantix() {
         
         {!targetWord ? (
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#ffcc00', textAlign: 'center', padding: '20px' }}>
-                <NeonIcon name="brain-neon" size={60} glow="#ffcc00" />
+                <NeonIcon name="motus-neon" size={60} glow="#ffcc00" />
                 <h2 style={{ marginTop: '20px', fontFamily: "'Knewave', cursive", fontSize: '1.5rem' }}>
                     {isTooEarly ? "Lancement le 24 Mars" : isOver ? "Saison Terminée !" : "Aucun mot aujourd'hui."}
                 </h2>
