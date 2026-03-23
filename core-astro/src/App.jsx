@@ -159,6 +159,9 @@ export default function App() {
           }
       });
       socket.on('sync_feature_flags', (flags) => setFeatureFlags(flags));
+      socket.on('sync_last_toadxique', (date) => {
+          useStore.getState().setLastToadxiqueOrder(date);
+      });
 
       return () => {
         socket.off('connect', onConnect);
@@ -178,12 +181,13 @@ export default function App() {
         socket.off('poker_join_request');
         socket.off('poker_request_sent');
         socket.off('poker_join_denied');
-      socket.off('account_deleted');
-      socket.off('sync_feature_flags');
+        socket.off('account_deleted');
+        socket.off('sync_feature_flags');
+        socket.off('sync_last_toadxique');
       socket.disconnect();
       };
     }
-  }, [username, triggerHappening, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, setBets, setBalance, setPokerState, setPokerRooms, setFeatureFlags]);
+  }, [username, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, triggerHappening, setBets, setBalance, setPokerState, setPokerRooms, setFeatureFlags]);
 
   // Synchronisation continue des pièces, rang et peachUnlock vers le serveur
   const peachUnlock = useStore(s => s.peachUnlock);

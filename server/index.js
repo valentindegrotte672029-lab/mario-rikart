@@ -457,6 +457,10 @@ io.on('connection', (socket) => {
         players[socket.id] = alias;
         console.log(`🕹️ Joueur rejoint : ${alias} (${socket.id})`);
 
+        if (usersDb[alias] && usersDb[alias].lastToadxiqueOrder) {
+            socket.emit('sync_last_toadxique', usersDb[alias].lastToadxiqueOrder);
+        }
+
         // Informe le Master (Admin) qu'un nouveau joueur est là
         io.emit('player_joined', { id: socket.id, username, totalPlayers: Object.keys(players).length });
 
