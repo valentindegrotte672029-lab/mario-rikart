@@ -7,14 +7,17 @@ const useStore = create(
     // Identification Joueur
     username: null,
     setUsername: (name) => set({ username: name }),
-    setLoginData: (name, balance, socialStatus, peachUnlock, gourdasseUnlock) => 
-        set({ username: name, balance, socialStatus, peachUnlock: peachUnlock || 'none', gourdasseUnlock: gourdasseUnlock || null }),
+    lastToadxiqueOrder: null,
+    setLastToadxiqueOrder: (date) => set({ lastToadxiqueOrder: date }),
+    setLoginData: (name, balance, socialStatus, peachUnlock, gourdasseUnlock, lastToadxiqueOrder) => 
+        set({ username: name, balance, socialStatus, peachUnlock: peachUnlock || 'none', gourdasseUnlock: gourdasseUnlock || null, lastToadxiqueOrder: lastToadxiqueOrder || null }),
     logout: () => set({ 
         username: null, 
         balance: 100, 
         socialStatus: "PAUVRE HÈRE DU ROYAUME (RMI)",
         peachUnlock: 'none',
-        gourdasseUnlock: null
+        gourdasseUnlock: null,
+        lastToadxiqueOrder: null
     }),
 
     // Navigation

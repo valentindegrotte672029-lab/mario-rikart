@@ -27,10 +27,12 @@ const LISTEUX = [
 ];
 
 export default function PageToad() {
-  const { username, spendCoins } = useStore();
+  const { username, spendCoins, lastToadxiqueOrder, setLastToadxiqueOrder } = useStore();
   const [selectedIngredients, setSelectedIngredients] = useState([]);
   const [selectedVictim, setSelectedVictim] = useState('');
   const [isSending, setIsSending] = useState(false);
+
+  const hasOrderedToday = lastToadxiqueOrder && new Date(lastToadxiqueOrder).toDateString() === new Date().toDateString();
 
   const toggleIngredient = (id) => {
     setSelectedIngredients(prev => {
@@ -46,7 +48,7 @@ export default function PageToad() {
   };
 
   const handleSendMix = () => {
-    if (selectedIngredients.length === 0 || !selectedVictim) return;
+    if (selectedIngredients.length === 0 || !selectedVictim || hasOrderedToday) return;
 
     setIsSending(true);
     if (window.navigator?.vibrate) window.navigator.vibrate([50, 100, 50]);
@@ -56,14 +58,18 @@ export default function PageToad() {
     const success = spendCoins(500, "MÉLANGE TOAD-XIQUE");
     if (!success) {
       if (window.navigator?.vibrate) window.navigator.vibrate(200);
+      setIsSending(false);
       return;
     }
 
     // Envoi de la commande spéciale au Master
     socket.emit('new_order', {
       username: username || "Anonyme",
+      type: "TOADXIQUE",
       item: `${mixName} pour ${selectedVictim} (Atroce)`
     });
+
+    setLastToadxiqueOrder(new Date().toISOString());
 
     setTimeout(() => {
       setSelectedIngredients([]);
@@ -159,11 +165,11 @@ export default function PageToad() {
         {/* Bouton Envoi */}
         <button
           className={`btn-primary send-mix-btn ${isSending ? 'sending' : ''}`}
-          disabled={selectedIngredients.length === 0 || !selectedVictim || isSending}
+          disabled={selectedIngredients.length === 0 || !selectedVictim || isSending || hasOrderedToday}
           onClick={handleSendMix}
         >
           <NeonIcon name="skull-neon" size={28} glow="#ff3366" />
-          <span>{isSending ? 'Mélange envoyé !' : 'Servir le mélange'}</span>
+          <span>{hasOrderedToday ? "DÉJÀ COMMANDÉ AUJOURD'HUI" : (isSending ? 'Mélange envoyé !' : 'Servir le mélange')}</span>
         </button>
           </>
         )}

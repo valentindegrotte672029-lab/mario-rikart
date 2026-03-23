@@ -33,7 +33,8 @@ export default function SplashScreen() {
             response.userData.balance, 
             response.userData.socialStatus,
             response.userData.peachUnlock,
-            response.userData.gourdasseUnlock
+            response.userData.gourdasseUnlock,
+            response.userData.lastToadxiqueOrder
           );
         } else {
           setError(response.message);

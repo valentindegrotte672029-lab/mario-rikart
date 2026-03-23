@@ -144,7 +144,8 @@ io.on('connection', (socket) => {
                         balance: usersDb[alias].balance || 100,
                         socialStatus: usersDb[alias].socialStatus || "PAUVRE HÈRE DU ROYAUME (RMI)",
                         peachUnlock: usersDb[alias].peachUnlock || 'none',
-                        gourdasseUnlock: usersDb[alias].gourdasseUnlock || null
+                        gourdasseUnlock: usersDb[alias].gourdasseUnlock || null,
+                        lastToadxiqueOrder: usersDb[alias].lastToadxiqueOrder || null
                     }
                 });
             } else {
@@ -163,7 +164,8 @@ io.on('connection', (socket) => {
                 password, 
                 createdAt: new Date().toISOString(),
                 balance: 100,
-                socialStatus: "PAUVRE HÈRE DU ROYAUME (RMI)"
+                socialStatus: "PAUVRE HÈRE DU ROYAUME (RMI)",
+                lastToadxiqueOrder: null
             };
             saveUsers();
             addNotification('USER', `🎮 Nouveau joueur : ${alias}`, { username: alias });
@@ -174,7 +176,10 @@ io.on('connection', (socket) => {
                 message: "🎉 Nouveau compte créé !",
                 userData: {
                     balance: 100,
-                    socialStatus: "PAUVRE HÈRE DU ROYAUME (RMI)"
+                    socialStatus: "PAUVRE HÈRE DU ROYAUME (RMI)",
+                    peachUnlock: 'none',
+                    gourdasseUnlock: null,
+                    lastToadxiqueOrder: null
                 }
             });
         }
@@ -468,9 +473,25 @@ io.on('connection', (socket) => {
         broadcastActiveUsers();
     });
 
-    // 2. Émission d'une commande (Wario Bar)
+    // 2. Émission d'une commande (Wario Bar & Toadxique)
     socket.on('new_order', (orderData) => {
         const username = players[socket.id] || 'Anonyme';
+        const alias = username.toUpperCase();
+        
+        // --- Vérification Anti-Spam Toadxique (1 par jour) ---
+        if (orderData.type === 'TOADXIQUE' && usersDb[alias]) {
+            const now = new Date();
+            if (usersDb[alias].lastToadxiqueOrder) {
+                const last = new Date(usersDb[alias].lastToadxiqueOrder);
+                if (last.toDateString() === now.toDateString()) {
+                    console.log(`🛡️ Commande Toad-xique bloquée pour ${alias} (Déjà commandé aujourd'hui)`);
+                    return; // On bloque silencieusement la commande
+                }
+            }
+            usersDb[alias].lastToadxiqueOrder = now.toISOString();
+            saveUsers();
+        }
+
         const completeOrder = {
             ...orderData,
             username,
