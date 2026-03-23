@@ -156,7 +156,7 @@ export default function PageWaluigi() {
           display: flex;
           width: 100%;
           max-width: 450px;
-          gap: 10px;
+          gap: 6px;
           margin-bottom: 15px;
           padding: 0 5px;
           z-index: 100;
@@ -166,15 +166,18 @@ export default function PageWaluigi() {
           background: rgba(255, 255, 255, 0.05) !important;
           border: 1px solid rgba(255, 255, 255, 0.1) !important;
           border-radius: 15px;
-          padding: 12px;
+          padding: 10px 8px;
           color: #aaa;
           font-weight: 800;
-          font-size: 0.8rem;
+          font-size: 0.75rem;
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 8px;
+          gap: 6px;
           transition: all 0.2s;
+          min-width: 0;
+          white-space: nowrap;
+          overflow: hidden;
         }
         .category-tab.active {
           background: rgba(153, 0, 255, 0.2) !important;

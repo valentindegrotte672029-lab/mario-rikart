@@ -161,7 +161,7 @@ export default function PageCemantix() {
     return (
         <div className="page-mobile psych-mobile">
             <CategoryTabBar />
-            <ComingSoon title="LE LABO MOTUS" subtitle="Fermé par décret présidentiel." iconName="brain-neon" />
+            <ComingSoon title="LE LABO MOTUS" color="#ffcc00" icon="motus-neon" />
         </div>
     );
   }
@@ -303,7 +303,56 @@ export default function PageCemantix() {
             </>
         )}
       </div>
+      
+      <style>{`
+        .psych-mobile {
+            --theme-color: #ffcc00;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: calc(var(--safe-top) + 15px) 15px 120px 15px;
+        }
 
+        .category-tab-bar {
+          display: flex;
+          width: 100%;
+          max-width: 450px;
+          gap: 6px;
+          margin-bottom: 25px;
+          padding: 0 5px;
+          z-index: 100;
+          justify-content: center;
+        }
+        .category-tab {
+          flex: 1;
+          background: rgba(255, 255, 255, 0.05) !important;
+          border: 1px solid rgba(255, 255, 255, 0.1) !important;
+          border-radius: 20px;
+          padding: 10px 8px;
+          color: #aaa;
+          font-weight: 800;
+          font-size: 0.75rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+          transition: all 0.2s;
+          min-width: 0;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+        .category-tab.active {
+          background: rgba(255, 204, 0, 0.2) !important;
+          border-color: #ffcc00 !important;
+          color: white;
+          box-shadow: 0 0 15px rgba(255, 204, 0, 0.3);
+        }
+      `}</style>
     </motion.div>
   );
 }
