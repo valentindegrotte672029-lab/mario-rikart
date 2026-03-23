@@ -74,7 +74,7 @@ if (Object.keys(leaderboards.FLAPPYWEED).length === 0) {
 let usersDb = loadDb('users.json', {});
 let betsDb = loadDb('bets.json', []);
 let notificationsDb = loadDb('notifications.json', []);
-let featureFlags = loadDb('feature_flags.json', { warioTest: true, warioCrossword: true, toadLab: true, peachasse: true, horoscope: true });
+let featureFlags = loadDb('feature_flags.json', { warioTest: true, warioCrossword: true, toadLab: true, peachasse: true, horoscope: true, cemantixTab: false });
 let blacklistDb = loadDb('blacklist.json', []);
 
 // Helpers de sauvegarde

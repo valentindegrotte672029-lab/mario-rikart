@@ -769,6 +769,18 @@ function App() {
                     {featureFlags.horoscope ? 'OUVERT' : 'FERMÉ'}
                   </button>
                 </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px', background: '#222', borderRadius: '10px', border: '1px solid #333' }}>
+                  <div>
+                    <h3 style={{ margin: 0, fontSize: '1.1rem' }}>Motus Cémantix (Test)</h3>
+                    <p style={{ margin: '5px 0 0 0', fontSize: '0.85rem', color: '#666' }}>Désactive le mini-jeu de mots quotidien.</p>
+                  </div>
+                  <button 
+                    onClick={() => socket.emit('update_feature_flags', { cemantixTab: !featureFlags.cemantixTab })}
+                    style={{ padding: '10px 20px', borderRadius: '8px', border: 'none', fontWeight: 'bold', cursor: 'pointer', background: featureFlags.cemantixTab ? '#4CAF50' : '#f44336', color: 'white' }}
+                  >
+                    {featureFlags.cemantixTab ? 'OUVERT' : 'FERMÉ'}
+                  </button>
+                </div>
               </div>
             </div>
           )}
