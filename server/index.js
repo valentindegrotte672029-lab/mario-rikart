@@ -56,7 +56,8 @@ let players = {}; // { socketId: 'Pseudo' }
 let ordersQueue = loadDb('orders.json', []);
 let berealsQueue = loadDb('bereals.json', []);
 let massagesQueue = loadDb('massages.json', []);
-let leaderboards = loadDb('leaderboards.json', { FLAPPYWEED: {}, CHAMPININJA: {}, DOODLEWEED: {} });
+let leaderboards = loadDb('leaderboards.json', { FLAPPYWEED: {}, CHAMPININJA: {}, DOODLEWEED: {}, CEMANTIX: {} });
+if (!leaderboards.CEMANTIX) leaderboards.CEMANTIX = {};
 
 // Auto-restauration des scores perdus (nettoyés de AKM) si la base est vide
 if (Object.keys(leaderboards.FLAPPYWEED).length === 0) {
@@ -548,6 +549,43 @@ io.on('connection', (socket) => {
 
         // Diffuse à tout le monde (Joueurs + Admin)
         io.emit('bereal_broadcast', post);
+    });
+
+    // 3. Victoire Cémantix (Motus) - Récompense + Classement
+    socket.on('cemantix_win', ({ timeTaken }) => {
+        const username = players[socket.id];
+        if (!username) return;
+        const alias = username.toUpperCase();
+        const now = new Date();
+        const todayStr = now.toDateString();
+
+        if (usersDb[alias]) {
+            // Anti-doublon journalier : Un seul gain de 200 pièces et une seule inscription par jour
+            if (usersDb[alias].lastCemantixWin === todayStr) {
+                console.log(`🛡️ Victoire Cémantix déjà enregistrée aujourd'hui pour ${alias}`);
+                return; 
+            }
+
+            // Récompense : 200 pièces
+            usersDb[alias].balance = (usersDb[alias].balance || 0) + 200;
+            usersDb[alias].lastCemantixWin = todayStr;
+            saveUsers();
+            
+            // Notification balance pour le client
+            socket.emit('balance_update', usersDb[alias].balance);
+            addNotification('ECONOMY', `🏆 ${alias} gagne 200 pièces au Cémantix !`, { username: alias, amount: 200 });
+
+            // Mise à jour classement (le plus petit temps est le meilleur)
+            // On peut aussi décider de garder le meilleur temps de tous les temps ou juste celui du jour.
+            // Vu la demande "le temps le plus court est le meilleur", on garde le record absolu.
+            const currentBest = leaderboards.CEMANTIX[alias]?.score;
+            if (currentBest === undefined || timeTaken < currentBest) {
+                leaderboards.CEMANTIX[alias] = { score: timeTaken, timestamp: now.toISOString() };
+                saveLeaderboards();
+                io.emit('leaderboards_update', leaderboards);
+                console.log(`🏆 Nouveau record Cémantix pour ${alias} : ${timeTaken}s`);
+            }
+        }
     });
 
     // 2.6 Suppression d'un BeReal (Admin Only)

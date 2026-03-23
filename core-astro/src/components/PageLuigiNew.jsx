@@ -145,6 +145,23 @@ export default function PageLuigiNew() {
                   ))
                 )}
               </div>
+
+              {/* Cémantix */}
+              <div className="lb-category">
+                <h3><NeonIcon name="brain-neon" size={18} /> Cémantix (Chrono)</h3>
+                {Object.keys(leaderboards.CEMANTIX || {}).length === 0 ? <p className="empty-lb">Aucun temps enregistré</p> : (
+                  Object.entries(leaderboards.CEMANTIX).sort(([,a], [,b]) => a.score - b.score).slice(0, 10).map(([user, data], i) => {
+                    const mins = Math.floor(data.score / 60);
+                    const secs = data.score % 60;
+                    return (
+                        <div key={user} className="lb-line">
+                          <span><span className="rank-pos">#{i+1}</span> {user}</span>
+                          <span className="lb-points" style={{ color: '#ffcc00' }}>{mins > 0 ? `${mins}m ` : ''}{secs}s</span>
+                        </div>
+                    );
+                  })
+                )}
+              </div>
             </div>
           </motion.div>
         )}

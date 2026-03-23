@@ -34,7 +34,7 @@ export default function PageCemantix() {
   const targetWord = DAILY_WORDS[todayStr];
   
   // Progress pour ce jour spécifique
-  const dayProgress = cemantixProgress[todayStr] || { guesses: [], status: 'PLAYING' };
+  const dayProgress = cemantixProgress[todayStr] || { guesses: [], status: 'PLAYING', startTime: null, timeTaken: null };
   
   const [currentGuess, setCurrentGuess] = useState('');
   const [invalidMsg, setInvalidMsg] = useState('');
@@ -113,9 +113,14 @@ export default function PageCemantix() {
       
       const newGuesses = [...dayProgress.guesses, currentGuess];
       let newStatus = 'PLAYING';
+      let finalTimeTaken = dayProgress.timeTaken;
       
       if (currentGuess === targetWord) {
           newStatus = 'WIN';
+          if (dayProgress.startTime) {
+              finalTimeTaken = Math.round((Date.now() - dayProgress.startTime) / 1000);
+              socket.emit('cemantix_win', { timeTaken: finalTimeTaken });
+          }
           if (window.navigator?.vibrate) window.navigator.vibrate([100, 50, 100, 50, 200]);
       } else if (newGuesses.length >= MAX_GUESSES) {
           newStatus = 'LOSE';
@@ -126,7 +131,12 @@ export default function PageCemantix() {
 
       setCemantixProgress({
           ...cemantixProgress,
-          [todayStr]: { guesses: newGuesses, status: newStatus }
+          [todayStr]: { 
+              ...dayProgress,
+              guesses: newGuesses, 
+              status: newStatus,
+              timeTaken: finalTimeTaken
+          }
       });
       setCurrentGuess('');
     } else if (key === 'BACKSPACE') {
@@ -134,6 +144,15 @@ export default function PageCemantix() {
       if (window.navigator?.vibrate) window.navigator.vibrate(20);
     } else if (currentGuess.length < targetWord.length) {
       setCurrentGuess(prev => prev + key);
+      
+      // Démarrage du chrono au premier caractère tapé
+      if (!dayProgress.startTime) {
+          setCemantixProgress({
+              ...cemantixProgress,
+              [todayStr]: { ...dayProgress, startTime: Date.now() }
+          });
+      }
+
       if (window.navigator?.vibrate) window.navigator.vibrate(20);
     }
   };
@@ -176,7 +195,7 @@ export default function PageCemantix() {
                 {/* Grille */}
                 <div className="motus-grid" style={{
                     display: 'grid',
-                    gridTemplateRows: \`repeat(\${MAX_GUESSES}, 1fr)\`,
+                    gridTemplateRows: `repeat(${MAX_GUESSES}, 1fr)`,
                     gap: '5px',
                     width: '100%',
                     maxWidth: '350px',
@@ -193,7 +212,7 @@ export default function PageCemantix() {
                         return (
                             <div key={rowIndex} style={{
                                 display: 'grid',
-                                gridTemplateColumns: \`repeat(\${targetWord.length}, 1fr)\`,
+                                gridTemplateColumns: `repeat(${targetWord.length}, 1fr)`,
                                 gap: '5px'
                             }}>
                                 {lineWord.split('').map((char, colIndex) => {
@@ -237,8 +256,9 @@ export default function PageCemantix() {
 
                 {dayProgress.status === 'WIN' && (
                     <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} style={{ background: 'rgba(76, 175, 80, 0.2)', padding: '15px', borderRadius: '15px', color: '#4CAF50', border: '2px solid #4CAF50', textAlign: 'center', margin: '15px 0' }}>
-                        <h2 style={{ fontFamily: "'Knewave', cursive", fontSize: '1.5rem', marginBottom: '5px' }}>GÉNIAL !</h2>
-                        <p>Tu as trouvé le mot ! Reviens demain.</p>
+                        <h2 style={{ fontFamily: "'Knewave', cursive", fontSize: '1.5rem', marginBottom: '5px' }}>🏆 VICTOIRE !</h2>
+                        <p>Tu as trouvé le mot en <strong>{dayProgress.timeTaken != null ? dayProgress.timeTaken : '?'}s</strong> !</p>
+                        <p style={{ fontSize: '0.8rem', marginTop: '5px' }}>💰 +200 pièces créditées</p>
                     </motion.div>
                 )}
 
