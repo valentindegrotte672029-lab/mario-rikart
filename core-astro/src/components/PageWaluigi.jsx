@@ -69,9 +69,9 @@ export default function PageWaluigi() {
   );
 
   const menu = [
-    { id: 'gourd-50', name: 'Gourdasse 50cc', price: 15000, icon: 'flask-purple-atomic' },
-    { id: 'gourd-100', name: 'Gourdasse 100cc', price: 30000, icon: 'flask-orange-distill' },
-    { id: 'gourd-150', name: 'Gourdasse 150cc', price: 60000, icon: 'flask-green-erlenmeyer' },
+    { id: 'gourd-50', name: 'Gourdasse 50cc', price: 1500, icon: 'flask-purple-atomic' },
+    { id: 'gourd-100', name: 'Gourdasse 100cc', price: 2000, icon: 'flask-orange-distill' },
+    { id: 'gourd-150', name: 'Gourdasse 150cc', price: 2500, icon: 'flask-green-erlenmeyer' },
   ];
 
   const handleBuy = (item) => {
