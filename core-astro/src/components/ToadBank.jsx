@@ -5,7 +5,16 @@ import useStore from '../store/useStore';
 import NeonIcon from './NeonIcon';
 
 export default function ToadBankMobile() {
-  const { balance, lastGlitchPurchase, username, currentPage, setPage, logout } = useStore();
+  const { balance, lastGlitchPurchase, username, currentPage, setPage, logout, waluigiView } = useStore();
+
+  const getTitle = () => {
+    if (currentPage === 'WALUIGI') {
+        if (waluigiView === 'TEST') return 'TEST PSY';
+        if (waluigiView === 'MOTUS') return 'MOTUS DAILY';
+        return 'WALUIGI BAR';
+    }
+    return currentPage;
+  };
 
   const handleLogout = () => {
     if (window.confirm("Veux-tu vraiment te déconnecter de ton profil ?")) {
@@ -23,14 +32,14 @@ export default function ToadBankMobile() {
           <div className="bank-info">
             <AnimatePresence mode="wait">
               <motion.span
-                key={currentPage}
+                key={getTitle()}
                 className="bank-title"
                 initial={{ opacity: 0, y: -6 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 6 }}
                 transition={{ duration: 0.2 }}
               >
-                {currentPage}
+                {getTitle()}
               </motion.span>
             </AnimatePresence>
             <span className="bank-balance">{balance.toLocaleString('fr-FR')} <NeonIcon name="coin-gold" size={18} /></span>

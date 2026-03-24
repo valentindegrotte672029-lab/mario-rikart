@@ -22,10 +22,12 @@ const useStore = create(
 
     // Navigation
     currentPage: 'MARIO', // LUIGI, TOAD, PEACH, MARIO, WALUIGI, etc.
+    waluigiView: 'BAR', // 'BAR' | 'TEST' | 'MOTUS'
     speedBoost: false,
     activeUsers: [],
     setActiveUsers: (users) => set({ activeUsers: users }),
     setPage: (page) => set({ currentPage: page, speedBoost: true, bgOverride: null }),
+    setWaluigiView: (view) => set({ waluigiView: view }),
     resetSpeed: () => set({ speedBoost: false }),
 
     // Background override (set by subpages like Casino/Psych to crossfade full-screen bg)

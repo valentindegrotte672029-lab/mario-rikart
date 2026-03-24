@@ -11,8 +11,6 @@ import PagePeach from './components/PagePeach';
 import PageMario from './components/PageMario';
 import PageWaluigi from './components/PageWaluigi';
 import PageChrono from './components/PageChrono';
-import PagePsych from './components/PagePsych';
-import PageCemantix from './components/PageCemantix';
 import PageCasino from './components/PageCasino';
 import NeonIcon from './components/NeonIcon';
 import PageTrombi from './components/PageTrombi';
@@ -53,7 +51,7 @@ export default function App() {
   const [isDeleted, setIsDeleted] = useState(false);
   const { logout, currentPage, setPage, resetSpeed, happening, triggerHappening, username, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, errorMsg, balance, socialStatus, setBets, setBalance, setPokerState, setPokerRooms, bgOverride, setFeatureFlags } = useStore();
 
-  const SWIPE_PAGES = ['WALUIGI', 'PSYCH', 'CEMANTIX', 'LUIGI', 'CASINO', 'MARIO', 'TOAD', 'CHRONO', 'PEACH', 'TROMBI'];
+  const SWIPE_PAGES = ['WALUIGI', 'LUIGI', 'CASINO', 'MARIO', 'TOAD', 'CHRONO', 'PEACH', 'TROMBI'];
   const swipeDir = useRef(1);
   const touchRef = useRef({ startX: 0, startY: 0, swiping: false });
 
@@ -190,6 +188,14 @@ export default function App() {
     }
   }, [username, setBereals, addBereal, deleteBereal, setLeaderboards, setActiveUsers, triggerHappening, setBets, setBalance, setPokerState, setPokerRooms, setFeatureFlags]);
 
+  useEffect(() => {
+    if (currentPage === 'PSYCH' || currentPage === 'CEMANTIX') {
+      const view = currentPage === 'CEMANTIX' ? 'MOTUS' : 'TEST';
+      useStore.getState().setWaluigiView(view);
+      setPage('WALUIGI');
+    }
+  }, [currentPage, setPage]);
+
   // Synchronisation continue des pièces, rang et peachUnlock vers le serveur
   const peachUnlock = useStore(s => s.peachUnlock);
   useEffect(() => {
@@ -262,8 +268,6 @@ export default function App() {
       case 'MARIO': return <PageMario key="mario" />;
       case 'WALUIGI': return <PageWaluigi key="waluigi" />;
       case 'CHRONO': return <PageChrono key="chrono" />;
-      case 'PSYCH': return <PagePsych key="psych" />;
-      case 'CEMANTIX': return <PageCemantix key="cemantix" />;
       case 'CASINO': return <PageCasino key="casino" />;
       case 'TROMBI': return <PageTrombi key="trombi" />;
       default: return <PageMario key="mario" />;

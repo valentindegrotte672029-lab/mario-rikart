@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import useStore from '../store/useStore';
 import NeonIcon from './NeonIcon';
 import ComingSoon from './ComingSoon';
+import { socket } from '../socket';
 
 const DAILY_WORDS = {
   "2026-03-24": "EPSCI",
@@ -27,51 +28,32 @@ const getLocalIsoDate = () => {
     return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 };
 
-export default function PageCemantix() {
-  const { featureFlags, setPage, cemantixProgress, setCemantixProgress } = useStore();
+export default function CemantixContent() {
+  const { featureFlags, cemantixProgress, setCemantixProgress } = useStore();
   
   const todayStr = getLocalIsoDate();
   const targetWord = DAILY_WORDS[todayStr];
   
-  // Progress pour ce jour spécifique
   const dayProgress = cemantixProgress[todayStr] || { guesses: [], status: 'PLAYING', startTime: null, timeTaken: null };
   
   const [currentGuess, setCurrentGuess] = useState('');
   const [invalidMsg, setInvalidMsg] = useState('');
 
-  // S'il n'y a pas de mot aujourd'hui
   const isTooEarly = Object.keys(DAILY_WORDS).sort()[0] > todayStr;
   const isOver = Object.keys(DAILY_WORDS).sort().reverse()[0] < todayStr;
 
-  const CategoryTabBar = () => (
-    <div className="category-tab-bar">
-      <button className="category-tab" onClick={() => setPage('WALUIGI')}>
-        <NeonIcon name="waluigi-transparent" size={18} /> BAR
-      </button>
-      <button className="category-tab" onClick={() => setPage('PSYCH')}>
-        <NeonIcon name="Test icône" size={18} /> TEST
-      </button>
-      <button className="category-tab active" onClick={() => setPage('CEMANTIX')}>
-        <NeonIcon name="motus-neon" size={18} /> MOTUS
-      </button>
-    </div>
-  );
-
-  // Fonction de calcul des couleurs pour un essai
   const calculateColors = useCallback((guess, target) => {
     const res = Array(target.length).fill('ABSENT');
     const targetLetters = target.split('');
     const guessLetters = guess.split('');
 
-    // 1ere passe (Verts)
     guessLetters.forEach((char, i) => {
         if (char === targetLetters[i]) {
             res[i] = 'CORRECT';
-            targetLetters[i] = null; // Marquer comme utilisé
+            targetLetters[i] = null;
         }
     });
 
-    // 2ème passe (Jaunes)
     guessLetters.forEach((char, i) => {
         if (res[i] === 'CORRECT') return;
         const targetIdx = targetLetters.indexOf(char);
@@ -84,7 +66,6 @@ export default function PageCemantix() {
     return res;
   }, []);
 
-  // Clavier couleurs
   const keyColors = useMemo(() => {
     if (!targetWord) return {};
     const colors = {};
@@ -145,7 +126,6 @@ export default function PageCemantix() {
     } else if (currentGuess.length < targetWord.length) {
       setCurrentGuess(prev => prev + key);
       
-      // Démarrage du chrono au premier caractère tapé
       if (!dayProgress.startTime) {
           setCemantixProgress({
               ...cemantixProgress,
@@ -158,25 +138,12 @@ export default function PageCemantix() {
   };
 
   if (!featureFlags.cemantixTab) {
-    return (
-        <div className="page-mobile psych-mobile">
-            <CategoryTabBar />
-            <ComingSoon title="LE LABO MOTUS" color="#ffcc00" icon="motus-neon" minimal={true} />
-        </div>
-    );
+    return <ComingSoon title="LE LABO MOTUS" color="#ffcc00" icon="motus-neon" minimal={true} />;
   }
 
   return (
-    <motion.div
-      className="page-mobile psych-mobile"
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 1.05 }}
-    >
-      <CategoryTabBar />
-
-      <div className="glass-panel mobile-card" style={{ padding: '20px 10px 100px 10px', height: '100%', display: 'flex', flexDirection: 'column' }}>
-        <h1 className="title-mobile waluigi-title" style={{ fontSize: '1.8rem', marginBottom: '5px' }}>MOTUS DAILY</h1>
+    <div style={{ padding: '0 10px 40px 10px', display: 'flex', flexDirection: 'column', width: '100%' }}>
+        <h1 className="title-mobile waluigi-title" style={{ fontSize: '1.8rem', marginBottom: '5px', textAlign: 'center' }}>MOTUS DAILY</h1>
         
         {!targetWord ? (
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#ffcc00', textAlign: 'center', padding: '20px' }}>
@@ -192,7 +159,6 @@ export default function PageCemantix() {
                     Trouve le mot secret en rapport avec le Royaume !
                 </div>
 
-                {/* Grille */}
                 <div className="motus-grid" style={{
                     display: 'grid',
                     gridTemplateRows: `repeat(${MAX_GUESSES}, 1fr)`,
@@ -201,7 +167,7 @@ export default function PageCemantix() {
                     maxWidth: '350px',
                     margin: '0 auto',
                     flex: 1,
-                    maxHeight: '350px'
+                    minHeight: '280px'
                 }}>
                     {Array.from({ length: MAX_GUESSES }).map((_, rowIndex) => {
                         const guess = dayProgress.guesses[rowIndex];
@@ -269,8 +235,7 @@ export default function PageCemantix() {
                     </motion.div>
                 )}
 
-                {/* Clavier */}
-                <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '6px', width: '100%' }}>
+                <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '6px', width: '100%' }}>
                     {KEYBOARD_ROWS.map((row, rIdx) => (
                         <div key={rIdx} style={{ display: 'flex', gap: '4px', justifyContent: 'center' }}>
                             {row.map((key) => {
@@ -302,56 +267,6 @@ export default function PageCemantix() {
                 </div>
             </>
         )}
-      </div>
-      
-      <style>{`
-        .psych-mobile {
-            --theme-color: #ffcc00;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-            overflow-y: auto;
-            overflow-x: hidden;
-            padding: calc(var(--safe-top) + 15px) 15px 120px 15px;
-        }
-
-        .category-tab-bar {
-          display: flex;
-          width: 100%;
-          max-width: 450px;
-          gap: 6px;
-          margin-bottom: 15px;
-          padding: 0 5px;
-          z-index: 1000;
-        }
-        .category-tab {
-          flex: 1;
-          background: rgba(255, 255, 255, 0.05) !important;
-          border: 1px solid rgba(255, 255, 255, 0.1) !important;
-          border-radius: 15px;
-          padding: 10px 8px;
-          color: #aaa;
-          font-weight: 800;
-          font-size: 0.75rem;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 6px;
-          transition: all 0.2s;
-          min-width: 0;
-          white-space: nowrap;
-          overflow: hidden;
-        }
-        .category-tab.active {
-          background: rgba(255, 204, 0, 0.2) !important;
-          border-color: #ffcc00 !important;
-          color: white;
-          box-shadow: 0 0 15px rgba(255, 204, 0, 0.3);
-        }
-      `}</style>
-    </motion.div>
+    </div>
   );
 }
