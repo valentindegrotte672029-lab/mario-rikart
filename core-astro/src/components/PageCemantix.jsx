@@ -161,7 +161,7 @@ export default function PageCemantix() {
     return (
         <div className="page-mobile psych-mobile">
             <CategoryTabBar />
-            <ComingSoon title="LE LABO MOTUS" color="#ffcc00" icon="motus-neon" />
+            <ComingSoon title="LE LABO MOTUS" color="#ffcc00" icon="motus-neon" minimal={true} />
         </div>
     );
   }
@@ -323,16 +323,15 @@ export default function PageCemantix() {
           width: 100%;
           max-width: 450px;
           gap: 6px;
-          margin-bottom: 25px;
+          margin-bottom: 15px;
           padding: 0 5px;
-          z-index: 100;
-          justify-content: center;
+          z-index: 1000;
         }
         .category-tab {
           flex: 1;
           background: rgba(255, 255, 255, 0.05) !important;
           border: 1px solid rgba(255, 255, 255, 0.1) !important;
-          border-radius: 20px;
+          border-radius: 15px;
           padding: 10px 8px;
           color: #aaa;
           font-weight: 800;

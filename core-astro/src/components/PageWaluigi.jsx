@@ -159,7 +159,7 @@ export default function PageWaluigi() {
           gap: 6px;
           margin-bottom: 15px;
           padding: 0 5px;
-          z-index: 100;
+          z-index: 1000;
         }
         .category-tab {
           flex: 1;
