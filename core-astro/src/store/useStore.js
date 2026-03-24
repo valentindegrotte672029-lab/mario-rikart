@@ -114,17 +114,27 @@ const useStore = create(
         }
     },
 
+    lastWaluigiBarOrderDate: null,
+    setLastWaluigiBarOrderDate: (date) => set({ lastWaluigiBarOrderDate: date }),
+
+    waluigiOrderQr: null,
+    setWaluigiOrderQr: (qr) => set({ waluigiOrderQr: qr }),
+
     setBalance: (balance) => set({ balance })
     }),
     {
         name: 'mario-rikart-storage',
-        // On ne sauvegarde que les éléments clés (pseudo, argent, statut social)
+        // On sauvegarde les éléments critiques pour éviter le "refresh bypass"
         partialize: (state) => ({ 
             username: state.username, 
             balance: state.balance, 
             socialStatus: state.socialStatus,
             peachUnlock: state.peachUnlock,
-            gourdasseUnlock: state.gourdasseUnlock
+            gourdasseUnlock: state.gourdasseUnlock,
+            lastToadxiqueOrder: state.lastToadxiqueOrder,
+            lastWaluigiBarOrderDate: state.lastWaluigiBarOrderDate,
+            cemantixProgress: state.cemantixProgress,
+            waluigiOrderQr: state.waluigiOrderQr
         }),
     }
 ));
