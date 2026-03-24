@@ -125,7 +125,7 @@ io.on('connection', (socket) => {
     };
 
     // 0. Authentification Joueur 
-    socket.on('authenticate', ({ username, password }, callback) => {
+    socket.on('authenticate', ({ username, password, restoreData }, callback) => {
         const alias = username.toUpperCase();
 
         // Anti-Multi-compte : Empêche deux utilisateurs d'être connectés sur le même pseudo
@@ -162,11 +162,14 @@ io.on('connection', (socket) => {
             socket.username = alias;
 
             // Création automatique si le pseudo n'existe pas
+            // Migration/Restoration trust: if client provides data for a new user, we accept it (recovery from Render data loss)
             usersDb[alias] = { 
                 password, 
                 createdAt: new Date().toISOString(),
-                balance: 100,
-                socialStatus: "PAUVRE HÈRE DU ROYAUME (RMI)",
+                balance: (restoreData && restoreData.balance) ? restoreData.balance : 100,
+                socialStatus: (restoreData && restoreData.socialStatus) ? restoreData.socialStatus : "PAUVRE HÈRE DU ROYAUME (RMI)",
+                peachUnlock: (restoreData && restoreData.peachUnlock) ? restoreData.peachUnlock : 'none',
+                gourdasseUnlock: (restoreData && restoreData.gourdasseUnlock) ? restoreData.gourdasseUnlock : null,
                 lastToadxiqueOrder: null
             };
             saveUsers();
@@ -177,10 +180,10 @@ io.on('connection', (socket) => {
                 isNew: true, 
                 message: "🎉 Nouveau compte créé !",
                 userData: {
-                    balance: 100,
-                    socialStatus: "PAUVRE HÈRE DU ROYAUME (RMI)",
-                    peachUnlock: 'none',
-                    gourdasseUnlock: null,
+                    balance: usersDb[alias].balance,
+                    socialStatus: usersDb[alias].socialStatus,
+                    peachUnlock: usersDb[alias].peachUnlock,
+                    gourdasseUnlock: usersDb[alias].gourdasseUnlock,
                     lastToadxiqueOrder: null,
                     lastCemantixWin: null
                 }
@@ -485,7 +488,11 @@ io.on('connection', (socket) => {
 
     // 2. Émission d'une commande (Wario Bar & Toadxique)
     socket.on('new_order', (orderData) => {
-        const username = players[socket.id] || 'Anonyme';
+        const username = players[socket.id];
+        if (!username) {
+            console.log(`🛡️ Commande bloquée : Utilisateur non authentifié.`);
+            return;
+        }
         const alias = username.toUpperCase();
         
         // --- Vérification Anti-Spam Toadxique (1 par jour) ---
