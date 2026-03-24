@@ -20,6 +20,7 @@ const INGREDIENTS = [
   { id: 'concombre', name: 'Tranches de concombre', icon: 'simple-cucumber' },
   { id: 'tabasco', name: 'Tabasco', icon: 'simple-tabasco' },
   { id: 'pamplemousse', name: 'Jus de pamplemousse', icon: 'simple-grapefruit' },
+  { id: 'whisky', name: 'Whisky', icon: 'simple-whisky' },
 ];
 
 const LISTEUX = [
