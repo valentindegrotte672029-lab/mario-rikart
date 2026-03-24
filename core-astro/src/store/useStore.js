@@ -9,15 +9,18 @@ const useStore = create(
     setUsername: (name) => set({ username: name }),
     lastToadxiqueOrder: null,
     setLastToadxiqueOrder: (date) => set({ lastToadxiqueOrder: date }),
-    setLoginData: (name, balance, socialStatus, peachUnlock, gourdasseUnlock, lastToadxiqueOrder) => 
-        set({ username: name, balance, socialStatus, peachUnlock: peachUnlock || 'none', gourdasseUnlock: gourdasseUnlock || null, lastToadxiqueOrder: lastToadxiqueOrder || null }),
+    lastCemantixWin: null,
+    setLastCemantixWin: (date) => set({ lastCemantixWin: date }),
+    setLoginData: (name, balance, socialStatus, peachUnlock, gourdasseUnlock, lastToadxiqueOrder, lastCemantixWin) => 
+        set({ username: name, balance, socialStatus, peachUnlock: peachUnlock || 'none', gourdasseUnlock: gourdasseUnlock || null, lastToadxiqueOrder: lastToadxiqueOrder || null, lastCemantixWin: lastCemantixWin || null }),
     logout: () => set({ 
         username: null, 
         balance: 100, 
         socialStatus: "PAUVRE HÈRE DU ROYAUME (RMI)",
         peachUnlock: 'none',
         gourdasseUnlock: null,
-        lastToadxiqueOrder: null
+        lastToadxiqueOrder: null,
+        lastCemantixWin: null
     }),
 
     // Navigation
@@ -114,17 +117,11 @@ const useStore = create(
         }
     },
 
-    lastWaluigiBarOrderDate: null,
-    setLastWaluigiBarOrderDate: (date) => set({ lastWaluigiBarOrderDate: date }),
-
-    waluigiOrderQr: null,
-    setWaluigiOrderQr: (qr) => set({ waluigiOrderQr: qr }),
-
     setBalance: (balance) => set({ balance })
     }),
     {
         name: 'mario-rikart-storage',
-        // On sauvegarde les éléments critiques pour éviter le "refresh bypass"
+        // On ne sauvegarde que les éléments clés (pseudo, argent, statut social)
         partialize: (state) => ({ 
             username: state.username, 
             balance: state.balance, 
@@ -132,9 +129,8 @@ const useStore = create(
             peachUnlock: state.peachUnlock,
             gourdasseUnlock: state.gourdasseUnlock,
             lastToadxiqueOrder: state.lastToadxiqueOrder,
-            lastWaluigiBarOrderDate: state.lastWaluigiBarOrderDate,
-            cemantixProgress: state.cemantixProgress,
-            waluigiOrderQr: state.waluigiOrderQr
+            lastCemantixWin: state.lastCemantixWin,
+            cemantixProgress: state.cemantixProgress
         }),
     }
 ));

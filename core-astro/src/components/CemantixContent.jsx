@@ -29,12 +29,17 @@ const getLocalIsoDate = () => {
 };
 
 export default function CemantixContent() {
-  const { featureFlags, cemantixProgress, setCemantixProgress } = useStore();
+  const { featureFlags, cemantixProgress, setCemantixProgress, lastCemantixWin, spendCoins, balance, setBalance } = useStore();
   
   const todayStr = getLocalIsoDate();
   const targetWord = DAILY_WORDS[todayStr];
   
   const dayProgress = cemantixProgress[todayStr] || { guesses: [], status: 'PLAYING', startTime: null, timeTaken: null };
+  
+  // Enforce daily win from server/persisted state
+  if (lastCemantixWin === new Date().toDateString() && dayProgress.status !== 'WIN') {
+      dayProgress.status = 'WIN';
+  }
   
   const [currentGuess, setCurrentGuess] = useState('');
   const [invalidMsg, setInvalidMsg] = useState('');
@@ -101,6 +106,8 @@ export default function CemantixContent() {
           if (dayProgress.startTime) {
               finalTimeTaken = Math.round((Date.now() - dayProgress.startTime) / 1000);
               socket.emit('cemantix_win', { timeTaken: finalTimeTaken });
+              // Local update for immediate feedback
+              setBalance(balance + 200);
           }
           if (window.navigator?.vibrate) window.navigator.vibrate([100, 50, 100, 50, 200]);
       } else if (newGuesses.length >= MAX_GUESSES) {

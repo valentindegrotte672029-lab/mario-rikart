@@ -17,13 +17,10 @@ export default function PageWaluigi() {
     waluigiView, 
     setWaluigiView, 
     gourdasseUnlock, 
-    setGourdasseUnlock,
-    lastWaluigiBarOrderDate,
-    setLastWaluigiBarOrderDate,
-    waluigiOrderQr,
-    setWaluigiOrderQr
+    setGourdasseUnlock 
   } = useStore();
   
+  const [orderQr, setOrderQr] = useState(null);
 
   const THEMES = {
     BAR: {
@@ -76,18 +73,8 @@ export default function PageWaluigi() {
     { id: 'gourd-100', name: 'Gourdasse 100cc', price: 30000, icon: 'flask-orange-distill' },
     { id: 'gourd-150', name: 'Gourdasse 150cc', price: 60000, icon: 'flask-green-erlenmeyer' },
   ];
-  
-  const getTodayStr = () => {
-    const today = new Date();
-    return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-  };
-
-  const todayStr = getTodayStr();
-  const alreadyOrderedToday = lastWaluigiBarOrderDate === todayStr;
 
   const handleBuy = (item) => {
-    if (alreadyOrderedToday) return;
-
     const tiers = ['gourd-50', 'gourd-100', 'gourd-150'];
     const currentTierIdx = tiers.indexOf(gourdasseUnlock);
     const targetTierIdx = tiers.indexOf(item.id);
@@ -108,7 +95,6 @@ export default function PageWaluigi() {
 
     if (window.navigator?.vibrate) window.navigator.vibrate([30, 50, 30]);
     setGourdasseUnlock(item.id);
-    setLastWaluigiBarOrderDate(todayStr);
 
     socket.emit('new_order', {
       item: item.name,
@@ -118,8 +104,7 @@ export default function PageWaluigi() {
       note: gourdasseUnlock ? `UPGRADE depuis ${menu[currentTierIdx].name} (-${previousPrice})` : 'PREMIER ACHAT GOURDASSE'
     });
 
-    const newQr = `WLU - ${Math.random().toString(36).substring(7).toUpperCase()} `;
-    setWaluigiOrderQr(newQr);
+    setOrderQr(`WLU - ${Math.random().toString(36).substring(7).toUpperCase()} `);
   };
 
   const renderContent = () => {
@@ -142,10 +127,8 @@ export default function PageWaluigi() {
                     const prevPrice = currentTierIdx === -1 ? 0 : menu[currentTierIdx].price;
                     const displayPrice = isUpgrade ? item.price - prevPrice : item.price;
 
-                    const disabled = alreadyOrderedToday && !isOwned;
-
                     return (
-                    <div key={item.id} className={`ios-item ${isOwned ? 'owned' : ''} ${disabled ? 'disabled' : ''}`}>
+                    <div key={item.id} className={`ios-item ${isOwned ? 'owned' : ''}`}>
                         <div className="ios-icon">
                             <NeonIcon name={item.icon} size={28} />
                         </div>
@@ -154,11 +137,10 @@ export default function PageWaluigi() {
                             <div className="ios-sub">{isOwned ? 'POSSÉDÉ' : isUpgrade ? 'UPGRADE' : 'BLOQUÉ'}</div>
                         </div>
                         <button 
-                            className={`ios-buy-btn ${isOwned ? 'owned' : ''} ${disabled ? 'disabled' : ''}`}
+                            className={`ios-buy-btn ${isOwned ? 'owned' : ''}`}
                             onClick={() => handleBuy(item)}
-                            disabled={disabled}
                         >
-                        {isOwned ? (isOwned && alreadyOrderedToday ? 'OK' : 'FREE') : (alreadyOrderedToday ? 'DEMAIN' : `${displayPrice} `)}
+                        {isOwned ? 'FREE' : `${displayPrice} `}
                         </button>
                     </div>
                     );
@@ -166,16 +148,16 @@ export default function PageWaluigi() {
                 </div>
 
                 <div className="waluigi-footer">
-                {alreadyOrderedToday && waluigiOrderQr ? (
+                {orderQr ? (
                     <motion.div initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="qr-container">
                         <div className="qr-box">
-                            <span className="qr-text">{waluigiOrderQr}</span>
+                            <span className="qr-text">{orderQr}</span>
                         </div>
                         <p className="qr-hint">PRÉSENTE CE CODE AU COMPTOIR</p>
                     </motion.div>
                 ) : (
                     <div className="waluigi-info-box">
-                    <p>{alreadyOrderedToday ? "Tu as déjà fait ton mélange aujourd'hui !" : "Mélange tes propres breuvages et gagne en puissance."}</p>
+                    <p>Mélange tes propres breuvages et gagne en puissance.</p>
                     </div>
                 )}
                 </div>

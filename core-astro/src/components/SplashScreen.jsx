@@ -34,7 +34,8 @@ export default function SplashScreen() {
             response.userData.socialStatus,
             response.userData.peachUnlock,
             response.userData.gourdasseUnlock,
-            response.userData.lastToadxiqueOrder
+            response.userData.lastToadxiqueOrder,
+            response.userData.lastCemantixWin
           );
         } else {
           setError(response.message);

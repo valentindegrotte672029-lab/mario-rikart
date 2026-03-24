@@ -161,6 +161,9 @@ export default function App() {
       socket.on('sync_last_toadxique', (date) => {
           useStore.getState().setLastToadxiqueOrder(date);
       });
+      socket.on('sync_cemantix_win', (date) => {
+          useStore.getState().setLastCemantixWin(date);
+      });
 
       return () => {
         socket.off('connect', onConnect);
@@ -183,6 +186,7 @@ export default function App() {
         socket.off('account_deleted');
         socket.off('sync_feature_flags');
         socket.off('sync_last_toadxique');
+        socket.off('sync_cemantix_win');
       socket.disconnect();
       };
     }
