@@ -256,16 +256,42 @@ export default function PsychContent() {
                                     </div>
                                 ) : (
                                     <>
-                                        <div className="ws-grid" style={{ display: 'grid', gridTemplateColumns: `repeat(${WS_COLS}, 1fr)`, gap: '2px', background: '#1a1a2e', padding: '3px', borderRadius: '8px' }}>
+                                        <div className="ws-grid" style={{ 
+                                            display: 'grid', 
+                                            gridTemplateColumns: `repeat(${WS_COLS}, 1fr)`, 
+                                            gap: '2px', 
+                                            background: 'rgba(255,255,255,0.05)', 
+                                            padding: '4px', 
+                                            borderRadius: '12px',
+                                            userSelect: 'none',
+                                            touchAction: 'none'
+                                        }}>
                                             {WS_GRID.map((row, r) => row.map((letter, c) => (
-                                                <div key={`${r}-${c}`} className={`ws-cell ${wsStartCell?.r === r && wsStartCell?.c === c ? 'ws-start' : ''}`} style={{ aspectRatio: '1', background: wsFoundCellColors[`${r}-${c}`] || 'rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: '900', fontSize: '12px' }} onClick={() => handleWsCellTap(r, c)}>
+                                                <div 
+                                                    key={`${r}-${c}`} 
+                                                    className={`ws-cell ${wsStartCell?.r === r && wsStartCell?.c === c ? 'ws-start' : ''}`} 
+                                                    style={{ 
+                                                        aspectRatio: '1', 
+                                                        background: wsFoundCellColors[`${r}-${c}`] || 'rgba(255,255,255,0.08)', 
+                                                        display: 'flex', 
+                                                        alignItems: 'center', 
+                                                        justifyContent: 'center', 
+                                                        color: 'white', 
+                                                        fontWeight: '900', 
+                                                        fontSize: '13px' 
+                                                    }} 
+                                                    onPointerDown={(e) => {
+                                                        e.preventDefault();
+                                                        handleWsCellTap(r, c);
+                                                    }}
+                                                >
                                                     {letter}
                                                 </div>
                                             )))}
                                         </div>
-                                        <div className="ws-word-list" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center', marginTop: '10px' }}>
+                                        <div className="ws-word-list" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center', marginTop: '15px' }}>
                                             {WS_WORDS.map((w, i) => (
-                                                <span key={i} className={`ws-word-tag ${wsFoundWords.has(i) ? 'found' : ''}`} style={{ fontSize: '0.8rem', color: wsFoundWords.has(i) ? '#88ff88' : 'rgba(255,255,255,0.6)', textDecoration: wsFoundWords.has(i) ? 'line-through' : 'none' }}>{w.word}</span>
+                                                <span key={i} className={`ws-word-tag ${wsFoundWords.has(i) ? 'found' : ''}`}>{w.word}</span>
                                             ))}
                                         </div>
                                     </>
@@ -318,6 +344,59 @@ export default function PsychContent() {
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            <style>{`
+                .ws-cell {
+                    transition: all 0.2s;
+                    cursor: pointer;
+                    user-select: none;
+                    border-radius: 4px;
+                }
+                .ws-cell:active {
+                    transform: scale(0.9);
+                    background: rgba(255, 255, 255, 0.2) !important;
+                }
+                .ws-start {
+                    background: #00ffcc !important;
+                    color: black !important;
+                    box-shadow: 0 0 15px #00ffcc;
+                    transform: scale(1.1);
+                    z-index: 2;
+                }
+                .ws-word-tag {
+                    background: rgba(255, 255, 255, 0.05);
+                    padding: 4px 10px;
+                    border-radius: 8px;
+                    font-size: 0.75rem;
+                    color: #aaa;
+                    font-weight: bold;
+                    transition: all 0.3s;
+                }
+                .ws-word-tag.found {
+                    background: rgba(0, 255, 204, 0.1);
+                    color: #00ffcc;
+                    text-decoration: line-through;
+                    opacity: 0.5;
+                }
+                .cw-scam-title {
+                    animation: pulseScam 1.5s infinite alternate;
+                }
+                @keyframes pulseScam {
+                    from { transform: scale(1); text-shadow: 0 0 10px #ff4400; }
+                    to { transform: scale(1.05); text-shadow: 0 0 25px #ff4400, 0 0 40px #ff0000; }
+                }
+                .sign-card {
+                    background: rgba(255, 255, 255, 0.03);
+                    border: 1px solid rgba(255, 255, 255, 0.05);
+                    border-radius: 12px;
+                    padding: 12px;
+                    transition: all 0.3s;
+                }
+                .sign-card.expanded {
+                    background: rgba(75, 0, 130, 0.1);
+                    border-color: rgba(75, 0, 130, 0.3);
+                }
+            `}</style>
         </div>
     );
 }
