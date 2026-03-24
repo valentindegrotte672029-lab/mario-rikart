@@ -146,7 +146,8 @@ io.on('connection', (socket) => {
                         socialStatus: usersDb[alias].socialStatus || "PAUVRE HÈRE DU ROYAUME (RMI)",
                         peachUnlock: usersDb[alias].peachUnlock || 'none',
                         gourdasseUnlock: usersDb[alias].gourdasseUnlock || null,
-                        lastToadxiqueOrder: usersDb[alias].lastToadxiqueOrder || null
+                        lastToadxiqueOrder: usersDb[alias].lastToadxiqueOrder || null,
+                        lastCemantixWin: usersDb[alias].lastCemantixWin || null
                     }
                 });
             } else {
@@ -180,7 +181,8 @@ io.on('connection', (socket) => {
                     socialStatus: "PAUVRE HÈRE DU ROYAUME (RMI)",
                     peachUnlock: 'none',
                     gourdasseUnlock: null,
-                    lastToadxiqueOrder: null
+                    lastToadxiqueOrder: null,
+                    lastCemantixWin: null
                 }
             });
         }
@@ -460,6 +462,9 @@ io.on('connection', (socket) => {
 
         if (usersDb[alias] && usersDb[alias].lastToadxiqueOrder) {
             socket.emit('sync_last_toadxique', usersDb[alias].lastToadxiqueOrder);
+        }
+        if (usersDb[alias] && usersDb[alias].lastCemantixWin) {
+            socket.emit('sync_cemantix_win', usersDb[alias].lastCemantixWin);
         }
 
         // Informe le Master (Admin) qu'un nouveau joueur est là
