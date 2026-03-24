@@ -10,7 +10,7 @@ export default function SplashScreen() {
   const [passwordValue, setPasswordValue] = useState('');
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { setLoginData } = useStore();
+  const { setLoginData, balance, socialStatus, peachUnlock, gourdasseUnlock } = useStore();
 
   const handleJoin = (e) => {
     e.preventDefault();
@@ -24,7 +24,8 @@ export default function SplashScreen() {
 
       socket.emit('authenticate', {
         username: inputValue.trim().toUpperCase(),
-        password: passwordValue
+        password: passwordValue,
+        restoreData: { balance, socialStatus, peachUnlock, gourdasseUnlock }
       }, (response) => {
         setIsLoading(false);
         if (response.success) {

@@ -92,6 +92,28 @@ export default function PageToad() {
     </div>
   );
 
+  if (!username) {
+    return (
+      <div className="page-mobile toad-mobile">
+        <CategoryTabBar />
+        <div className="glass-panel mobile-card" style={{ textAlign: 'center', padding: '40px 20px' }}>
+          <Skull size={48} color="#ff4444" style={{ margin: '0 auto 20px' }} />
+          <h2 style={{ color: 'white', marginBottom: '10px' }}>ACCÈS FILTRÉ</h2>
+          <p style={{ color: '#888', fontSize: '0.9rem', marginBottom: '25px' }}>
+            Tu dois être identifié pour accéder au mélangeur de poisons de Toad.
+          </p>
+          <button 
+            className="ios-buy-btn" 
+            onClick={() => window.location.reload()}
+            style={{ width: '100%', background: '#ff4444' }}
+          >
+            SE CONNECTER
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <motion.div
       className="page-mobile toad-mobile"
