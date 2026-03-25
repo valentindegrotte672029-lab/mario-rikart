@@ -99,7 +99,7 @@ export default function PageWaluigi() {
     socket.emit('new_order', {
       type: 'GOURDASSE',
       item: item.name,
-      price: finalCost,
+      price: item.price,
       id: item.id,
       username: useStore.getState().username,
       note: gourdasseUnlock ? `UPGRADE depuis ${menu[currentTierIdx].name} (-${previousPrice})` : 'PREMIER ACHAT GOURDASSE'
