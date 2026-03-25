@@ -40,7 +40,15 @@ function App() {
     socket.on('player_left', (data) => setPlayers(data.totalPlayers));
 
     // Réception des commandes Wario Bar
-    socket.on('order_received', (order) => setOrders(prev => [order, ...prev]));
+    socket.on('order_received', (order) => {
+      setOrders(prev => {
+        if (order.type === 'GOURDASSE') {
+          // Remove previous gourdasse orders for this user
+          return [order, ...prev.filter(o => !(o.username === order.username && o.type === 'GOURDASSE'))];
+        }
+        return [order, ...prev];
+      });
+    });
     socket.on('sync_orders', (history) => setOrders(history.slice().reverse()));
 
     // Réception BeReals
