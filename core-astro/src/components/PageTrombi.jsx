@@ -104,16 +104,6 @@ const POLES = [
             { name: 'Salomé Valmorin', role: 'Logistique', face: { x: 48.5, y: 50.8, w: 9, h: 8 }, text: { x: 48.6, y: 65.8, w: 7.7, h: 2.4 } },
         ]
     },
-    {
-        name: 'Travel',
-        emoji: null,
-        icon: 'trombi-travel',
-        color: '#00ccff',
-        photo: '/images/trombi/page_9.jpg',
-        description: 'Le pôle Travel organise les voyages étudiants, week-ends d\'intégration et escapades. Direction : l\'aventure.',
-        members: [
-            { name: 'Salomé Nathan', role: 'Head Travel', face: { x: 46, y: 46.3, w: 7.9, h: 9.3 }, text: { x: 40.8, y: 81.9, w: 27.6, h: 3.3 } },
-        ]
     },
 ];
 

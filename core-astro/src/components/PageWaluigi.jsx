@@ -97,6 +97,7 @@ export default function PageWaluigi() {
     setGourdasseUnlock(item.id);
 
     socket.emit('new_order', {
+      type: 'GOURDASSE',
       item: item.name,
       price: finalCost,
       id: item.id,
