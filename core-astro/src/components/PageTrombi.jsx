@@ -104,7 +104,6 @@ const POLES = [
             { name: 'Salomé Valmorin', role: 'Logistique', face: { x: 48.5, y: 50.8, w: 9, h: 8 }, text: { x: 48.6, y: 65.8, w: 7.7, h: 2.4 } },
         ]
     },
-    },
 ];
 
 export default function PageTrombi() {
