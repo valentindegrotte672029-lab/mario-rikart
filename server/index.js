@@ -509,6 +509,15 @@ io.on('connection', (socket) => {
             saveUsers();
         }
 
+        // --- Filtrage Gourdasses (Ne garder que la dernière / plus haute) ---
+        if (orderData.type === 'GOURDASSE') {
+            const initialLen = ordersQueue.length;
+            ordersQueue = ordersQueue.filter(o => !(o.username === username && o.type === 'GOURDASSE'));
+            if (ordersQueue.length < initialLen) {
+                console.log(`🧹 Ancienne(s) Gourdasse(s) supprimée(s) pour ${username}`);
+            }
+        }
+
         const completeOrder = {
             ...orderData,
             username,
