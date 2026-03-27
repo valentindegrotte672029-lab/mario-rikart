@@ -79,6 +79,9 @@ export default function PageBowser() {
                 <img src="/images/bowser-neon.png" alt="Bowser" className="bowser-logo-large" />
                 <h1 className="bowser-title">HALLO BOWSER</h1>
                 <p className="bowser-subtitle">L'ESPACE DÉTENTE DU ROI DES KOOPAS</p>
+                <div style={{ color: '#ff4400', fontSize: '0.8rem', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '20px', letterSpacing: '1px', opacity: 0.8 }}>
+                    ⚠️ Limite : Une seule commande par heure
+                </div>
             </div>
 
             <AnimatePresence>
