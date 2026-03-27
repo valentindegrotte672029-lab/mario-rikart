@@ -154,4 +154,4 @@ export default function Navigation() {
     );
 }
 
-export { PAGES };
+export { ALL_PAGES as PAGES };
