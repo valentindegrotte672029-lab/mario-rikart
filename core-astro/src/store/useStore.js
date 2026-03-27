@@ -49,7 +49,7 @@ const useStore = create(
     clearBgOverride: () => set({ bgOverride: null }),
     
     // Feature Flags (Contrôlés par l'admin)
-    featureFlags: { warioTest: true, warioCrossword: true, toadLab: true, peachasse: true, horoscope: true, cemantixTab: false, bowserTab: false },
+    featureFlags: { warioTest: true, warioCrossword: true, toadLab: true, peachasse: true, horoscope: true, cemantixTab: true, bowserTab: true },
     setFeatureFlags: (flags) => set({ featureFlags: flags }),
 
     // Cémantix / Motus Progress

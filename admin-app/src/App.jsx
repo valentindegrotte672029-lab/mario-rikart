@@ -20,7 +20,7 @@ function App() {
   const [pokerHistory, setPokerHistory] = useState([]);
   const [activeHappening, setActiveHappening] = useState(null);
   const [activeTab, setActiveTab] = useState('WARIO'); // 'WARIO', 'BEREAL', 'ARCADE', 'USERS', 'BETS', 'POKER', 'SETTINGS'
-  const [featureFlags, setFeatureFlags] = useState({ warioTest: true, toadLab: true, peachasse: true, horoscope: true, bowserTab: false });
+  const [featureFlags, setFeatureFlags] = useState({ warioTest: true, toadLab: true, peachasse: true, horoscope: true, bowserTab: true });
 
   // Formulaire Paris
   const [betQuestion, setBetQuestion] = useState('');
