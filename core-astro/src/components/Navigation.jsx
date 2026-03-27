@@ -4,8 +4,8 @@ import useStore from '../store/useStore';
 
 const ICON_ASSET_VERSION = '20260317-2';
 
-const PAGES = [
-    { id: 'WALUIGI', iconSrc: '/images/icons/nav/waluigi-icon.png', label: 'Waluigi', color: '#9900ff', subPages: ['PSYCH', 'CEMANTIX'] },
+const ALL_PAGES = [
+    { id: 'WALUIGI', iconSrc: '/images/icons/nav/waluigi-icon.png', label: 'Waluigi', color: '#9900ff', subPages: ['PSYCH', 'CEMANTIX', 'BOWSER'] },
     { id: 'LUIGI',  iconSrc: '/images/icons/nav/luidgi-icon.png', label: 'Luigi',   color: '#39ff14', subPages: ['CASINO'] },
     { id: 'MARIO',  iconSrc: '/images/icons/nav/mario-icon.png',  label: 'BeMario',  color: '#ff3333', subPages: [] },
     { id: 'TOAD',   iconSrc: '/images/icons/nav/toad-icon.png',   label: 'Toad',     color: '#9933ff', subPages: ['CHRONO'] },
@@ -13,7 +13,19 @@ const PAGES = [
 ];
 
 export default function Navigation() {
-    const { currentPage, setPage, resetSpeed } = useStore();
+    const { currentPage, setPage, resetSpeed, featureFlags } = useStore();
+
+    const pages = ALL_PAGES.filter(p => {
+        if (p.id === 'BOWSER_TAB') return featureFlags.bowserTab;
+        return true;
+    });
+
+    // Add Bowser as a main tab if it's treated as one, or as a subpage.
+    // The user said "nouvel onglet Bowser", so let's add it to the main nav if bowserTab is true.
+    const displayPages = [...ALL_PAGES];
+    if (featureFlags.bowserTab) {
+        displayPages.splice(1, 0, { id: 'BOWSER', iconSrc: '/images/icons/nav/bowser-icon.png', label: 'Bowser', color: '#ff4400', subPages: [] });
+    }
 
     const handleNavigate = (page) => {
         if (page === currentPage) return;
@@ -24,7 +36,7 @@ export default function Navigation() {
     return (
         <>
             <nav className="snap-bottom-nav">
-                {PAGES.map(({ id, iconSrc, label, color, subPages }) => {
+                {displayPages.map(({ id, iconSrc, label, color, subPages }) => {
                     const isActive = currentPage === id || subPages.includes(currentPage);
                     return (
                         <motion.button

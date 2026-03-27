@@ -20,7 +20,7 @@ function App() {
   const [pokerHistory, setPokerHistory] = useState([]);
   const [activeHappening, setActiveHappening] = useState(null);
   const [activeTab, setActiveTab] = useState('WARIO'); // 'WARIO', 'BEREAL', 'ARCADE', 'USERS', 'BETS', 'POKER', 'SETTINGS'
-  const [featureFlags, setFeatureFlags] = useState({ warioTest: true, toadLab: true, peachasse: true, horoscope: true });
+  const [featureFlags, setFeatureFlags] = useState({ warioTest: true, toadLab: true, peachasse: true, horoscope: true, bowserTab: false });
 
   // Formulaire Paris
   const [betQuestion, setBetQuestion] = useState('');
@@ -230,60 +230,118 @@ function App() {
         <div style={{ flex: 1, overflowY: 'auto' }}>
 
           {activeTab === 'WARIO' && (
-            orders.length === 0 ? (
-              <div className="empty-state">
-                <Activity size={48} />
-                <p style={{ marginTop: '15px' }}>En attente de commandes...</p>
-              </div>
-            ) : (
-              <div className="orders-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '20px', padding: '10px' }}>
-                <AnimatePresence>
-                  {Object.entries(
-                    orders.reduce((acc, order) => {
-                      if (!acc[order.username]) acc[order.username] = [];
-                      acc[order.username].push(order);
-                      return acc;
-                    }, {})
-                  ).map(([user, userOrders]) => (
-                    <motion.div
-                      key={user}
-                      className="user-ticket-card"
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                      layout
-                      style={{ background: '#222', borderRadius: '15px', padding: '15px', border: '1px solid #ffcc00' }}
-                    >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #444', paddingBottom: '10px', marginBottom: '10px' }}>
-                        <h3 style={{ color: '#ffcc00', margin: 0, fontSize: '1.2rem', textTransform: 'uppercase' }}>Ticket de {user}</h3>
-                        <span style={{ color: '#aaa', fontSize: '0.8rem' }}>{userOrders.length} article(s)</span>
-                      </div>
-                      
-                      <ul style={{ listStyleType: 'none', padding: 0, margin: '0 0 15px 0' }}>
-                        {userOrders.map((o, i) => (
-                           <li key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px dashed #333' }}>
-                             <span style={{ color: 'white', fontWeight: 'bold' }}>- {o.item}</span>
-                             <span style={{ color: '#00ffcc' }}>{o.price / 1000}k 🟡</span>
-                           </li>
-                        ))}
-                      </ul>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+              
+              {/* SECTION HALLO BOWSER (Si des commandes existent) */}
+              {orders.some(o => o.type === 'BOWSER') && (
+                <div style={{ padding: '20px', background: 'rgba(255, 68, 0, 0.05)', borderRadius: '20px', border: '2px solid #ff4400' }}>
+                  <h2 style={{ color: '#ff4400', display: 'flex', alignItems: 'center', gap: '10px', margin: '0 0 20px 0' }}>
+                    <Zap size={24} /> HALLO BOWSER (Commandes Spéciales)
+                  </h2>
+                  <div className="orders-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '20px' }}>
+                    <AnimatePresence>
+                      {Object.entries(
+                        orders.filter(o => o.type === 'BOWSER').reduce((acc, order) => {
+                          if (!acc[order.username]) acc[order.username] = [];
+                          acc[order.username].push(order);
+                          return acc;
+                        }, {})
+                      ).map(([user, userOrders]) => (
+                        <motion.div
+                          key={user}
+                          className="user-ticket-card"
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, scale: 0.9 }}
+                          style={{ background: '#000', borderRadius: '15px', padding: '15px', border: '1px solid #ff4400', boxShadow: '0 0 15px rgba(255,68,0,0.2)' }}
+                        >
+                          <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #444', paddingBottom: '10px', marginBottom: '10px' }}>
+                            <h3 style={{ color: '#ff4400', margin: 0, fontSize: '1.2rem', textTransform: 'uppercase' }}>{user}</h3>
+                            <span style={{ color: '#aaa', fontSize: '0.8rem' }}>Bowser Delivery</span>
+                          </div>
+                          <ul style={{ listStyleType: 'none', padding: 0, margin: '0 0 15px 0' }}>
+                            {userOrders.map((o, i) => (
+                               <li key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px dashed #333' }}>
+                                 <span style={{ color: 'white', fontWeight: 'bold' }}>🔥 {o.item}</span>
+                                 <span style={{ color: '#ff4400' }}>LIVRAISON</span>
+                               </li>
+                            ))}
+                          </ul>
+                          <button 
+                            onClick={() => {
+                                setOrders(prev => prev.filter(o => !(o.username === user && o.type === 'BOWSER')));
+                                socket.emit('delete_user_orders', { username: user, type: 'BOWSER' });
+                            }}
+                            style={{ width: '100%', padding: '12px', borderRadius: '8px', border: 'none', background: '#ff4400', color: 'white', fontWeight: '900', cursor: 'pointer' }}
+                          >
+                            MARQUER COMME LIVRÉ
+                          </button>
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
+                  </div>
+                </div>
+              )}
 
-                      <button 
-                        onClick={() => {
-                            setOrders(prev => prev.filter(o => o.username !== user));
-                            socket.emit('delete_user_orders', user);
-                        }}
-                        style={{ width: '100%', padding: '12px', borderRadius: '8px', border: 'none', background: '#4CAF50', color: 'white', fontWeight: '900', cursor: 'pointer', transition: 'transform 0.1s' }}
-                        onMouseDown={(e) => e.target.style.transform = 'scale(0.97)'}
-                        onMouseUp={(e) => e.target.style.transform = 'scale(1)'}
-                      >
-                        ✔ SERVIR LA TABLE COMPLÈTE
-                      </button>
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
+              {/* SECTION WARIO BAR (Standard) */}
+              <div style={{ padding: '20px', background: 'rgba(255, 204, 0, 0.02)', borderRadius: '20px', border: '1px solid #444' }}>
+                <h2 style={{ color: '#ffcc00', margin: '0 0 20px 0' }}>WARIO BAR (Boissons & Gourdasses)</h2>
+                {orders.filter(o => o.type !== 'BOWSER').length === 0 ? (
+                  <div className="empty-state">
+                    <Activity size={48} />
+                    <p style={{ marginTop: '15px' }}>En attente de commandes Wario...</p>
+                  </div>
+                ) : (
+                  <div className="orders-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '20px' }}>
+                    <AnimatePresence>
+                      {Object.entries(
+                        orders.filter(o => o.type !== 'BOWSER').reduce((acc, order) => {
+                          if (!acc[order.username]) acc[order.username] = [];
+                          acc[order.username].push(order);
+                          return acc;
+                        }, {})
+                      ).map(([user, userOrders]) => (
+                        <motion.div
+                          key={user}
+                          className="user-ticket-card"
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.9 }}
+                          layout
+                          style={{ background: '#222', borderRadius: '15px', padding: '15px', border: '1px solid #ffcc00' }}
+                        >
+                          <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #444', paddingBottom: '10px', marginBottom: '10px' }}>
+                            <h3 style={{ color: '#ffcc00', margin: 0, fontSize: '1.2rem', textTransform: 'uppercase' }}>Ticket de {user}</h3>
+                            <span style={{ color: '#aaa', fontSize: '0.8rem' }}>{userOrders.length} article(s)</span>
+                          </div>
+                          
+                          <ul style={{ listStyleType: 'none', padding: 0, margin: '0 0 15px 0' }}>
+                            {userOrders.map((o, i) => (
+                               <li key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px dashed #333' }}>
+                                 <span style={{ color: 'white', fontWeight: 'bold' }}>- {o.item}</span>
+                                 <span style={{ color: '#00ffcc' }}>{o.price / 1000}k 🟡</span>
+                               </li>
+                            ))}
+                          </ul>
+
+                          <button 
+                            onClick={() => {
+                                setOrders(prev => prev.filter(o => !(o.username === user && o.type !== 'BOWSER')));
+                                socket.emit('delete_user_orders', { username: user, type: 'WARIO' }); // We should update server to handle type
+                            }}
+                            style={{ width: '100%', padding: '12px', borderRadius: '8px', border: 'none', background: '#4CAF50', color: 'white', fontWeight: '900', cursor: 'pointer', transition: 'transform 0.1s' }}
+                            onMouseDown={(e) => e.target.style.transform = 'scale(0.97)'}
+                            onMouseUp={(e) => e.target.style.transform = 'scale(1)'}
+                          >
+                            ✔ SERVIR LA TABLE COMPLÈTE
+                          </button>
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
+                   </div>
+                )}
               </div>
-            )
+            </div>
           )}
 
           {activeTab === 'BEREAL' && (
@@ -787,6 +845,19 @@ function App() {
                     style={{ padding: '10px 20px', borderRadius: '8px', border: 'none', fontWeight: 'bold', cursor: 'pointer', background: featureFlags.cemantixTab ? '#4CAF50' : '#f44336', color: 'white' }}
                   >
                     {featureFlags.cemantixTab ? 'OUVERT' : 'FERMÉ'}
+                  </button>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px', background: '#222', borderRadius: '10px', border: '1px solid #333' }}>
+                  <div>
+                    <h3 style={{ margin: 0, fontSize: '1.1rem', color: '#ff4400' }}>Onglet Hallo Bowser</h3>
+                    <p style={{ margin: '5px 0 0 0', fontSize: '0.85rem', color: '#666' }}>Active l'onglet spécial Bowser pour les commandes (clope, joint, poppy).</p>
+                  </div>
+                  <button 
+                    onClick={() => socket.emit('update_feature_flags', { bowserTab: !featureFlags.bowserTab })}
+                    style={{ padding: '10px 20px', borderRadius: '8px', border: 'none', fontWeight: 'bold', cursor: 'pointer', background: featureFlags.bowserTab ? '#4CAF50' : '#f44336', color: 'white' }}
+                  >
+                    {featureFlags.bowserTab ? 'OUVERT' : 'FERMÉ'}
                   </button>
                 </div>
               </div>

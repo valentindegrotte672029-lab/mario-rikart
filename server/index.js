@@ -75,7 +75,7 @@ if (Object.keys(leaderboards.FLAPPYWEED).length === 0) {
 let usersDb = loadDb('users.json', {});
 let betsDb = loadDb('bets.json', []);
 let notificationsDb = loadDb('notifications.json', []);
-let featureFlags = loadDb('feature_flags.json', { warioTest: true, warioCrossword: true, toadLab: true, peachasse: true, horoscope: true, cemantixTab: false });
+let featureFlags = loadDb('feature_flags.json', { warioTest: true, warioCrossword: true, toadLab: true, peachasse: true, horoscope: true, cemantixTab: false, bowserTab: false });
 let blacklistDb = loadDb('blacklist.json', []);
 
 // Helpers de sauvegarde
@@ -509,6 +509,24 @@ io.on('connection', (socket) => {
             saveUsers();
         }
 
+        // --- Vérification Limite Horaire Hallo Bowser (1 par heure) ---
+        if (orderData.type === 'BOWSER' && usersDb[alias]) {
+            const now = new Date();
+            if (usersDb[alias].lastBowserOrder) {
+                const last = new Date(usersDb[alias].lastBowserOrder);
+                const diffMs = now - last;
+                const diffMins = Math.floor(diffMs / 60000);
+                if (diffMins < 60) {
+                    const remaining = 60 - diffMins;
+                    console.log(`🛡️ Commande Bowser bloquée pour ${alias} (Re-essayer dans ${remaining} min)`);
+                    socket.emit('bowser_error', `Veuillez patienter ${remaining} minutes avant de commander à nouveau.`);
+                    return;
+                }
+            }
+            usersDb[alias].lastBowserOrder = now.toISOString();
+            saveUsers();
+        }
+
         // --- Filtrage Gourdasses (Ne garder que la dernière / plus haute) ---
         if (orderData.type === 'GOURDASSE') {
             const initialLen = ordersQueue.length;
@@ -546,10 +564,23 @@ io.on('connection', (socket) => {
         io.emit('massage_order_received', completeOrder);
     });
 
-    // 2.3 Effacer les commandes d'un joueur
-    socket.on('delete_user_orders', (usernameToDelete) => {
-        ordersQueue = ordersQueue.filter(o => o.username !== usernameToDelete);
+    socket.on('delete_user_orders', (data) => {
+        const username = typeof data === 'string' ? data : data.username;
+        const type = typeof data === 'object' ? data.type : null;
+
+        if (type === 'BOWSER') {
+            ordersQueue = ordersQueue.filter(o => !(o.username === username && o.type === 'BOWSER'));
+        } else if (type === 'WARIO') {
+            ordersQueue = ordersQueue.filter(o => !(o.username === username && o.type !== 'BOWSER'));
+        } else {
+            ordersQueue = ordersQueue.filter(o => o.username === username); // Safety: if no type, we clear all for this user
+            // Actually, the original was:
+            // ordersQueue = ordersQueue.filter(o => o.username !== usernameToDelete);
+            // So:
+            ordersQueue = ordersQueue.filter(o => o.username !== username);
+        }
         saveOrders();
+        io.emit('sync_orders', ordersQueue);
     });
 
     // 2.5 Émission d'un BeReal (Mario)

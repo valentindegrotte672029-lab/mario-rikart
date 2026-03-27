@@ -11,8 +11,17 @@ const useStore = create(
     setLastToadxiqueOrder: (date) => set({ lastToadxiqueOrder: date }),
     lastCemantixWin: null,
     setLastCemantixWin: (date) => set({ lastCemantixWin: date }),
-    setLoginData: (name, balance, socialStatus, peachUnlock, gourdasseUnlock, lastToadxiqueOrder, lastCemantixWin) => 
-        set({ username: name, balance, socialStatus, peachUnlock: peachUnlock || 'none', gourdasseUnlock: gourdasseUnlock || null, lastToadxiqueOrder: lastToadxiqueOrder || null, lastCemantixWin: lastCemantixWin || null }),
+    lastBowserOrder: null,
+    setLastBowserOrder: (date) => set({ lastBowserOrder: date }),
+    setLoginData: (name, balance, socialStatus, peachUnlock, gourdasseUnlock, lastToadxiqueOrder, lastCemantixWin, lastBowserOrder) => 
+        set({ 
+            username: name, balance, socialStatus, 
+            peachUnlock: peachUnlock || 'none', 
+            gourdasseUnlock: gourdasseUnlock || null, 
+            lastToadxiqueOrder: lastToadxiqueOrder || null, 
+            lastCemantixWin: lastCemantixWin || null,
+            lastBowserOrder: lastBowserOrder || null
+        }),
     logout: () => set({ 
         username: null, 
         balance: 100, 
@@ -20,7 +29,8 @@ const useStore = create(
         peachUnlock: 'none',
         gourdasseUnlock: null,
         lastToadxiqueOrder: null,
-        lastCemantixWin: null
+        lastCemantixWin: null,
+        lastBowserOrder: null
     }),
 
     // Navigation
@@ -39,7 +49,7 @@ const useStore = create(
     clearBgOverride: () => set({ bgOverride: null }),
     
     // Feature Flags (Contrôlés par l'admin)
-    featureFlags: { warioTest: true, warioCrossword: true, toadLab: true, peachasse: true, horoscope: true, cemantixTab: false },
+    featureFlags: { warioTest: true, warioCrossword: true, toadLab: true, peachasse: true, horoscope: true, cemantixTab: false, bowserTab: false },
     setFeatureFlags: (flags) => set({ featureFlags: flags }),
 
     // Cémantix / Motus Progress
@@ -130,6 +140,7 @@ const useStore = create(
             gourdasseUnlock: state.gourdasseUnlock,
             lastToadxiqueOrder: state.lastToadxiqueOrder,
             lastCemantixWin: state.lastCemantixWin,
+            lastBowserOrder: state.lastBowserOrder,
             cemantixProgress: state.cemantixProgress
         }),
     }

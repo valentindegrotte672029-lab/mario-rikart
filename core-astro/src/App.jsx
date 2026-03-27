@@ -14,6 +14,7 @@ import PageChrono from './components/PageChrono';
 import PageCasino from './components/PageCasino';
 import NeonIcon from './components/NeonIcon';
 import PageTrombi from './components/PageTrombi';
+import PageBowser from './components/PageBowser';
 import Navigation from './components/Navigation';
 
 import useStore from './store/useStore';
@@ -255,6 +256,11 @@ export default function App() {
       glowSoft: 'rgba(0, 206, 209, 0.32)',
       bg: `linear-gradient(145deg, rgba(0,206,209,0.25), rgba(0,15,20,0.93)), url('/images/backgrounds/bg_psych_neural_v2.jpg?v=${BG_ASSET_VERSION}')`,
     },
+    BOWSER: {
+      glow: '#ff4400',
+      glowSoft: 'rgba(255, 68, 0, 0.35)',
+      bg: `linear-gradient(145deg, rgba(255,68,0,0.15), rgba(20,5,0,0.65)), url('/images/bg-bowser.png?v=${BG_ASSET_VERSION}')`,
+    },
   };
 
   const activeTheme = THEME_BY_PAGE[currentPage] || {
@@ -274,6 +280,7 @@ export default function App() {
       case 'CHRONO': return <PageChrono key="chrono" />;
       case 'CASINO': return <PageCasino key="casino" />;
       case 'TROMBI': return <PageTrombi key="trombi" />;
+      case 'BOWSER': return <PageBowser key="bowser" />;
       default: return <PageMario key="mario" />;
     }
   };
