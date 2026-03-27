@@ -24,7 +24,9 @@ export default function Navigation() {
     // The user said "nouvel onglet Bowser", so let's add it to the main nav if bowserTab is true.
     const displayPages = [...ALL_PAGES];
     if (featureFlags.bowserTab) {
-        displayPages.splice(1, 0, { id: 'BOWSER', iconSrc: '/images/icons/nav/bowser-icon.png', label: 'Bowser', color: '#ff4400', subPages: [] });
+        // Find Toad index and insert after
+        const toadIdx = displayPages.findIndex(p => p.id === 'TOAD');
+        displayPages.splice(toadIdx + 1, 0, { id: 'BOWSER', iconSrc: '/images/icons/nav/bowser-icon.png', label: 'Bowser', color: '#ff4400', subPages: [] });
     }
 
     const handleNavigate = (page) => {
